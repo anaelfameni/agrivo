@@ -1,6 +1,13 @@
 # AGRIVO
 
+[![CI](https://github.com/anaelfameni/agrivo/actions/workflows/ci.yml/badge.svg)](https://github.com/anaelfameni/agrivo/actions/workflows/ci.yml)
+
 **La conformité agricole, simplifiée.** — projet Vibeathon 2026.
+
+> Preuves de méthode (pipeline « Du besoin à la Release ») : [SPECS.md](SPECS.md) (besoin, user
+> stories, critères d'acceptation, IN/OUT du MVP) · [ARCHITECTURE.md](ARCHITECTURE.md) (flux
+> Donnée → IA → Résultat, mini ADR, plan de rollback) · [CHANGELOG.md](CHANGELOG.md) (versions) ·
+> CI GitHub Actions (lint + types + 24 tests + build) · `npm test` pour lancer la suite Vitest.
 
 AGRIVO permet aux coopératives agricoles ivoiriennes de vérifier en quelques secondes si une parcelle
 respecte le **RDUE** (Règlement UE 2023/1115 anti-déforestation), de générer un **certificat PDF**

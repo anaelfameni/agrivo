@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { Satellite, Sparkles, Layers, CloudOff, CheckCircle2, AlertTriangle, ArrowRight } from "lucide-react";
+import { Satellite, Sparkles, Layers, CloudOff, CheckCircle2, AlertTriangle, ArrowRight, ArrowDown, Database, BadgeCheck } from "lucide-react";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { Reveal } from "@/components/landing/reveal";
@@ -43,6 +43,64 @@ export default function Methodologie() {
               publiques de référence et une IA générative pour rendre le résultat compréhensible et
               actionnable. Voici exactement comment.
             </p>
+          </Reveal>
+        </section>
+
+        {/* Le flux en un schéma : Donnée, IA, Résultat */}
+        <section className="mx-auto max-w-6xl px-6 pb-4 md:px-8">
+          <Reveal>
+            <div className="rounded-2xl border border-black/[0.06] bg-white p-8 md:p-10">
+              <span className="eyebrow text-green-signal">Le flux, en un schéma</span>
+              <h2 className="mt-3 font-display text-2xl text-forest-950 sm:text-3xl">
+                Donnée, intelligence artificielle, résultat.
+              </h2>
+              <div className="mt-8 grid items-stretch gap-4 md:grid-cols-[1fr_auto_1fr_auto_1fr]">
+                <div className="rounded-xl bg-ivory p-6">
+                  <div className="grid h-10 w-10 place-items-center rounded-lg bg-forest-950/[0.06] text-forest-950">
+                    <Database size={20} />
+                  </div>
+                  <h3 className="mt-3 font-display text-lg text-forest-950">1. La donnée</h3>
+                  <p className="mt-2 text-sm leading-relaxed text-stone-600">
+                    La photo de la carte du producteur et le polygone GeoJSON de sa parcelle
+                    (WGS-84, six décimales), relevés au bord du champ avec son consentement.
+                  </p>
+                </div>
+                <div className="hidden items-center md:flex" aria-hidden>
+                  <ArrowRight size={22} className="text-green-signal" />
+                </div>
+                <div className="flex justify-center md:hidden" aria-hidden>
+                  <ArrowDown size={22} className="text-green-signal" />
+                </div>
+                <div className="rounded-xl bg-ivory p-6">
+                  <div className="grid h-10 w-10 place-items-center rounded-lg bg-green-signal/12 text-green-signal">
+                    <Satellite size={20} />
+                  </div>
+                  <h3 className="mt-3 font-display text-lg text-forest-950">2. L'IA</h3>
+                  <p className="mt-2 text-sm leading-relaxed text-stone-600">
+                    Whisp (FAO) compare la parcelle aux archives satellites depuis le 31 décembre
+                    2020. Gemini lit la carte et met le résultat en mots. Chacune son rôle, jamais
+                    confondus.
+                  </p>
+                </div>
+                <div className="hidden items-center md:flex" aria-hidden>
+                  <ArrowRight size={22} className="text-green-signal" />
+                </div>
+                <div className="flex justify-center md:hidden" aria-hidden>
+                  <ArrowDown size={22} className="text-green-signal" />
+                </div>
+                <div className="rounded-xl bg-ivory p-6">
+                  <div className="grid h-10 w-10 place-items-center rounded-lg bg-amber-cacao/12 text-amber-cacao">
+                    <BadgeCheck size={20} />
+                  </div>
+                  <h3 className="mt-3 font-display text-lg text-forest-950">3. Le résultat</h3>
+                  <p className="mt-2 text-sm leading-relaxed text-stone-600">
+                    Un verdict parmi trois états, un certificat PDF vérifiable par QR code, un
+                    dossier prêt pour TRACES NT, et l'accès au micro-crédit si la parcelle est
+                    conforme.
+                  </p>
+                </div>
+              </div>
+            </div>
           </Reveal>
         </section>
 
