@@ -1,0 +1,366 @@
+"use client";
+
+import { useEffect, useMemo, useState } from "react";
+import Link from "next/link";
+import { motion, useReducedMotion } from "framer-motion";
+import { Bell, CheckCircle2, ChevronRight, Coins, MapPin, Plus, Search, ShieldCheck, X } from "lucide-react";
+import { StatNumber } from "@/components/ui/stat-number";
+import { StatusBadge } from "@/components/ui/status-badge";
+import { PinMark } from "@/components/ui/pin-mark";
+import { EmptyState } from "@/components/ui/empty-state";
+import { Magnetic } from "@/components/ui/motion-primitives";
+import {
+  COOP_DEMO,
+  MANAGER_DEMO,
+  FILIERE_LABEL,
+  coopStats,
+  fmtHa,
+  formatDateFr,
+  parcellesForCoop,
+  type Parcelle,
+  type Statut,
+} from "@/data/mock-parcelles";
+
+const EASE = [0.16, 1, 0.3, 1] as const;
+
+export default function DashboardPage() {
+  const reduce = useReducedMotion();
+  const [query, setQuery] = useState("");
+  const [today, setToday] = useState("");
+  const [justVerified, setJustVerified] = useState<{ nom: string; statut: Statut } | null>(null);
+
+  // Reflète une vérification qui vient d'être finalisée dans le parcours (Prompt 4).
+  useEffect(() => {
+    try {
+      const raw = sessionStorage.getItem("agrivo_verifie");
+      if (raw) {
+        const v = JSON.parse(raw) as { nom: string; statut: Statut };
+        setJustVerified({ nom: v.nom, statut: v.statut });
+        sessionStorage.removeItem("agrivo_verifie");
+      }
+    } catch {
+      /* stockage indisponible */
+    }
+  }, []);
+
+  // Date « live » côté client uniquement → évite tout écart d'hydratation SSR/CSR.
+  useEffect(() => {
+    setToday(
+      new Date().toLocaleDateString("fr-FR", {
+        weekday: "long",
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+      }),
+    );
+  }, []);
+
+  const parcelles = useMemo(() => parcellesForCoop(), []);
+  const stats = useMemo(() => coopStats(parcelles), [parcelles]);
+  const alertes = useMemo(() => parcelles.filter((p) => p.alerteActive), [parcelles]);
+  const recentes = useMemo(
+    () => [...parcelles].sort((a, b) => b.dateVerification.localeCompare(a.dateVerification)),
+    [parcelles],
+  );
+  const filtered = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    if (!q) return recentes;
+    return recentes.filter(
+      (p) =>
+        p.producteurNom.toLowerCase().includes(q) ||
+        p.numeroCartePro.toLowerCase().includes(q),
+    );
+  }, [query, recentes]);
+
+  const kpis = [
+    { label: "Parcelles vérifiées", sub: "ce mois-ci", value: stats.verifiees, suffix: "", Icon: MapPin, tint: "rgba(22,163,74,0.12)", color: "var(--color-green-signal)", glow: "rgba(22,163,74,0.5)", pct: null as number | null },
+    { label: "Taux de conformité", sub: "sur les parcelles vérifiées", value: stats.tauxConformite, suffix: " %", Icon: ShieldCheck, tint: "rgba(22,163,74,0.12)", color: "var(--color-green-signal)", glow: "rgba(22,163,74,0.5)", pct: stats.tauxConformite },
+    { label: "Propositions de crédit", sub: "envoyées aux producteurs", value: stats.propositionsCredit, suffix: "", Icon: Coins, tint: "rgba(200,134,29,0.16)", color: "var(--color-amber-cacao)", glow: "rgba(200,134,29,0.45)", pct: null },
+    { label: "Alertes actives", sub: "à examiner", value: stats.alertes, suffix: "", Icon: Bell, tint: "rgba(180,35,30,0.10)", color: "var(--color-red-block)", glow: "rgba(180,35,30,0.4)", pct: null },
+  ];
+
+  return (
+    <div className="flex flex-col gap-6">
+      {/* Bandeau : vérification qui vient d'être finalisée */}
+      {justVerified && (
+        <motion.div
+          initial={reduce ? { opacity: 1 } : { opacity: 0, y: -8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, ease: EASE }}
+          className="flex items-center gap-3 rounded-2xl border border-green-signal/25 bg-green-signal/[0.07] px-4 py-3"
+        >
+          <CheckCircle2 size={20} strokeWidth={2} className="shrink-0 text-green-signal" aria-hidden />
+          <p className="flex-1 text-sm text-forest-950">
+            Vérification de <span className="font-semibold">{justVerified.nom}</span> enregistrée.
+          </p>
+          <StatusBadge statut={justVerified.statut} size="sm" />
+          <button
+            type="button"
+            onClick={() => setJustVerified(null)}
+            aria-label="Fermer"
+            className="grid h-8 w-8 place-items-center rounded-full text-stone-400 outline-none transition-colors hover:bg-black/5 hover:text-forest-950 focus-visible:ring-2 focus-visible:ring-green-signal"
+          >
+            <X size={16} strokeWidth={2} />
+          </button>
+        </motion.div>
+      )}
+
+      {/* En-tête « hero » vert forêt : l'identité de marque revient au premier plan */}
+      <motion.div
+        initial={reduce ? { opacity: 1 } : { opacity: 0, y: 16 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, ease: EASE }}
+        className="panel-forest relative overflow-hidden rounded-3xl border border-white/10 p-6 shadow-[0_30px_70px_-40px_rgba(10,31,20,0.8)] sm:p-8"
+      >
+        <div aria-hidden className="pointer-events-none absolute -right-12 -top-20 h-64 w-64 rounded-full bg-green-signal/25 blur-3xl" />
+        <div aria-hidden className="pointer-events-none absolute -bottom-24 left-1/3 h-56 w-56 rounded-full bg-amber-cacao/10 blur-3xl" />
+        <div className="grain pointer-events-none absolute inset-0 opacity-[0.05]" />
+        <div className="relative flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <p className="eyebrow flex items-center gap-2 text-green-signal">
+              <span className="glow-pulse inline-block h-1.5 w-1.5 rounded-full bg-green-signal" />
+              Espace coopérative
+            </p>
+            <h1 className="mt-2.5 font-display text-3xl leading-tight text-white sm:text-[2.6rem]">
+              Bonjour {MANAGER_DEMO}
+            </h1>
+            <p className="mt-1.5 text-sm text-white/55">
+              {COOP_DEMO}
+              {today && (
+                <>
+                  {" · "}
+                  <span className="capitalize">{today}</span>
+                </>
+              )}
+            </p>
+          </div>
+
+          <Magnetic strength={0.25} className="w-full sm:w-auto">
+            <Link
+              href="/app/consentement"
+              className="btn-green inline-flex w-full items-center justify-center gap-2 rounded-full px-6 py-3.5 text-sm font-semibold outline-none focus-visible:ring-2 focus-visible:ring-white/70 focus-visible:ring-offset-2 focus-visible:ring-offset-forest-950 sm:w-auto"
+            >
+              <Plus size={18} strokeWidth={2.25} aria-hidden />
+              Nouvelle vérification
+            </Link>
+          </Magnetic>
+        </div>
+      </motion.div>
+
+      {/* KPI */}
+      <motion.div
+        initial="hidden"
+        animate="show"
+        variants={{ show: { transition: { staggerChildren: reduce ? 0 : 0.07 } } }}
+        className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4"
+      >
+        {kpis.map((k) => (
+          <motion.div
+            key={k.label}
+            variants={{
+              hidden: reduce ? { opacity: 1 } : { opacity: 0, y: 14 },
+              show: { opacity: 1, y: 0, transition: { duration: 0.5, ease: EASE } },
+            }}
+            className="card-premium group relative overflow-hidden p-4 sm:p-5"
+          >
+            <div
+              aria-hidden
+              className="pointer-events-none absolute -right-6 -top-6 h-20 w-20 rounded-full opacity-0 blur-2xl transition-opacity duration-500 group-hover:opacity-100"
+              style={{ background: k.glow }}
+            />
+            <div className="relative flex items-center justify-between">
+              <span
+                className="grid h-10 w-10 place-items-center rounded-xl transition-transform duration-300 group-hover:scale-110"
+                style={{ background: k.tint }}
+                aria-hidden
+              >
+                <k.Icon size={19} strokeWidth={2} style={{ color: k.color }} />
+              </span>
+            </div>
+            <div className="relative mt-3.5 num text-3xl font-semibold tracking-tight text-forest-950 sm:text-[2.1rem]">
+              <StatNumber value={k.value} suffix={k.suffix} />
+            </div>
+            <p className="relative mt-1 text-sm font-medium text-forest-950">{k.label}</p>
+            <p className="relative text-xs text-stone-400">{k.sub}</p>
+            {k.pct != null && (
+              <div className="relative mt-3 h-1.5 overflow-hidden rounded-full bg-black/[0.06]">
+                <div
+                  className="bar-fill h-full rounded-full bg-gradient-to-r from-green-signal to-[#22c55e]"
+                  style={{ width: `${Math.min(100, Math.max(0, k.pct))}%` }}
+                />
+              </div>
+            )}
+          </motion.div>
+        ))}
+      </motion.div>
+
+      {/* Contenu principal + rail d'alertes (alertes en tête sur mobile) */}
+      <div className="grid gap-6 lg:grid-cols-3">
+        <section className="order-2 flex flex-col gap-4 lg:order-none lg:col-span-2">
+          {/* Recherche producteur */}
+          <div className="relative">
+            <Search
+              size={18}
+              strokeWidth={2}
+              aria-hidden
+              className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-stone-400"
+            />
+            <input
+              type="search"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              aria-label="Rechercher un producteur ou un numéro de carte"
+              placeholder="Rechercher un producteur, un n° de carte…"
+              className="h-12 w-full rounded-full border border-black/[0.08] bg-white pl-11 pr-11 text-sm text-forest-950 outline-none transition-[border-color,box-shadow] placeholder:text-stone-400 focus:border-green-signal/50 focus:ring-2 focus:ring-green-signal/15"
+            />
+            {query && (
+              <button
+                type="button"
+                onClick={() => setQuery("")}
+                aria-label="Effacer la recherche"
+                className="absolute right-3 top-1/2 grid h-8 w-8 -translate-y-1/2 place-items-center rounded-full text-stone-400 outline-none transition-colors hover:bg-black/5 hover:text-forest-950 focus-visible:ring-2 focus-visible:ring-green-signal"
+              >
+                <X size={16} strokeWidth={2} />
+              </button>
+            )}
+          </div>
+
+          {/* Liste des dernières vérifications */}
+          <div className="card-premium overflow-hidden p-2 sm:p-3">
+            <div className="flex items-center justify-between px-3 py-2.5">
+              <h2 className="flex items-center gap-2 text-sm font-semibold text-forest-950">
+                <span className="h-4 w-1 rounded-full bg-green-signal" aria-hidden />
+                Dernières vérifications
+              </h2>
+              <span className="num text-xs text-stone-400">
+                {filtered.length} / {recentes.length}
+              </span>
+            </div>
+
+            {filtered.length === 0 ? (
+              <div className="p-2">
+                <EmptyState
+                  title="Aucun producteur trouvé"
+                  description={`Aucun résultat pour « ${query.trim()} ». Vérifiez l'orthographe ou le numéro de carte.`}
+                  action={
+                    <button
+                      type="button"
+                      onClick={() => setQuery("")}
+                      className="inline-flex items-center gap-1.5 rounded-full border border-black/10 px-4 py-2 text-sm font-medium text-forest-950 outline-none transition-colors hover:border-green-signal/40 focus-visible:ring-2 focus-visible:ring-green-signal"
+                    >
+                      Effacer la recherche
+                    </button>
+                  }
+                />
+              </div>
+            ) : (
+              <motion.ul
+                initial="hidden"
+                animate="show"
+                variants={{ show: { transition: { staggerChildren: reduce ? 0 : 0.035 } } }}
+                className="flex flex-col"
+              >
+                {filtered.map((p) => (
+                  <motion.li
+                    key={p.id}
+                    variants={{
+                      hidden: reduce ? { opacity: 1 } : { opacity: 0, x: -8 },
+                      show: { opacity: 1, x: 0, transition: { duration: 0.35, ease: EASE } },
+                    }}
+                  >
+                    <VerificationRow parcelle={p} />
+                  </motion.li>
+                ))}
+              </motion.ul>
+            )}
+          </div>
+        </section>
+
+        {/* Rail : centre d'alertes */}
+        <aside className="order-1 lg:order-none lg:col-span-1">
+          <div className="card-premium p-4 sm:p-5">
+            <div className="flex items-center justify-between">
+              <h2 className="flex items-center gap-2 text-sm font-semibold text-forest-950">
+                <span className="relative grid h-8 w-8 place-items-center rounded-xl" style={{ background: "rgba(180,35,30,0.10)" }} aria-hidden>
+                  <Bell size={16} strokeWidth={2} className="text-red-block" />
+                </span>
+                Alertes
+              </h2>
+              {alertes.length > 0 && (
+                <span className="num inline-flex h-6 min-w-6 items-center justify-center rounded-full bg-red-block px-1.5 text-xs font-semibold text-white">
+                  {alertes.length}
+                </span>
+              )}
+            </div>
+
+            {alertes.length === 0 ? (
+              <p className="mt-4 text-sm text-stone-500">
+                Aucune alerte active. Les nouvelles anomalies détectées apparaîtront ici.
+              </p>
+            ) : (
+              <ul className="mt-4 flex flex-col gap-2">
+                {alertes.map((p) => (
+                  <li key={p.id}>
+                    <Link
+                      href={`/app/parcelle/${p.id}`}
+                      className="group flex items-start gap-3 rounded-xl border border-red-block/15 bg-red-block/[0.04] p-3 outline-none transition-colors hover:bg-red-block/[0.07] focus-visible:ring-2 focus-visible:ring-red-block/40"
+                    >
+                      <PinMark size={22} color="var(--color-red-block)" pulse className="mt-0.5 shrink-0" />
+                      <span className="min-w-0 flex-1">
+                        <span className="block text-sm font-medium text-forest-950">
+                          Nouvelle anomalie détectée
+                        </span>
+                        <span className="mt-0.5 block text-xs text-stone-500">
+                          Sur la parcelle de {p.producteurNom} · {p.region}
+                        </span>
+                      </span>
+                      <ChevronRight
+                        size={16}
+                        strokeWidth={2}
+                        aria-hidden
+                        className="mt-0.5 shrink-0 text-red-block/50 transition-transform group-hover:translate-x-0.5"
+                      />
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        </aside>
+      </div>
+    </div>
+  );
+}
+
+/** Ligne compacte d'une vérification récente → vue détaillée de la parcelle. */
+function VerificationRow({ parcelle: p }: { parcelle: Parcelle }) {
+  return (
+    <Link
+      href={`/app/parcelle/${p.id}`}
+      className="group grid grid-cols-[1fr_auto] items-center gap-3 rounded-xl px-3 py-3 outline-none transition-colors hover:bg-green-signal/[0.06] focus-visible:ring-2 focus-visible:ring-green-signal/40"
+    >
+      <div className="min-w-0">
+        <span className="block truncate text-sm font-medium text-forest-950 transition-colors group-hover:text-green-signal">{p.producteurNom}</span>
+        <span className="mt-1.5 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-stone-500">
+          <StatusBadge statut={p.statut} size="sm" />
+          <span className="num text-stone-400">{p.numeroCartePro}</span>
+          <span aria-hidden className="text-stone-300">·</span>
+          <span>{FILIERE_LABEL[p.filiere]}</span>
+          <span aria-hidden className="text-stone-300">·</span>
+          <span className="num">{fmtHa(p.superficieHa)}</span>
+        </span>
+      </div>
+      <div className="flex items-center gap-2 text-stone-400">
+        <span className="num hidden text-xs sm:inline">{formatDateFr(p.dateVerification)}</span>
+        <span className="grid h-7 w-7 place-items-center rounded-full bg-transparent transition-colors group-hover:bg-green-signal/12">
+          <ChevronRight
+            size={18}
+            strokeWidth={2}
+            aria-hidden
+            className="shrink-0 text-stone-300 transition-transform group-hover:translate-x-0.5 group-hover:text-green-signal"
+          />
+        </span>
+      </div>
+    </Link>
+  );
+}

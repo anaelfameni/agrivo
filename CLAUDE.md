@@ -1,0 +1,570 @@
+# CLAUDE.md — Mémoire de travail AGRIVO
+
+> **À lire au début de CHAQUE prompt.** Ce fichier est la source de vérité unique du projet.
+> Il condense la charte de marque, les règles de contenu, les faits produit et l'avancement.
+> En cas de doute, ce fichier prime sur mes souvenirs. Il reflète l'état au dernier prompt traité.
+
+---
+
+## 🎯 BUT ULTIME (ne jamais l'oublier)
+
+**Gagner la compétition Vibeathon — présentation devant jury le 11 juillet 2026.**
+
+Chaque décision (design, code, texte, animation) se juge à une seule aune : *est-ce que ça augmente
+nos chances de gagner ?* Un jury 2026 note **autant le polish visuel que la technique** — mais un
+design qui **distrait du message fait perdre des points**. Sobre, crédible, « déjà une startup », jamais
+« projet d'école ». Mon rôle sur ce projet : **ingénieur produit + designer principal** d'AGRIVO.
+
+> ⚠️ Le dossier `C:\Users\Anael FAMENI\Desktop\agrivo` **n'existe pas** — l'ignorer totalement.
+> Le seul projet est ici : `C:\Users\Anael FAMENI\.claude\projects\Agrivo`.
+
+---
+
+## 🚫 OUBLIER NANTI (règle stricte — Anael)
+
+**Nanti est OUBLIÉ.** SEULS **le HERO** et **l'écran de BIENVENUE (splash)** reprennent le *design visuel*
+inspiré de Nanti. **TOUT LE RESTE** (reste de l'accueil, dashboards, pages, textes, données) est **100 %
+AGRIVO**, conçu de façon **originale** (pas de patron Nanti), contenu tiré du PDF
+`AGRIVO_Document_reference_v4.pdf` (racine du projet). **Aucune section, aucun texte, aucun chiffre ne
+doit venir de Nanti.**
+
+**Concepts NANTI bannis partout dans AGRIVO :**
+- ❌ « **Valeur à risque** » / « **Montant à risque** » (concept Nanti — n'a **jamais** existé dans AGRIVO).
+- ❌ Terminologie « cockpit » (dire « tableau de bord »).
+- ❌ Sections calquées sur Nanti (avant/après cliché, « zéro boîte noire / décomposition de la valeur à risque »).
+
+**Faits AGRIVO de référence (PDF v4) — utiliser, ne rien inventer :**
+- **KPIs dashboard (les 4 officiels)** : **producteurs audités · taux de conformité · superficie
+  cartographiée · volume validé (tonnes)**. Jamais « valeur à risque ».
+- **Modèle économique — 3 sources de revenu AGRIVO** :
+  1. **Abonnement coopérative — 120 000 FCFA/mois** (vérifications illimitées, certificats PDF, hors connexion, support).
+  2. **API exportateur — 1 500 000 FCFA/mois** (API REST, export batch, déclarations TRACES NT, SLA).
+  3. **Commission sur chaque micro-crédit facilité**, versée par l'**IMF partenaire**.
+  - ⚠️ Le **micro-crédit n'est PAS « gratuit »** : c'est un **prêt (50 000–250 000 FCFA) que le producteur
+    rembourse**. Ce qui est gratuit = le **service AGRIVO** pour le producteur (aucun frais à AGRIVO). Ne
+    JAMAIS présenter « Micro-crédit : Gratuit » comme un plan tarifaire.
+  - ⚠️ Honnêteté marge : Whisp/Copernicus gratuits en base, mais imagerie haute résolution + quotas Google
+    Earth Engine commerciaux = coûts de licence à absorber.
+- **Golden path (5 étapes)** : sélection coopérative → scan carte producteur (Gemini Vision) → cartographie
+  parcelle (GeoJSON RFC 7946) → verdict Whisp (3 états) + explication + badge sols + certificat PDF →
+  inclusion financière (slider 50 000–250 000 FCFA, Mobile Money).
+- **Personas** : Amadou (gérant coop, Soubré, 600 producteurs) · Marc (dir. durabilité, Abidjan) · Yao
+  (productrice café, Man, 2 ha) · Kouassi (producteur cacao, Soubré, 15 ans).
+- **Chiffres marché (Conseil Café-Cacao)** : 3 M ha géolocalisés · 900 K cartes pro · 160 K+ t tracées
+  (oct. 2025–mars 2026) · 450 M€ UE · 1,1 M+ producteurs cacao enrôlés. (⚠️ non revérifiés, manier avec soin)
+- **Deux IA** : Whisp (FAO, détection satellite ; pilote Kenya 6 000+ parcelles) · Gemini (langage/vision).
+  **Score sols** : « méthodologie inspirée de standards reconnus type Kubeko » (jamais « partenaire Lono »).
+
+---
+
+## 🔁 RÈGLE D'AUTO-MISE À JOUR (imposée par Anael)
+
+À **chaque prompt pertinent** (nouvelle décision, nouveau composant/page, changement de token, de
+règle, d'architecture, franchissement d'étape) :
+1. Mettre à jour ce `CLAUDE.md` — au minimum la section **📓 Journal de build**, plus toute section
+   concernée (tokens, structure, décisions).
+2. **Le signaler dans la réponse** par une ligne claire : **« ✅ CLAUDE.md mis à jour — <ce qui a changé> »**.
+
+Pour un prompt **trivial** (question courte, micro-correction, discussion sans impact durable) :
+ne PAS toucher au fichier et ne rien signaler. Juger au cas par cas — la mise à jour doit rester utile,
+pas mécanique.
+
+---
+
+## 🎨 DIRECTION VISUELLE — PIVOT (Session 2, 2026-07-03) : réplique de Nanti
+
+**Décision d'Anael :** le design d'AGRIVO doit **répliquer exactement** celui du projet **Nanti**
+(`C:\Users\Anael FAMENI\.claude\projects\Nanti`) — mêmes **polices, effets, animations, fonds animés**,
+même **page de bienvenue** et même **hero (avec aperçu de dashboard)**. Cela **remplace la charte
+visuelle d'origine** ci-dessous (couleurs Canopée/Or, filigrane polygone) : ces tokens ne sont plus la
+référence VISUELLE. En revanche **les RÈGLES DE CONTENU restent valides** (mots bannis, statuts figés,
+aucun logo fabriqué, formulations Lono/Finafrica).
+
+- **Stack alignée sur Nanti** : Next.js **16.2.9** (App Router, Turbopack), React **19.2.4**,
+  **Tailwind v4** (`@theme` dans `app/globals.css`, `@tailwindcss/postcss`, **pas de** `tailwind.config`),
+  **framer-motion 12**, **lucide-react 1.x**, ESLint flat config.
+- **Palette « Forêt & Données »** : `forest-950 #0a1f14` (fond sombre), `green-signal #16a34a` (Conforme),
+  `amber-cacao #c8861d` / `amber-soft #e0a64b` (accents / Données insuffisantes), `red-block #b4231e`
+  (Anomalie), `ivory #f7f3ea` (fond clair), `stone-*`.
+- **Polices (Session 9, 2e passe)** : **TITRES = `Space Grotesk`** (`--font-space-grotesk`), corps =
+  `Geist`, chiffres = `Geist Mono`. ⚠️ **Newsreader ET Fraunces retirés** (décision Anael : « je ne veux
+  plus voir cette police, elle ressemble à l'IA »). Les DEUX classes `.font-display` et `.font-premium`
+  pointent sur `--font-display` = Space Grotesk (droit, jamais italique ; l'italique a été retiré de la
+  classe CSS ET des inline hero/splash). Space Grotesk max = **700** (hero passé de 800→700). Swap de
+  police = 1 ligne dans `globals.css` + l'import next/font dans `app/layout.tsx`.
+- **Effets/anim** (`globals.css` + `components/ui/motion-primitives.tsx`) : mesh gradients animés, grain,
+  grille masquée, `glow-pulse`, `liquid-glass`, `divide-fluid`, `Magnetic` / `CursorGlow` / `Tilt`,
+  particules canvas qui fuient le curseur (splash), countdown auto-accéléré, bouton magnétique, rideau de
+  sortie (slide-up) + `PageReveal`.
+- **Logo AGRIVO** (`components/ui/logo.tsx`) : un **repère de géolocalisation (pin) portant une feuille
+  inclinée Or** — « la culture géolocalisée ». En volume : **dégradés** (vert clair→forêt, or clair→cacao),
+  **reflet glossy** sur le bord du pin, nervure claire. Lisible dès 16 px. Animation splash : tracé
+  (pin→feuille→nervure) + remplissage dégradé + **reflet scintillant qui balaie** + **éclat qui twinkle**
+  au sommet de la feuille. Constantes : `AGRIVO_PIN_PATH` / `AGRIVO_LEAF_PATH` / `AGRIVO_VEIN_PATH` /
+  `AGRIVO_GLOSS_PATH` / `AGRIVO_SPARKLE`. **Règle a11y** : en reduced-motion, le `initial` = état final
+  visible (sinon le logo restait invisible).
+- **Flux** : `/` = landing (navbar + `Hero` + section « comment ça marche » + footer) ; `<SplashScreen>`
+  se superpose à **chaque** arrivée sur `/` (anti-flash via script dans `<head>`), relais `agrivo:enter` → `PageReveal`.
+- **Conventions Nanti reprises** : **pas de tiret cadratin « — »** dans le texte visible de l'UI ;
+  le dashboard du hero est un **APERÇU** (pas la version finale, à retravailler ensuite).
+- **Multi-filières (IMPORTANT — Anael) — V4 : 7 denrées RDUE** : AGRIVO couvre les **7 matières premières
+  du RDUE** (Règl. UE 2023/1115) : **cacao, café, hévéa, palmier à huile** (ivoiriennes, « en production »)
+  + **bovins, soja, bois** (« couvertes par le moteur »). **Source de vérité unique : `config/filieres.ts`**
+  (id, label, eudr, statut, couleur, icône lucide, image `/filieres/<id>.jpg`, position). **Ne plus coder de
+  filière en dur** : tout dérive de `FILIERES`. La démo reste centrée cacao ; hero + dashboards rendent les
+  7 visibles.
+- **Écran de bienvenue (copywriting figé)** : LINE1 = « **Bienvenue dans Agrivo** » (mots espacés via
+  vrais nœuds texte). LINE2 = « **De la parcelle vérifiée au crédit du producteur.** » — **tout blanc**,
+  **sans** mentionner « Agrivo ». Mots révélés au fil du countdown + au survol.
+- **Vérif. visuelle** : Edge headless (`msedge --headless=new --screenshot`, + `--force-prefers-reduced-motion`
+  pour figer le splash) et un script CDP (`scratchpad/cdp-shot.mjs`, Node fetch/WebSocket natifs) pour
+  capturer le hero après avoir renvoyé le splash. Reproduire ce contrôle visuel après chaque changement d'UI.
+
+---
+
+## 🌿 IDENTITÉ & PROMESSE
+
+- **Promesse :** AGRIVO rend la conformité agricole **simple, prouvable et abordable** — et transforme
+  une contrainte européenne en **opportunité de crédit** pour les producteurs.
+- **3 verbes qui justifient tout :** simplifier (le producteur comprend) · prouver (l'exportateur a
+  confiance) · inclure (le petit exploitant gagne).
+- **Personnalité :** *Ancré · Clair · Crédible.* Un partenaire qui a « les pieds dans la boue du champ
+  et la tête dans la réglementation européenne ». Ni bureaucrate distant, ni vendeur de rêve.
+- **Nom / tagline :** `BRAND_NAME = "Agrivo"` · `BRAND_TAGLINE = "La conformité agricole, simplifiée."`
+  (toujours via `config/brand.ts`, jamais en dur).
+- **Le sujet réel du produit = la vérification d'une parcelle géolocalisée.** Rien n'est décoratif :
+  tout se justifie par ce que le produit fait. → d'où le **motif signature : le polygone de parcelle**.
+
+---
+
+## 🎨 SYSTÈME DE DESIGN (référence absolue)
+
+### Couleurs (tokens Tailwind)
+| Token | Hex | Usage |
+|---|---|---|
+| `primary-900` Vert Canopée | `#14512B` | titres, boutons primaires, header/footer, texte de marque |
+| `primary-600` Vert Cacaoyer | `#2D7A4B` | liens, hover, icônes actives, boutons secondaires |
+| `primary-100` Vert Mousse | `#E4EDE3` | fonds de badges, sections alternées |
+| `secondary-600` Or Récolte | `#D4A843` | accents valeur/crédit, CTA secondaires — **JAMAIS en texte de paragraphe** |
+| `secondary-100` Or clair | `#F3E6C8` | fonds badges « opportunité » |
+| `status-conforme` | `#2D8558` | verdict Conforme (toujours + texte/icône) |
+| `status-anomalie` | `#C62828` | verdict Anomalie détectée |
+| `status-insuffisant` | `#C9A66B` | Données insuffisantes — **fond de badge only**, texte foncé dessus |
+| `neutral-bg` Papier | `#F2F5EF` | **fond par défaut de tout le site** (papier sauge) |
+| `neutral-card` | `#FBFCFA` | fond des cards |
+| `neutral-ink` | `#142019` | texte principal |
+| `neutral-muted` | `#4A564E` | texte secondaire |
+| `neutral-border` | `#D8E0D3` | bordures 1px |
+| `neutral-dark` | `#0B341A` | **moments immersifs rares uniquement** (page d'entrée, hero) — nulle part ailleurs |
+
+🔴 **Jamais :** dégradé arc-en-ciel « startup IA » · rouge/vert saturés type feu tricolore · Or Récolte en
+texte de paragraphe · gris froid sans tonalité verte.
+
+### Typographie (3 rôles, 3 familles — max 3 poids visibles par écran)
+- **Display / titres :** `Newsreader` (serif, évoque le certificat officiel) — **gros titres & chiffres clés only**.
+- **Interface / corps :** `Inter` — tout le reste.
+- **Données / technique :** `IBM Plex Mono` — n° de certificat (`AGV-2026-0417`), coords GPS, réf DDR.
+
+### Espacement / grille
+- Échelle **4/8/12/16/24/32/48/64/96 px** uniquement (jamais d'arbitraire).
+- Rythme vertical entre sections : **96–128 px desktop / 56–72 px mobile**.
+- Conteneur `max-w-7xl` centré · padding `px-6` (mobile) → `px-8` (tablette) → `px-12` (desktop).
+- Paragraphes longs limités à `max-w-2xl`/`max-w-3xl`.
+
+### Ombres (douces, 3 niveaux) · Rayons · Icônes
+- `shadow-sm` 0 1px 2px rgba(20,32,25,.04) · `shadow-md` 0 4px 12px /.08 (hover card) · `shadow-lg` 0 12px 32px /.12 (modales).
+- Rayons : **`sm` 8px** (boutons/inputs/badges) · **`md` 12px** (cards) · **`lg` 20px** (grands panneaux).
+- **lucide-react** exclusivement, `stroke-width 1.75`, tailles **16/20/24** px (jamais arbitraire).
+
+### Motif signature — `<ParcelPolygon>`
+- Polygone irrégulier 5–7 sommets, tracé organique (réf : `100,15 175,60 190,140 120,190 45,175 15,95 55,40` sur viewBox 200×200).
+- Variantes : `draw` (contour qui se dessine, stroke-dashoffset / pathLength) · `pulse` (chargement).
+- Emplois : badges de statut, indicateurs de chargement, filigranes de section (opacité 4–6 %, dérive lente ~20 s), séparateurs.
+- **Jamais** pour boutons ni champs (ceux-ci gardent coins classiques radius-sm/md).
+
+### Motion (Framer Motion partout)
+- **Budget créatif concentré sur UN moment** : la séquence de vérification (prompt 4). Ailleurs = **rapide & discret (150–250 ms)**.
+- Chargement page : apparition séquentielle, stagger 60–80 ms. Révélation scroll : fade + translation 12 px, `whileInView`, une seule fois.
+- `AnimatedCounter` au scroll pour **toute** statistique. Hover card : shadow-sm→md + déplacement 2 px.
+- **`prefers-reduced-motion` respecté partout** (fallback fondu). Zéro particule, zéro confetti, zéro parallaxe superposée.
+
+---
+
+## ✍️ RÈGLES DE CONTENU (bannies à vie — appliquer dans TOUT texte généré)
+
+- ❌ « **garantie** » de conformité → dire « **évaluation** ».
+- ❌ « **seul acteur** du marché » → « **la seule solution qui combine conformité, santé des sols et inclusion financière** ».
+- ❌ Tout **pourcentage de précision inventé** (jamais de « 99,7 % » ou équivalent).
+- ❌ Jargon startup vide (disruptif, révolutionnaire, game-changer).
+- ❌ « **Partenaire Lono** » — **aucun partenariat n'existe**. Formulation unique autorisée :
+  « **Score de résilience des sols — méthodologie inspirée de standards reconnus type Kubeko.** »
+- ❌ Présenter **Finafrica** comme contact déjà pris → dire « **contact identifié et validé sur son modèle** », jamais « contact pris ».
+- ❌ **Aucun logo fabriqué** de partenaire/client (Cargill, Barry Callebaut, Olam, Touton, SIFCA, Finafrica…).
+  Ces noms peuvent apparaître en **texte descriptif** (« des acteurs comme… ») mais **jamais en logo** comme preuve sociale.
+- ❌ **Aucune photo stock** (pas de « fermier africain souriant » cliché). → avatars géométriques à initiales + dégradé de marque, ou compositions abstraites à base de ParcelPolygon.
+
+**Statuts figés (toujours ces mots exacts en FR, jamais de synonymes) :**
+- 🟢 **Conforme** — « Aucune déforestation détectée après le 31 décembre 2020. »
+- 🔴 **Anomalie détectée** — « Une perte de couverture forestière a été identifiée sur cette zone. »
+- ⚪ **Données insuffisantes** — « Présence de nuages ou données satellites insuffisantes pour statuer. »
+
+**Voix (5 règles) :** clair (1 idée/phrase) · concret (on parle de Kouassi, pas d'« utilisateurs ») ·
+honnête (ce que le produit fait aujourd'hui ≠ demain, jamais confondu) · statuts figés · interdits ci-dessus.
+
+---
+
+## 🧭 PRODUIT (faits à connaître)
+
+### Golden path — 5 étapes (démontrées EN DIRECT au jury)
+1. **Connexion & sélection coopérative** (ex. `COOP-SOU : Coopérative Agricole de Soubré`).
+2. **Scan carte producteur** — caméra → **Gemini Vision** extrait nom/n° carte/localité → formulaire pré-rempli.
+3. **Cartographie & validation parcelle** — carte satellite, polygone **GeoJSON RFC 7946**, superficie calculée, sommets ajustables.
+4. **Résultat d'audit** — verdict **Whisp** (3 états), explication langage naturel (Gemini), badge résilience des sols, **certificat PDF**.
+5. **Inclusion financière** — si Conforme : slider **50 000–250 000 FCFA**, simulation versement **Mobile Money**.
+
+### Dashboard exportateur — 3 onglets
+- **Analytique & cartographie** : 4 KPI (producteurs audités, taux de conformité, superficie cartographiée, volume validé), carte portefeuille, export GeoJSON conforme **TRACES NT**.
+- **Assistant conversationnel** : chat langage naturel sur le portefeuille — **le seul bonus IA de cette édition**.
+- **Configuration & logs** : clés API, bascule **MOCK_MODE**, journal réseau live (rassure un jury technique).
+
+### Personas (parler d'eux, jamais d'« utilisateurs »)
+- **Amadou** — gérant de coopérative, Soubré. 600 producteurs, smartphone d'entrée de gamme, veut aller vite au bord du champ.
+- **Marc** — Directeur Durabilité, Abidjan. Doit garantir chaque conteneur 100 % conforme, vérifier des milliers de parcelles.
+- **Yao** — productrice de café, Man. 2 ha, pas de compte bancaire, Mobile Money, veut emprunter 150 000 FCFA.
+- **Kouassi** — producteur de cacao, Soubré, 15 ans sur sa parcelle (exemple fil rouge du résumé exécutif).
+
+### Deux IA (jamais confondues dans le discours)
+- **Whisp (FAO)** — détection déforestation par satellite. **Pas un modèle maison** : outil de référence ONU pour le RDUE, déjà en production. Méthode « convergence de preuves », date pivot 31/12/2020. API HTTP. Précédent citable : pilote Kenya, **6 000+ parcelles** (ITC/FAO/Long Miles Coffee).
+- **Gemini (Google)** — langage, vision, raisonnement (OCR carte, rapports, explication de verdict, chat exportateur bonus).
+- Phrase clé jury : « Nous combinons **l'outil de référence de la FAO pour la détection**, et **une IA générative** pour rendre cette conformité compréhensible et actionnable par tous — du gérant de coopérative à l'exportateur. »
+
+### Chiffres marché (⚠️ non revérifiés — à manier avec prudence)
+3 M ha géolocalisés · 900 K cartes pro distribuées · 160 K+ t cacao tracées (oct. 2025–mars 2026) · 450 M€ de financement UE.
+Filière cacao : 1er mondial, 1,1 M+ producteurs enrôlés.
+
+### Réglementaire (points sûrs)
+- **RDUE** : échéance **30 déc. 2026** (grands/moyens), **30 juin 2027** (micro/petits). Confirmé le **4 mai 2026**, ne sera pas rouvert.
+- **Côte d'Ivoire = « risque standard »** (contrôle douanier 3 %). Formule robuste : « Que la CI soit à risque standard ou élevé, la **géolocalisation complète reste obligatoire** pour le cacao ivoirien. »
+- Carte producteur **obligatoire dès le 1er sept. 2026**. GeoJSON **RFC 7946**, 6 décimales (±11 cm). **Bilan de masse interdit** (ségrégation physique).
+- **BCEAO** : Option A retenue — **sous-traitant technologique B2B SaaS**, aucun agrément financier ; vend du scoring à une IMF partenaire. **ARTCI** : déclaration, consentement, souveraineté des données.
+
+### Modèle économique
+Abonnement coopérative **120 000 FCFA/mois** · API exportateur **1 500 000 FCFA/mois** · commission micro-crédit (gratuite pour le producteur, payée par l'IMF).
+
+---
+
+## 🛠️ STACK & ARCHITECTURE
+
+- ⚠️ **SUPERSÉDÉ en Session 2** → voir « 🎨 Direction visuelle » ci-dessus. Stack réelle :
+  **Next.js 16.2.9 (App Router, Turbopack), React 19, TypeScript strict**, **Tailwind v4** (`@theme`),
+  **framer-motion 12**, **lucide-react 1.x**, polices **Newsreader · Geist · Geist Mono**, déploiement **Vercel**.
+- Cible produit complète : **React-Leaflet** (fond satellite, polygones GeoJSON), **@react-pdf/renderer**/jsPDF, **PWA** (manifest + SW).
+- **MOCK_MODE** (sécurisation démo) : `/api/whisp/verify` court-circuite l'appel réseau si les coordonnées = jeu de démo (Soubré) → réponse < 1 s. Ne JAMAIS dépendre d'un appel live non testé devant le jury.
+- Données démo mockées via routes API Next.js — **pas de backend séparé cette édition**.
+
+### ⚙️ Règles d'architecture (apprises à la dure — à respecter absolument)
+- **Frontière RSC / "use client" :** ne JAMAIS exporter une valeur non-composant (fonction, constante)
+  depuis un fichier `"use client"` si un **composant serveur** la consomme. À travers la frontière, elle
+  devient une référence client non appelable → crash au prerender (`(0 , X.d) is not a function`).
+  → Les `cva`/variantes vivent dans `components/ui/button-variants.ts` (sans `"use client"`), la géométrie
+  du polygone dans `components/parcel-geometry.ts`. Les composants clients (`ParcelPolygon`, `Button`…)
+  s'importent normalement dans un composant serveur (rendu d'îlot client OK) ; **seules leurs valeurs
+  brutes** posent problème.
+- **Polices `next/font/google`** téléchargées au build : sur réseau instable, `fonts.gstatic.com` peut
+  renvoyer un `ECONNRESET` (next réessaie automatiquement). Le warning « Failed to find font override
+  values for font `Newsreader` » est **bénin** (juste des métriques de repli manquantes).
+- **ESLint :** `react/no-unescaped-entities` est **désactivé** (`.eslintrc.json`) — sinon les apostrophes
+  françaises dans le JSX (« d'entrée », « n'existe ») font échouer `next build`.
+
+---
+
+## 🗂️ STRUCTURE DU PROJET (état réel)
+
+```
+app/
+  layout.tsx        polices next/font, LanguageProvider, metadata
+  globals.css       Tailwind + variables + base
+  page.tsx          « / » — page d'entrée animée (splash) [SESSION 1]
+  accueil/page.tsx  « /accueil » — placeholder on-brand (page complète = prompt 2)
+  not-found.tsx     404 on-brand (ErrorState)
+components/
+  ParcelPolygon.tsx motif signature (draw/pulse) + PARCEL_POINTS/PARCEL_PATH exportés
+  Header.tsx        header global (wordmark + nav + LanguageSwitcher)
+  LanguageProvider.tsx  contexte i18n (client) + hook useLanguage
+  ui/               Button, Card, Input, Select, Textarea, StatusBadge,
+                    AnimatedCounter, LanguageSwitcher, EmptyState, ErrorState
+config/brand.ts     BRAND_NAME, BRAND_TAGLINE
+lib/
+  utils.ts          cn() (clsx + tailwind-merge)
+  i18n.ts           dictionnaire fr / dioula / baoulé + types
+tailwind.config.ts  tous les tokens de design
+```
+**Emplacement des tokens de design :** `tailwind.config.ts` (couleurs, rayons, ombres, polices) +
+variables CSS dans `app/globals.css`.
+
+---
+
+## 🌍 i18n / LanguageSwitcher
+- **2 langues d'INTERFACE** (décision Anael, Session 9) : **Français (défaut) · Anglais**. Le
+  **Dioula et le Baoulé ne sont plus des langues d'interface** : seule l'**IA vocale** les parle
+  (au producteur). `LANGUAGES = ["fr","en"]` dans `lib/i18n.ts`.
+- **Mécanique i18n** : `LanguageProvider` (client, localStorage `agrivo_lang`, synchronise `<html lang>`).
+  `useLanguage()` **ne throw plus** hors provider → repli FR (pages d'erreur globales, prerender
+  `/_not-found`). Contenu bilingue par composant client via un objet `{ fr, en }` local (pattern
+  `COPY`/`*_TR`), pas un gros dictionnaire de clés.
+- **Traduit à ce stade (Session 9)** : landing complète (`app/page.tsx`), `hero.tsx`, `splash-screen.tsx`,
+  `site-header.tsx`, `site-footer.tsx` (passé client), verdicts, sélecteur. **RESTE en français** :
+  intérieur `/app/*` (dashboard, vérifier, parcelles, producteurs, paramètres, exportateur, consentement,
+  parcelle/[id], sidebar/user-menu), auth (`connexion`/`inscription`), pages marketing secondaires
+  (`methodologie`, `a-propos`, `tarifs`, `faq`, `contact`, `aide`), pages légales, états UI par défaut.
+  ⚠️ Ces pages **basculeront** avec le même pattern ; les serveurs (`parcelle/[id]`, légales) exigeront
+  soit une conversion client, soit un cookie de langue lu côté serveur.
+
+---
+
+## 📓 Journal de build (le plus récent en haut)
+
+### Session 9 (suite) — 2026-07-05 — Refonte design interface client + police Space Grotesk
+- 🅰️ **Police finale = `Space Grotesk`** pour TOUS les titres (Newsreader + **Fraunces** retirés — Anael :
+  « ça ressemble à l'IA »). `.font-display` ET `.font-premium` → `--font-display` = Space Grotesk, droit.
+  (skill `ui-ux-pro-max` : pairing « Tech Startup / caractère distinctif », s'accorde au mono des chiffres.)
+- 🟢 **Le vert (green-signal) réaffirmé partout dans `/app`** + montée en gamme (skills `ui-ux-pro-max`
+  + `motion-framer`). Nouveaux utilitaires `globals.css` : `.app-aurora` (fond de marque non plat),
+  `.card-premium` (survol = lift + halo vert), `.panel-forest`, `.btn-green`, `.chip-green`, `.bar-fill`,
+  `.sweep-green` (tous coupés en reduced-motion).
+- 🧭 **Shell** (`app/app/layout.tsx`) : aurore de marque fixe, ligne verte sous la topbar, eyebrow
+  « Espace coopérative ». **Sidebar** (`app-sidebar.tsx`) : indicateur actif vert qui **glisse** (framer
+  `layoutId`) + puce d'icône verte pleine ; encart « Prêt pour le RDUE » ; mobile = pill verte glissante.
+- 📊 **Dashboard** : bandeau **hero vert forêt** (`panel-forest`), KPI `card-premium` (puce dégradée, halo
+  au survol, **barre de conformité animée** `bar-fill`), liste en entrée staggerée, survols verts.
+- 🎛️ **Producteurs / Parcelles / Paramètres / Consentement / Vérifier / Parcelle[id]** : `card-premium`,
+  **filtres/pills verts** (avant : `bg-forest-950`), survols verts, `btn-green`, chips verts, KPI accent vert.
+- ✅ **GATE** : `next build` vert (25 routes) · `tsc` ✓. **Reste FR** (traduction EN différée par Anael).
+
+### Session 9 — 2026-07-05 — Corrections Anael (bug carte, police, FR/EN, UI) + début traduction EN
+- 🐞 **Fix « Maximum update depth exceeded »** (`components/verifier/analysis-map.tsx`) : `bounds` était
+  recréé à chaque rendu → l'effet ResizeObserver se ré-observait → `setGeom` en boucle. Corrigé :
+  `ringKey` (clé stable dérivée du contenu), `bounds`/`latlngs` mémoïsés, `compute` stable (`ringRef`),
+  `setGeom` **bail** si la projection est inchangée (`geomEqual`). `tsc` + `build` verts.
+- 🎨 **Police site-wide** : `--font-display` → **Geist** (plus de Newsreader/serif italique). Italique
+  retiré du titre hero + splash. `.font-premium` (Fraunces) conservée.
+- 🌍 **Sélecteur langues → FR / EN** (retiré Dioula/Baoulé de l'interface ; ils restent pour l'IA vocale).
+  `lib/i18n.ts` (LANGUAGES fr/en), `LanguageProvider` synchronise `<html lang>`, `useLanguage()` a un
+  **repli FR** hors provider. **Traduit** : landing complète, hero, splash, header, footer (passé client),
+  verdicts. **Reste FR** : `/app/*`, auth, pages secondaires + légales (voir section i18n).
+- 🧩 **Splash + CookieConsent déplacés DANS `<LanguageProvider>`** (sinon crash prerender `/_not-found`).
+- 🖥️ **Carte non scannable sur le web** (`step-scan.tsx`) : détection `pointer: coarse`. Sur desktop →
+  « Saisir manuellement » (scan caméra + OCR réservé au mobile).
+- ⚙️ **Onglet Exportateur** : sections **Clés d'API + MOCK_MODE retirées** (`config-tab.tsx`) → destinées
+  au futur **compte admin**. Journal réseau + centre d'alertes conservés.
+- 🔙 **Bouton « Site »** (topbar `/app`) → arrive **directement sur l'accueil** sans réafficher l'écran de
+  bienvenue (`BackToSiteLink` pose `agrivo_skip_splash`, lu+effacé par `SplashScreen`).
+- 📐 **Cartes « Problème » à hauteur égale** (la carte « 95 % » était plus courte) : bug dans `<Tilt>` —
+  le wrapper `perspective` retombait à la hauteur du contenu. Corrigé : la className du caller vit sur le
+  conteneur extérieur, l'élément incliné remplit en `h-full`.
+- ✨ **Sections « Le différenciateur » + « Cartographie satellite »** : **fond animé du HERO** (`HeroBg` :
+  mesh + grille + grain) + **halo curseur** (`CursorGlow`).
+- ✅ **GATE** : `next build` vert (25 routes, `/_not-found` inclus).
+
+### Session 8 (suite 7) — 2026-07-05 — V4 · P6 + P7 (frontières d'erreur, nettoyage, rapport) — CLÔTURE V4
+- ✅ **P6** : `app/error.tsx` + `app/app/error.tsx` (frontières d'erreur on-brand via `ErrorState`),
+  `app/app/loading.tsx` (état de chargement). Le reste de la passe UX (états vides, toasts, focus-visible,
+  reduced-motion, responsive 390/768/1440) était déjà en place tout au long de P1-P5.
+- ✅ **P7** : suppression de l'orphelin `components/app/app-space-switch.tsx` ; **`LIVRABLE_AGRIVO_V4.md`**
+  (améliorations, architecture, features ajoutées/supprimées, dette technique, recommandations prod).
+- ✅ **GATE final** : `tsc` ✓ · `next build` ✓ (25 routes).
+- 🏁 **Chantier V4 clos** : P1 → P7 exécutés + images. Compte démo `client@test.com` / `123client123`.
+  Dette technique & chemin vers la vraie prod détaillés dans `LIVRABLE_AGRIVO_V4.md`.
+
+### Session 8 (suite 6) — 2026-07-05 — V4 · P5 (crédibilité & pages légales)
+- ✅ **Coquille légale** `components/legal/legal-shell.tsx` (`LegalShell` + `LegalSection` + `Todo`) → pages
+  **`/confidentialite`** (ARTCI, loi 2013-450, rôle sous-traitant), **`/cgu`** (évaluation ≠ garantie, micro-crédit
+  remboursable, droit ivoirien), **`/mentions-legales`** (éléments d'entreprise `[À compléter]`, hébergeur Vercel,
+  statut non-BCEAO).
+- ✅ **`/contact`** : formulaire validé (nom/email/organisation/message) + état de succès + cartes Commercial/Support.
+- ✅ **`/aide`** : centre d'aide (recherche + 5 catégories d'articles → parcours / faq / méthodologie).
+- ✅ **Footer complet** (`components/site-footer.tsx`) : colonnes Produit / Ressources / Légal.
+- ✅ **Bandeau cookies** `components/cookie-consent.tsx` (accepter/refuser, localStorage), monté dans `app/layout.tsx`.
+- ✅ **GATE** : `tsc` ✓ · `next build` ✓ (25 routes) · captures 1440 : contact / aide / confidentialité OK,
+  0 débordement, bandeau cookies visible.
+
+### Session 8 (suite 5) — 2026-07-04 — V4 · P4 (consolidation dashboard)
+- ✅ **Navigation latérale** : `components/app/app-sidebar.tsx` (`AppSidebar` desktop + `AppMobileNav` mobile) —
+  Vue d'ensemble / Producteurs / Parcelles / Exportateur / Paramètres, actif via `usePathname`. Remplace
+  `AppSpaceSwitch` dans `app/app/layout.tsx` (restructuré : sidebar + main). `app-space-switch.tsx` orphelin (nettoyage P7).
+- ✅ **`/app/producteurs`** : liste des 45 producteurs (dérivée de `PARCELLES`), recherche, **filtres 7 filières
+  + statuts** (pastilles couleur depuis `config/filieres`), **ajout producteur** (formulaire validé, session + toast).
+- ✅ **`/app/parcelles`** : KPIs (`portfolioStats`), filtres filière/statut, recherche, liste → `/app/parcelle/[id]`.
+- ✅ **`/app/parametres`** : onglets **Profil** (pré-rempli via `useAuth`) / **Organisation** (coop, région,
+  filières couvertes) / **Sécurité** (changement mdp validé + appareils connectés), toasts.
+- ✅ **GATE** : `tsc` ✓ · `next build` ✓ (20 routes) · captures CDP 1440 + 390 (auth seedée) : sidebar OK
+  desktop, barre horizontale OK mobile, 0 débordement, filtres 7 denrées visibles, `/app/parametres` pré-rempli.
+- 🔑 Réglage : « Agrivo » du hero **remis en vert** (le doré n'était finalement pas voulu ; bouton reste doré).
+
+### Session 8 (suite 4) — 2026-07-04 — V4 · P3++ (retour arrière « expansion » + ajustements Anael)
+- ↩️ **Expansion sombre ANNULÉE** (retour Anael : « ce n'est pas ce que je voulais »). L'accueil revient au
+  **thème clair alternant** (sections ivory + sections sombres Triptyque / Cartographie / Chiffres / CTA).
+  `<GlobalBg/>` supprimé, **fond propre du hero restauré** (`hero.tsx`). **Conservés** : police `Fraunces`
+  (`.font-premium`), section `Fonctionnalités` (remplace « Deux IA »), cartes Problème **hauteur égale**,
+  tuile dérivés **photo**, titre cartographie « Chaque parcelle, prouvée depuis le ciel », ligne de balayage,
+  « **Agrivo** » + bouton « Accéder au tableau de bord » en **or**.
+- 🛰️ **Image satellite changée** — l'ancienne persistait à cause du **cache `next/image`** (même URL). Nouveau
+  fichier **`/textures/sat-soubre-rural.jpg`** = vraie **parcelle agricole rurale près de Soubré (CI)** (ArcGIS
+  World Imagery, vue de haut : rivière + parcelles + forêt). `satellite-parcelles.jpg` supprimé. *(Leçon :
+  remplacer un asset servi par next/image = changer le nom de fichier, sinon la version optimisée est cachée.)*
+- 🎚️ **CTA final** : masque vert du fond aérien remis à **opacity 0,22** (au lieu de 0,32).
+- ✅ **GATE** : `tsc` ✓ · `next build` ✓ (cache `.next/cache/images` purgé) · captures CDP 1440 + 390 :
+  0 débordement, hero or + fond restauré, Problème clair à cartes égales, cartographie nouvelle image CI.
+
+### Session 8 (suite 3) — 2026-07-04 — V4 · P3+ (accueil immersif « dark » — ANNULÉ en suite 4)
+- ✅ **Fond animé GLOBAL** : le fond du hero (mesh + grille + grain) est extrait dans `<GlobalBg/>` (fixe) et
+  couvre **toute la page** (expansion continue) ; hero rendu transparent. Toutes les sections passées en
+  **thème sombre** (verre `bg-white/[0.04]` + `border-white/10`, texte blanc). Le CTA final garde son fond aérien.
+- ✅ **Police premium** : `Fraunces` (`--font-fraunces`, classe `.font-premium`, `app/layout.tsx` + `globals.css`)
+  sur **tous les titres de sections hors hero** (le hero garde Newsreader italic).
+- ✅ **Hero** : « **Agrivo** » en **or** (`amber-soft`) ; bouton « Accéder au tableau de bord » en **or** plein.
+- ✅ **Section « Deux IA » supprimée** (jugée trop interne) → remplacée par **`FonctionnalitesSection`** (grille
+  produit : vérif. satellite, certificat TRACES NT, export GeoJSON, micro-crédit, multilingue, hors-ligne).
+  Whisp/Gemini restent cités (golden path + `/methodologie`).
+- ✅ **Problème** : cartes **hauteur égale** (`h-full` sur item + `Tilt`) — corrige les tailles inégales.
+- ✅ **Cartographie** : vraie image **satellite top-down de Soubré (CI)** (ArcGIS World Imagery) + **nouveau
+  titre** « Chaque parcelle, prouvée depuis le ciel. » + **ligne de balayage** animée.
+- ✅ **Filières** : tuile « Produits dérivés » dotée d'une **photo** (`/filieres/derives.jpg`).
+- ✅ **CTA final** : fond aérien conservé mais **plus visible** (opacity image 0.18 → 0.32, masque vert allégé).
+- ✅ **Motion** partout sauf hero (halos au survol, lifts spring, scan-line, stagger) ; `reduced-motion` respecté.
+- ✅ **GATE** : `tsc` ✓ · `next build` ✓ (17 routes, Fraunces OK) · captures **CDP 1440 + 390** : 0 débordement,
+  hero or, cartes égales, satellite CI top-down, tuile dérivés photo, thème sombre cohérent.
+
+### Session 8 (suite 2) — 2026-07-04 — V4 · P3 (refonte visuelle accueil : 7 denrées, images, cartographie)
+- ✅ **Images art-dirigées** (9, libres de droits Wikimedia Commons ; crédits/attribution → `IMAGES_CREDITS.md`) :
+  7 denrées dans `public/filieres/` + 2 fonds `public/textures/` (satellite, canopée). Sourcées puis **vérifiées
+  visuellement** une à une (ex. soja re-sourcé pour retirer panneau/marque).
+- ✅ **`FilieresSection` 4 → 7 denrées + tuile « Produits dérivés »** (`app/page.tsx`) : pilotée par
+  `config/filieres.ts`, `next/image` (repli dégradé de marque conservé), **ratio uniforme `aspect-[4/5]`**
+  (corrige les « tailles inégales »), badge statut (En production / Couverte), grille
+  `grid-cols-2 sm:grid-cols-3 lg:grid-cols-4`.
+- ✅ **Nouvelle section « Cartographie satellite »** (légère, sans Leaflet) : image satellite + **polygone SVG
+  qui se dessine** (`motion.path` pathLength ; reduced-motion → état final), badge Conforme + coords GPS + superficie.
+- ✅ **Hero** : ligne de confiance → **chips des 7 denrées** (pastille couleur) + méta (SNT, Whisp/Gemini).
+  Structure du hero + aperçu de dashboard flottant **inchangés**.
+- ✅ **CtaFooter** : fond aérien traité (canopée duotone sous overlay forest).
+- ✅ **GATE** : `tsc` ✓ · `next build` ✓ (17 routes) · **captures CDP desktop 1440 + mobile 390** :
+  `scrollWidth == innerWidth` (0 débordement), 7 tuiles + dérivés alignés, cartographie nette, chips hero OK.
+  Splash / HERO / aperçu dashboard préservés. Script capture réutilisable : `scratchpad/cdp-shot.mjs`.
+
+### Session 8 (suite) — 2026-07-04 — V4 · P2 (authentification réelle + parcours client)
+- ✅ **`components/auth-provider.tsx`** : session localStorage (`agrivo:session`), `login`/`signup`/`logout`,
+  `useAuth`, **compte démo** `client@test.com` / `123client123` (Amadou · Coop. de Soubré). Hydratation
+  SSR-safe (état initial = non connecté → aucun mismatch). Enveloppé dans `app/layout.tsx` (sous `LanguageProvider`).
+- ✅ **Pages `/connexion` + `/inscription`** (client, on-brand, validation + erreurs inline + latence « vrai
+  SaaS »). Connexion : encart **« Entrer avec le compte de démonstration »** (1 clic). Anti open-redirect
+  (`?redirect=` chemins internes uniquement).
+- ✅ **Routes `/app/*` protégées** : `components/app/route-guard.tsx` (redirige vers `/connexion?redirect=…`,
+  écran de chargement on-brand) enveloppe le layout `/app`. **Déconnexion** : `components/app/user-menu.tsx`
+  (avatar initiales + panneau, Échap/clic-extérieur) dans la topbar `/app`.
+- ✅ **CTA démo supprimés** : `SiteHeader` conscient de la session (déconnecté → Connexion + Créer un compte ;
+  connecté → Tableau de bord) ; hero « Voir la démo » → « Accéder au tableau de bord », « Commencer la
+  vérification » → `/app/verifier` ; `CtaFooter` « Voir la démo en direct » → « Créer un compte ».
+- ✅ **GATE** : `tsc` ✓ · `next build` ✓ (17 routes ; `/connexion` + `/inscription` statiques). Vérif visuelle
+  CDP différée au P3 (jalon visuel).
+
+### Session 8 — 2026-07-04 — CHANTIER V4 « SaaS crédible » · P1 (audit + fondation 7 denrées + purge démo)
+- ✅ **Objectif V4** (Anael) : transformer AGRIVO de démo Vibeathon en **produit SaaS crédible** (auth réelle,
+  dashboard pro, pages légales, **7 denrées RDUE**, images art-dirigées, motion premium hors HERO). Playbook :
+  `PROMPTS_AGRIVO_V4_PRODUCTION.md` + `AGRIVO_V4_PLAN_ET_MANUEL.md` (racine). **HERO + splash + aperçu de
+  dashboard flottant = intouchés** sur toute la V4.
+- ✅ **`AUDIT.md`** créé (liens morts, langage démo, pages manquantes, données mockées, incohérences visuelles).
+- ✅ **`config/filieres.ts`** = **SSOT des 7 denrées RDUE** (+ `PRODUITS_DERIVES`). `data/mock-parcelles.ts` :
+  `type Filiere = FiliereId`, `FILIERE_LABEL` ré-exporté depuis la SSOT, `RENDEMENT_T_HA` étendu
+  (bovins/soja/bois). Module pur, aucun `"use client"` (frontière RSC respectée).
+- ✅ **Purge langage démo (UI)** : retiré « Chiffres à revérifier avant le pitch », « Ouvrez la
+  démonstration… », footer « version de démonstration … Vibeathon » → « Agrivo © 2026. Tous droits réservés. ».
+  Ancre morte `#produit` corrigée (`id="produit"` + `scroll-mt-24` sur `GoldenPathSection`).
+- ✅ **GATE** : `tsc --noEmit` ✓ · `next build` ✓ (15 routes). Reste V4 : CTA « Voir la démo » + auth → P2 ;
+  refonte visuelle accueil + 7 tuiles images → P3 ; dashboard → P4 ; pages légales → P5 ; UX → P6 ; refactor → P7.
+
+### Session 7 — 2026-07-04 — PROMPT 5 exécuté (dashboard exportateur, assistant IA & alertes)
+- ✅ **Modèle de données étendu** (`data/mock-parcelles.ts`) : **14 → 45 parcelles** multi-coopératives / multi-filières (générateur **déterministe** : ids/cartes/certificats séquentiels, DDR pour les conformes ; 9 coopératives : Soubré, Méagui, Gagnoa, Duékoué, San Pédro, Daloa, Man, Aboisso, Dabou). Nouveaux helpers PURS : `portfolioStats` (les **4 KPI officiels** : producteurs audités · taux de conformité · superficie · volume validé), `volumeTonnes`/`volumeValideTonnes` (rendement indicatif t/ha, conformes uniquement), `exporterFeatureCollection` (**GeoJSON RFC 7946**, WGS-84 lon/lat, **6 décimales**), `alertesParCoop`, `cooperatives`, `fmtTonnes`. Les 14 parcelles d'origine (p01-p14, réf. AGV-2026-0417…) **inchangées** (compat. Prompts 3/4).
+- ✅ **Assistant qui raisonne** (`lib/ai/gemini.ts`) : `interrogerPortefeuille(question, parcelles)` — **raisonne réellement** sur les données (normalisation sans accents, filtres **région/filière/statut/« ce mois-ci »**, agrégats : anomalies, superficie moyenne, éligibilité micro-crédit, volume, résumé). Renvoie texte + métrique + parcelles citées. `QUESTIONS_SUGGEREES`. **Route** `app/api/gemini/query` (MOCK_MODE, latence simulée, **aucun appel réseau côté client**). Vérifié : « risque région de Soubré » → **exactement** Amenan Kouamé, Bakary Traoré, Djédjé Serge.
+- ✅ **Page `/app/exportateur`** (persona **Marc**) : **3 onglets custom** (indicateur animé `layoutId`, respecte reduced-motion), **header** persona + **cloche compteur global (6 alertes)** visible des 3 onglets + bouton **⌘K**.
+  - **Onglet 1 · Analytique & cartographie** (`components/exportateur/analytics-tab.tsx`) : 4 KPI `StatNumber` (45 · 62 % · 157 ha · 81 t), **tableau dense triable** (`aria-sort`) + filtres statut/filière + recherche (`EmptyState`), **carte Leaflet satellite LIÉE** (`portfolio-map.tsx`, Esri World Imagery, `dynamic ssr:false`) : pastilles de statut visibles à tout zoom + polygones, **survol ligne↔pastille**, **clic → sélection + zoom-to-parcelle + scroll de la ligne**, **export GeoJSON RFC 7946 réel** (téléchargement `.geojson`), **palette ⌘K** (`command-palette.tsx`, actions + parcelles, **navigation clavier** flèches/Entrée/Échap).
+  - **Onglet 2 · Assistant IA** (`assistant-tab.tsx`) : chat **à l'identité AGRIVO** (pin/feuille, « raisonne sur vos données · Gemini »), **frappe progressive** mot à mot (reduced-motion → texte complet), questions suggérées, **métrique** + **puces de parcelles cliquables → carte** (`aria-live`).
+  - **Onglet 3 · Configuration & alertes** (`config-tab.tsx`) : clés API **masquées** (WHISP/GEMINI, note « injectées serveur »), **toggle MOCK_MODE** (forcé ON + explication), **journal réseau live** (heartbeat Whisp/Gemini/Copernicus/TRACES NT + **événements cross-onglets** : les requêtes de l'assistant et les exports y apparaissent, `AnimatePresence`), **centre d'alertes groupé par coopérative** (cohérent avec le dashboard coop).
+- ✅ **Navigation croisée** : `components/app/app-space-switch.tsx` (bascule **Coopérative ↔ Exportateur**, route-aware via `usePathname`) remplace l'eyebrow statique du layout `/app`. Layout `/app` élargi **max-w-6xl → 7xl** (densité B2B ; le dashboard coop en profite, non régressé).
+- ✅ **A11y** : `StatNumber` respecte désormais **reduced-motion** (affiche la valeur finale, plus de compteur animé) — amélioration **globale** (tous les dashboards). Statuts toujours doublés d'un texte, `aria-sort`, palette/chat pilotables au clavier, légende carte + tableau = source accessible (jamais la couleur seule).
+- ✅ **Décisions** : pas de Radix/cmdk/Recharts (composants **custom framer**, cohérent Session 3) ; carte **côte-à-côte en `xl` seulement** (les 6 colonnes tiennent dans la coquille 7xl) ; **progressive disclosure** des colonnes (mobile = producteur + statut).
+- ✅ **GATE vert** : `tsc --noEmit` ✓, `next build` ✓ (`/app/exportateur` **statique**, `/api/gemini/query` dynamique). Captures **CDP** desktop 1440 + **mobile 390** (`scrollWidth == innerWidth == 390`, **0 débordement**) des **3 onglets + palette ⌘K + dashboard coop** (non régressé). Aucun terme/logo/photo interdit (grep « valeur à risque »/« garantie »/« gratuit »/tiret cadratin visible = néant).
+
+### Session 6 — 2026-07-03 — PROMPT 4 exécuté (golden path : LE moment signature)
+- ✅ **Couche IA (stubs, aucune clé)** : `lib/ai/config.ts` (`MOCK_MODE=true` forcé, latence simulée 1200-1800 ms, `isDemoCoords`), `lib/ai/whisp.ts` (détection FAO — verdict + phrase figée + convergence de preuves qualitative, **jamais de % inventé**), `lib/ai/gemini.ts` (OCR carte `scannerCarteProducteur`, `genererExplicationVerdict` = phrase figée, `expliquerScoreSols` XAI « compostage → score plus élevé, méthodologie inspirée type Kubeko »). **Routes API** : `app/api/whisp/verify`, `app/api/gemini/scan`, `app/api/gemini/explain`. MOCK_MODE court-circuite tout réseau ; **aucun appel ne part du client** (tout via fetch → route serveur).
+- ✅ **Parcours `/app/verifier`** (machine à états client, `AnimatePresence`, aucun rechargement) : Étape 1 Confirmation (récap coop, consentement) → Étape 2 Scan (viseur caméra `getUserMedia` **ou** mock élégant + cadre de visée, OCR stub → **formulaire pré-rempli éditable**) → **Étape 3 Analyse (SIGNATURE)** → Étape 4 Certificat (si conforme/anomalie) → Étape 5 Crédit (si conforme) → écran de fin adaptatif. Branchement selon verdict ; `insuffisant` saute certificat/crédit.
+- ✅ **Étape 3 — `components/verifier/analysis-map.tsx`** : carte **satellite réelle** (react-leaflet + tuiles Esri World Imagery, `dynamic ssr:false`), surcouche SVG projetée par Leaflet (`latLngToContainerPoint`) : **contour qui se dessine → balayage satellite + pin/feuille pulsant → remplissage du verdict (scale-bounce)** → StatusBadge + phrase figée + faisceau de preuves + **badge « Score de résilience des sols » cliquable** (popover XAI) + **« Écouter » (Web Speech API, fr-FR)** + « Revoir l'analyse ». Timeline ~2,5 s, `reduced-motion` respecté.
+- ✅ **Étape 4 — certificat** : aperçu HTML on-brand + **vrai PDF** (`@react-pdf/renderer`, `lib/certificat-data.ts` + `components/verifier/certificat-pdf.tsx`, importé **à la demande** au clic → hors SSR/bundle initial). Champs complets : n° cert, date/heure, producteur, carte, coop, filière, **coords WGS-84 6 décimales (RFC 7946)**, superficie, statut, date pivot, sources, mention TRACES NT + consentement + avertissement légal. Téléchargement vérifié (`certificat-agrivo-AGV-2026-0417.pdf`).
+- ✅ **Étape 5 — inclusion financière** : slider 50 000–250 000 FCFA + « Proposer au producteur » → simulation Mobile Money + animation succès (pin+feuille Or, « le vert prouve, l'or récompense »). Prêt remboursable (jamais « gratuit »). Fin → `sessionStorage` → **bandeau « Vérification enregistrée » sur le dashboard**.
+- 🐞 **Auto-critique étape 3 (3 défauts trouvés & corrigés via capture réelle CDP)** : (1) surcouche SVG **cachée derrière les tuiles** (z-index manquant → `z-[500]`) — le polygone ne s'affichait pas ; (2) couleurs `var()` en **attribut SVG** non fiables (Safari) + trop faible contraste sur satellite → **HEX explicite + halo sombre + vignette** (aussi corrigé dans `parcelle-map.tsx`) ; (3) **exceptions Leaflet `_leaflet_pos`** au démontage d'étape → `compute`/ResizeObserver protégés (`mountedRef` + try/catch). Revérifié : **0 exception**, polygone net desktop **et** 390 px.
+- ✅ **GATE vert** : `tsc` ✓, `build` ✓ (routes API + `/app/verifier`), parcours complet piloté en CDP desktop 1440 **et** mobile 390 (chaque étape), PDF généré, aucun terme/logo/photo interdits.
+
+### Session 5 — 2026-07-03 — PROMPT 3 exécuté (dashboard coopérative + consentement ARTCI)
+- ✅ **Espace applicatif `/app`** créé : `app/app/layout.tsx` (coquille sobre — topbar Logo + « Espace coopérative » + LanguageSwitcher + lien « Site », fond ivory, PAS la navbar du site ; `min-h-dvh`). La navbar vitrine n'apparaît jamais ici.
+- ✅ **`/app/dashboard`** (l'écran d'Amadou, client) : en-tête « Bonjour Amadou · Coopérative Agricole de Soubré · <date live côté client> », **4 KPI `StatNumber`** (parcelles vérifiées 10 · taux de conformité 40 % · propositions de crédit 3 · alertes actives 2), **recherche live** producteur/n° carte (→ `EmptyState` si 0), **liste des dernières vérifications** (rows compactes : StatusBadge + n° carte + filière + superficie + date → `/app/parcelle/[id]`), **CTA proéminent « Nouvelle vérification »** (Magnetic, vert) → `/app/consentement` (PAS direct au parcours), **rail Alertes** (compteur rouge, `PinMark` rouge pulsant, alertes en tête sur mobile via `order-1`).
+- ✅ **`/app/parcelle/[id]`** (serveur, `await params` Next 16) : `<ParcelleMap>` (placeholder « satellite » stylé — polygone GeoJSON qui se dessine, teinte du verdict, sommets, coords GPS ; carte Leaflet complète = Prompt 4), verdict (phrase figée + date pivot + sources), infos producteur (filière/région/superficie/date/n° cert/DDR), section crédit **si `propositionCredit`** (prêt remboursable, pas « gratuit »), bouton certificat (non fonctionnel ici). `notFound()` si id inconnu.
+- ✅ **`/app/consentement`** (client) : écran ARTCI soigné (bandeau forest + bouclier, « Avant de continuer », 3 points honnêtes loi n°2013-450, déclaration de consentement, **checkbox obligatoire** → « Continuer » actif → `/app/verifier`). Preuve « conçu conforme dès le départ ».
+- ✅ **Composants réutilisables** (prompts 4-5) : `components/ui/status-badge.tsx` (statuts figés, icône + texte, texte foncé sur teinte → contraste AAA, module PUR) ; `components/ui/pin-mark.tsx` (glyphe pin+feuille monochrome, variante alerte rouge + `pulse`, module PUR). `data/mock-parcelles.ts` **préexistant réutilisé tel quel** (14 parcelles, 6 conformes/4 anomalies/4 insuffisant, multi-filières Soubré/Man/Aboisso/Dabou).
+- ✅ **GATE vert** : `tsc --noEmit` ✓, `next build` ✓ (routes `/app/dashboard`, `/app/consentement` statiques ; `/app/parcelle/[id]` dynamique). Captures Edge/CDP desktop 1440 **et** mobile 390/375 (device emulation) : **0 overflow horizontal**, KPIs animés OK, 3 statuts lisibles (couleur + icône + texte), aucun terme/logo/photo interdits.
+
+### Session 4 — 2026-07-03 — OUBLIER NANTI + refonte accueil AGRIVO
+- ✅ Règle stricte ajoutée (voir « 🚫 OUBLIER NANTI ») : seuls hero + bienvenue = design Nanti ; le reste = AGRIVO original, contenu du PDF v4.
+- ✅ **Purge « valeur à risque »** (concept Nanti) : retiré du KPI hero (→ « Superficie »), et de l'accueil.
+- ✅ **Logo** : animation revue « pro » — sparkle/twinkle supprimés (trop dessin animé) ; à la place **lueur verte qui respire** + **reflet spéculaire doux** qui glisse (Framer Motion, `splash-glow` radial + `splash-sheen`).
+- ✅ **Accueil `/` refondu AGRIVO** (sections originales + motion premium : variants + staggerChildren, whileInView, hover lifts, Magnetic) : Problème · **Golden path 5 étapes** (stepper, ligne qui se trace) · Triptyque immersif · **Deux IA (Whisp + Gemini)** · Filières · **Marché en chiffres** · Calendrier RDUE · **Personas (Amadou/Marc/Yao)** · **Modèle éco corrigé** · Verdicts (i18n) · Équipe. Supprimé : « zéro boîte noire / valeur à risque », « avant/après ».
+- ✅ **Modèle économique corrigé** (accueil + `/tarifs`) : 3 sources (abonnement coop 120k · API exportateur 1,5M · **commission** sur micro-crédit versée par l'IMF). **Le micro-crédit n'est PAS gratuit** = un prêt remboursé ; c'est le SERVICE AGRIVO qui est gratuit pour le producteur.
+- ✅ `StatNumber` : ajout `prefix`/`suffix`.
+- ✅ **`PROMPTS_AGRIVO_V3.md` mis à jour** : règle « oublier Nanti » + KPIs officiels + modèle éco dans le socle (donc dans chaque prompt 3-7) ; « cockpit » → « tableau de bord » ; prompt 2 réaligné.
+
+### Session 3 — 2026-07-03 — PROMPT 2 exécuté (site vitrine)
+- ✅ **Fondations** : `lib/i18n.ts` (fr/dioula/baoulé, provisoire), `components/language-provider.tsx` (+ layout enveloppé), `components/ui/language-switcher.tsx` (accessible, `tone` clair/sombre), `components/ui/empty-state.tsx`, `error-state.tsx`, `components/ui/term.tsx` (popover glossaire), `components/landing/reveal.tsx` (`Reveal` + `ScrollRevealText` scroll-linked), `components/site-header.tsx` (variant overlay/solid + menu mobile), `components/site-footer.tsx`.
+- ✅ **Accueil `/` enrichi** : Problème (StatNumber), Triptyque immersif (titre **scroll-linked**), Filières (cacao/café/hévéa/palmier, cartes Tilt), Transparence (barres comparatives), Timeline RDUE (J-countdown + 3 jalons), Avant/Après, Modèle éco, **Verdicts (démo i18n live)**, Équipe (avatars géométriques), CTA + footer. Navbar remplacée par `<SiteHeader variant="overlay">`.
+- ✅ **Pages** : `/methodologie` (2 IA, convergence de preuves, 3 états, tooltips glossaire), `/a-propos` (moat, roadmap, « ce qui arrive ensuite », équipe), `/tarifs` (toggle mensuel/annuel, 2 plans + micro-crédit, **comparatif honnête** Koltiva/Farmerline/Agrivo), `/faq` (accordéon custom, 9 Q/R).
+- ✅ **Décisions d'implémentation** : pas de Recharts/Radix (composants custom framer-motion, plus légers) ; pages intérieures = `SiteHeader` variant `solid` (clair) ; landing garde son propre hero. Métadonnées par page reportées au Prompt 7.
+- ⚠️ **Outillage** : le tool `PowerShell` a disparu en cours de session → bascule sur **Bash** (Git Bash) pour build/tsc ; Edge headless toujours dispo pour captures.
+
+### Session 2c — 2026-07-03 — Prompts v3 + règle de lecture CLAUDE.md
+- ✅ Rédigé **`PROMPTS_AGRIVO_V3.md`** (racine) : prompts 2 à 6 réécrits dans la nouvelle direction artistique + **prompt 7 bonus** (vérification publique de certificat), socle design/contenu factorisé, angles morts & features ajoutés (langue FR/Dioula/Baoulé, scroll-linked reveal, XAI + lecture vocale, MOCK_MODE, carte↔tableau, ⌘K, guide de démo présentateur, QR certificat), faits EUDR/Whisp vérifiés + sources, pièges Next 16/Tailwind v4/RSC. **À VALIDER par Anael avant de lancer, un prompt à la fois.**
+- ✅ Règle **« relire CLAUDE.md à chaque prompt »** : native dans Claude Code si lancé **depuis le dossier `.claude/projects/Agrivo`** (le CLAUDE.md s'auto-charge) ; renforcée par la 1re ligne de chaque prompt du doc v3. (Pas de hook ajouté : l'auto-chargement suffit et évite la duplication de contexte.)
+
+### Session 2b — 2026-07-03 — Raffinements (logo, copy, multi-filières)
+- ✅ **Nouveau logo** « culture géolocalisée » (pin + feuille Or) — 6 candidats comparés en aperçu HTML, choix du pin + feuille inclinée (le plus lisible dès 28 px). Ancien logo (parcelle + coche) abandonné.
+- ✅ **Copy bienvenue** : espaces entre mots corrigés (nœuds texte réels), LINE2 remplacée par « De la parcelle vérifiée au crédit du producteur. » (blanc, sans « Agrivo »).
+- ✅ **Hero/Dashboard readaptés AGRIVO + multi-filières** : verbes rotatifs (vérifie/prouve/certifie/simplifie), sous-titre « toutes vos filières », dashboard = 4 filières (cacao/café/hévéa/palmier) sur 4 régions.
+- ✅ **Fix responsive 375 px** : conteneur splash `w-full max-w-2xl` (les titres débordaient/coupés sous 400 px).
+- ✅ Build Next 16 vert, vérifié visuellement (Edge headless + CDP).
+
+### Session 2 — 2026-07-03 — PIVOT design : réplique de Nanti
+- ✅ **Migration stack** : Next 14→**16.2.9**, React 18→**19.2.4**, Tailwind v3→**v4** (`@theme`), fm 11→**12**, lucide 0.x→**1.x**. Suppression `tailwind.config.ts`, `.eslintrc.json`, `next.config.mjs`, anciens composants (Button/Card/Input/StatusBadge/i18n/ParcelPolygon/Header…).
+- ✅ `app/globals.css` v4 (palette Forêt & Données + effets), `postcss` v4, `eslint.config.mjs` flat (+ no-unescaped-entities off), `next.config.ts` (turbopack root), `tsconfig` react-jsx.
+- ✅ **Écran de bienvenue** `components/splash-screen.tsx` : particules canvas fuyant le curseur + liens réseau, halo curseur, countdown auto-accéléré au clic (ripples), mots révélés/floutés, bouton **magnétique**, rideau de sortie (slide-up), **logo AGRIVO** animé (stroke-draw + coche). Event `agrivo:enter`.
+- ✅ **Hero** `components/landing/hero.tsx` : split 55/45, **verbe rotatif** (vérifie/certifie/finance/trace), badge **J-RDUE**, fond **mesh+grille+grain**, **dashboard flottant** (tilt/parallax/float) : KPIs Conformes/Anomalies/Valeur à risque + 4 lignes coop + échéance RDUE.
+- ✅ `components/ui/logo.tsx` (nouveau logo « parcelle vérifiée »), `motion-primitives` (Magnetic/CursorGlow/Tilt), `stat-number`, `page-reveal`.
+- ✅ `app/layout.tsx` (fonts + anti-flash splash-mask + `<SplashScreen>`), `app/page.tsx` (landing : navbar + Hero + « comment ça marche » + footer), `not-found` restylé.
+- ⚠️ **Piège** : un `rm -rf components/ui` lancé en arrière-plan a supprimé `logo.tsx` écrit trop tôt (race). Recréé. **Leçon : ne jamais écrire un fichier dans un dossier en cours de suppression asynchrone — attendre la fin du `rm`.**
+
+### Session 1 — 2026-07-03 — Fondations + page d'entrée
+- ✅ Écrit ce `CLAUDE.md` (mémoire + règle d'auto-mise à jour).
+- ✅ Scaffold Next.js 14 (App Router, TS strict) + Tailwind (thème AGRIVO complet) + Framer Motion + lucide + next/font.
+- ✅ `config/brand.ts`, `lib/utils.ts` (cn), `lib/i18n.ts` (fr/dioula/baoulé) + `LanguageProvider`.
+- ✅ `<ParcelPolygon>` (draw/pulse) + points/chemin exportés.
+- ✅ `components/ui/` : Button · Card · Input · Select · Textarea · StatusBadge · AnimatedCounter · LanguageSwitcher · EmptyState · ErrorState. + `Header`.
+- ✅ `/` page d'entrée animée (séquence orchestrée, sortie AnimatePresence, une fois/session via sessionStorage, reduced-motion, responsive 375px).
+- ✅ `/accueil` placeholder on-brand + `not-found` · README.md.
+
+### À venir (prochaines sessions)
+- **Prompt 6** : PWA (manifest + service worker), **guide de démo présentateur** (Ctrl+Shift+D), accessibilité (passe complète), QA responsive 375/768/1280, checklist finale.
+- **Prompt 7 (bonus)** : **vérification publique de certificat** (`/verifier-certificat` + QR dans le PDF), partage acheteur, perf/SEO/OpenGraph, script vidéo de secours.
+- (Prompts 1→5 exécutés : splash + hero, site vitrine, dashboard coop + consentement ARTCI, golden path, **dashboard exportateur + assistant IA + alertes**.)
+
+---
+
+## 🧩 Skills à activer à chaque session de build
+`ui-ux-pro-max` (conception de chaque écran/composant) · `motion-framer` / Framer Motion (toutes les
+animations) · plus tout skill design/frontend/accessibilité pertinent détecté. Passer par le raisonnement
+de ces skills **avant** d'écrire un composant.

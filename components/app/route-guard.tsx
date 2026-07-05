@@ -1,0 +1,40 @@
+"use client";
+
+/**
+ * Garde les routes /app/* : redirige vers /connexion tant que l'utilisateur n'est pas connecté,
+ * en mémorisant la route demandée (?redirect=). Affiche un écran de chargement on-brand le temps
+ * de l'hydratation, pour ne jamais laisser filtrer le contenu protégé.
+ */
+
+import * as React from "react";
+import { useRouter, usePathname } from "next/navigation";
+import { Logo } from "@/components/ui/logo";
+import { useAuth } from "@/components/auth-provider";
+
+export function RouteGuard({ children }: { children: React.ReactNode }) {
+  const { user, loading } = useAuth();
+  const router = useRouter();
+  const pathname = usePathname();
+
+  React.useEffect(() => {
+    if (!loading && !user) {
+      const redirect = encodeURIComponent(pathname || "/app/dashboard");
+      router.replace(`/connexion?redirect=${redirect}`);
+    }
+  }, [loading, user, pathname, router]);
+
+  if (loading || !user) {
+    return (
+      <div className="grid min-h-dvh place-items-center bg-ivory text-forest-950">
+        <div className="flex flex-col items-center gap-3">
+          <span className="glow-pulse">
+            <Logo size={30} showWord={false} />
+          </span>
+          <span className="text-sm text-stone-500">Chargement de votre espace…</span>
+        </div>
+      </div>
+    );
+  }
+
+  return <>{children}</>;
+}

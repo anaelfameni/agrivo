@@ -1,0 +1,299 @@
+"use client";
+
+import { useEffect, useRef, useState } from "react";
+import dynamic from "next/dynamic";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { ArrowRight, Leaf, RotateCcw, Sparkles, Volume2, VolumeX, X } from "lucide-react";
+import { StatusBadge } from "@/components/ui/status-badge";
+import { PinMark } from "@/components/ui/pin-mark";
+import type { AnalysisPhase } from "@/components/verifier/analysis-map";
+import type { WhispResult } from "@/lib/ai/whisp";
+import type { ScoreSols } from "@/lib/ai/gemini";
+import { STATUT_COLOR, type Parcelle } from "@/data/mock-parcelles";
+
+const EASE = [0.16, 1, 0.3, 1] as const;
+const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
+const AnalysisMap = dynamic(() => import("@/components/verifier/analysis-map"), {
+  ssr: false,
+  loading: () => (
+    <div className="grid h-full place-items-center bg-forest-950">
+      <PinMark size={40} color="#eafff2" leafColor="rgba(224,166,75,0.9)" pulse />
+    </div>
+  ),
+});
+
+/**
+ * Étape 3 — cartographie & analyse : LE moment signature. La séquence (contour dessiné →
+ * balayage satellite → remplissage du verdict) concentre le budget créatif. Explicabilité
+ * (score de sols) + lecture vocale native (Web Speech) : crédibilité algorithmique + inclusion.
+ */
+export function StepAnalysis({
+  parcelle,
+  onVerdict,
+  onNext,
+  onBack,
+}: {
+  parcelle: Parcelle;
+  onVerdict: (w: WhispResult) => void;
+  onNext: () => void;
+  onBack: () => void;
+}) {
+  const reduce = useReducedMotion();
+  const [phase, setPhase] = useState<AnalysisPhase>("idle");
+  const [whisp, setWhisp] = useState<WhispResult | null>(null);
+  const [scoreOpen, setScoreOpen] = useState(false);
+  const [score, setScore] = useState<ScoreSols | null>(null);
+  const [speaking, setSpeaking] = useState(false);
+  const [canSpeak, setCanSpeak] = useState(false);
+  const runningRef = useRef(false);
+
+  const ring = parcelle.geojson.type === "Polygon" ? parcelle.geojson.coordinates[0] : [parcelle.geojson.coordinates];
+  const done = phase === "verdict" && whisp;
+
+  useEffect(() => {
+    setCanSpeak(typeof window !== "undefined" && "speechSynthesis" in window);
+    return () => {
+      try {
+        window.speechSynthesis?.cancel();
+      } catch {
+        /* ignore */
+      }
+    };
+  }, []);
+
+  async function lancer(replay = false) {
+    if (runningRef.current) return;
+    runningRef.current = true;
+    setScoreOpen(false);
+    stopParler();
+    setPhase("drawing");
+    const fetchP: Promise<WhispResult> =
+      replay && whisp
+        ? Promise.resolve(whisp)
+        : fetch("/api/whisp/verify", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ parcelleId: parcelle.id }),
+          }).then((r) => r.json());
+    await sleep(reduce ? 0 : 620);
+    setPhase("scanning");
+    const [result] = await Promise.all([fetchP, sleep(reduce ? 0 : 840)]);
+    setWhisp(result);
+    onVerdict(result);
+    setPhase("verdict");
+    runningRef.current = false;
+  }
+
+  async function ouvrirScore() {
+    if (scoreOpen) {
+      setScoreOpen(false);
+      return;
+    }
+    setScoreOpen(true);
+    if (!score) {
+      try {
+        const r = await fetch("/api/gemini/explain", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ kind: "sols", producteurNom: parcelle.producteurNom }),
+        });
+        setScore(await r.json());
+      } catch {
+        /* garde le popover ouvert avec un état vide */
+      }
+    }
+  }
+
+  function parler() {
+    if (!canSpeak || !whisp) return;
+    try {
+      window.speechSynthesis.cancel();
+      const u = new SpeechSynthesisUtterance(whisp.phrase);
+      u.lang = "fr-FR";
+      u.rate = 0.98;
+      u.onend = () => setSpeaking(false);
+      u.onerror = () => setSpeaking(false);
+      setSpeaking(true);
+      window.speechSynthesis.speak(u);
+    } catch {
+      setSpeaking(false);
+    }
+  }
+  function stopParler() {
+    try {
+      window.speechSynthesis?.cancel();
+    } catch {
+      /* ignore */
+    }
+    setSpeaking(false);
+  }
+
+  const color = whisp ? STATUT_COLOR[whisp.statut] : "var(--color-green-signal)";
+
+  return (
+    <div className="grid gap-5 lg:grid-cols-[1.5fr_1fr]">
+      {/* Carte satellite (dominante) */}
+      <div className="relative h-[44vh] min-h-[320px] overflow-hidden rounded-2xl border border-black/[0.08] lg:h-[62vh]">
+        <AnalysisMap ring={ring} statut={whisp?.statut ?? parcelle.statut} phase={phase} />
+      </div>
+
+      {/* Panneau d'analyse */}
+      <div className="flex flex-col rounded-2xl border border-black/[0.05] bg-white p-5 shadow-[0_1px_2px_rgba(10,31,20,0.04)]">
+        <div className="flex items-center gap-2">
+          <Sparkles size={16} strokeWidth={2} className="text-green-signal" aria-hidden />
+          <p className="eyebrow text-green-signal">Détection Whisp · FAO</p>
+        </div>
+        <h2 className="mt-2 font-display text-2xl leading-tight text-forest-950">
+          {parcelle.producteurNom}
+        </h2>
+        <p className="num text-sm text-stone-500">
+          {parcelle.numeroCartePro} · {parcelle.region}
+        </p>
+
+        <div className="mt-5 flex-1">
+          {!done ? (
+            <div className="flex h-full flex-col">
+              <p className="text-sm leading-relaxed text-stone-500">
+                L&apos;analyse combine plusieurs sources satellites publiques (convergence de preuves,
+                méthode FAO) autour de la date pivot du 31 décembre 2020.
+              </p>
+              {phase !== "idle" && (
+                <div className="mt-5 flex items-center gap-3 rounded-xl bg-ivory-deep/50 px-4 py-3">
+                  <PinMark size={22} color="var(--color-green-signal)" pulse />
+                  <span className="text-sm font-medium text-forest-950">
+                    {phase === "drawing" ? "Cartographie de la parcelle…" : "Analyse satellite en cours…"}
+                  </span>
+                </div>
+              )}
+            </div>
+          ) : (
+            <motion.div
+              initial={reduce ? { opacity: 1 } : { opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, ease: EASE }}
+              className="flex flex-col gap-4"
+            >
+              <div className="flex flex-wrap items-center gap-2">
+                <StatusBadge statut={whisp.statut} />
+                {canSpeak && (
+                  <button
+                    type="button"
+                    onClick={speaking ? stopParler : parler}
+                    aria-label={speaking ? "Arrêter la lecture" : "Écouter l'explication du verdict"}
+                    className="inline-flex items-center gap-1.5 rounded-full border border-black/10 px-3 py-1.5 text-xs font-medium text-forest-950 outline-none transition-colors hover:border-green-signal/40 focus-visible:ring-2 focus-visible:ring-green-signal"
+                  >
+                    {speaking ? <VolumeX size={14} strokeWidth={2} /> : <Volume2 size={14} strokeWidth={2} />}
+                    {speaking ? "Arrêter" : "Écouter"}
+                  </button>
+                )}
+              </div>
+
+              <p className="max-w-prose text-[0.95rem] font-medium leading-relaxed text-forest-950">
+                {whisp.phrase}
+              </p>
+
+              {/* Faisceau de preuves (qualitatif) */}
+              <ul className="flex flex-col gap-1.5">
+                {whisp.convergence.map((c) => (
+                  <li key={c} className="flex gap-2 text-xs leading-relaxed text-stone-500">
+                    <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full" style={{ background: color }} aria-hidden />
+                    {c}
+                  </li>
+                ))}
+              </ul>
+
+              {/* Score de résilience des sols (XAI) */}
+              <div className="relative">
+                <button
+                  type="button"
+                  onClick={ouvrirScore}
+                  aria-expanded={scoreOpen}
+                  className="inline-flex items-center gap-2 rounded-full border border-amber-cacao/25 bg-amber-cacao/[0.06] px-3.5 py-2 text-xs font-medium text-amber-cacao outline-none transition-colors hover:bg-amber-cacao/[0.12] focus-visible:ring-2 focus-visible:ring-amber-cacao/40"
+                >
+                  <Leaf size={14} strokeWidth={2} aria-hidden />
+                  Score de résilience des sols
+                </button>
+                <AnimatePresence>
+                  {scoreOpen && (
+                    <motion.div
+                      role="dialog"
+                      aria-label="Explication du score de résilience des sols"
+                      initial={reduce ? { opacity: 0 } : { opacity: 0, y: -6, scale: 0.98 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={reduce ? { opacity: 0 } : { opacity: 0, y: -6, scale: 0.98 }}
+                      transition={{ duration: 0.18, ease: EASE }}
+                      className="absolute left-0 top-full z-20 mt-2 w-full max-w-sm rounded-2xl border border-black/[0.08] bg-white p-4 shadow-[0_20px_50px_-20px_rgba(10,31,20,0.4)]"
+                    >
+                      <div className="flex items-start justify-between gap-2">
+                        <span className="text-sm font-semibold text-forest-950">
+                          Score {score ? `· ${score.niveau}` : "…"}
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => setScoreOpen(false)}
+                          aria-label="Fermer"
+                          className="grid h-6 w-6 place-items-center rounded-full text-stone-400 transition-colors hover:bg-black/5 hover:text-forest-950"
+                        >
+                          <X size={14} strokeWidth={2} />
+                        </button>
+                      </div>
+                      <p className="mt-1.5 text-xs leading-relaxed text-stone-500">
+                        {score
+                          ? score.explication
+                          : "Explication en cours de génération…"}
+                      </p>
+                      <p className="mt-2 border-t border-black/[0.05] pt-2 text-[0.68rem] text-stone-400">
+                        Méthodologie inspirée de standards reconnus type Kubeko.
+                      </p>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            </motion.div>
+          )}
+        </div>
+
+        {/* Actions */}
+        <div className="mt-6 flex flex-col gap-3 border-t border-black/[0.05] pt-5">
+          {!done ? (
+            <button
+              type="button"
+              disabled={phase !== "idle"}
+              onClick={() => lancer(false)}
+              className="inline-flex items-center justify-center gap-2 rounded-full bg-green-signal px-6 py-3.5 text-sm font-semibold text-white shadow-[0_14px_34px_-12px_rgba(22,163,74,0.75)] outline-none transition-[filter,transform,opacity] hover:brightness-105 active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-green-signal focus-visible:ring-offset-2 focus-visible:ring-offset-white disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              {phase === "idle" ? "Lancer l'analyse" : "Analyse en cours…"}
+            </button>
+          ) : (
+            <div className="flex flex-col gap-2 sm:flex-row">
+              <button
+                type="button"
+                onClick={onNext}
+                className="group inline-flex flex-1 items-center justify-center gap-2 rounded-full bg-green-signal px-6 py-3.5 text-sm font-semibold text-white shadow-[0_14px_34px_-12px_rgba(22,163,74,0.75)] outline-none transition-[filter,transform] hover:brightness-105 active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-green-signal focus-visible:ring-offset-2 focus-visible:ring-offset-white"
+              >
+                Continuer
+                <ArrowRight size={16} strokeWidth={2.25} aria-hidden className="transition-transform group-hover:translate-x-0.5" />
+              </button>
+              <button
+                type="button"
+                onClick={() => lancer(true)}
+                className="inline-flex items-center justify-center gap-2 rounded-full border border-black/10 px-4 py-3.5 text-sm font-medium text-stone-600 outline-none transition-colors hover:border-green-signal/40 hover:text-forest-950 focus-visible:ring-2 focus-visible:ring-green-signal"
+              >
+                <RotateCcw size={15} strokeWidth={2} aria-hidden />
+                Revoir l&apos;analyse
+              </button>
+            </div>
+          )}
+          <button
+            type="button"
+            onClick={onBack}
+            className="text-center text-sm text-stone-400 outline-none transition-colors hover:text-forest-950 focus-visible:text-forest-950"
+          >
+            Retour
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
