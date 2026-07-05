@@ -9,6 +9,7 @@ import { StatusBadge } from "@/components/ui/status-badge";
 import { PinMark } from "@/components/ui/pin-mark";
 import { EmptyState } from "@/components/ui/empty-state";
 import { Magnetic } from "@/components/ui/motion-primitives";
+import { useLanguage } from "@/components/language-provider";
 import {
   COOP_DEMO,
   MANAGER_DEMO,
@@ -23,8 +24,65 @@ import {
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
+const COPY = {
+  fr: {
+    verifRecorded: (nom: string) => (
+      <>Vérification de <span className="font-semibold">{nom}</span> enregistrée.</>
+    ),
+    close: "Fermer",
+    eyebrow: "Espace coopérative",
+    hello: "Bonjour",
+    newVerif: "Nouvelle vérification",
+    kpi: {
+      verifiees: { label: "Parcelles vérifiées", sub: "ce mois-ci" },
+      taux: { label: "Taux de conformité", sub: "sur les parcelles vérifiées" },
+      credits: { label: "Propositions de crédit", sub: "envoyées aux producteurs" },
+      alertes: { label: "Alertes actives", sub: "à examiner" },
+    },
+    searchLabel: "Rechercher un producteur ou un numéro de carte",
+    searchPlaceholder: "Rechercher un producteur, un n° de carte…",
+    clearSearch: "Effacer la recherche",
+    latest: "Dernières vérifications",
+    emptyTitle: "Aucun producteur trouvé",
+    emptyDesc: (q: string) => `Aucun résultat pour « ${q} ». Vérifiez l'orthographe ou le numéro de carte.`,
+    alerts: "Alertes",
+    noAlerts: "Aucune alerte active. Les nouvelles anomalies détectées apparaîtront ici.",
+    newAnomaly: "Nouvelle anomalie détectée",
+    onPlot: (nom: string, region: string) => `Sur la parcelle de ${nom} · ${region}`,
+    dateLocale: "fr-FR",
+  },
+  en: {
+    verifRecorded: (nom: string) => (
+      <>Verification of <span className="font-semibold">{nom}</span> recorded.</>
+    ),
+    close: "Close",
+    eyebrow: "Cooperative workspace",
+    hello: "Hello",
+    newVerif: "New verification",
+    kpi: {
+      verifiees: { label: "Plots verified", sub: "this month" },
+      taux: { label: "Compliance rate", sub: "across verified plots" },
+      credits: { label: "Credit proposals", sub: "sent to farmers" },
+      alertes: { label: "Active alerts", sub: "to review" },
+    },
+    searchLabel: "Search for a farmer or a card number",
+    searchPlaceholder: "Search a farmer, a card number…",
+    clearSearch: "Clear search",
+    latest: "Latest verifications",
+    emptyTitle: "No farmer found",
+    emptyDesc: (q: string) => `No result for "${q}". Check the spelling or the card number.`,
+    alerts: "Alerts",
+    noAlerts: "No active alert. Newly detected anomalies will appear here.",
+    newAnomaly: "New anomaly detected",
+    onPlot: (nom: string, region: string) => `On ${nom}'s plot · ${region}`,
+    dateLocale: "en-GB",
+  },
+};
+
 export default function DashboardPage() {
   const reduce = useReducedMotion();
+  const { lang } = useLanguage();
+  const t = COPY[lang];
   const [query, setQuery] = useState("");
   const [today, setToday] = useState("");
   const [justVerified, setJustVerified] = useState<{ nom: string; statut: Statut } | null>(null);
@@ -46,14 +104,14 @@ export default function DashboardPage() {
   // Date « live » côté client uniquement → évite tout écart d'hydratation SSR/CSR.
   useEffect(() => {
     setToday(
-      new Date().toLocaleDateString("fr-FR", {
+      new Date().toLocaleDateString(t.dateLocale, {
         weekday: "long",
         day: "numeric",
         month: "long",
         year: "numeric",
       }),
     );
-  }, []);
+  }, [t.dateLocale]);
 
   const parcelles = useMemo(() => parcellesForCoop(), []);
   const stats = useMemo(() => coopStats(parcelles), [parcelles]);
@@ -73,10 +131,10 @@ export default function DashboardPage() {
   }, [query, recentes]);
 
   const kpis = [
-    { label: "Parcelles vérifiées", sub: "ce mois-ci", value: stats.verifiees, suffix: "", Icon: MapPin, tint: "rgba(22,163,74,0.12)", color: "var(--color-green-signal)", glow: "rgba(22,163,74,0.5)", pct: null as number | null },
-    { label: "Taux de conformité", sub: "sur les parcelles vérifiées", value: stats.tauxConformite, suffix: " %", Icon: ShieldCheck, tint: "rgba(22,163,74,0.12)", color: "var(--color-green-signal)", glow: "rgba(22,163,74,0.5)", pct: stats.tauxConformite },
-    { label: "Propositions de crédit", sub: "envoyées aux producteurs", value: stats.propositionsCredit, suffix: "", Icon: Coins, tint: "rgba(200,134,29,0.16)", color: "var(--color-amber-cacao)", glow: "rgba(200,134,29,0.45)", pct: null },
-    { label: "Alertes actives", sub: "à examiner", value: stats.alertes, suffix: "", Icon: Bell, tint: "rgba(180,35,30,0.10)", color: "var(--color-red-block)", glow: "rgba(180,35,30,0.4)", pct: null },
+    { ...t.kpi.verifiees, value: stats.verifiees, suffix: "", Icon: MapPin, tint: "rgba(22,163,74,0.12)", color: "var(--color-green-signal)", glow: "rgba(22,163,74,0.5)", pct: null as number | null },
+    { ...t.kpi.taux, value: stats.tauxConformite, suffix: " %", Icon: ShieldCheck, tint: "rgba(22,163,74,0.12)", color: "var(--color-green-signal)", glow: "rgba(22,163,74,0.5)", pct: stats.tauxConformite },
+    { ...t.kpi.credits, value: stats.propositionsCredit, suffix: "", Icon: Coins, tint: "rgba(200,134,29,0.16)", color: "var(--color-amber-cacao)", glow: "rgba(200,134,29,0.45)", pct: null },
+    { ...t.kpi.alertes, value: stats.alertes, suffix: "", Icon: Bell, tint: "rgba(180,35,30,0.10)", color: "var(--color-red-block)", glow: "rgba(180,35,30,0.4)", pct: null },
   ];
 
   return (
@@ -90,14 +148,12 @@ export default function DashboardPage() {
           className="flex items-center gap-3 rounded-2xl border border-green-signal/25 bg-green-signal/[0.07] px-4 py-3"
         >
           <CheckCircle2 size={20} strokeWidth={2} className="shrink-0 text-green-signal" aria-hidden />
-          <p className="flex-1 text-sm text-forest-950">
-            Vérification de <span className="font-semibold">{justVerified.nom}</span> enregistrée.
-          </p>
-          <StatusBadge statut={justVerified.statut} size="sm" />
+          <p className="flex-1 text-sm text-forest-950">{t.verifRecorded(justVerified.nom)}</p>
+          <StatusBadge statut={justVerified.statut} size="sm" lang={lang} />
           <button
             type="button"
             onClick={() => setJustVerified(null)}
-            aria-label="Fermer"
+            aria-label={t.close}
             className="grid h-8 w-8 place-items-center rounded-full text-stone-400 outline-none transition-colors hover:bg-black/5 hover:text-forest-950 focus-visible:ring-2 focus-visible:ring-green-signal"
           >
             <X size={16} strokeWidth={2} />
@@ -119,10 +175,10 @@ export default function DashboardPage() {
           <div>
             <p className="eyebrow flex items-center gap-2 text-green-signal">
               <span className="glow-pulse inline-block h-1.5 w-1.5 rounded-full bg-green-signal" />
-              Espace coopérative
+              {t.eyebrow}
             </p>
             <h1 className="mt-2.5 font-display text-3xl leading-tight text-white sm:text-[2.6rem]">
-              Bonjour {MANAGER_DEMO}
+              {t.hello} {MANAGER_DEMO}
             </h1>
             <p className="mt-1.5 text-sm text-white/55">
               {COOP_DEMO}
@@ -141,7 +197,7 @@ export default function DashboardPage() {
               className="btn-green inline-flex w-full items-center justify-center gap-2 rounded-full px-6 py-3.5 text-sm font-semibold outline-none focus-visible:ring-2 focus-visible:ring-white/70 focus-visible:ring-offset-2 focus-visible:ring-offset-forest-950 sm:w-auto"
             >
               <Plus size={18} strokeWidth={2.25} aria-hidden />
-              Nouvelle vérification
+              {t.newVerif}
             </Link>
           </Magnetic>
         </div>
@@ -209,15 +265,15 @@ export default function DashboardPage() {
               type="search"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              aria-label="Rechercher un producteur ou un numéro de carte"
-              placeholder="Rechercher un producteur, un n° de carte…"
+              aria-label={t.searchLabel}
+              placeholder={t.searchPlaceholder}
               className="h-12 w-full rounded-full border border-black/[0.08] bg-white pl-11 pr-11 text-sm text-forest-950 outline-none transition-[border-color,box-shadow] placeholder:text-stone-400 focus:border-green-signal/50 focus:ring-2 focus:ring-green-signal/15"
             />
             {query && (
               <button
                 type="button"
                 onClick={() => setQuery("")}
-                aria-label="Effacer la recherche"
+                aria-label={t.clearSearch}
                 className="absolute right-3 top-1/2 grid h-8 w-8 -translate-y-1/2 place-items-center rounded-full text-stone-400 outline-none transition-colors hover:bg-black/5 hover:text-forest-950 focus-visible:ring-2 focus-visible:ring-green-signal"
               >
                 <X size={16} strokeWidth={2} />
@@ -230,7 +286,7 @@ export default function DashboardPage() {
             <div className="flex items-center justify-between px-3 py-2.5">
               <h2 className="flex items-center gap-2 text-sm font-semibold text-forest-950">
                 <span className="h-4 w-1 rounded-full bg-green-signal" aria-hidden />
-                Dernières vérifications
+                {t.latest}
               </h2>
               <span className="num text-xs text-stone-400">
                 {filtered.length} / {recentes.length}
@@ -240,15 +296,15 @@ export default function DashboardPage() {
             {filtered.length === 0 ? (
               <div className="p-2">
                 <EmptyState
-                  title="Aucun producteur trouvé"
-                  description={`Aucun résultat pour « ${query.trim()} ». Vérifiez l'orthographe ou le numéro de carte.`}
+                  title={t.emptyTitle}
+                  description={t.emptyDesc(query.trim())}
                   action={
                     <button
                       type="button"
                       onClick={() => setQuery("")}
                       className="inline-flex items-center gap-1.5 rounded-full border border-black/10 px-4 py-2 text-sm font-medium text-forest-950 outline-none transition-colors hover:border-green-signal/40 focus-visible:ring-2 focus-visible:ring-green-signal"
                     >
-                      Effacer la recherche
+                      {t.clearSearch}
                     </button>
                   }
                 />
@@ -268,7 +324,7 @@ export default function DashboardPage() {
                       show: { opacity: 1, x: 0, transition: { duration: 0.35, ease: EASE } },
                     }}
                   >
-                    <VerificationRow parcelle={p} />
+                    <VerificationRow parcelle={p} lang={lang} />
                   </motion.li>
                 ))}
               </motion.ul>
@@ -284,7 +340,7 @@ export default function DashboardPage() {
                 <span className="relative grid h-8 w-8 place-items-center rounded-xl" style={{ background: "rgba(180,35,30,0.10)" }} aria-hidden>
                   <Bell size={16} strokeWidth={2} className="text-red-block" />
                 </span>
-                Alertes
+                {t.alerts}
               </h2>
               {alertes.length > 0 && (
                 <span className="num inline-flex h-6 min-w-6 items-center justify-center rounded-full bg-red-block px-1.5 text-xs font-semibold text-white">
@@ -294,9 +350,7 @@ export default function DashboardPage() {
             </div>
 
             {alertes.length === 0 ? (
-              <p className="mt-4 text-sm text-stone-500">
-                Aucune alerte active. Les nouvelles anomalies détectées apparaîtront ici.
-              </p>
+              <p className="mt-4 text-sm text-stone-500">{t.noAlerts}</p>
             ) : (
               <ul className="mt-4 flex flex-col gap-2">
                 {alertes.map((p) => (
@@ -307,11 +361,9 @@ export default function DashboardPage() {
                     >
                       <PinMark size={22} color="var(--color-red-block)" pulse className="mt-0.5 shrink-0" />
                       <span className="min-w-0 flex-1">
-                        <span className="block text-sm font-medium text-forest-950">
-                          Nouvelle anomalie détectée
-                        </span>
+                        <span className="block text-sm font-medium text-forest-950">{t.newAnomaly}</span>
                         <span className="mt-0.5 block text-xs text-stone-500">
-                          Sur la parcelle de {p.producteurNom} · {p.region}
+                          {t.onPlot(p.producteurNom, p.region)}
                         </span>
                       </span>
                       <ChevronRight
@@ -333,7 +385,7 @@ export default function DashboardPage() {
 }
 
 /** Ligne compacte d'une vérification récente → vue détaillée de la parcelle. */
-function VerificationRow({ parcelle: p }: { parcelle: Parcelle }) {
+function VerificationRow({ parcelle: p, lang }: { parcelle: Parcelle; lang: "fr" | "en" }) {
   return (
     <Link
       href={`/app/parcelle/${p.id}`}
@@ -342,7 +394,7 @@ function VerificationRow({ parcelle: p }: { parcelle: Parcelle }) {
       <div className="min-w-0">
         <span className="block truncate text-sm font-medium text-forest-950 transition-colors group-hover:text-green-signal">{p.producteurNom}</span>
         <span className="mt-1.5 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-stone-500">
-          <StatusBadge statut={p.statut} size="sm" />
+          <StatusBadge statut={p.statut} size="sm" lang={lang} />
           <span className="num text-stone-400">{p.numeroCartePro}</span>
           <span aria-hidden className="text-stone-300">·</span>
           <span>{FILIERE_LABEL[p.filiere]}</span>

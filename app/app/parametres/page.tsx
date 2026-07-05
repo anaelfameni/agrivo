@@ -5,8 +5,53 @@ import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { User, Building2, Shield, Check, Save, type LucideIcon } from "lucide-react";
 import { useAuth } from "@/components/auth-provider";
 import { FILIERES, type FiliereId } from "@/config/filieres";
+import { useLanguage } from "@/components/language-provider";
 
 type Tab = "profil" | "organisation" | "securite";
+
+const TR = {
+  fr: {
+    eyebrow: "Paramètres",
+    title: "Réglages du compte",
+    sub: "Gérez votre profil, votre organisation et la sécurité de l'accès.",
+    tabs: { profil: "Profil", organisation: "Organisation", securite: "Sécurité" },
+    savedProfil: "Profil enregistré.",
+    savedOrg: "Organisation enregistrée.",
+    savedPwd: "Mot de passe mis à jour.",
+    save: "Enregistrer",
+    profil: { nom: "Nom complet", fonction: "Fonction", fonctionDefault: "Gérant de coopérative", email: "E-mail" },
+    org: { coop: "Coopérative / organisation", region: "Région", filieres: "Filières couvertes" },
+    sec: {
+      pwdTitle: "Mot de passe", cur: "Mot de passe actuel", nw: "Nouveau mot de passe", cf: "Confirmer",
+      errCur: "Saisissez votre mot de passe actuel.",
+      errLen: "Le nouveau mot de passe doit faire au moins 8 caractères.",
+      errMatch: "La confirmation ne correspond pas.",
+      devices: "Appareils connectés", current: "Actuel", disconnect: "Déconnecter",
+      sessionNow: "Session actuelle", twoDays: "Il y a 2 jours", mobileApp: "Application mobile · Android",
+    },
+  },
+  en: {
+    eyebrow: "Settings",
+    title: "Account settings",
+    sub: "Manage your profile, your organisation and access security.",
+    tabs: { profil: "Profile", organisation: "Organisation", securite: "Security" },
+    savedProfil: "Profile saved.",
+    savedOrg: "Organisation saved.",
+    savedPwd: "Password updated.",
+    save: "Save",
+    profil: { nom: "Full name", fonction: "Role", fonctionDefault: "Cooperative manager", email: "Email" },
+    org: { coop: "Cooperative / organisation", region: "Region", filieres: "Commodities covered" },
+    sec: {
+      pwdTitle: "Password", cur: "Current password", nw: "New password", cf: "Confirm",
+      errCur: "Enter your current password.",
+      errLen: "The new password must be at least 8 characters.",
+      errMatch: "The confirmation does not match.",
+      devices: "Connected devices", current: "Current", disconnect: "Sign out",
+      sessionNow: "Current session", twoDays: "2 days ago", mobileApp: "Mobile app · Android",
+    },
+  },
+};
+type Tr = (typeof TR)["fr"];
 
 const inputCls =
   "w-full rounded-xl border border-black/10 bg-white px-3.5 py-2.5 text-sm outline-none transition-colors focus:border-green-signal focus:ring-2 focus:ring-green-signal/15";
@@ -14,6 +59,8 @@ const inputCls =
 export default function ParametresPage() {
   const reduce = useReducedMotion() ?? false;
   const { user } = useAuth();
+  const { lang } = useLanguage();
+  const t = TR[lang];
   const [tab, setTab] = useState<Tab>("profil");
   const [toast, setToast] = useState<string | null>(null);
   const notify = (msg: string) => {
@@ -22,9 +69,9 @@ export default function ParametresPage() {
   };
 
   const tabs: { id: Tab; label: string; Icon: LucideIcon }[] = [
-    { id: "profil", label: "Profil", Icon: User },
-    { id: "organisation", label: "Organisation", Icon: Building2 },
-    { id: "securite", label: "Sécurité", Icon: Shield },
+    { id: "profil", label: t.tabs.profil, Icon: User },
+    { id: "organisation", label: t.tabs.organisation, Icon: Building2 },
+    { id: "securite", label: t.tabs.securite, Icon: Shield },
   ];
 
   return (
@@ -39,9 +86,9 @@ export default function ParametresPage() {
       </AnimatePresence>
 
       <div>
-        <p className="eyebrow text-green-signal">Paramètres</p>
-        <h1 className="mt-1.5 font-display text-3xl text-forest-950">Réglages du compte</h1>
-        <p className="mt-1 text-sm text-stone-500">Gérez votre profil, votre organisation et la sécurité de l'accès.</p>
+        <p className="eyebrow text-green-signal">{t.eyebrow}</p>
+        <h1 className="mt-1.5 font-display text-3xl text-forest-950">{t.title}</h1>
+        <p className="mt-1 text-sm text-stone-500">{t.sub}</p>
       </div>
 
       <div className="flex gap-1.5 overflow-x-auto border-b border-black/[0.06]">
@@ -53,9 +100,9 @@ export default function ParametresPage() {
         ))}
       </div>
 
-      {tab === "profil" && <ProfilPanel nom={user?.nom ?? ""} email={user?.email ?? ""} onSave={() => notify("Profil enregistré.")} />}
-      {tab === "organisation" && <OrganisationPanel organisation={user?.organisation ?? ""} onSave={() => notify("Organisation enregistrée.")} />}
-      {tab === "securite" && <SecuritePanel onSave={() => notify("Mot de passe mis à jour.")} />}
+      {tab === "profil" && <ProfilPanel t={t} nom={user?.nom ?? ""} email={user?.email ?? ""} onSave={() => notify(t.savedProfil)} />}
+      {tab === "organisation" && <OrganisationPanel t={t} organisation={user?.organisation ?? ""} onSave={() => notify(t.savedOrg)} />}
+      {tab === "securite" && <SecuritePanel t={t} onSave={() => notify(t.savedPwd)} />}
     </div>
   );
 }
@@ -71,33 +118,33 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
     </label>
   );
 }
-function SaveBtn() {
+function SaveBtn({ label }: { label: string }) {
   return (
     <button type="submit" className="btn-green mt-5 inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold">
-      <Save size={16} /> Enregistrer
+      <Save size={16} /> {label}
     </button>
   );
 }
 
-function ProfilPanel({ nom, email, onSave }: { nom: string; email: string; onSave: () => void }) {
+function ProfilPanel({ t, nom, email, onSave }: { t: Tr; nom: string; email: string; onSave: () => void }) {
   const [n, setN] = useState(nom);
   const [e, setE] = useState(email);
-  const [fonction, setFonction] = useState("Gérant de coopérative");
+  const [fonction, setFonction] = useState(t.profil.fonctionDefault);
   return (
     <Card>
       <form onSubmit={(ev) => { ev.preventDefault(); onSave(); }}>
         <div className="grid gap-4 sm:grid-cols-2">
-          <Field label="Nom complet"><input value={n} onChange={(ev) => setN(ev.target.value)} className={inputCls} /></Field>
-          <Field label="Fonction"><input value={fonction} onChange={(ev) => setFonction(ev.target.value)} className={inputCls} /></Field>
-          <Field label="E-mail"><input type="email" value={e} onChange={(ev) => setE(ev.target.value)} className={inputCls} /></Field>
+          <Field label={t.profil.nom}><input value={n} onChange={(ev) => setN(ev.target.value)} className={inputCls} /></Field>
+          <Field label={t.profil.fonction}><input value={fonction} onChange={(ev) => setFonction(ev.target.value)} className={inputCls} /></Field>
+          <Field label={t.profil.email}><input type="email" value={e} onChange={(ev) => setE(ev.target.value)} className={inputCls} /></Field>
         </div>
-        <SaveBtn />
+        <SaveBtn label={t.save} />
       </form>
     </Card>
   );
 }
 
-function OrganisationPanel({ organisation, onSave }: { organisation: string; onSave: () => void }) {
+function OrganisationPanel({ t, organisation, onSave }: { t: Tr; organisation: string; onSave: () => void }) {
   const [org, setOrg] = useState(organisation);
   const [region, setRegion] = useState("Nawa · Soubré");
   const [filieres, setFilieres] = useState<Set<FiliereId>>(new Set(["cacao"]));
@@ -110,11 +157,11 @@ function OrganisationPanel({ organisation, onSave }: { organisation: string; onS
     <Card>
       <form onSubmit={(ev) => { ev.preventDefault(); onSave(); }}>
         <div className="grid gap-4 sm:grid-cols-2">
-          <Field label="Coopérative / organisation"><input value={org} onChange={(ev) => setOrg(ev.target.value)} className={inputCls} /></Field>
-          <Field label="Région"><input value={region} onChange={(ev) => setRegion(ev.target.value)} className={inputCls} /></Field>
+          <Field label={t.org.coop}><input value={org} onChange={(ev) => setOrg(ev.target.value)} className={inputCls} /></Field>
+          <Field label={t.org.region}><input value={region} onChange={(ev) => setRegion(ev.target.value)} className={inputCls} /></Field>
         </div>
         <div className="mt-5">
-          <span className="text-sm font-medium text-forest-950">Filières couvertes</span>
+          <span className="text-sm font-medium text-forest-950">{t.org.filieres}</span>
           <div className="mt-2 flex flex-wrap gap-2">
             {FILIERES.map((f) => {
               const on = filieres.has(f.id);
@@ -127,13 +174,13 @@ function OrganisationPanel({ organisation, onSave }: { organisation: string; onS
             })}
           </div>
         </div>
-        <SaveBtn />
+        <SaveBtn label={t.save} />
       </form>
     </Card>
   );
 }
 
-function SecuritePanel({ onSave }: { onSave: () => void }) {
+function SecuritePanel({ t, onSave }: { t: Tr; onSave: () => void }) {
   const [cur, setCur] = useState("");
   const [nw, setNw] = useState("");
   const [cf, setCf] = useState("");
@@ -141,32 +188,32 @@ function SecuritePanel({ onSave }: { onSave: () => void }) {
   const submit = (ev: React.FormEvent) => {
     ev.preventDefault();
     setErr(null);
-    if (!cur) { setErr("Saisissez votre mot de passe actuel."); return; }
-    if (nw.length < 8) { setErr("Le nouveau mot de passe doit faire au moins 8 caractères."); return; }
-    if (nw !== cf) { setErr("La confirmation ne correspond pas."); return; }
+    if (!cur) { setErr(t.sec.errCur); return; }
+    if (nw.length < 8) { setErr(t.sec.errLen); return; }
+    if (nw !== cf) { setErr(t.sec.errMatch); return; }
     setCur(""); setNw(""); setCf("");
     onSave();
   };
   const sessions = [
-    { device: "Chrome · Windows", place: "Abidjan, CI", when: "Session actuelle", current: true },
-    { device: "Application mobile · Android", place: "Soubré, CI", when: "Il y a 2 jours", current: false },
+    { device: "Chrome · Windows", place: "Abidjan, CI", when: t.sec.sessionNow, current: true },
+    { device: t.sec.mobileApp, place: "Soubré, CI", when: t.sec.twoDays, current: false },
   ];
   return (
     <div className="flex flex-col gap-5">
       <Card>
-        <h2 className="font-display text-lg text-forest-950">Mot de passe</h2>
+        <h2 className="font-display text-lg text-forest-950">{t.sec.pwdTitle}</h2>
         <form onSubmit={submit} className="mt-4">
           <div className="grid gap-4 sm:grid-cols-3">
-            <Field label="Mot de passe actuel"><input type="password" value={cur} onChange={(e) => setCur(e.target.value)} autoComplete="current-password" className={inputCls} /></Field>
-            <Field label="Nouveau mot de passe"><input type="password" value={nw} onChange={(e) => setNw(e.target.value)} autoComplete="new-password" className={inputCls} /></Field>
-            <Field label="Confirmer"><input type="password" value={cf} onChange={(e) => setCf(e.target.value)} autoComplete="new-password" className={inputCls} /></Field>
+            <Field label={t.sec.cur}><input type="password" value={cur} onChange={(e) => setCur(e.target.value)} autoComplete="current-password" className={inputCls} /></Field>
+            <Field label={t.sec.nw}><input type="password" value={nw} onChange={(e) => setNw(e.target.value)} autoComplete="new-password" className={inputCls} /></Field>
+            <Field label={t.sec.cf}><input type="password" value={cf} onChange={(e) => setCf(e.target.value)} autoComplete="new-password" className={inputCls} /></Field>
           </div>
           {err && <p className="mt-3 text-sm text-red-block">{err}</p>}
-          <SaveBtn />
+          <SaveBtn label={t.save} />
         </form>
       </Card>
       <Card>
-        <h2 className="font-display text-lg text-forest-950">Appareils connectés</h2>
+        <h2 className="font-display text-lg text-forest-950">{t.sec.devices}</h2>
         <ul className="mt-4 flex flex-col gap-2">
           {sessions.map((s) => (
             <li key={s.device} className="flex items-center justify-between rounded-xl border border-black/[0.06] px-4 py-3">
@@ -175,9 +222,9 @@ function SecuritePanel({ onSave }: { onSave: () => void }) {
                 <div className="text-xs text-stone-500">{s.place} · {s.when}</div>
               </div>
               {s.current ? (
-                <span className="rounded-full bg-green-signal/12 px-2.5 py-1 text-xs font-semibold text-green-signal">Actuel</span>
+                <span className="rounded-full bg-green-signal/12 px-2.5 py-1 text-xs font-semibold text-green-signal">{t.sec.current}</span>
               ) : (
-                <button type="button" className="rounded-full border border-black/10 px-3 py-1.5 text-xs font-medium text-stone-600 transition-colors hover:border-red-block/40 hover:text-red-block">Déconnecter</button>
+                <button type="button" className="rounded-full border border-black/10 px-3 py-1.5 text-xs font-medium text-stone-600 transition-colors hover:border-red-block/40 hover:text-red-block">{t.sec.disconnect}</button>
               )}
             </li>
           ))}

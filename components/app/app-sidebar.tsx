@@ -12,16 +12,30 @@ import { usePathname } from "next/navigation";
 import { motion } from "framer-motion";
 import { LayoutDashboard, Users, Map, Globe, Settings, ShieldCheck, type LucideIcon } from "lucide-react";
 import { useAuth } from "@/components/auth-provider";
+import { useLanguage } from "@/components/language-provider";
 
-const NAV: { href: string; label: string; Icon: LucideIcon }[] = [
-  { href: "/app/dashboard", label: "Vue d'ensemble", Icon: LayoutDashboard },
-  { href: "/app/producteurs", label: "Producteurs", Icon: Users },
-  { href: "/app/parcelles", label: "Parcelles", Icon: Map },
-  { href: "/app/exportateur", label: "Exportateur", Icon: Globe },
-  { href: "/app/parametres", label: "Paramètres", Icon: Settings },
+const NAV: { href: string; label: { fr: string; en: string }; Icon: LucideIcon }[] = [
+  { href: "/app/dashboard", label: { fr: "Vue d'ensemble", en: "Overview" }, Icon: LayoutDashboard },
+  { href: "/app/producteurs", label: { fr: "Producteurs", en: "Farmers" }, Icon: Users },
+  { href: "/app/parcelles", label: { fr: "Parcelles", en: "Plots" }, Icon: Map },
+  { href: "/app/exportateur", label: { fr: "Exportateur", en: "Exporter" }, Icon: Globe },
+  { href: "/app/parametres", label: { fr: "Paramètres", en: "Settings" }, Icon: Settings },
 ];
 
-const ADMIN_ITEM = { href: "/app/admin", label: "Admin", Icon: ShieldCheck };
+const ADMIN_ITEM = { href: "/app/admin", label: { fr: "Admin", en: "Admin" }, Icon: ShieldCheck };
+
+const SIDE_TR = {
+  fr: {
+    navLabel: "Navigation de l'espace",
+    readyTitle: "Prêt pour le RDUE",
+    readyText: "Chaque parcelle vérifiée, chaque certificat prêt pour TRACES NT.",
+  },
+  en: {
+    navLabel: "Workspace navigation",
+    readyTitle: "EUDR ready",
+    readyText: "Every plot verified, every certificate ready for TRACES NT.",
+  },
+};
 
 const SPRING = { type: "spring", stiffness: 420, damping: 34 } as const;
 
@@ -39,9 +53,11 @@ function useNav() {
 export function AppSidebar() {
   const isActive = useIsActive();
   const nav = useNav();
+  const { lang } = useLanguage();
+  const t = SIDE_TR[lang];
   return (
     <aside className="hidden w-56 shrink-0 md:block">
-      <nav className="sticky top-24 flex flex-col gap-1.5" aria-label="Navigation de l'espace">
+      <nav className="sticky top-24 flex flex-col gap-1.5" aria-label={t.navLabel}>
         {nav.map(({ href, label, Icon }) => {
           const active = isActive(href);
           return (
@@ -70,17 +86,15 @@ export function AppSidebar() {
               >
                 <Icon size={16} strokeWidth={2} aria-hidden />
               </span>
-              {label}
+              {label[lang]}
             </Link>
           );
         })}
 
         {/* Signature discrète bas de sidebar */}
         <div className="mt-4 rounded-xl border border-green-signal/15 bg-green-signal/[0.05] p-3">
-          <p className="text-xs font-semibold text-forest-950">Prêt pour le RDUE</p>
-          <p className="mt-0.5 text-[11px] leading-snug text-stone-500">
-            Chaque parcelle vérifiée, chaque certificat prêt pour TRACES NT.
-          </p>
+          <p className="text-xs font-semibold text-forest-950">{t.readyTitle}</p>
+          <p className="mt-0.5 text-[11px] leading-snug text-stone-500">{t.readyText}</p>
         </div>
       </nav>
     </aside>
@@ -90,9 +104,10 @@ export function AppSidebar() {
 export function AppMobileNav() {
   const isActive = useIsActive();
   const nav = useNav();
+  const { lang } = useLanguage();
   return (
     <nav
-      aria-label="Navigation de l'espace"
+      aria-label={SIDE_TR[lang].navLabel}
       className="sticky top-16 z-30 -mx-5 flex gap-1.5 overflow-x-auto border-b border-black/[0.06] bg-ivory/90 px-5 py-2.5 backdrop-blur md:hidden"
     >
       {nav.map(({ href, label, Icon }) => {
@@ -114,7 +129,7 @@ export function AppMobileNav() {
                 className="absolute inset-0 -z-10 rounded-full bg-gradient-to-r from-green-signal to-[#0f7f39] shadow-[0_8px_18px_-8px_rgba(22,163,74,0.9)]"
               />
             )}
-            <Icon size={14} aria-hidden /> {label}
+            <Icon size={14} aria-hidden /> {label[lang]}
           </Link>
         );
       })}

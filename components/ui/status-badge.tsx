@@ -16,14 +16,23 @@ const STYLE: Record<Statut, { bg: string; text: string; icon: string; Icon: type
   insuffisant: { bg: "rgba(200,134,29,0.16)", text: "#6b4610", icon: "var(--color-amber-cacao)", Icon: CloudOff },
 };
 
+/** Statuts figés en anglais (mêmes termes que la landing et lib/i18n.ts). */
+const STATUT_LABEL_EN: Record<Statut, string> = {
+  conforme: "Compliant",
+  anomalie: "Anomaly detected",
+  insuffisant: "Insufficient data",
+};
+
 export function StatusBadge({
   statut,
   size = "md",
   className = "",
+  lang = "fr",
 }: {
   statut: Statut;
   size?: "sm" | "md";
   className?: string;
+  lang?: "fr" | "en";
 }) {
   const s = STYLE[statut];
   const compact = size === "sm";
@@ -35,7 +44,7 @@ export function StatusBadge({
       style={{ background: s.bg, color: s.text }}
     >
       <s.Icon size={compact ? 13 : 15} strokeWidth={2.25} aria-hidden style={{ color: s.icon }} />
-      {STATUT_LABEL[statut]}
+      {lang === "en" ? STATUT_LABEL_EN[statut] : STATUT_LABEL[statut]}
     </span>
   );
 }

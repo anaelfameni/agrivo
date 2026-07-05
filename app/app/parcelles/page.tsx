@@ -8,8 +8,42 @@ import { EmptyState } from "@/components/ui/empty-state";
 import { StatNumber } from "@/components/ui/stat-number";
 import { PARCELLES, portfolioStats, FILIERE_LABEL, fmtHa, formatDateFr, type Parcelle, type Statut } from "@/data/mock-parcelles";
 import { FILIERES, type FiliereId } from "@/config/filieres";
+import { useLanguage } from "@/components/language-provider";
+
+const TR = {
+  fr: {
+    eyebrow: "Parcelles",
+    title: "Parcelles cartographiées",
+    sub: "Chaque parcelle est vérifiée par satellite et rattachée à un certificat.",
+    kpis: ["Parcelles cartographiées", "Taux de conformité", "Superficie totale"],
+    searchLabel: "Rechercher une parcelle",
+    searchPlaceholder: "Rechercher un producteur, un n° de certificat…",
+    allFilieres: "Toutes filières",
+    allStatuts: "Tous statuts",
+    statuts: { conforme: "Conforme", anomalie: "Anomalie détectée", insuffisant: "Données insuffisantes" },
+    listTitle: "Liste des parcelles",
+    emptyTitle: "Aucune parcelle trouvée",
+    emptyDesc: "Ajustez la recherche ou les filtres pour élargir les résultats.",
+  },
+  en: {
+    eyebrow: "Plots",
+    title: "Mapped plots",
+    sub: "Every plot is verified by satellite and linked to a certificate.",
+    kpis: ["Mapped plots", "Compliance rate", "Total area"],
+    searchLabel: "Search a plot",
+    searchPlaceholder: "Search a farmer, a certificate number…",
+    allFilieres: "All commodities",
+    allStatuts: "All statuses",
+    statuts: { conforme: "Compliant", anomalie: "Anomaly detected", insuffisant: "Insufficient data" },
+    listTitle: "Plot list",
+    emptyTitle: "No plot found",
+    emptyDesc: "Adjust the search or the filters to widen the results.",
+  },
+};
 
 export default function ParcellesPage() {
+  const { lang } = useLanguage();
+  const t = TR[lang];
   const [query, setQuery] = useState("");
   const [filiere, setFiliere] = useState<FiliereId | "all">("all");
   const [statut, setStatut] = useState<Statut | "all">("all");
@@ -26,17 +60,17 @@ export default function ParcellesPage() {
 
   const stats = useMemo(() => portfolioStats(PARCELLES), []);
   const kpis = [
-    { label: "Parcelles cartographiées", value: stats.producteurs, suffix: "" },
-    { label: "Taux de conformité", value: stats.tauxConformite, suffix: " %" },
-    { label: "Superficie totale", value: Math.round(stats.superficieHa), suffix: " ha" },
+    { label: t.kpis[0], value: stats.producteurs, suffix: "" },
+    { label: t.kpis[1], value: stats.tauxConformite, suffix: " %" },
+    { label: t.kpis[2], value: Math.round(stats.superficieHa), suffix: " ha" },
   ];
 
   return (
     <div className="flex flex-col gap-6">
       <div>
-        <p className="eyebrow text-green-signal">Parcelles</p>
-        <h1 className="mt-1.5 font-display text-3xl text-forest-950">Parcelles cartographiées</h1>
-        <p className="mt-1 text-sm text-stone-500">Chaque parcelle est vérifiée par satellite et rattachée à un certificat.</p>
+        <p className="eyebrow text-green-signal">{t.eyebrow}</p>
+        <h1 className="mt-1.5 font-display text-3xl text-forest-950">{t.title}</h1>
+        <p className="mt-1 text-sm text-stone-500">{t.sub}</p>
       </div>
 
       <div className="grid grid-cols-3 gap-3 sm:gap-4">
@@ -54,21 +88,21 @@ export default function ParcellesPage() {
       <div className="flex flex-col gap-3">
         <div className="relative">
           <Search size={18} className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-stone-400" />
-          <input type="search" value={query} onChange={(e) => setQuery(e.target.value)} aria-label="Rechercher une parcelle"
-            placeholder="Rechercher un producteur, un n° de certificat…"
+          <input type="search" value={query} onChange={(e) => setQuery(e.target.value)} aria-label={t.searchLabel}
+            placeholder={t.searchPlaceholder}
             className="h-12 w-full rounded-full border border-black/[0.08] bg-white pl-11 pr-4 text-sm outline-none transition-colors placeholder:text-stone-400 focus:border-green-signal/50 focus:ring-2 focus:ring-green-signal/15" />
         </div>
         <div className="flex flex-wrap gap-2">
-          <FilterPill active={filiere === "all"} onClick={() => setFiliere("all")}>Toutes filières</FilterPill>
+          <FilterPill active={filiere === "all"} onClick={() => setFiliere("all")}>{t.allFilieres}</FilterPill>
           {FILIERES.map((f) => (
             <FilterPill key={f.id} active={filiere === f.id} onClick={() => setFiliere(f.id)} dot={f.couleur}>{f.label}</FilterPill>
           ))}
         </div>
         <div className="flex flex-wrap gap-2">
-          <FilterPill active={statut === "all"} onClick={() => setStatut("all")}>Tous statuts</FilterPill>
-          <FilterPill active={statut === "conforme"} onClick={() => setStatut("conforme")}>Conforme</FilterPill>
-          <FilterPill active={statut === "anomalie"} onClick={() => setStatut("anomalie")}>Anomalie détectée</FilterPill>
-          <FilterPill active={statut === "insuffisant"} onClick={() => setStatut("insuffisant")}>Données insuffisantes</FilterPill>
+          <FilterPill active={statut === "all"} onClick={() => setStatut("all")}>{t.allStatuts}</FilterPill>
+          <FilterPill active={statut === "conforme"} onClick={() => setStatut("conforme")}>{t.statuts.conforme}</FilterPill>
+          <FilterPill active={statut === "anomalie"} onClick={() => setStatut("anomalie")}>{t.statuts.anomalie}</FilterPill>
+          <FilterPill active={statut === "insuffisant"} onClick={() => setStatut("insuffisant")}>{t.statuts.insuffisant}</FilterPill>
         </div>
       </div>
 
@@ -76,15 +110,15 @@ export default function ParcellesPage() {
         <div className="flex items-center justify-between px-3 py-2.5">
           <h2 className="flex items-center gap-2 text-sm font-semibold text-forest-950">
             <span className="h-4 w-1 rounded-full bg-green-signal" aria-hidden />
-            Liste des parcelles
+            {t.listTitle}
           </h2>
           <span className="num text-xs text-stone-400">{filtered.length} / {PARCELLES.length}</span>
         </div>
         {filtered.length === 0 ? (
-          <div className="p-2"><EmptyState title="Aucune parcelle trouvée" description="Ajustez la recherche ou les filtres pour élargir les résultats." /></div>
+          <div className="p-2"><EmptyState title={t.emptyTitle} description={t.emptyDesc} /></div>
         ) : (
           <ul className="flex flex-col">
-            {filtered.map((p) => <li key={p.id}><ParcelleRow p={p} /></li>)}
+            {filtered.map((p) => <li key={p.id}><ParcelleRow p={p} lang={lang} /></li>)}
           </ul>
         )}
       </div>
@@ -92,13 +126,13 @@ export default function ParcellesPage() {
   );
 }
 
-function ParcelleRow({ p }: { p: Parcelle }) {
+function ParcelleRow({ p, lang }: { p: Parcelle; lang: "fr" | "en" }) {
   return (
     <Link href={`/app/parcelle/${p.id}`} className="group grid grid-cols-[1fr_auto] items-center gap-3 rounded-xl px-3 py-3 outline-none transition-colors hover:bg-green-signal/[0.06] focus-visible:ring-2 focus-visible:ring-green-signal/40">
       <div className="min-w-0">
         <span className="block truncate text-sm font-medium text-forest-950 transition-colors group-hover:text-green-signal">{p.producteurNom}</span>
         <span className="mt-1.5 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-stone-500">
-          <StatusBadge statut={p.statut} size="sm" />
+          <StatusBadge statut={p.statut} size="sm" lang={lang} />
           <span className="num text-stone-400">{p.numeroCertificat}</span>
           <span aria-hidden className="text-stone-300">·</span>
           <span>{FILIERE_LABEL[p.filiere]}</span>

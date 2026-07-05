@@ -6,6 +6,7 @@ import { AppSidebar, AppMobileNav } from "@/components/app/app-sidebar";
 import { RouteGuard } from "@/components/app/route-guard";
 import { UserMenu } from "@/components/app/user-menu";
 import { BackToSiteLink } from "@/components/app/back-to-site-link";
+import { AppEyebrow } from "@/components/app/app-eyebrow";
 import { BRAND_NAME } from "@/config/brand";
 
 /**
@@ -37,7 +38,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
               <Logo />
             </Link>
             <span aria-hidden className="hidden h-5 w-px bg-black/10 sm:block" />
-            <span className="eyebrow hidden text-green-signal sm:block">Espace coopérative</span>
+            <AppEyebrow />
           </div>
 
           <div className="flex items-center gap-2 md:gap-3">

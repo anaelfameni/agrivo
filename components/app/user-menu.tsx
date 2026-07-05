@@ -10,6 +10,7 @@ import { useRouter } from "next/navigation";
 import { LogOut, ChevronDown } from "lucide-react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { useAuth } from "@/components/auth-provider";
+import { useLanguage } from "@/components/language-provider";
 
 function initials(nom: string): string {
   const parts = nom.trim().split(/\s+/).filter(Boolean).slice(0, 2);
@@ -19,6 +20,7 @@ function initials(nom: string): string {
 
 export function UserMenu() {
   const { user, logout } = useAuth();
+  const { lang } = useLanguage();
   const router = useRouter();
   const reduce = useReducedMotion();
   const [open, setOpen] = React.useState(false);
@@ -80,7 +82,7 @@ export function UserMenu() {
               }}
               className="flex w-full items-center gap-2 px-4 py-2.5 text-left text-sm text-stone-600 outline-none transition-colors hover:bg-ivory-deep/60 hover:text-forest-950 focus-visible:bg-ivory-deep/60"
             >
-              <LogOut size={15} aria-hidden /> Se déconnecter
+              <LogOut size={15} aria-hidden /> {lang === "en" ? "Sign out" : "Se déconnecter"}
             </button>
           </motion.div>
         )}

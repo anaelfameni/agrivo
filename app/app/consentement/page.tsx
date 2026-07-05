@@ -5,30 +5,80 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { motion, useReducedMotion } from "framer-motion";
 import { ArrowLeft, ArrowRight, Check, MapPin, ScrollText, ShieldCheck } from "lucide-react";
+import { useLanguage } from "@/components/language-provider";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
-const POINTS = [
-  {
-    Icon: MapPin,
-    title: "Données de localisation",
-    body: "Les coordonnées GPS de la parcelle sont analysées pour attester l'absence de déforestation, comme l'exige la réglementation européenne.",
+const POINTS = {
+  fr: [
+    {
+      Icon: MapPin,
+      title: "Données de localisation",
+      body: "Les coordonnées GPS de la parcelle sont analysées pour attester l'absence de déforestation, comme l'exige la réglementation européenne.",
+    },
+    {
+      Icon: ScrollText,
+      title: "Finalité unique",
+      body: "Ces données servent exclusivement à l'évaluation de conformité et à la génération du certificat. Aucune revente, aucun autre usage.",
+    },
+    {
+      Icon: ShieldCheck,
+      title: "Souveraineté & droits",
+      body: "Traitement conforme à la loi ivoirienne n°2013-450 sous contrôle de l'ARTCI. Le producteur conserve un droit d'accès et de retrait.",
+    },
+  ],
+  en: [
+    {
+      Icon: MapPin,
+      title: "Location data",
+      body: "The plot's GPS coordinates are analysed to attest the absence of deforestation, as required by the European regulation.",
+    },
+    {
+      Icon: ScrollText,
+      title: "Single purpose",
+      body: "This data is used exclusively for the compliance assessment and the certificate. No resale, no other use.",
+    },
+    {
+      Icon: ShieldCheck,
+      title: "Sovereignty & rights",
+      body: "Processing complies with Ivorian law No. 2013-450 under ARTCI oversight. The farmer keeps a right of access and withdrawal.",
+    },
+  ],
+};
+
+const TR = {
+  fr: {
+    back: "Tableau de bord",
+    eyebrow: "Protection des données · ARTCI",
+    title: "Avant de continuer",
+    intro:
+      "La vérification d'une parcelle traite des données personnelles et de localisation du producteur. AGRIVO est conçu conforme dès le départ : voici précisément ce que cela implique.",
+    declaration: "« Le producteur a donné son consentement éclairé pour ce traitement. »",
+    checkbox:
+      "Je confirme avoir recueilli le consentement éclairé du producteur pour la vérification de sa parcelle, conformément à la loi n°2013-450 (ARTCI).",
+    cancel: "Annuler",
+    next: "Continuer",
   },
-  {
-    Icon: ScrollText,
-    title: "Finalité unique",
-    body: "Ces données servent exclusivement à l'évaluation de conformité et à la génération du certificat. Aucune revente, aucun autre usage.",
+  en: {
+    back: "Dashboard",
+    eyebrow: "Data protection · ARTCI",
+    title: "Before you continue",
+    intro:
+      "Verifying a plot processes the farmer's personal and location data. AGRIVO is compliant by design: here is exactly what that means.",
+    declaration: "“The farmer has given informed consent to this processing.”",
+    checkbox:
+      "I confirm that I have collected the farmer's informed consent for the verification of their plot, in accordance with law No. 2013-450 (ARTCI).",
+    cancel: "Cancel",
+    next: "Continue",
   },
-  {
-    Icon: ShieldCheck,
-    title: "Souveraineté & droits",
-    body: "Traitement conforme à la loi ivoirienne n°2013-450 sous contrôle de l'ARTCI. Le producteur conserve un droit d'accès et de retrait.",
-  },
-];
+};
 
 export default function ConsentementPage() {
   const router = useRouter();
   const reduce = useReducedMotion();
+  const { lang } = useLanguage();
+  const t = TR[lang];
+  const points = POINTS[lang];
   const [agreed, setAgreed] = useState(false);
 
   return (
@@ -38,7 +88,7 @@ export default function ConsentementPage() {
         className="inline-flex w-fit items-center gap-1.5 rounded-full text-sm text-stone-500 outline-none transition-colors hover:text-forest-950 focus-visible:ring-2 focus-visible:ring-green-signal focus-visible:ring-offset-2 focus-visible:ring-offset-ivory"
       >
         <ArrowLeft size={15} strokeWidth={2} aria-hidden />
-        Tableau de bord
+        {t.back}
       </Link>
 
       <motion.div
@@ -59,20 +109,17 @@ export default function ConsentementPage() {
               <ShieldCheck size={24} strokeWidth={1.75} className="text-green-signal" />
             </span>
             <div>
-              <p className="eyebrow text-green-signal/90">Protection des données · ARTCI</p>
-              <h1 className="mt-1 font-display text-2xl leading-tight sm:text-3xl">Avant de continuer</h1>
+              <p className="eyebrow text-green-signal/90">{t.eyebrow}</p>
+              <h1 className="mt-1 font-display text-2xl leading-tight sm:text-3xl">{t.title}</h1>
             </div>
           </div>
         </div>
 
         <div className="flex flex-col gap-6 px-6 py-7 sm:px-8">
-          <p className="max-w-prose text-[0.95rem] leading-relaxed text-stone-600">
-            La vérification d&apos;une parcelle traite des données personnelles et de localisation du
-            producteur. AGRIVO est conçu conforme dès le départ : voici précisément ce que cela implique.
-          </p>
+          <p className="max-w-prose text-[0.95rem] leading-relaxed text-stone-600">{t.intro}</p>
 
           <ul className="flex flex-col gap-4">
-            {POINTS.map((pt) => (
+            {points.map((pt) => (
               <li key={pt.title} className="flex gap-3.5">
                 <span
                   className="mt-0.5 grid h-9 w-9 shrink-0 place-items-center rounded-xl"
@@ -91,9 +138,7 @@ export default function ConsentementPage() {
 
           {/* Déclaration de consentement */}
           <div className="rounded-2xl border border-green-signal/20 bg-green-signal/[0.05] p-4">
-            <p className="text-sm font-medium italic text-forest-800">
-              « Le producteur a donné son consentement éclairé pour ce traitement. »
-            </p>
+            <p className="text-sm font-medium italic text-forest-800">{t.declaration}</p>
           </div>
 
           {/* Case à cocher (obligatoire) */}
@@ -110,10 +155,7 @@ export default function ConsentementPage() {
             >
               {agreed && <Check size={15} strokeWidth={3} />}
             </span>
-            <span className="text-sm leading-relaxed text-forest-950">
-              Je confirme avoir recueilli le consentement éclairé du producteur pour la vérification de sa
-              parcelle, conformément à la loi n°2013-450 (ARTCI).
-            </span>
+            <span className="text-sm leading-relaxed text-forest-950">{t.checkbox}</span>
           </label>
 
           {/* Actions */}
@@ -122,7 +164,7 @@ export default function ConsentementPage() {
               href="/app/dashboard"
               className="inline-flex items-center justify-center rounded-full px-5 py-3 text-sm font-medium text-stone-500 outline-none transition-colors hover:text-forest-950 focus-visible:ring-2 focus-visible:ring-green-signal focus-visible:ring-offset-2 focus-visible:ring-offset-ivory"
             >
-              Annuler
+              {t.cancel}
             </Link>
             <button
               type="button"
@@ -131,7 +173,7 @@ export default function ConsentementPage() {
               onClick={() => agreed && router.push("/app/verifier")}
               className="btn-green group inline-flex items-center justify-center gap-2 rounded-full px-6 py-3.5 text-sm font-semibold outline-none focus-visible:ring-2 focus-visible:ring-green-signal focus-visible:ring-offset-2 focus-visible:ring-offset-ivory disabled:cursor-not-allowed disabled:opacity-40"
             >
-              Continuer
+              {t.next}
               <ArrowRight
                 size={16}
                 strokeWidth={2.25}

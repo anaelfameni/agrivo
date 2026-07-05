@@ -8,6 +8,57 @@ import { StatusBadge } from "@/components/ui/status-badge";
 import { EmptyState } from "@/components/ui/empty-state";
 import { PARCELLES, FILIERE_LABEL, fmtHa, COOP_DEMO, type Statut } from "@/data/mock-parcelles";
 import { FILIERES, type FiliereId } from "@/config/filieres";
+import { useLanguage } from "@/components/language-provider";
+
+const TR = {
+  fr: {
+    eyebrow: "Producteurs",
+    title: "Vos producteurs",
+    subAfter: "producteurs suivis, toutes coopératives confondues.",
+    add: "Ajouter un producteur",
+    toast: (nom: string) => `Producteur « ${nom} » ajouté. Vérification à planifier.`,
+    searchLabel: "Rechercher un producteur",
+    searchPlaceholder: "Rechercher un producteur, un n° de carte, une coopérative…",
+    allFilieres: "Toutes filières",
+    allStatuts: "Tous statuts",
+    statuts: { conforme: "Conforme", anomalie: "Anomalie détectée", insuffisant: "Données insuffisantes" },
+    listTitle: "Liste des producteurs",
+    emptyTitle: "Aucun producteur trouvé",
+    emptyDesc: "Ajustez la recherche ou les filtres pour élargir les résultats.",
+    form: {
+      title: "Nouveau producteur",
+      nom: "Nom du producteur", nomPh: "Ex. Kouassi Yao",
+      filiere: "Filière", coop: "Coopérative", region: "Région", ha: "Superficie (ha)",
+      errNom: "Indiquez le nom du producteur.",
+      errHa: "Indiquez une superficie valide (en hectares).",
+      submit: "Ajouter", cancel: "Annuler",
+    },
+  },
+  en: {
+    eyebrow: "Farmers",
+    title: "Your farmers",
+    subAfter: "farmers tracked, across all cooperatives.",
+    add: "Add a farmer",
+    toast: (nom: string) => `Farmer "${nom}" added. Verification to schedule.`,
+    searchLabel: "Search a farmer",
+    searchPlaceholder: "Search a farmer, a card number, a cooperative…",
+    allFilieres: "All commodities",
+    allStatuts: "All statuses",
+    statuts: { conforme: "Compliant", anomalie: "Anomaly detected", insuffisant: "Insufficient data" },
+    listTitle: "Farmer list",
+    emptyTitle: "No farmer found",
+    emptyDesc: "Adjust the search or the filters to widen the results.",
+    form: {
+      title: "New farmer",
+      nom: "Farmer name", nomPh: "E.g. Kouassi Yao",
+      filiere: "Commodity", coop: "Cooperative", region: "Region", ha: "Area (ha)",
+      errNom: "Enter the farmer's name.",
+      errHa: "Enter a valid area (in hectares).",
+      submit: "Add", cancel: "Cancel",
+    },
+  },
+};
+type Tr = (typeof TR)["fr"];
 
 interface Producteur {
   id: string;
@@ -38,6 +89,8 @@ const inputCls =
 
 export default function ProducteursPage() {
   const reduce = useReducedMotion() ?? false;
+  const { lang } = useLanguage();
+  const t = TR[lang];
   const [query, setQuery] = useState("");
   const [filiere, setFiliere] = useState<FiliereId | "all">("all");
   const [statut, setStatut] = useState<Statut | "all">("all");
@@ -61,7 +114,7 @@ export default function ProducteursPage() {
     const p: Producteur = { ...data, id: `new-${Date.now()}`, numeroCartePro: `CI-CCC-0${seq}`, statut: "insuffisant" };
     setAdded((a) => [p, ...a]);
     setShowForm(false);
-    setToast(`Producteur « ${data.producteurNom} » ajouté. Vérification à planifier.`);
+    setToast(t.toast(data.producteurNom));
     window.setTimeout(() => setToast(null), 4000);
   };
 
@@ -78,38 +131,38 @@ export default function ProducteursPage() {
 
       <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <p className="eyebrow text-green-signal">Producteurs</p>
-          <h1 className="mt-1.5 font-display text-3xl text-forest-950">Vos producteurs</h1>
-          <p className="mt-1 text-sm text-stone-500"><span className="num">{all.length}</span> producteurs suivis, toutes coopératives confondues.</p>
+          <p className="eyebrow text-green-signal">{t.eyebrow}</p>
+          <h1 className="mt-1.5 font-display text-3xl text-forest-950">{t.title}</h1>
+          <p className="mt-1 text-sm text-stone-500"><span className="num">{all.length}</span> {t.subAfter}</p>
         </div>
         <button type="button" onClick={() => setShowForm((s) => !s)}
           className="btn-green inline-flex items-center justify-center gap-2 rounded-full px-5 py-3 text-sm font-semibold outline-none focus-visible:ring-2 focus-visible:ring-green-signal focus-visible:ring-offset-2 focus-visible:ring-offset-ivory">
-          <UserPlus size={17} strokeWidth={2.25} /> Ajouter un producteur
+          <UserPlus size={17} strokeWidth={2.25} /> {t.add}
         </button>
       </div>
 
       <AnimatePresence>
-        {showForm && <AddForm reduce={reduce} onCancel={() => setShowForm(false)} onSubmit={addProducteur} />}
+        {showForm && <AddForm t={t.form} reduce={reduce} onCancel={() => setShowForm(false)} onSubmit={addProducteur} />}
       </AnimatePresence>
 
       <div className="flex flex-col gap-3">
         <div className="relative">
           <Search size={18} className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-stone-400" />
-          <input type="search" value={query} onChange={(e) => setQuery(e.target.value)} aria-label="Rechercher un producteur"
-            placeholder="Rechercher un producteur, un n° de carte, une coopérative…"
+          <input type="search" value={query} onChange={(e) => setQuery(e.target.value)} aria-label={t.searchLabel}
+            placeholder={t.searchPlaceholder}
             className="h-12 w-full rounded-full border border-black/[0.08] bg-white pl-11 pr-4 text-sm outline-none transition-colors placeholder:text-stone-400 focus:border-green-signal/50 focus:ring-2 focus:ring-green-signal/15" />
         </div>
         <div className="flex flex-wrap gap-2">
-          <FilterPill active={filiere === "all"} onClick={() => setFiliere("all")}>Toutes filières</FilterPill>
+          <FilterPill active={filiere === "all"} onClick={() => setFiliere("all")}>{t.allFilieres}</FilterPill>
           {FILIERES.map((f) => (
             <FilterPill key={f.id} active={filiere === f.id} onClick={() => setFiliere(f.id)} dot={f.couleur}>{f.label}</FilterPill>
           ))}
         </div>
         <div className="flex flex-wrap gap-2">
-          <FilterPill active={statut === "all"} onClick={() => setStatut("all")}>Tous statuts</FilterPill>
-          <FilterPill active={statut === "conforme"} onClick={() => setStatut("conforme")}>Conforme</FilterPill>
-          <FilterPill active={statut === "anomalie"} onClick={() => setStatut("anomalie")}>Anomalie détectée</FilterPill>
-          <FilterPill active={statut === "insuffisant"} onClick={() => setStatut("insuffisant")}>Données insuffisantes</FilterPill>
+          <FilterPill active={statut === "all"} onClick={() => setStatut("all")}>{t.allStatuts}</FilterPill>
+          <FilterPill active={statut === "conforme"} onClick={() => setStatut("conforme")}>{t.statuts.conforme}</FilterPill>
+          <FilterPill active={statut === "anomalie"} onClick={() => setStatut("anomalie")}>{t.statuts.anomalie}</FilterPill>
+          <FilterPill active={statut === "insuffisant"} onClick={() => setStatut("insuffisant")}>{t.statuts.insuffisant}</FilterPill>
         </div>
       </div>
 
@@ -117,15 +170,15 @@ export default function ProducteursPage() {
         <div className="flex items-center justify-between px-3 py-2.5">
           <h2 className="flex items-center gap-2 text-sm font-semibold text-forest-950">
             <span className="h-4 w-1 rounded-full bg-green-signal" aria-hidden />
-            Liste des producteurs
+            {t.listTitle}
           </h2>
           <span className="num text-xs text-stone-400">{filtered.length} / {all.length}</span>
         </div>
         {filtered.length === 0 ? (
-          <div className="p-2"><EmptyState title="Aucun producteur trouvé" description="Ajustez la recherche ou les filtres pour élargir les résultats." /></div>
+          <div className="p-2"><EmptyState title={t.emptyTitle} description={t.emptyDesc} /></div>
         ) : (
           <ul className="flex flex-col">
-            {filtered.map((p) => <li key={p.id}><ProducteurRow p={p} /></li>)}
+            {filtered.map((p) => <li key={p.id}><ProducteurRow p={p} lang={lang} /></li>)}
           </ul>
         )}
       </div>
@@ -133,13 +186,13 @@ export default function ProducteursPage() {
   );
 }
 
-function ProducteurRow({ p }: { p: Producteur }) {
+function ProducteurRow({ p, lang }: { p: Producteur; lang: "fr" | "en" }) {
   const inner = (
     <>
       <div className="min-w-0">
         <span className="block truncate text-sm font-medium text-forest-950 transition-colors group-hover:text-green-signal">{p.producteurNom}</span>
         <span className="mt-1.5 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-stone-500">
-          <StatusBadge statut={p.statut} size="sm" />
+          <StatusBadge statut={p.statut} size="sm" lang={lang} />
           <span className="num text-stone-400">{p.numeroCartePro}</span>
           <span aria-hidden className="text-stone-300">·</span>
           <span>{FILIERE_LABEL[p.filiere]}</span>
@@ -170,7 +223,7 @@ function FilterPill({ active, onClick, children, dot }: { active: boolean; onCli
   );
 }
 
-function AddForm({ reduce, onCancel, onSubmit }: { reduce: boolean; onCancel: () => void; onSubmit: (d: { producteurNom: string; cooperative: string; region: string; superficieHa: number; filiere: FiliereId }) => void }) {
+function AddForm({ t, reduce, onCancel, onSubmit }: { t: Tr["form"]; reduce: boolean; onCancel: () => void; onSubmit: (d: { producteurNom: string; cooperative: string; region: string; superficieHa: number; filiere: FiliereId }) => void }) {
   const [nom, setNom] = useState("");
   const [coop, setCoop] = useState(COOP_DEMO);
   const [region, setRegion] = useState("Nawa · Soubré");
@@ -180,9 +233,9 @@ function AddForm({ reduce, onCancel, onSubmit }: { reduce: boolean; onCancel: ()
 
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (nom.trim().length < 2) { setErr("Indiquez le nom du producteur."); return; }
+    if (nom.trim().length < 2) { setErr(t.errNom); return; }
     const s = parseFloat(ha.replace(",", "."));
-    if (!s || s <= 0) { setErr("Indiquez une superficie valide (en hectares)."); return; }
+    if (!s || s <= 0) { setErr(t.errHa); return; }
     onSubmit({ producteurNom: nom.trim(), cooperative: coop.trim(), region: region.trim(), superficieHa: Math.round(s * 10) / 10, filiere });
   };
 
@@ -194,18 +247,18 @@ function AddForm({ reduce, onCancel, onSubmit }: { reduce: boolean; onCancel: ()
       transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
       className="overflow-hidden rounded-2xl border border-black/[0.06] bg-white p-5 shadow-[0_1px_2px_rgba(10,31,20,0.04)]"
     >
-      <h2 className="font-display text-lg text-forest-950">Nouveau producteur</h2>
+      <h2 className="font-display text-lg text-forest-950">{t.title}</h2>
       <div className="mt-4 grid gap-4 sm:grid-cols-2">
-        <Field label="Nom du producteur"><input value={nom} onChange={(e) => setNom(e.target.value)} placeholder="Ex. Kouassi Yao" className={inputCls} /></Field>
-        <Field label="Filière"><select value={filiere} onChange={(e) => setFiliere(e.target.value as FiliereId)} className={inputCls}>{FILIERES.map((f) => <option key={f.id} value={f.id}>{f.label}</option>)}</select></Field>
-        <Field label="Coopérative"><input value={coop} onChange={(e) => setCoop(e.target.value)} className={inputCls} /></Field>
-        <Field label="Région"><input value={region} onChange={(e) => setRegion(e.target.value)} className={inputCls} /></Field>
-        <Field label="Superficie (ha)"><input value={ha} onChange={(e) => setHa(e.target.value)} inputMode="decimal" placeholder="3,2" className={inputCls} /></Field>
+        <Field label={t.nom}><input value={nom} onChange={(e) => setNom(e.target.value)} placeholder={t.nomPh} className={inputCls} /></Field>
+        <Field label={t.filiere}><select value={filiere} onChange={(e) => setFiliere(e.target.value as FiliereId)} className={inputCls}>{FILIERES.map((f) => <option key={f.id} value={f.id}>{f.label}</option>)}</select></Field>
+        <Field label={t.coop}><input value={coop} onChange={(e) => setCoop(e.target.value)} className={inputCls} /></Field>
+        <Field label={t.region}><input value={region} onChange={(e) => setRegion(e.target.value)} className={inputCls} /></Field>
+        <Field label={t.ha}><input value={ha} onChange={(e) => setHa(e.target.value)} inputMode="decimal" placeholder="3,2" className={inputCls} /></Field>
       </div>
       {err && <p className="mt-3 text-sm text-red-block">{err}</p>}
       <div className="mt-4 flex gap-2">
-        <button type="submit" className="btn-green inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold">Ajouter</button>
-        <button type="button" onClick={onCancel} className="rounded-full border border-black/10 px-5 py-2.5 text-sm font-medium text-stone-600 transition-colors hover:text-forest-950">Annuler</button>
+        <button type="submit" className="btn-green inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold">{t.submit}</button>
+        <button type="button" onClick={onCancel} className="rounded-full border border-black/10 px-5 py-2.5 text-sm font-medium text-stone-600 transition-colors hover:text-forest-950">{t.cancel}</button>
       </div>
     </motion.form>
   );
