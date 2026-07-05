@@ -324,6 +324,29 @@ variables CSS dans `app/globals.css`.
 
 ## 📓 Journal de build (le plus récent en haut)
 
+### Session 10 (suite 2) — 2026-07-05/06 — DOCS OFFICIELS VIBEATHON lus (dossier `ressources/`) + planning V2
+- 📚 **3 documents officiels analysés** (`ressources/`) : bootcamp « Du besoin à la Release », exemple
+  TaskFlow, **Pitch Masterclass du 11/07** (Esaie DIEI, AFRINOVATECH, 4h au CSCTICAO le jour J,
+  coaching 5 min pitch + 2 min questions AVANT le passage jury).
+- 🎯 **FAITS COMPÉTITION (source de vérité, remplacent nos suppositions)** :
+  - **Grille officielle du pitch** : Impact problème/solution **30 %** · Faisabilité **20 %** · Usage
+    pertinent de l'IA **20 %** · Innovation **15 %** · Qualité du pitch **15 %**. → Le PROBLÈME d'abord.
+  - **Pitch = 5 minutes** (pas 7). Deck = **structure officielle 11 slides** (Vision · Problème ·
+    Solutions actuelles · Solution IA · Comment fonctionne l'IA [schéma Donnée→IA→Résultat] · Cibles ·
+    Modèle éco · Impact/ODD · Feuille de route · **La demande (partenaire cible NOMMÉ)** · Traction).
+  - **Cold-call** : n'importe quel membre peut être interrogé sans préavis → les 5 doivent maîtriser
+    les 32 flashcards + les 6 questions typiques (pourquoi l'IA, concurrents, revenus, client précis,
+    échelle, si l'IA se trompe).
+  - **Le jury évalue le PIPELINE 8 étapes** (besoin→specs→conception→dev IA→tests→CI→déploiement→
+    release), pas juste la démo. → Livrables méthode à produire : SPECS.md (user stories + critères
+    d'acceptation + IN/OUT MVP), ARCHITECTURE.md (mini ADR), tests unitaires/robustesse, **CI GitHub
+    Actions**, **CHANGELOG.md + tag v1.0.0**, plan de rollback documenté (Vercel re-promote).
+  - « Fossé de l'Exécution Africaine » : 4 questions (réglementaire ✓ BCEAO/ARTCI · à qui vendre ·
+    après le prototype · échelle) + storytelling 6 étapes (héros = Kouassi).
+- 📄 **PDF répartition V2 régénéré** (`AGRIVO_Repartition_Taches_Sprint_Final.pdf`, gitignoré) :
+  planning lun 7 → ven 11, grille officielle intégrée, tâches méthode (CI/tests/changelog → Gaddiel,
+  SPECS/ARCHITECTURE/release → Anael, deck 11 slides → Fatim, chiffres sourcés/vidéo → Domy).
+
 ### Session 10 (suite) — 2026-07-05 — PROMPTS 6 + 7 exécutés + IA GEMINI RÉELLE
 - 📱 **Contexte (Anael)** : la démo du golden path se fera sur **l'app MOBILE développée par Christ** ;
   la plateforme web = espace coop/exportateur + vérification publique. Équipe : Christ (mobile),
