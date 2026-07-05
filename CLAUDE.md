@@ -324,6 +324,26 @@ variables CSS dans `app/globals.css`.
 
 ## 📓 Journal de build (le plus récent en haut)
 
+### Session 10 (suite 3) — 2026-07-05/06 — PREUVES DE MÉTHODE (pipeline 8 étapes) livrées
+- ✅ **CI GitHub Actions** (`.github/workflows/ci.yml`) : lint + `tsc` + tests + build à chaque
+  push/PR sur main. **1er run VERT sur GitHub (1 min 18)**. Badge CI dans le README.
+- ✅ **24 tests Vitest** (`tests/donnees.test.ts` + `tests/ia.test.ts`, `vitest.config.ts` avec alias
+  `@`) : 4 KPI officiels, export GeoJSON RFC 7946 (ordre lon/lat, 6 décimales, anneaux fermés),
+  bornes crédit 50k-250k + « prêt remboursable jamais gratuit », niveaux de risque sans %, copilote
+  (Soubré → parcelles exactes), statuts figés du DDS, **robustesse sans clé API** (repli mock).
+  Scripts npm : `test`, `typecheck`. Version → **1.0.0-rc.1** (tag git poussé) ; v1.0.0 au freeze.
+- ✅ **SPECS.md** (user stories 4 personas + critères d'acceptation cochés, IN/OUT MVP, stack
+  justifiée, contraintes non fonctionnelles) · **ARCHITECTURE.md** (schéma Donnée→IA→Résultat,
+  6 mini ADR, **plan de rollback Vercel** : promote du déploiement précédent + réassignation alias)
+  · **CHANGELOG.md** (v1.0.0-rc.1 : Ajouté/Corrigé/Vérifié ; v1.0.0 réservée au freeze).
+- ⚠️ **ESLint** : les règles React strictes `set-state-in-effect`/`purity`/`immutability`/`refs`
+  sont **rétrogradées en warning** (eslint.config.mjs, justifié en ADR-5 : hydratations volontaires,
+  particules canvas, ringRef anti-boucle Leaflet). Lint = 0 erreur / 22 warnings assumés.
+- ✅ **`/methodologie`** : nouvelle section « Le flux, en un schéma » (Donnée · IA · Résultat, 3
+  cartes + flèches, responsive) — demande explicite de la Pitch Masterclass. Vérifiée visuellement
+  en prod (capture 1440).
+- 🚀 Déployé + alias réassigné. GATE : lint 0 erreur · tsc ✓ · 24/24 tests · build 32 routes · CI verte.
+
 ### Session 10 (suite 2) — 2026-07-05/06 — DOCS OFFICIELS VIBEATHON lus (dossier `ressources/`) + planning V2
 - 📚 **3 documents officiels analysés** (`ressources/`) : bootcamp « Du besoin à la Release », exemple
   TaskFlow, **Pitch Masterclass du 11/07** (Esaie DIEI, AFRINOVATECH, 4h au CSCTICAO le jour J,
