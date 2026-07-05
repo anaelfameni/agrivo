@@ -31,3 +31,6 @@ yarn-error.log*
 next-env.d.ts
 
 .vercel
+
+# Documents internes equipe (confidentiels)
+AGRIVO_Repartition_Taches_Sprint_Final.pdf
