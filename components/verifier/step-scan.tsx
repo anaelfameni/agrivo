@@ -75,10 +75,31 @@ export function StepScan({
     streamRef.current = null;
   }
 
+  /** Capture l'image du viseur (base64 JPEG, sans préfixe data:) pour l'OCR Gemini Vision live. */
+  function captureFrame(): string | undefined {
+    const v = videoRef.current;
+    if (!cameraOn || !v || !v.videoWidth) return undefined;
+    try {
+      const canvas = document.createElement("canvas");
+      const scale = Math.min(1, 1280 / v.videoWidth);
+      canvas.width = Math.round(v.videoWidth * scale);
+      canvas.height = Math.round(v.videoHeight * scale);
+      canvas.getContext("2d")?.drawImage(v, 0, 0, canvas.width, canvas.height);
+      return canvas.toDataURL("image/jpeg", 0.85).split(",")[1];
+    } catch {
+      return undefined;
+    }
+  }
+
   async function scanner() {
     setPhase("scanning");
+    const imageBase64 = captureFrame();
     try {
-      const r = await fetch("/api/gemini/scan", { method: "POST", headers: { "Content-Type": "application/json" }, body: "{}" });
+      const r = await fetch("/api/gemini/scan", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(imageBase64 ? { imageBase64, mimeType: "image/jpeg" } : {}),
+      });
       const data: ScanResult = await r.json();
       setForm(data);
     } catch {

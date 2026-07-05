@@ -5,6 +5,8 @@ import { SplashScreen } from "@/components/splash-screen";
 import { LanguageProvider } from "@/components/language-provider";
 import { AuthProvider } from "@/components/auth-provider";
 import { CookieConsent } from "@/components/cookie-consent";
+import { DemoGuide } from "@/components/demo-guide";
+import { PwaRegister } from "@/components/pwa-register";
 import { BRAND_NAME } from "@/config/brand";
 
 const sans = Geist({
@@ -38,10 +40,34 @@ const brandSerif = Newsreader({
   display: "swap",
 });
 
+const SITE_URL = "https://agrivo-io.vercel.app";
+const DESCRIPTION =
+  "AGRIVO vérifie la conformité RDUE d'une parcelle agricole en quelques secondes, génère le certificat et ouvre l'accès au micro-crédit du producteur.";
+
 export const metadata: Metadata = {
-  title: `${BRAND_NAME} · Prêt à exporter`,
-  description:
-    "AGRIVO vérifie la conformité RDUE d'une parcelle de cacao en quelques secondes, génère le certificat et ouvre l'accès au micro-crédit du producteur.",
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: `${BRAND_NAME} · Prêt à exporter`,
+    template: `%s · ${BRAND_NAME}`,
+  },
+  description: DESCRIPTION,
+  applicationName: BRAND_NAME,
+  keywords: ["RDUE", "EUDR", "conformité", "déforestation", "cacao", "Côte d'Ivoire", "traçabilité", "micro-crédit"],
+  icons: { icon: "/icons/icon.svg" },
+  openGraph: {
+    type: "website",
+    url: SITE_URL,
+    siteName: BRAND_NAME,
+    title: `${BRAND_NAME} · La conformité agricole, simplifiée`,
+    description: DESCRIPTION,
+    locale: "fr_FR",
+    images: [{ url: "/textures/sat-soubre-rural.jpg", width: 1200, height: 800, alt: "Parcelle agricole vérifiée par satellite près de Soubré, Côte d'Ivoire" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: `${BRAND_NAME} · La conformité agricole, simplifiée`,
+    description: DESCRIPTION,
+  },
 };
 
 export default function RootLayout({
@@ -68,6 +94,8 @@ export default function RootLayout({
           {/* Splash + bandeau cookies DANS le provider : ils consomment la langue (useLanguage). */}
           <SplashScreen />
           <CookieConsent />
+          <DemoGuide />
+          <PwaRegister />
         </LanguageProvider>
       </body>
     </html>

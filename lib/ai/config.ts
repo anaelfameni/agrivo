@@ -5,9 +5,11 @@
  * part de l'application. Les routes API renvoient des résultats pré-enregistrés en simulant
  * une latence réaliste (sensation d'appel réel). Ne JAMAIS dépendre d'un appel non testé en live.
  *
- * ⚠️ Forcé ON. Le toggle visuel de MOCK_MODE est présenté dans le dashboard exportateur (Prompt 5).
+ * Depuis la Session 10, le mode LIVE s'active en posant `GEMINI_API_KEY` dans l'environnement
+ * (.env.local en local, variables d'environnement sur Vercel). Sans clé : MOCK, comme avant.
+ * Même en LIVE, chaque route garde un repli mock si l'appel échoue (la démo ne casse jamais).
  */
-export const MOCK_MODE = true;
+export const MOCK_MODE = !process.env.GEMINI_API_KEY;
 
 /** Latence simulée (ms) d'un appel Whisp, pour un ressenti d'appel réseau réel. */
 export const SIMULATED_LATENCY_MS: [number, number] = [1200, 1800];

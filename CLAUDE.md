@@ -324,6 +324,13 @@ variables CSS dans `app/globals.css`.
 
 ## 📓 Journal de build (le plus récent en haut)
 
+### Session 10 — 2026-07-05 — README réécrit + PREMIER PUSH GitHub réussi
+- 📝 **README.md réécrit** (était figé à la Session 1) : reflète l'état réel — Next 16/Tailwind v4,
+  7 denrées RDUE, golden path, dashboards coop + exportateur, features IA, comptes démo
+  (`client@test.com`) et admin, i18n FR/EN, structure actuelle.
+- 🚀 **Push GitHub désormais FONCTIONNEL** : commit `b8aad47` poussé sur
+  `github.com/anaelfameni/agrivo` (main). Le blocage d'auth de la Session 9 est levé.
+
 ### Session 9 (suite 2) — 2026-07-05 — GitHub, compte admin, 1re feature IA (dossier de diligence)
 - 🔀 **Git** : ⚠️ le dépôt racine est **tout le disque `C:\`** (Nanti a son propre `.git` ; Agrivo non →
   `git init` dédié). Deux dépôts **séparés**, `.gitignore` vérifiés (**`.env*` exclus**, aucun secret ni

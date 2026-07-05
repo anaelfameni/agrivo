@@ -1,7 +1,14 @@
 "use client";
 
-import { Document, Page, Text, View, StyleSheet, pdf } from "@react-pdf/renderer";
+import { Document, Page, Text, View, StyleSheet, Image, pdf } from "@react-pdf/renderer";
+import QRCode from "qrcode";
 import type { CertificatData } from "@/lib/certificat-data";
+
+/** URL publique de vérification du certificat (cible du QR code imprimé). */
+function verificationUrl(numero: string): string {
+  const base = typeof window !== "undefined" ? window.location.origin : "https://agrivo-io.vercel.app";
+  return `${base}/verifier-certificat?ref=${encodeURIComponent(numero)}`;
+}
 
 /**
  * Certificat de conformité RDUE au format PDF (@react-pdf/renderer). Module « lourd » :
@@ -53,7 +60,7 @@ const styles = StyleSheet.create({
   footerText: { fontSize: 7.5, color: C.stoneLight, lineHeight: 1.5 },
 });
 
-export function CertificatDocument({ data }: { data: CertificatData }) {
+export function CertificatDocument({ data, qrDataUrl }: { data: CertificatData; qrDataUrl?: string }) {
   const col = statutColor(data.statut);
   return (
     <Document title={`Certificat ${data.numeroCertificat}`} author="Agrivo">
@@ -133,11 +140,22 @@ export function CertificatDocument({ data }: { data: CertificatData }) {
           </View>
         </View>
 
-        <Text style={styles.traces}>
-          Dossier prêt pour soumission sur TRACES NT (portail de l&apos;Union européenne). Traitement
-          des données réalisé avec le consentement éclairé du producteur, conformément à la loi
-          ivoirienne n°2013-450 (ARTCI).
-        </Text>
+        <View style={{ marginTop: 18, flexDirection: "row", alignItems: "center" }}>
+          <Text style={[styles.traces, { flex: 1, marginTop: 0 }]}>
+            Dossier prêt pour soumission sur TRACES NT (portail de l&apos;Union européenne). Traitement
+            des données réalisé avec le consentement éclairé du producteur, conformément à la loi
+            ivoirienne n°2013-450 (ARTCI).
+          </Text>
+          {qrDataUrl ? (
+            <View style={{ marginLeft: 12, alignItems: "center", width: 76 }}>
+              {/* eslint-disable-next-line jsx-a11y/alt-text -- react-pdf Image, pas de DOM */}
+              <Image src={qrDataUrl} style={{ width: 64, height: 64 }} />
+              <Text style={{ fontSize: 6.5, color: C.stoneLight, marginTop: 3, textAlign: "center" }}>
+                Scanner pour vérifier ce certificat
+              </Text>
+            </View>
+          ) : null}
+        </View>
 
         <View style={styles.footer} fixed>
           <Text style={styles.footerText}>
@@ -153,7 +171,13 @@ export function CertificatDocument({ data }: { data: CertificatData }) {
 
 /** Génère le PDF et déclenche le téléchargement (appelé au clic, côté client uniquement). */
 export async function telechargerCertificat(data: CertificatData): Promise<void> {
-  const blob = await pdf(<CertificatDocument data={data} />).toBlob();
+  // QR de vérification publique — si la génération échoue, le certificat part sans QR.
+  const qrDataUrl = await QRCode.toDataURL(verificationUrl(data.numeroCertificat), {
+    margin: 1,
+    width: 256,
+    color: { dark: "#0a1f14", light: "#ffffff" },
+  }).catch(() => undefined);
+  const blob = await pdf(<CertificatDocument data={data} qrDataUrl={qrDataUrl} />).toBlob();
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.href = url;
