@@ -324,6 +324,36 @@ variables CSS dans `app/globals.css`.
 
 ## 📓 Journal de build (le plus récent en haut)
 
+### Session 10 (suite) — 2026-07-05 — PROMPTS 6 + 7 exécutés + IA GEMINI RÉELLE
+- 📱 **Contexte (Anael)** : la démo du golden path se fera sur **l'app MOBILE développée par Christ** ;
+  la plateforme web = espace coop/exportateur + vérification publique. Équipe : Christ (mobile),
+  Gaddiel, Domy, Fatim (répartition proposée, voir GUIDE_DEMO_JURY.md + réponse Session 10).
+- 🤖 **IA réelle (Gemini)** : `lib/ai/gemini-live.ts` (client REST `generativelanguage`, modèle
+  `gemini-2.5-flash`, timeout 12 s, `CHARTE_SYSTEM` = règles de charte injectées). **Activation : poser
+  `GEMINI_API_KEY`** (.env.local / Vercel — voir `.env.local.example`) ; `MOCK_MODE` devient
+  `!process.env.GEMINI_API_KEY` (`lib/ai/config.ts`). **Repli mock automatique** sur toute erreur : la
+  démo ne casse jamais. Branché LIVE : `api/gemini/scan` (Vision OCR — `step-scan.tsx` capture désormais
+  une vraie frame caméra en base64), `api/gemini/memo` (réécriture rédactionnelle du DDS, faits
+  déterministes intouchés), `api/gemini/query` (mise en mots ; raisonnement/chiffres restent
+  déterministes). `explain` inchangé (phrases figées). Whisp reste mock (API FAO = inscription requise).
+  ⚠️ **Clé PAS ENCORE posée** : à faire par Anael (aistudio.google.com/apikey + Vercel env) puis tester.
+- 📲 **P6 — PWA** : `app/manifest.ts` (standalone, thème forest), icônes SVG `public/icons/`
+  (normale + maskable, pin+feuille), `public/sw.js` (réseau d'abord pour les pages, cache d'abord pour
+  `/_next/static` + images, jamais les API), page `/hors-connexion`, `components/pwa-register.tsx`
+  (désenregistre en dev). **Guide présentateur** : `components/demo-guide.tsx` — **Ctrl+Shift+D**
+  n'importe où (5 étapes, comptes, phrases jury, plan B), monté dans le layout racine.
+- 🔍 **P7 — Vérification publique de certificat** : page `/verifier-certificat` (+ `?ref=`), lookup par
+  n° AGV dans PARCELLES, verdict + détails + avertissement « évaluation, pas garantie » ; lien footer
+  FR/EN. **QR code dans le PDF** (dép. `qrcode`) : pointe vers `/verifier-certificat?ref=<n°>`,
+  « Scanner pour vérifier ce certificat » (échec QR → PDF sans QR). **SEO/OG** : metadataBase
+  `agrivo-io.vercel.app`, OpenGraph + Twitter card (image satellite Soubré), title template,
+  `app/robots.ts` (disallow /app /api), `app/sitemap.ts`. **`GUIDE_DEMO_JURY.md`** (racine) : déroulé
+  7 min, questions pièges, **script vidéo de secours plan par plan (2 min 30)** à tourner avant le 11/07.
+- ✅ **GATE** : `tsc` ✓ · `next build` vert (**32 routes**) · déployé Vercel + **alias
+  `agrivo-io.vercel.app` réassigné** (⚠️ leçon : cet alias custom ne suit PAS `vercel --prod`, le
+  réassigner à chaque déploiement OU l'ajouter en domaine du projet) · smoke-tests 200 (manifest, sw,
+  verifier-certificat).
+
 ### Session 10 — 2026-07-05 — README réécrit + PREMIER PUSH GitHub réussi
 - 📝 **README.md réécrit** (était figé à la Session 1) : reflète l'état réel — Next 16/Tailwind v4,
   7 denrées RDUE, golden path, dashboards coop + exportateur, features IA, comptes démo
