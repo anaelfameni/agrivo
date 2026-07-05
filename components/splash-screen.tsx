@@ -458,7 +458,7 @@ export function SplashScreen() {
               <SplashLogo reduced={reduced} />
 
               {/* Ligne 1 : reveal staggeré mot par mot (espaces réels entre les mots) */}
-              <h1 className="mt-9 font-display text-4xl font-semibold leading-tight sm:text-5xl">
+              <h1 className="mt-9 font-brand-serif text-4xl font-semibold leading-tight sm:text-5xl">
                 {LINE1.map((word, i) => (
                   <Fragment key={word}>
                     <motion.span

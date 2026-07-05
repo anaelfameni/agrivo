@@ -9,10 +9,13 @@
 
 import * as React from "react";
 
+export type UserRole = "admin" | "manager";
+
 export interface AppUser {
   email: string;
   nom: string;
   organisation: string;
+  role?: UserRole;
 }
 
 interface StoredUser extends AppUser {
@@ -38,6 +41,14 @@ export const DEMO_ACCOUNT = {
   password: "123client123",
   nom: "Amadou",
   organisation: "Coopérative Agricole de Soubré",
+} as const;
+
+/** Compte administrateur (accès à l'espace /app/admin : clés d'API, MOCK_MODE, état système). */
+export const ADMIN_ACCOUNT = {
+  email: "admin@agrivo.com",
+  password: "123admin123",
+  nom: "Administrateur",
+  organisation: "Agrivo",
 } as const;
 
 const SESSION_KEY = "agrivo:session";
@@ -91,14 +102,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     (email, password) => {
       const e = email.trim().toLowerCase();
       if (!e || !password) return { ok: false, error: "Renseignez votre e-mail et votre mot de passe." };
+      if (e === ADMIN_ACCOUNT.email && password === ADMIN_ACCOUNT.password) {
+        persist({ email: ADMIN_ACCOUNT.email, nom: ADMIN_ACCOUNT.nom, organisation: ADMIN_ACCOUNT.organisation, role: "admin" });
+        return { ok: true };
+      }
       if (e === DEMO_ACCOUNT.email && password === DEMO_ACCOUNT.password) {
-        persist({ email: DEMO_ACCOUNT.email, nom: DEMO_ACCOUNT.nom, organisation: DEMO_ACCOUNT.organisation });
+        persist({ email: DEMO_ACCOUNT.email, nom: DEMO_ACCOUNT.nom, organisation: DEMO_ACCOUNT.organisation, role: "manager" });
         return { ok: true };
       }
       const found = readUsers().find((u) => u.email.toLowerCase() === e);
       if (!found) return { ok: false, error: "Aucun compte n'est associé à cet e-mail." };
       if (found.password !== password) return { ok: false, error: "Mot de passe incorrect." };
-      persist({ email: found.email, nom: found.nom, organisation: found.organisation });
+      persist({ email: found.email, nom: found.nom, organisation: found.organisation, role: "manager" });
       return { ok: true };
     },
     [persist],
@@ -107,7 +122,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const signup = React.useCallback<AuthContextValue["signup"]>(
     (data) => {
       const e = data.email.trim().toLowerCase();
-      if (e === DEMO_ACCOUNT.email) return { ok: false, error: "Cet e-mail est réservé au compte de démonstration." };
+      if (e === DEMO_ACCOUNT.email || e === ADMIN_ACCOUNT.email) return { ok: false, error: "Cet e-mail est réservé à un compte de démonstration." };
       const users = readUsers();
       if (users.some((u) => u.email.toLowerCase() === e))
         return { ok: false, error: "Un compte existe déjà pour cet e-mail." };
@@ -118,7 +133,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         password: data.password,
       };
       writeUsers([...users, stored]);
-      persist({ email: stored.email, nom: stored.nom, organisation: stored.organisation });
+      persist({ email: stored.email, nom: stored.nom, organisation: stored.organisation, role: "manager" });
       return { ok: true };
     },
     [persist],

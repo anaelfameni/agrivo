@@ -64,7 +64,7 @@ export function Logo({
       </svg>
       {showWord && (
         <span
-          className="font-display text-xl not-italic"
+          className="font-brand-serif text-xl not-italic"
           style={{ fontStyle: "normal", fontWeight: 600 }}
         >
           {BRAND_NAME}

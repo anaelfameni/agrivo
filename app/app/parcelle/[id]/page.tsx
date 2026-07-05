@@ -1,8 +1,12 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, Download, FileCheck2, Layers, MapPin, Ruler, CalendarDays } from "lucide-react";
+import { ArrowLeft, Download, FileCheck2, Layers, MapPin, Ruler, CalendarDays, Sparkles } from "lucide-react";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { ParcelleMap } from "@/components/app/parcelle-map";
+import { DdsMemo } from "@/components/app/dds-memo";
+import { RiskCard } from "@/components/app/risk-card";
+import { CreditScoreCard } from "@/components/app/credit-score-card";
+import { analyserRisque, scorerCreditProducteur, resumerChangementSatellite } from "@/lib/ai/gemini";
 import {
   FILIERE_LABEL,
   STATUT_PHRASE,
@@ -71,6 +75,35 @@ export default async function ParcelleDetailPage({
             <p className="mt-3 max-w-2xl text-[0.95rem] leading-relaxed text-stone-600">
               {STATUT_PHRASE[p.statut]}
             </p>
+
+            {/* Lecture satellite : narration IA du changement de couvert depuis la date pivot */}
+            {(() => {
+              const changement = resumerChangementSatellite(p);
+              return (
+                <div className="mt-4 rounded-xl border border-black/[0.06] bg-ivory-deep/30 p-3.5">
+                  <p className="flex items-center gap-1.5 text-[0.7rem] font-semibold uppercase tracking-wide text-green-signal">
+                    <Sparkles size={12} strokeWidth={2.5} aria-hidden /> Lecture satellite · IA
+                  </p>
+                  <p className="mt-1.5 text-sm leading-relaxed text-stone-600">{changement.narratif}</p>
+                  <ol className="mt-3 flex flex-col gap-2">
+                    {changement.observations.map((o) => (
+                      <li key={o.periode} className="flex items-start gap-2.5 text-xs">
+                        <span
+                          className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full"
+                          style={{ background: o.sens === "positif" ? "var(--color-green-signal)" : o.sens === "négatif" ? "var(--color-red-block)" : "var(--color-stone-400)" }}
+                          aria-hidden
+                        />
+                        <span>
+                          <span className="num font-medium text-forest-950">{o.periode}</span>{" "}
+                          <span className="text-stone-500">— {o.note}</span>
+                        </span>
+                      </li>
+                    ))}
+                  </ol>
+                </div>
+              );
+            })()}
+
             <p className="mt-4 flex flex-wrap items-center gap-x-2 gap-y-1 border-t border-black/[0.05] pt-4 text-xs text-stone-500">
               <span>Date pivot d&apos;analyse</span>
               <span aria-hidden className="text-stone-300">·</span>
@@ -87,6 +120,9 @@ export default async function ParcelleDetailPage({
               ))}
             </div>
           </div>
+
+          {/* Analyse de risque RDUE expliquée (feature IA) */}
+          <RiskCard risk={analyserRisque(p)} />
         </div>
 
         {/* Colonne infos + crédit + certificat */}
@@ -104,6 +140,9 @@ export default async function ParcelleDetailPage({
               )}
             </dl>
           </div>
+
+          {/* Scoring de crédit explicable (feature IA — inclusion financière) */}
+          <CreditScoreCard score={scorerCreditProducteur(p)} />
 
           {/* Section crédit (uniquement si une proposition existe) */}
           {credit && (
@@ -136,6 +175,9 @@ export default async function ParcelleDetailPage({
           </button>
         </div>
       </div>
+
+      {/* Dossier de diligence (DDS) généré par l'IA — feature IA phare */}
+      <DdsMemo parcelleId={p.id} />
     </div>
   );
 }

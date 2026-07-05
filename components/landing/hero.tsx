@@ -196,7 +196,7 @@ export function Hero() {
             </motion.div>
 
             <h1
-              className="font-display mt-6 leading-[1.04] tracking-[-0.03em] text-4xl md:text-6xl"
+              className="font-brand-serif mt-6 leading-[1.04] tracking-[-0.03em] text-4xl md:text-6xl"
               style={{ fontWeight: 700 }}
             >
               <motion.span variants={V.line1} initial="hidden" animate={controls} className="block">

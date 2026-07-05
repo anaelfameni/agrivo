@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Space_Grotesk } from "next/font/google";
+import { Geist, Geist_Mono, Newsreader, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 import { SplashScreen } from "@/components/splash-screen";
 import { LanguageProvider } from "@/components/language-provider";
@@ -28,6 +28,16 @@ const display = Space_Grotesk({
   display: "swap",
 });
 
+// Signature serif de marque (demande Anael) — Newsreader restaurée UNIQUEMENT sur le wordmark
+// « Agrivo », le titre hero et l'écran de bienvenue via la classe `.font-brand-serif`. Les autres
+// titres restent en Space Grotesk.
+const brandSerif = Newsreader({
+  variable: "--font-newsreader",
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  display: "swap",
+});
+
 export const metadata: Metadata = {
   title: `${BRAND_NAME} · Prêt à exporter`,
   description:
@@ -41,7 +51,7 @@ export default function RootLayout({
     <html
       lang="fr"
       suppressHydrationWarning
-      className={`${display.variable} ${sans.variable} ${mono.variable} antialiased`}
+      className={`${display.variable} ${brandSerif.variable} ${sans.variable} ${mono.variable} antialiased`}
     >
       <head>
         {/* Anti-flash : pose un masque forest sur « / » AVANT le premier paint.

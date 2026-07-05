@@ -1,0 +1,156 @@
+"use client";
+
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { motion, useReducedMotion } from "framer-motion";
+import { Activity, KeyRound, Lock, Server, ShieldCheck, ShieldAlert } from "lucide-react";
+import { useAuth } from "@/components/auth-provider";
+import { MOCK_MODE } from "@/lib/ai/config";
+
+const EASE = [0.16, 1, 0.3, 1] as const;
+
+const SERVICES = [
+  { name: "Whisp API (FAO)", desc: "Détection satellite de déforestation", status: "ok" as const },
+  { name: "Gemini API (Google)", desc: "Vision, langage, copilote", status: "ok" as const },
+  { name: "Copernicus / Sentinel-2", desc: "Imagerie satellite", status: "ok" as const },
+  { name: "TRACES NT", desc: "Dépôt des déclarations (DDS)", status: "ok" as const },
+];
+
+const API_KEYS = ["WHISP_API_KEY", "GEMINI_API_KEY", "GOOGLE_EARTH_ENGINE_KEY"];
+
+export default function AdminPage() {
+  const { user, loading } = useAuth();
+  const router = useRouter();
+  const reduce = useReducedMotion();
+
+  // Réservé au rôle admin : un gérant connecté est renvoyé vers son tableau de bord.
+  useEffect(() => {
+    if (!loading && user && user.role !== "admin") router.replace("/app/dashboard");
+  }, [loading, user, router]);
+
+  if (!user || user.role !== "admin") {
+    return (
+      <div className="grid min-h-[50vh] place-items-center">
+        <div className="flex flex-col items-center gap-3 text-center">
+          <span className="grid h-12 w-12 place-items-center rounded-2xl bg-red-block/10">
+            <ShieldAlert size={24} className="text-red-block" aria-hidden />
+          </span>
+          <p className="text-sm text-stone-500">Espace réservé aux administrateurs. Redirection…</p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex flex-col gap-6">
+      {/* En-tête admin (panneau sombre, distinct de l'espace coopérative) */}
+      <motion.div
+        initial={reduce ? { opacity: 1 } : { opacity: 0, y: 16 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, ease: EASE }}
+        className="panel-forest relative overflow-hidden rounded-3xl border border-white/10 p-6 shadow-[0_30px_70px_-40px_rgba(10,31,20,0.8)] sm:p-8"
+      >
+        <div aria-hidden className="pointer-events-none absolute -right-12 -top-20 h-64 w-64 rounded-full bg-green-signal/25 blur-3xl" />
+        <div className="grain pointer-events-none absolute inset-0 opacity-[0.05]" />
+        <div className="relative">
+          <p className="eyebrow flex items-center gap-2 text-green-signal">
+            <ShieldCheck size={14} strokeWidth={2.5} aria-hidden />
+            Administration
+          </p>
+          <h1 className="mt-2.5 font-display text-3xl leading-tight text-white sm:text-[2.4rem]">Console admin</h1>
+          <p className="mt-1.5 text-sm text-white/55">
+            Clés d&apos;API, mode de démonstration et état des services externes. Accès restreint.
+          </p>
+        </div>
+      </motion.div>
+
+      <div className="grid gap-5 lg:grid-cols-2">
+        {/* Clés d'API (masquées, injectées côté serveur) */}
+        <section className="card-premium p-5">
+          <div className="flex items-center gap-2">
+            <span className="chip-green grid h-9 w-9 place-items-center rounded-xl" aria-hidden>
+              <KeyRound size={17} strokeWidth={2} className="text-green-signal" />
+            </span>
+            <h2 className="text-sm font-semibold text-forest-950">Clés d&apos;API</h2>
+          </div>
+          <p className="mt-2 text-xs text-stone-500">
+            Injectées côté serveur, jamais exposées au client. Le parcours passe toujours par une route API.
+          </p>
+          <div className="mt-4 flex flex-col gap-2.5">
+            {API_KEYS.map((k) => (
+              <div key={k} className="flex items-center gap-3 rounded-xl border border-black/[0.06] bg-ivory/50 px-3 py-2.5">
+                <Lock size={14} strokeWidth={2} className="shrink-0 text-stone-400" aria-hidden />
+                <span className="num flex-1 text-xs text-stone-600">{k}</span>
+                <span className="num tracking-widest text-stone-400" aria-label="Valeur masquée">••••••••••</span>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* MOCK_MODE */}
+        <section className="card-premium p-5">
+          <div className="flex items-start justify-between gap-4">
+            <div>
+              <h2 className="flex items-center gap-2 text-sm font-semibold text-forest-950">
+                <span className="chip-green grid h-9 w-9 place-items-center rounded-xl" aria-hidden>
+                  <ShieldCheck size={17} strokeWidth={2} className="text-green-signal" />
+                </span>
+                Mode démonstration
+              </h2>
+              <p className="mt-2 max-w-sm text-xs text-stone-500">
+                Forcé activé : aucun appel réseau live ne part de l&apos;application. Les résultats sont
+                pré-enregistrés avec une latence simulée. La démo ne dépend d&apos;aucun service externe.
+              </p>
+              <p className="num mt-2 text-[0.7rem] text-stone-400">MOCK_MODE = {String(MOCK_MODE)}</p>
+            </div>
+            <div
+              role="switch"
+              aria-checked={MOCK_MODE}
+              aria-disabled="true"
+              aria-label="MOCK_MODE forcé activé"
+              className="relative mt-0.5 h-6 w-11 shrink-0 cursor-not-allowed rounded-full bg-green-signal"
+              title="Verrouillé pour sécuriser la démonstration"
+            >
+              <span className="absolute right-0.5 top-0.5 h-5 w-5 rounded-full bg-white shadow-sm" />
+            </div>
+          </div>
+        </section>
+
+        {/* État des services */}
+        <section className="card-premium p-5 lg:col-span-2">
+          <div className="flex items-center justify-between">
+            <h2 className="flex items-center gap-2 text-sm font-semibold text-forest-950">
+              <span className="chip-green grid h-9 w-9 place-items-center rounded-xl" aria-hidden>
+                <Server size={17} strokeWidth={2} className="text-green-signal" />
+              </span>
+              État des services
+            </h2>
+            <span className="flex items-center gap-1.5 text-[0.7rem] text-stone-500">
+              <span className="relative flex h-2 w-2">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-signal/60" />
+                <span className="relative inline-flex h-2 w-2 rounded-full bg-green-signal" />
+              </span>
+              opérationnel
+            </span>
+          </div>
+          <ul className="mt-4 grid gap-2.5 sm:grid-cols-2">
+            {SERVICES.map((s) => (
+              <li key={s.name} className="flex items-center gap-3 rounded-xl border border-black/[0.06] bg-white px-3.5 py-3">
+                <span className="relative grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-green-signal/10">
+                  <Activity size={15} strokeWidth={2} className="text-green-signal" aria-hidden />
+                </span>
+                <div className="min-w-0 flex-1">
+                  <p className="truncate text-sm font-medium text-forest-950">{s.name}</p>
+                  <p className="truncate text-xs text-stone-500">{s.desc}</p>
+                </div>
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-green-signal/12 px-2.5 py-1 text-[0.7rem] font-semibold text-green-signal">
+                  <span className="h-1.5 w-1.5 rounded-full bg-green-signal" /> OK
+                </span>
+              </li>
+            ))}
+          </ul>
+        </section>
+      </div>
+    </div>
+  );
+}

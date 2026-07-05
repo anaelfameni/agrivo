@@ -10,7 +10,8 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion } from "framer-motion";
-import { LayoutDashboard, Users, Map, Globe, Settings, type LucideIcon } from "lucide-react";
+import { LayoutDashboard, Users, Map, Globe, Settings, ShieldCheck, type LucideIcon } from "lucide-react";
+import { useAuth } from "@/components/auth-provider";
 
 const NAV: { href: string; label: string; Icon: LucideIcon }[] = [
   { href: "/app/dashboard", label: "Vue d'ensemble", Icon: LayoutDashboard },
@@ -20,6 +21,8 @@ const NAV: { href: string; label: string; Icon: LucideIcon }[] = [
   { href: "/app/parametres", label: "Paramètres", Icon: Settings },
 ];
 
+const ADMIN_ITEM = { href: "/app/admin", label: "Admin", Icon: ShieldCheck };
+
 const SPRING = { type: "spring", stiffness: 420, damping: 34 } as const;
 
 function useIsActive() {
@@ -27,12 +30,19 @@ function useIsActive() {
   return (href: string) => path === href || path.startsWith(href + "/");
 }
 
+/** NAV enrichie de l'entrée « Admin » uniquement pour le rôle admin. */
+function useNav() {
+  const { user } = useAuth();
+  return user?.role === "admin" ? [...NAV, ADMIN_ITEM] : NAV;
+}
+
 export function AppSidebar() {
   const isActive = useIsActive();
+  const nav = useNav();
   return (
     <aside className="hidden w-56 shrink-0 md:block">
       <nav className="sticky top-24 flex flex-col gap-1.5" aria-label="Navigation de l'espace">
-        {NAV.map(({ href, label, Icon }) => {
+        {nav.map(({ href, label, Icon }) => {
           const active = isActive(href);
           return (
             <Link
@@ -79,12 +89,13 @@ export function AppSidebar() {
 
 export function AppMobileNav() {
   const isActive = useIsActive();
+  const nav = useNav();
   return (
     <nav
       aria-label="Navigation de l'espace"
       className="sticky top-16 z-30 -mx-5 flex gap-1.5 overflow-x-auto border-b border-black/[0.06] bg-ivory/90 px-5 py-2.5 backdrop-blur md:hidden"
     >
-      {NAV.map(({ href, label, Icon }) => {
+      {nav.map(({ href, label, Icon }) => {
         const active = isActive(href);
         return (
           <Link

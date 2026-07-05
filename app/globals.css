@@ -21,6 +21,8 @@
   --font-display: var(--font-space-grotesk), "Geist", system-ui, sans-serif;
   --font-sans: var(--font-geist-sans), system-ui, sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+  /* Signature serif restaurée (Newsreader) — réservée au wordmark, au hero et à l'écran de bienvenue. */
+  --font-brand-serif: var(--font-newsreader), Georgia, "Times New Roman", serif;
 
   --radius-soft: 14px;
 }
@@ -65,6 +67,15 @@ body {
   font-style: normal;
   letter-spacing: -0.02em;
   font-weight: 600;
+}
+
+/* Signature serif de marque (Newsreader) — restaurée UNIQUEMENT sur le wordmark « Agrivo »,
+   le titre hero et l'écran de bienvenue (demande Anael). Poids laissé aux utilitaires/inline
+   du caller pour ne pas écraser les graisses existantes (hero 700, splash/logo 600). */
+.font-brand-serif {
+  font-family: var(--font-brand-serif);
+  font-style: normal;
+  letter-spacing: -0.02em;
 }
 
 /* Chiffres : toujours en mono, chasse tabulaire */

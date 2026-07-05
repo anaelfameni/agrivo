@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { interrogerPortefeuille } from "@/lib/ai/gemini";
+import { runPortfolioAgent } from "@/lib/ai/gemini";
 import { PARCELLES } from "@/data/mock-parcelles";
 import { MOCK_MODE, simulatedLatency, sleep } from "@/lib/ai/config";
 
@@ -14,6 +14,6 @@ export async function POST(req: Request) {
   // Une réponse conversationnelle est un peu plus rapide qu'une analyse satellite.
   const analyseMs = Math.round(simulatedLatency() * 0.6);
   if (MOCK_MODE) await sleep(analyseMs);
-  const answer = interrogerPortefeuille(question ?? "", PARCELLES);
+  const answer = runPortfolioAgent(question ?? "", PARCELLES);
   return NextResponse.json({ ...answer, analyseMs });
 }

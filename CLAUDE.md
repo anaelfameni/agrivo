@@ -324,6 +324,46 @@ variables CSS dans `app/globals.css`.
 
 ## 📓 Journal de build (le plus récent en haut)
 
+### Session 9 (suite 2) — 2026-07-05 — GitHub, compte admin, 1re feature IA (dossier de diligence)
+- 🔀 **Git** : ⚠️ le dépôt racine est **tout le disque `C:\`** (Nanti a son propre `.git` ; Agrivo non →
+  `git init` dédié). Deux dépôts **séparés**, `.gitignore` vérifiés (**`.env*` exclus**, aucun secret ni
+  `node_modules` commité). Commits initiaux (Agrivo `0d40088`, Nanti `93feed9`), remotes →
+  `github.com/anaelfameni/{agrivo,nanti}`. **PUSH NON FAIT** : pas de `gh` CLI, pas d'auth GitHub, dépôts
+  inexistants → étape d'auth restante côté Anael (installer gh + `gh auth login`, ou créer les dépôts).
+- 🛡️ **P2 — Compte admin** : rôle `admin|manager` (`auth-provider`), compte **`admin@agrivo.com` /
+  `123admin123`**, page **`/app/admin`** (clés d'API masquées + MOCK_MODE + état des services, panneau vert
+  forêt), lien sidebar **admin-only** (`useNav()`). Les clés/MOCK retirés de l'onglet exportateur vivent ici.
+- 🤖 **IA — recherche + 1re feature** : `PROMPT_IA_AGRIVO.md` (brief : audit IA actuelle = stubs MOCK ;
+  état de l'art RDUE ; roadmap features P1/P2 ; Gemini=Vision, Claude=raisonnement/rapport, Whisp=détection).
+  **Feature phare livrée = « Dossier de diligence (DDS) par IA »** : `genererMemoDiligence` (`lib/ai/gemini.ts`,
+  trame DÉTERMINISTE tirée des vraies données + rédaction IA, charte-safe : statuts figés, « évaluation » pas
+  « garantie », 0 % inventé), route `app/api/gemini/memo`, îlot client `components/app/dds-memo.tsx` monté sur
+  `/app/parcelle/[id]` (génération + révélation staggerée). Repli MOCK (latence simulée). **Reste roadmap IA** :
+  copilote agentique v2 (function-calling + streaming), analyse de risque expliquée, scoring crédit XAI, vocal.
+- ✅ **GATE** : `tsc` ✓ · `next build` **vert (27 routes)** — `/app/admin` + `/api/gemini/memo` inclus.
+
+### Session 9 (suite 3) — 2026-07-05 — IA : copilote agentique v2 + analyse de risque expliquée
+- 🤖 **Copilote agentique v2** (`runPortfolioAgent`, `lib/ai/gemini.ts`) : expose la **trace des outils
+  réellement exécutés** sur le portefeuille (scanPortefeuille, filtreRégion, filtreFilière, agrégation)
+  — structure prête pour du **function-calling** LLM réel. Route `api/gemini/query` bascule dessus.
+  UI `assistant-tab.tsx` : chips « Outils exécutés » sous chaque réponse ; sous-titre « Copilote agentique ».
+- ⚖️ **Analyse de risque RDUE expliquée** (`analyserRisque`, XAI, aide à la décision) : niveau qualitatif
+  **Faible/Modéré/Élevé/Bloquant** (jamais de % inventé) + facteurs pondérés (+/–/neutre) + recommandation.
+  Composant PUR serveur `components/app/risk-card.tsx`, monté sur `/app/parcelle/[id]` (calcul serveur).
+- 🧾 Charte respectée (statuts figés, « évaluation » pas « garantie », honnête mock vs prod).
+- 💳 **Scoring de crédit explicable** (`scorerCreditProducteur`, XAI, inclusion financière) : éligibilité
+  conditionnée à la conformité, **classe A/B/C** + **plafond recommandé** borné 50k–250k FCFA + signaux
+  (conformité, sols, capacité, historique) + explication. Composant PUR `components/app/credit-score-card.tsx`,
+  monté sur `/app/parcelle/[id]`. Aide à la décision (validation humaine), prêt remboursable (jamais gratuit).
+- 🛰️ **Résumé de changement satellite** (`resumerChangementSatellite`, narration IA) : évolution du couvert
+  depuis la date pivot en langage clair + mini-timeline d'observations (qualitatif). Intégré DANS la carte
+  verdict de `/app/parcelle/[id]` (bloc « Lecture satellite · IA »), pas une carte de plus (densité maîtrisée).
+- **Reste roadmap IA** : **assistant vocal dioula/baoulé** → nécessite un vrai TTS pour ces langues (Web
+  Speech API ne les couvre pas) ; à ne PAS simuler (honnêteté). **Hors IA** : traduction EN `/app` + pages
+  secondaires ; push GitHub (bloqué sur auth Anael).
+- ✅ **5 features IA livrées** cette session (DDS memo, copilote agentique v2, analyse de risque, scoring
+  crédit, résumé satellite). GATE : `tsc` ✓ · `next build` **vert**. `/app/parcelle/[id]` = cockpit IA.
+
 ### Session 9 (suite) — 2026-07-05 — Refonte design interface client + police Space Grotesk
 - 🅰️ **Police finale = `Space Grotesk`** pour TOUS les titres (Newsreader + **Fraunces** retirés — Anael :
   « ça ressemble à l'IA »). `.font-display` ET `.font-premium` → `--font-display` = Space Grotesk, droit.

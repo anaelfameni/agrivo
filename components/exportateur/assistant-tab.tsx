@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import { ArrowUp, Sparkles } from "lucide-react";
+import { ArrowUp, Sparkles, Wrench } from "lucide-react";
 import { PinMark } from "@/components/ui/pin-mark";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { QUESTIONS_SUGGEREES } from "@/lib/ai/gemini";
@@ -17,6 +17,7 @@ interface Msg {
   animate?: boolean;
   parcelles?: Parcelle[];
   metric?: { label: string; value: string };
+  tools?: { name: string; detail: string }[];
 }
 
 let msgSeq = 0;
@@ -92,12 +93,13 @@ export function AssistantTab({
         texte: string;
         parcelles: Parcelle[];
         metric?: { label: string; value: string };
+        tools?: { name: string; detail: string }[];
         analyseMs: number;
       };
       pushLog({ service: "Gemini API", label: `Requête assistant · réponse en ${data.analyseMs} ms`, ms: data.analyseMs, status: "ok" });
       setMessages((m) => [
         ...m,
-        { id: nid(), role: "assistant", text: data.texte, animate: true, parcelles: data.parcelles, metric: data.metric },
+        { id: nid(), role: "assistant", text: data.texte, animate: true, parcelles: data.parcelles, metric: data.metric, tools: data.tools },
       ]);
     } catch {
       setMessages((m) => [
@@ -121,7 +123,7 @@ export function AssistantTab({
           <p className="text-sm font-semibold text-forest-950">Assistant AGRIVO</p>
           <p className="flex items-center gap-1.5 text-xs text-stone-500">
             <Sparkles size={12} strokeWidth={2} className="text-green-signal" aria-hidden />
-            Raisonne sur vos données vérifiées · Gemini
+            Copilote agentique · exécute des outils sur vos données vérifiées
           </p>
         </div>
       </div>
@@ -154,6 +156,24 @@ export function AssistantTab({
                 <div className="rounded-2xl rounded-tl-md bg-ivory-deep/60 px-4 py-2.5 text-sm leading-relaxed text-forest-950">
                   <TypedText text={m.text} animate={m.animate} onTick={scrollToEnd} />
                 </div>
+
+                {m.tools && m.tools.length > 0 && (
+                  <div className="flex flex-wrap items-center gap-1.5">
+                    <span className="inline-flex items-center gap-1 text-[0.62rem] font-semibold uppercase tracking-wide text-stone-400">
+                      <Wrench size={11} strokeWidth={2.5} aria-hidden /> Outils exécutés
+                    </span>
+                    {m.tools.map((t, i) => (
+                      <span
+                        key={i}
+                        className="inline-flex items-center gap-1 rounded-full border border-green-signal/20 bg-green-signal/[0.06] px-2 py-0.5 text-[0.68rem] text-forest-800"
+                        title={`${t.name} → ${t.detail}`}
+                      >
+                        <span className="num font-semibold text-green-signal">{t.name}</span>
+                        <span className="text-stone-400">{t.detail}</span>
+                      </span>
+                    ))}
+                  </div>
+                )}
 
                 {m.metric && (
                   <div className="inline-flex items-baseline gap-2 rounded-xl border border-green-signal/20 bg-green-signal/[0.06] px-3 py-2">
