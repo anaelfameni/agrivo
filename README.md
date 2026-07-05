@@ -3,11 +3,10 @@
 **La conformité agricole, simplifiée.** — projet Vibeathon 2026.
 
 AGRIVO permet aux coopératives agricoles ivoiriennes de vérifier en quelques secondes si une parcelle
-de cacao respecte le **RDUE** (règlement européen anti-déforestation), de générer un **certificat**, et
-d'ouvrir l'accès au **micro-crédit** pour le producteur conforme.
-
-Ce dépôt contient l'application web (PWA cible). **Session 1** pose les fondations : le système de design
-complet et la **page d'entrée animée**.
+respecte le **RDUE** (Règlement UE 2023/1115 anti-déforestation), de générer un **certificat PDF**
+compatible TRACES NT, et d'ouvrir l'accès au **micro-crédit** (50 000–250 000 FCFA, Mobile Money)
+pour le producteur conforme. La plateforme couvre les **7 matières premières du RDUE** : cacao, café,
+hévéa, palmier à huile, bovins, soja et bois.
 
 ---
 
@@ -20,94 +19,71 @@ npm install      # installer les dépendances
 npm run dev      # serveur de développement → http://localhost:3000
 npm run build    # build de production
 npm run start    # servir le build de production
-npm run lint     # linter (next lint)
+npm run lint     # linter
 ```
 
-La route `/` affiche la **page d'entrée animée** (une fois par session), puis mène à `/accueil`.
+**Compte de démonstration** : `client@test.com` / `123client123` (Amadou · Coopérative de Soubré).
+Compte admin : `admin@agrivo.com` / `123admin123`.
+
+La route `/` affiche l'**écran de bienvenue animé** puis la landing. `MOCK_MODE` est actif : aucune
+clé d'API requise, toutes les réponses IA sont simulées côté serveur.
 
 ---
 
-## 🗂️ Structure des dossiers
+## 🧭 Parcours produit
+
+- **Golden path (5 étapes)** : sélection coopérative → scan de la carte producteur (Gemini Vision) →
+  cartographie de la parcelle (GeoJSON RFC 7946) → verdict Whisp (Conforme · Anomalie détectée ·
+  Données insuffisantes) + explication IA + badge sols + certificat PDF → inclusion financière.
+- **Espace coopérative** (`/app`) : tableau de bord (4 KPI : producteurs audités · taux de conformité ·
+  superficie cartographiée · volume validé), producteurs, parcelles, vérification, paramètres.
+- **Dashboard exportateur** (`/app/exportateur`) : analytique + carte satellite du portefeuille,
+  export GeoJSON TRACES NT, copilote conversationnel, journal réseau et alertes.
+- **Fiche parcelle** (`/app/parcelle/[id]`) : verdict, mémo de diligence (DDS) généré par IA,
+  analyse de risque expliquée, scoring de crédit explicable, résumé de changement satellite.
+- **Site vitrine** : méthodologie, tarifs, FAQ, à-propos, contact, aide, pages légales
+  (confidentialité, CGU, mentions légales). Interface bilingue **FR / EN**.
+
+## 🤖 Deux IA
+
+- **Whisp (FAO)** — détection de déforestation par satellite, outil de référence ONU pour le RDUE
+  (date pivot 31/12/2020, convergence de preuves).
+- **Gemini (Google)** — vision (OCR carte producteur), langage (explications de verdict, mémo DDS,
+  copilote portefeuille).
+
+---
+
+## 🗂️ Structure du projet
 
 ```
 app/
-  layout.tsx          Polices (next/font), <LanguageProvider>, metadata globale
-  globals.css         Directives Tailwind + styles de base + prefers-reduced-motion
-  page.tsx            « / » — page d'entrée animée (splash)
-  accueil/page.tsx    « /accueil » — placeholder on-brand (page complète = prochaine session)
-  not-found.tsx       Page 404 on-brand
+  layout.tsx          Polices next/font, LanguageProvider, AuthProvider, SplashScreen
+  globals.css         Tailwind v4 (@theme) : palette Forêt & Données, effets, animations
+  page.tsx            Landing (hero + sections)
+  connexion/ inscription/          Authentification (session localStorage)
+  methodologie/ tarifs/ faq/ ...   Pages vitrine et légales
+  app/                Espace applicatif protégé (dashboard, verifier, parcelles,
+                      producteurs, exportateur, parametres, admin, consentement)
+  api/                Routes serveur mockées (whisp/verify, gemini/scan|explain|query|memo)
 components/
-  ParcelPolygon.tsx   Motif signature (variantes draw / pulse) + PARCEL_PATH / PARCEL_VERTICES
-  Header.tsx          En-tête global (wordmark + navigation + LanguageSwitcher + menu mobile)
-  LanguageProvider.tsx  Contexte i18n (client) + hook useLanguage()
-  ui/                 Composants de base :
-                        Button · Card · Input · Select · Textarea · StatusBadge
-                        AnimatedCounter · LanguageSwitcher · EmptyState · ErrorState
+  splash-screen.tsx   Écran de bienvenue animé
+  landing/ ui/ app/ verifier/ exportateur/ legal/
 config/
-  brand.ts            BRAND_NAME et BRAND_TAGLINE (à importer partout, jamais de nom en dur)
+  brand.ts            BRAND_NAME, BRAND_TAGLINE
+  filieres.ts         Source de vérité unique des 7 denrées RDUE
+data/mock-parcelles.ts  45 parcelles de démonstration (9 coopératives)
 lib/
-  utils.ts            cn() — fusion de classes Tailwind (fondation shadcn/ui)
-  i18n.ts             Dictionnaire de traduction fr / dioula / baoulé + types
-tailwind.config.ts    Tous les tokens de design
-CLAUDE.md             Mémoire de projet (charte, règles de contenu, faits produit, avancement)
+  ai/                 Stubs Whisp + Gemini (MOCK_MODE), analyse de risque, scoring crédit
+  i18n.ts             Dictionnaire FR / EN
 ```
 
----
-
-## 🎨 Où se trouvent les tokens de design
-
-Toute décision visuelle part de deux endroits, jamais de valeurs en dur dans les composants :
-
-- **`tailwind.config.ts`** — couleurs (Vert Canopée/Cacaoyer/Mousse, Or Récolte, statuts, neutres),
-  rayons (`sm` 8px / `md` 12px / `lg` 20px), ombres (`sm`/`md`/`lg`, `glow-gold`), polices
-  (`font-display` Newsreader, `font-sans` Inter, `font-mono` IBM Plex Mono), animations d'ambiance
-  (`animate-drift`, `animate-breathe`) et l'easing `ease-entrance`.
-- **`app/globals.css`** — styles de base (fond papier, couleur d'encre, focus clavier, sélection) et le
-  filet de sécurité global `prefers-reduced-motion`.
-
-Le **guide complet** (usage de chaque couleur, règles de contenu, voix de marque) vit dans `CLAUDE.md`.
-
-### Le motif signature
-`<ParcelPolygon>` est le cœur de l'identité : le polygone irrégulier de parcelle — littéralement l'objet
-que le produit vérifie. Il sert aux badges de statut, aux chargements et aux filigranes. **Jamais** pour
-un bouton ou un champ (qui gardent des coins classiques `rounded-sm`/`rounded-md`).
-
----
-
-## 🌍 Multilingue — LanguageSwitcher & dictionnaire
-
-Le produit vise trois langues : **Français (défaut) · Dioula · Baoulé**. L'accessibilité linguistique est
-un pilier, pas un détail cosmétique.
-
-- **Composant :** `components/ui/LanguageSwitcher.tsx` — sélecteur discret et **entièrement accessible**
-  (ouverture au clic, navigation clavier flèches / Home / End / Échap, fermeture au clic extérieur,
-  retour du focus). Présent dans le `Header`.
-- **État partagé :** `components/LanguageProvider.tsx` expose `useLanguage()` → `{ lang, setLang, t }`.
-  La préférence est mémorisée dans `localStorage`.
-- **Dictionnaire :** `lib/i18n.ts`. Pour cette édition, seules quelques **chaînes clés** changent
-  réellement de langue : les **3 statuts de conformité**, les **libellés de boutons** du parcours de
-  vérification, et le **message de bienvenue** de la page d'entrée.
-
-> ⚠️ Les chaînes **Dioula** et **Baoulé** sont **provisoires** et doivent être validées par un locuteur
-> natif avant le pitch (cohérent avec la valeur de marque « honnête sur nos limites »). En français, les
-> statuts restent les mots figés de la charte : *Conforme · Anomalie détectée · Données insuffisantes*.
-
----
-
-## ✨ Principes de la page d'entrée
-
-- **Anti-générique par construction** : pas de hero centré avec blob de gradient. Le hero est une
-  **scène de vérification satellite** où le polygone de parcelle se **dessine trait par trait**, avec
-  graticule, repères de recalage, balayage d'analyse et sommets Or Récolte — une image qui *dit ce que
-  le produit fait*.
-- **Séquence orchestrée** (Framer Motion) : tracé du polygone → marque → tagline → bienvenue → bouton
-  (pulsation douce). **Sortie animée** via `AnimatePresence` avant la navigation vers `/accueil`.
-- **Une fois par session** (`sessionStorage`), **`prefers-reduced-motion`** respecté (repli en fondu),
-  focus clavier visible, responsive impeccable dès **375px**.
+Les tokens de design vivent dans `app/globals.css` (Tailwind v4, bloc `@theme`). La charte complète
+(règles de contenu, statuts figés, faits produit) est dans `CLAUDE.md`.
 
 ---
 
 ## 🛠️ Stack
 
-Next.js 14 (App Router) · TypeScript strict · Tailwind CSS (thème custom) · Framer Motion ·
-fondation shadcn/ui (`cn`, `cva`) · lucide-react · polices `next/font/google`. Déploiement cible : Vercel.
+Next.js 16 (App Router, Turbopack) · React 19 · TypeScript strict · Tailwind CSS v4 ·
+Framer Motion 12 · lucide-react · react-leaflet (fonds satellite Esri) · @react-pdf/renderer ·
+polices Space Grotesk / Geist / Geist Mono (`next/font`). Déploiement cible : Vercel.
