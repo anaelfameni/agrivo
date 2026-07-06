@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import { ArrowRight, Award, BadgeCheck, Check, FileCheck2, Loader2, Send } from "lucide-react";
+import { ArrowRight, Award, BadgeCheck, Check, ClipboardCopy, FileCheck2, Loader2, Send, Sparkles } from "lucide-react";
+import type { ArgumentairePrime } from "@/lib/ai/argumentaire";
 import { PinMark } from "@/components/ui/pin-mark";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { useLanguage } from "@/components/language-provider";
@@ -30,6 +31,13 @@ const COPY = {
       `La parcelle vérifiée de ${nom} (${ha}) a été ajoutée au dossier de conformité transmis à l'exportateur.`,
     motto: "Le vert prouve, la preuve se négocie.",
     backToDashboard: "Retour au tableau de bord",
+    memoCta: "Générer l'argumentaire de prime (IA)",
+    memoLoading: "Rédaction de l'argumentaire…",
+    memoLive: "Rédigé par Gemini · IA en direct",
+    memoDemo: "Mode démonstration",
+    memoError: "L'argumentaire n'a pas pu être généré. Réessayez.",
+    memoCopy: "Copier",
+    memoCopied: "Copié",
   },
   en: {
     eyebrow: "Valorisation",
@@ -50,6 +58,13 @@ const COPY = {
       `${nom}'s verified plot (${ha}) has been added to the compliance file sent to the exporter.`,
     motto: "Green proves, and proof negotiates.",
     backToDashboard: "Back to the dashboard",
+    memoCta: "Generate the premium brief (AI)",
+    memoLoading: "Writing the brief…",
+    memoLive: "Written by Gemini · live AI",
+    memoDemo: "Demo mode",
+    memoError: "The brief could not be generated. Try again.",
+    memoCopy: "Copy",
+    memoCopied: "Copied",
   },
 } as const;
 
@@ -74,6 +89,9 @@ export function StepValorisation({
   const { lang } = useLanguage();
   const t = COPY[lang];
   const [status, setStatus] = useState<"idle" | "sharing" | "done">("idle");
+  const [memo, setMemo] = useState<ArgumentairePrime | null>(null);
+  const [memoStatus, setMemoStatus] = useState<"idle" | "loading" | "error" | "done">("idle");
+  const [copied, setCopied] = useState(false);
 
   const coop = parcellesForCoop(parcelle.cooperative);
   const total = coop.length;
@@ -83,6 +101,33 @@ export function StepValorisation({
     setStatus("sharing");
     await new Promise((r) => setTimeout(r, reduce ? 300 : 1400));
     setStatus("done");
+  }
+
+  async function genererMemo() {
+    setMemoStatus("loading");
+    try {
+      const r = await fetch("/api/gemini/valorisation-memo", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ parcelleId: parcelle.id, lang }),
+      });
+      if (!r.ok) throw new Error(String(r.status));
+      setMemo((await r.json()) as ArgumentairePrime);
+      setMemoStatus("done");
+    } catch {
+      setMemoStatus("error");
+    }
+  }
+
+  async function copierMemo() {
+    if (!memo) return;
+    try {
+      await navigator.clipboard.writeText(`${memo.titre}\n\n${memo.paragraphes.join("\n\n")}`);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      /* presse-papiers indisponible : on n'affiche simplement pas la confirmation */
+    }
   }
 
   return (
@@ -199,7 +244,72 @@ export function StepValorisation({
             <p className="relative mt-1.5 text-sm text-stone-500">
               {t.sharedDesc(parcelle.producteurNom, fmtHa(parcelle.superficieHa))}
             </p>
-            <p className="relative mt-3 font-display text-sm italic text-amber-cacao">{t.motto}</p>
+            <p className="relative mt-3 font-display text-sm text-amber-cacao">{t.motto}</p>
+
+            {/* Argumentaire de prime IA : Gemini rédige le brief que le gérant apporte à la table de négociation. */}
+            <div className="relative mt-6 text-left">
+              {memoStatus !== "done" && (
+                <div className="flex flex-col items-center gap-2">
+                  <button
+                    type="button"
+                    disabled={memoStatus === "loading"}
+                    onClick={genererMemo}
+                    className="inline-flex items-center gap-2 rounded-full border border-amber-cacao/30 bg-amber-cacao/[0.07] px-4 py-2.5 text-xs font-semibold text-amber-cacao outline-none transition-colors hover:bg-amber-cacao/[0.14] focus-visible:ring-2 focus-visible:ring-amber-cacao/50 disabled:cursor-not-allowed disabled:opacity-60"
+                  >
+                    {memoStatus === "loading" ? (
+                      <Loader2 size={14} strokeWidth={2} className="animate-spin" aria-hidden />
+                    ) : (
+                      <Sparkles size={14} strokeWidth={2} aria-hidden />
+                    )}
+                    {memoStatus === "loading" ? t.memoLoading : t.memoCta}
+                  </button>
+                  {memoStatus === "error" && (
+                    <p className="text-xs text-red-block" role="alert">{t.memoError}</p>
+                  )}
+                </div>
+              )}
+              {memoStatus === "done" && memo && (
+                <motion.div
+                  initial={reduce ? { opacity: 1 } : { opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.4, ease: EASE }}
+                  className="rounded-2xl border border-black/[0.07] bg-ivory-deep/40 p-4"
+                >
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <h3 className="flex items-center gap-1.5 text-sm font-semibold text-forest-950">
+                      <Sparkles size={14} strokeWidth={2} aria-hidden className="text-amber-cacao" />
+                      {memo.titre}
+                    </h3>
+                    <span className="flex items-center gap-2">
+                      <span className="rounded-full bg-white px-2 py-0.5 text-[0.62rem] font-semibold uppercase tracking-wider text-stone-500 ring-1 ring-black/[0.06]">
+                        {memo.live ? t.memoLive : t.memoDemo}
+                      </span>
+                      <button
+                        type="button"
+                        onClick={copierMemo}
+                        className="inline-flex items-center gap-1 rounded-full border border-black/10 bg-white px-2.5 py-1 text-[0.68rem] font-medium text-stone-600 outline-none transition-colors hover:border-green-signal/40 hover:text-forest-950 focus-visible:ring-2 focus-visible:ring-green-signal"
+                      >
+                        <ClipboardCopy size={11} strokeWidth={2} aria-hidden />
+                        {copied ? t.memoCopied : t.memoCopy}
+                      </button>
+                    </span>
+                  </div>
+                  <div className="mt-3 flex flex-col gap-2.5">
+                    {memo.paragraphes.map((par, i) => (
+                      <motion.p
+                        key={i}
+                        initial={reduce ? { opacity: 1 } : { opacity: 0, y: 6 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.3, ease: EASE, delay: reduce ? 0 : i * 0.09 }}
+                        className="text-xs leading-relaxed text-stone-600"
+                      >
+                        {par}
+                      </motion.p>
+                    ))}
+                  </div>
+                </motion.div>
+              )}
+            </div>
 
             <button
               type="button"

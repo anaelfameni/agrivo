@@ -109,9 +109,13 @@ export default function AdminPage() {
                 {en ? "Demo mode" : "Mode démonstration"}
               </h2>
               <p className="mt-2 max-w-sm text-xs text-stone-500">
-                {en
-                  ? "Forced on: no live network call leaves the application. Results are pre-recorded with simulated latency. The demo depends on no external service."
-                  : "Forcé activé : aucun appel réseau live ne part de l'application. Les résultats sont pré-enregistrés avec une latence simulée. La démo ne dépend d'aucun service externe."}
+                {MOCK_MODE
+                  ? en
+                    ? "Active (no API key): no live network call leaves the application. Results are pre-recorded with simulated latency. The demo depends on no external service."
+                    : "Actif (aucune clé posée) : aucun appel réseau live ne part de l'application. Les résultats sont pré-enregistrés avec une latence simulée. La démo ne dépend d'aucun service externe."
+                  : en
+                    ? "Off: the Gemini key is set. Card OCR, the audit action plan, the DDS memo, the premium brief and the copilot call Gemini live, with an automatic demo fallback if a call fails. Whisp detection remains pre-recorded (FAO API on registration)."
+                    : "Désactivé : la clé Gemini est posée. L'OCR de carte, le plan d'action d'audit, le mémo DDS, l'argumentaire de prime et le copilote appellent réellement Gemini, avec repli démonstration automatique si un appel échoue. La détection Whisp reste pré-enregistrée (API FAO sur inscription)."}
               </p>
               <p className="num mt-2 text-[0.7rem] text-stone-400">MOCK_MODE = {String(MOCK_MODE)}</p>
             </div>
@@ -119,11 +123,15 @@ export default function AdminPage() {
               role="switch"
               aria-checked={MOCK_MODE}
               aria-disabled="true"
-              aria-label={en ? "MOCK_MODE forced on" : "MOCK_MODE forcé activé"}
-              className="relative mt-0.5 h-6 w-11 shrink-0 cursor-not-allowed rounded-full bg-green-signal"
-              title={en ? "Locked to secure the demo" : "Verrouillé pour sécuriser la démonstration"}
+              aria-label={
+                MOCK_MODE
+                  ? en ? "MOCK_MODE on (no API key)" : "MOCK_MODE actif (aucune clé)"
+                  : en ? "MOCK_MODE off (live AI, demo fallback)" : "MOCK_MODE désactivé (IA live, repli démonstration)"
+              }
+              className={`relative mt-0.5 h-6 w-11 shrink-0 cursor-not-allowed rounded-full ${MOCK_MODE ? "bg-green-signal" : "bg-stone-300"}`}
+              title={en ? "Driven by the server environment (GEMINI_API_KEY)" : "Piloté par l'environnement serveur (GEMINI_API_KEY)"}
             >
-              <span className="absolute right-0.5 top-0.5 h-5 w-5 rounded-full bg-white shadow-sm" />
+              <span className={`absolute top-0.5 h-5 w-5 rounded-full bg-white shadow-sm ${MOCK_MODE ? "right-0.5" : "left-0.5"}`} />
             </div>
           </div>
         </section>

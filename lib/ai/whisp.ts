@@ -10,6 +10,7 @@
 import {
   getParcelle,
   STATUT_PHRASE,
+  STATUT_PHRASE_EN,
   type Filiere,
   type Statut,
 } from "@/data/mock-parcelles";
@@ -24,10 +25,12 @@ export interface WhispVerifyInput {
 
 export interface WhispResult {
   statut: Statut;
-  phrase: string; // phrase figée de la charte
+  phrase: string; // phrase figée de la charte (FR)
+  phraseEn: string; // phrase figée (EN) — le client choisit selon la langue d'interface
   datePivot: string; // "2020-12-31"
   sources: string[];
   convergence: string[]; // convergence de preuves (qualitatif — jamais de % inventé)
+  convergenceEn: string[];
   analyseMs: number; // rempli par la route (latence simulée)
   demo: boolean;
 }
@@ -51,6 +54,24 @@ const CONVERGENCE: Record<Statut, string[]> = {
   ],
 };
 
+const CONVERGENCE_EN: Record<Statut, string[]> = {
+  conforme: [
+    "Sentinel-2 optical imagery (Copernicus): vegetation cover stable since the cut-off date.",
+    "No forest cover loss alert (JRC Global Forest Cover).",
+    "Satellite sources converge over the analysed period.",
+  ],
+  anomalie: [
+    "Sentinel-2 imagery: cover reduction detected after 31 December 2020.",
+    "Forest loss corroborated by a second independent source.",
+    "Convergence of evidence consistent across several satellite passes.",
+  ],
+  insuffisant: [
+    "Persistent cloud cover on the available Sentinel-2 passes.",
+    "Insufficient satellite data to decide over the period.",
+    "A new pass is required to reach convergence of evidence.",
+  ],
+};
+
 /** Résultat pré-enregistré (MOCK_MODE) : dérivé de la parcelle démo, ou forcé. */
 export function whispMock(input: WhispVerifyInput): WhispResult {
   const parcelle = input.parcelleId ? getParcelle(input.parcelleId) : undefined;
@@ -58,6 +79,7 @@ export function whispMock(input: WhispVerifyInput): WhispResult {
   return {
     statut,
     phrase: STATUT_PHRASE[statut],
+    phraseEn: STATUT_PHRASE_EN[statut],
     datePivot: parcelle?.datePivotAnalyse ?? "2020-12-31",
     sources:
       parcelle?.sourcesDonnees ?? [
@@ -66,6 +88,7 @@ export function whispMock(input: WhispVerifyInput): WhispResult {
         "JRC Global Forest Cover",
       ],
     convergence: CONVERGENCE[statut],
+    convergenceEn: CONVERGENCE_EN[statut],
     analyseMs: 0,
     demo: true,
   };

@@ -336,6 +336,38 @@ variables CSS dans `app/globals.css`.
 
 ## 📓 Journal de build (le plus récent en haut)
 
+### Session 21 — 2026-07-06 soir — v1.2.0 « L'auditeur IA » : ultra-review stratégique + 2 features IA + correctifs (ordre direct d'Anael, gel levé)
+- 🧭 **Ultra-review stratégique** (`AGRIVO_Ultra_Review_Strategique.md` + .pdf, racine) : 6 options de
+  réorientation notées contre la grille jury → **le pivot Valorisation est CONFIRMÉ** (84/100), aucun
+  pivot ne le bat à J-5 ; le talon d'Achille était l'axe « Usage IA » (20 % de la note) → réorientation
+  NARRATIVE retenue : **« l'auditeur IA des géodonnées cacao »** (89/100), appliquée en v1.2.0.
+  Nouvelle ligne de pitch : « Vos données existent déjà. Notre IA les rend prouvables — et négociables. »
+- 🤖 **Feature IA 1 — Plan d'action IA sur l'audit du registre** (le moment « 63 % ») :
+  `lib/registre/plan.ts` (module PUR : `resumerAudit` + `construirePlanAction`, bureau d'abord puis
+  terrain, réimport, vérification satellite) + route `app/api/gemini/audit-plan` (Gemini réécrit, faits
+  intouchés, `live:false` étiqueté « Mode démonstration » en repli — jamais de texte IA mensonger) +
+  bouton « Générer le plan d'action IA » dans `registre-import.tsx` (badge live/démo, stagger, reduced-motion).
+- 🤖 **Feature IA 2 — Argumentaire de prime IA à l'étape Valorisation** (le moment final) :
+  `lib/ai/argumentaire.ts` (module PUR : stats portefeuille calculées + faits de marché SOURCÉS
+  Fairtrade 250 €/t 01/10/2026 40 % cash + convergence 2026-27 ; jamais de montant promis, primes
+  « au-dessus du prix garanti ») + route `app/api/gemini/valorisation-memo` + panneau dans
+  `step-valorisation.tsx` (après le partage : titre, 4 paragraphes, badge live/démo, bouton Copier).
+  **Le discours IA passe de 3 à 5 usages en production** (OCR · plan d'audit · mémo DDS · argumentaire · copilote).
+- 🛠️ **Correctifs appliqués** : admin « Mode démonstration » disait « Forcé activé : aucun appel live »
+  alors que l'IA EST live (→ écran piloté par `MOCK_MODE` réel, toggle et libellés honnêtes) · étape 4
+  EN : verdict + convergence + TTS restaient FR (→ `WhispResult.phraseEn/convergenceEn`, client par langue)
+  · aperçu certificat EN : statut/phrase traduits (PDF reste FR, document officiel) · « quatre temps » →
+  « cinq temps » (étape 1) · « cockpit » banni retiré du sous-titre Vue exportateur · devise Valorisation
+  plus en italique (charte) · tirets cadratins retirés des listes d'anomalies · favicon `app/icon.svg`
+  (plus de 404 console).
+- ✅ **GATES** : tsc ✓ · **39/39 tests** (7 nouveaux, `tests/ia-nouvelles.test.ts` — chiffres exacts,
+  charte : zéro crédit/garantie, bilingue, seuls % sourcés) · build ✓ (33 routes dont /icon.svg) ·
+  version **1.2.0** + CHANGELOG (entrées v1.1.0 rétroactive + v1.2.0).
+- 🌐 Déploiement : commit + tag v1.2.0 + push + `vercel --prod` + réassignation alias `agrivo-io.vercel.app`
+  (voir suite de session pour l'état exact ; vérification CDP prod après déploiement).
+- 📎 Leçon : les sous-agents parallèles ont été tués par la limite de session (« resets 1am ») — audits
+  refaits inline ; en cas de fan-out, prévoir le repli inline.
+
 ### Session 20 — 2026-07-06 — v1.1.0 : correctifs UX d'Anael (cartes réelles partout, coordonnées coop, DDS sans simulation)
 - 🗺️ **Vraie carte satellite sur la page parcelle** : `components/app/parcelle-map-sat.tsx` (Leaflet + Esri World Imagery, polygone teinté au verdict, point central sinon, FitBounds maxZoom 16) remplace l'aperçu stylisé `parcelle-map.tsx` (SUPPRIMÉ). Chargé en dynamic ssr:false depuis parcelle-detail.
 - 🗺️ **Carte du portefeuille sur /app/parcelles** : réutilise `PortfolioMap` (exportateur) liée à la liste (survol ligne ↔ pastille, liste scrollable 600px, stagger d'entrée).

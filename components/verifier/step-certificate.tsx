@@ -6,7 +6,14 @@ import { ArrowRight, Download, FileCheck2, Loader2 } from "lucide-react";
 import { PinMark } from "@/components/ui/pin-mark";
 import { useLanguage } from "@/components/language-provider";
 import type { CertificatData } from "@/lib/certificat-data";
-import type { Statut } from "@/data/mock-parcelles";
+import { STATUT_PHRASE_EN, type Statut } from "@/data/mock-parcelles";
+
+/** Libellés EN des statuts pour l'APERÇU à l'écran (le PDF, document officiel, reste en français). */
+const STATUT_LABEL_EN: Record<Statut, string> = {
+  conforme: "Compliant",
+  anomalie: "Anomaly detected",
+  insuffisant: "Insufficient data",
+};
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
@@ -148,8 +155,12 @@ export function StepCertificate({
                   className="rounded-xl border p-4"
                   style={{ background: tint.bg, borderColor: tint.border }}
                 >
-                  <p className="text-base font-semibold" style={{ color: tint.text }}>{data.statutLabel}</p>
-                  <p className="mt-1 text-sm leading-relaxed text-stone-600">{data.phrase}</p>
+                  <p className="text-base font-semibold" style={{ color: tint.text }}>
+                    {lang === "en" ? STATUT_LABEL_EN[data.statut] : data.statutLabel}
+                  </p>
+                  <p className="mt-1 text-sm leading-relaxed text-stone-600">
+                    {lang === "en" ? STATUT_PHRASE_EN[data.statut] : data.phrase}
+                  </p>
                 </div>
 
                 <dl className="mt-5 grid grid-cols-2 gap-x-4 gap-y-4">

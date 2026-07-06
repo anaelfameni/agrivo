@@ -37,7 +37,7 @@ const TR = {
     confirm: {
       title: "Consentement enregistré",
       body: (coop: string) =>
-        `Vous vérifiez une parcelle pour la ${coop}. Le consentement éclairé du producteur a été recueilli. La vérification se déroule en quatre temps : scan de la carte, cartographie GPS de la parcelle, analyse satellite, puis verdict et suites (certificat, valorisation).`,
+        `Vous vérifiez une parcelle pour la ${coop}. Le consentement éclairé du producteur a été recueilli. La vérification se déroule en cinq temps : scan de la carte, cartographie GPS de la parcelle, analyse satellite, certificat, puis valorisation.`,
       coop: "Coopérative", gerant: "Gérant", artci: "Consentement ARTCI", recueilli: "Recueilli",
       start: "Commencer le scan",
     },
@@ -59,7 +59,7 @@ const TR = {
     confirm: {
       title: "Consent recorded",
       body: (coop: string) =>
-        `You are verifying a plot for ${coop}. The farmer's informed consent has been collected. The verification runs in four stages: card scan, GPS plot mapping, satellite analysis, then verdict and next steps (certificate, valorisation).`,
+        `You are verifying a plot for ${coop}. The farmer's informed consent has been collected. The verification runs in five stages: card scan, GPS plot mapping, satellite analysis, certificate, then valorisation.`,
       coop: "Cooperative", gerant: "Manager", artci: "ARTCI consent", recueilli: "Collected",
       start: "Start the scan",
     },

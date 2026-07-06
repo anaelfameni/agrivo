@@ -3,6 +3,41 @@
 Versioning sémantique (MAJOR.MINOR.PATCH). Chaque release liste ce qui est ajouté, corrigé et
 vérifié, conformément à l'étape 8 du pipeline « Du besoin à la Release ».
 
+## v1.2.0 — 2026-07-06 — « L'auditeur IA » : deux nouvelles features IA sur les moments signatures
+
+### Ajouté
+- Plan d'action IA sur l'audit du registre (dashboard coopérative) : après l'audit, Gemini
+  transforme les anomalies détectées (comptes exacts, actions bureau/terrain) en plan de
+  travail priorisé pour le gérant ; trame déterministe testée, repli démonstration étiqueté
+  honnêtement (route /api/gemini/audit-plan, module pur lib/registre/plan.ts).
+- Argumentaire de prime IA à l'étape Valorisation : Gemini rédige le brief de négociation de
+  la coopérative (portefeuille prouvé, superficie vérifiée, faits de marché sourcés — jamais
+  de montant promis), avec bouton copier (route /api/gemini/valorisation-memo, module pur
+  lib/ai/argumentaire.ts). Le discours IA passe de 3 à 5 usages en production.
+- 7 tests Vitest sur les deux trames déterministes (39 tests au total).
+- Favicon (app/icon.svg) : plus de 404 favicon.ico dans la console.
+
+### Corrigé
+- Admin : l'encart « Mode démonstration » affirmait « Forcé activé : aucun appel réseau live »
+  alors que l'IA est LIVE en production depuis la pose de la clé ; l'écran reflète désormais
+  l'état réel (piloté par GEMINI_API_KEY) et liste les usages live.
+- Étape Analyse en anglais : la phrase de verdict, le faisceau de preuves et la lecture vocale
+  restaient en français ; l'API Whisp renvoie désormais les deux langues et le client choisit.
+- Aperçu du certificat en anglais : statut et phrase désormais traduits (le PDF, document
+  officiel, reste volontairement en français).
+- Étape 1 du parcours : « en quatre temps » contredisait le stepper à 6 étapes (désormais
+  « cinq temps : scan, cartographie, analyse, certificat, valorisation »).
+- Charte : « cockpit » retiré du sous-titre de la Vue exportateur (« tableau de bord ») ;
+  devise de l'étape Valorisation plus jamais en italique ; tirets cadratins retirés des
+  listes d'anomalies.
+
+## v1.1.0 — 2026-07-06 — Correctifs UX (cartes réelles partout, coordonnées coop, DDS honnête)
+
+- Vraie carte satellite sur la page parcelle et carte du portefeuille sur /app/parcelles.
+- Étape Cartographie : 3e mode « J'ai déjà les coordonnées » (validation zone CI).
+- Producteurs : latitude/longitude au formulaire, fiches persistées et cliquables.
+- Sidebar « Vue exportateur » clarifiée ; DDS live sans repli silencieux (message d'indisponibilité).
+
 ## v1.0.0 — 2026-07-06 — Release de compétition (gel du code)
 
 ### Changé (réorientation stratégique — PLAN_REORIENTATION_AGRIVO.md)

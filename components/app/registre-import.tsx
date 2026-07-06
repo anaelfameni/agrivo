@@ -14,6 +14,7 @@ import {
   Loader2,
   MapPin,
   ShieldCheck,
+  Sparkles,
   Upload,
   X,
 } from "lucide-react";
@@ -24,6 +25,7 @@ import {
   type AuditRegistre,
   type CategorieAnomalie,
 } from "@/lib/registre/audit";
+import { resumerAudit, type PlanAction } from "@/lib/registre/plan";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
@@ -46,6 +48,12 @@ const COPY = {
     actionBureau: "À corriger au bureau",
     goMapping: "Ouvrir l'étape Cartographie",
     privacy: "Vos données restent la propriété de la coopérative (conformité ARTCI).",
+    planCta: "Générer le plan d'action IA",
+    planLoading: "Rédaction du plan d'action…",
+    planTitle: "Plan d'action de mise en conformité",
+    planLive: "Rédigé par Gemini · IA en direct",
+    planDemo: "Mode démonstration",
+    planError: "Le plan n'a pas pu être généré. Réessayez.",
     cat: {
       "geometrie-invalide": "Géométrie invalide",
       "polygone-manquant": "Polygone manquant (≥ 4 ha)",
@@ -72,6 +80,12 @@ const COPY = {
     actionBureau: "To fix at the office",
     goMapping: "Open the Mapping step",
     privacy: "Your data remains the property of the cooperative (ARTCI compliance).",
+    planCta: "Generate the AI action plan",
+    planLoading: "Writing the action plan…",
+    planTitle: "Compliance action plan",
+    planLive: "Written by Gemini · live AI",
+    planDemo: "Demo mode",
+    planError: "The plan could not be generated. Try again.",
     cat: {
       "geometrie-invalide": "Invalid geometry",
       "polygone-manquant": "Missing polygon (≥ 4 ha)",
@@ -102,6 +116,25 @@ export function RegistreImport() {
   const inputRef = useRef<HTMLInputElement>(null);
   const [status, setStatus] = useState<"idle" | "loading" | "error" | "done">("idle");
   const [audit, setAudit] = useState<AuditRegistre | null>(null);
+  const [plan, setPlan] = useState<PlanAction | null>(null);
+  const [planStatus, setPlanStatus] = useState<"idle" | "loading" | "error" | "done">("idle");
+
+  async function genererPlan() {
+    if (!audit) return;
+    setPlanStatus("loading");
+    try {
+      const r = await fetch("/api/gemini/audit-plan", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ resume: resumerAudit(audit), lang }),
+      });
+      if (!r.ok) throw new Error(String(r.status));
+      setPlan((await r.json()) as PlanAction);
+      setPlanStatus("done");
+    } catch {
+      setPlanStatus("error");
+    }
+  }
 
   async function analyser(nom: string, texte: string) {
     setStatus("loading");
@@ -153,6 +186,8 @@ export function RegistreImport() {
             onClick={() => {
               setAudit(null);
               setStatus("idle");
+              setPlan(null);
+              setPlanStatus("idle");
             }}
             className="text-xs text-stone-400 outline-none transition-colors hover:text-forest-950 focus-visible:text-forest-950"
           >
@@ -291,7 +326,7 @@ export function RegistreImport() {
                           {items.slice(0, 3).map((a, i) => (
                             <li key={a.matricule + i} className="text-xs leading-relaxed text-stone-500">
                               <span className="num font-medium text-forest-950">{a.matricule}</span>
-                              {a.nom ? ` · ${a.nom}` : ""} — {a.detail[lang]}
+                              {a.nom ? ` · ${a.nom}` : ""} · {a.detail[lang]}
                             </li>
                           ))}
                           {items.length > 3 && (
@@ -304,6 +339,71 @@ export function RegistreImport() {
                 </ul>
               </div>
             )}
+
+            {/* Plan d'action IA : Gemini transforme l'audit en plan de travail priorisé. */}
+            <div className="mt-4">
+              {planStatus !== "done" && (
+                <div className="flex flex-col gap-2">
+                  <button
+                    type="button"
+                    disabled={planStatus === "loading"}
+                    onClick={genererPlan}
+                    className="inline-flex w-fit items-center gap-2 rounded-full border border-green-signal/30 bg-green-signal/[0.06] px-4 py-2 text-xs font-semibold text-green-signal outline-none transition-colors hover:bg-green-signal/[0.12] focus-visible:ring-2 focus-visible:ring-green-signal disabled:cursor-not-allowed disabled:opacity-60"
+                  >
+                    {planStatus === "loading" ? (
+                      <Loader2 size={13} strokeWidth={2} className="animate-spin" aria-hidden />
+                    ) : (
+                      <Sparkles size={13} strokeWidth={2} aria-hidden />
+                    )}
+                    {planStatus === "loading" ? t.planLoading : t.planCta}
+                  </button>
+                  {planStatus === "error" && (
+                    <p className="text-xs text-red-block" role="alert">{t.planError}</p>
+                  )}
+                </div>
+              )}
+              {planStatus === "done" && plan && (
+                <motion.div
+                  initial={reduce ? { opacity: 1 } : { opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.35, ease: EASE }}
+                  className="rounded-xl border border-green-signal/20 bg-green-signal/[0.04] p-3.5"
+                >
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <h3 className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-forest-950">
+                      <Sparkles size={13} strokeWidth={2} aria-hidden className="text-green-signal" />
+                      {t.planTitle}
+                    </h3>
+                    <span className="rounded-full bg-white px-2 py-0.5 text-[0.62rem] font-semibold uppercase tracking-wider text-stone-500 ring-1 ring-black/[0.06]">
+                      {plan.live ? t.planLive : t.planDemo}
+                    </span>
+                  </div>
+                  <ol className="mt-2.5 flex flex-col gap-2">
+                    {plan.etapes.map((e, i) => (
+                      <motion.li
+                        key={e.titre}
+                        initial={reduce ? { opacity: 1 } : { opacity: 0, x: -8 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ duration: 0.3, ease: EASE, delay: reduce ? 0 : i * 0.07 }}
+                        className="flex items-start gap-2.5"
+                      >
+                        <span className="num mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded-full bg-green-signal/12 text-[0.65rem] font-bold text-green-signal" aria-hidden>
+                          {i + 1}
+                        </span>
+                        <span className="text-xs leading-relaxed text-stone-600">
+                          <span className="font-semibold text-forest-950">{e.titre}</span>
+                          {" · "}
+                          {e.detail}
+                        </span>
+                      </motion.li>
+                    ))}
+                  </ol>
+                  <p className="mt-2.5 border-t border-green-signal/15 pt-2.5 text-xs leading-relaxed text-stone-600">
+                    {plan.conclusion}
+                  </p>
+                </motion.div>
+              )}
+            </div>
 
             <p className="mt-3 flex items-center gap-1.5 border-t border-black/[0.05] pt-3 text-[0.7rem] text-stone-400">
               <ShieldCheck size={12} strokeWidth={2} aria-hidden className="shrink-0 text-green-signal/70" />

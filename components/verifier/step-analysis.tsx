@@ -159,8 +159,8 @@ export function StepAnalysis({
     if (!canSpeak || !whisp) return;
     try {
       window.speechSynthesis.cancel();
-      const u = new SpeechSynthesisUtterance(whisp.phrase);
-      u.lang = "fr-FR";
+      const u = new SpeechSynthesisUtterance(lang === "en" ? (whisp.phraseEn ?? whisp.phrase) : whisp.phrase);
+      u.lang = lang === "en" ? "en-GB" : "fr-FR";
       u.rate = 0.98;
       u.onend = () => setSpeaking(false);
       u.onerror = () => setSpeaking(false);
@@ -237,12 +237,12 @@ export function StepAnalysis({
               </div>
 
               <p className="max-w-prose text-[0.95rem] font-medium leading-relaxed text-forest-950">
-                {whisp.phrase}
+                {lang === "en" ? (whisp.phraseEn ?? whisp.phrase) : whisp.phrase}
               </p>
 
               {/* Faisceau de preuves (qualitatif) */}
               <ul className="flex flex-col gap-1.5">
-                {whisp.convergence.map((c) => (
+                {(lang === "en" ? (whisp.convergenceEn ?? whisp.convergence) : whisp.convergence).map((c) => (
                   <li key={c} className="flex gap-2 text-xs leading-relaxed text-stone-500">
                     <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full" style={{ background: color }} aria-hidden />
                     {c}
