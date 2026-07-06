@@ -383,13 +383,22 @@ variables CSS dans `app/globals.css`.
   (voulu, honnête). ⚠️ AVANT LE JURY : ne pas spammer les features IA en répétition (1 appel suffit),
   et envisager d'activer la facturation sur la clé AI Studio pour lever la limite. Diagnostic :
   `npx vercel logs <url-deploiement> --json` puis grep « live échoué ».
-- 🔎 **Constat fin de session (23 h 45)** : la clé du `.env.local` répond 200 en direct, mais la clé
-  posée dans l'env VERCEL renvoie un **429 persistant** (« check your plan and billing ») → très
-  probablement **deux clés différentes**, celle de Vercel étant à quota épuisé (reset quotas gratuits :
-  ~07 h-08 h heure d'Abidjan). Alias actuel : `agrivo-io` → `omw4yrn5r` (v1.2.0 avec fix 3072, sans
-  thinkingBudget) ; le déploiement `attxgt0ar` (complet) attend l'alias. **Séquence Anael** :
-  remplacer `GEMINI_API_KEY` en production par la clé du .env.local (`npx vercel env rm/add`),
-  redéployer, réaliaser, puis UN clic de test par feature.
+- 🔎 **ROOT CAUSE CONFIRMÉE (00 h 15) — 429 datacenter, PAS la clé** : test discriminant même clé
+  même minute → 200 depuis la machine locale, 429 depuis Vercel (iad1). Le free tier Gemini plafonne
+  par vagues les **IP partagées des datacenters** ; les `live:true` de la soirée = créneaux où le
+  bucket IP avait de la marge (loterie). La clé Vercel a été resynchronisée sur celle du .env.local
+  (`vercel env rm/add` pipé) — c'était la même. Mitigations codées : retry unique 800 ms sur 429/5xx
+  + détail d'erreur 600 chars dans `callGemini` (commit `1937425`-ish, voir git log). **FIX DÉFINITIF
+  (action Anael, 2 min) : activer la facturation sur le projet Google de la clé (AI Studio → Settings
+  → Plan/Billing → upgrade Tier 1)** → les 429 IP disparaissent, coût centimes. Sans ça : repli
+  honnête « Mode démonstration » (la démo ne casse jamais) et retenter plus tard (les créneaux se
+  libèrent hors heures de pointe US). ⚠️ SÉCURITÉ : la clé a été collée en clair dans une
+  conversation → **la faire tourner après le jury** (AI Studio → nouvelle clé, mettre à jour
+  .env.local + `vercel env` + redéployer).
+- 📍 **État final prod** : `agrivo-io.vercel.app` → déploiement `j7h7j13qq` = **v1.2.0 complète**
+  (2 features IA + thinkingBudget 0 + retry + tous correctifs). Local : commits jusqu'au fix retry,
+  tag v1.2.0 déplacé. **Push main + tag TOUJOURS à faire par Anael** (`git push origin main` +
+  `git push --force origin v1.2.0`).
 
 ### Session 20 — 2026-07-06 — v1.1.0 : correctifs UX d'Anael (cartes réelles partout, coordonnées coop, DDS sans simulation)
 - 🗺️ **Vraie carte satellite sur la page parcelle** : `components/app/parcelle-map-sat.tsx` (Leaflet + Esri World Imagery, polygone teinté au verdict, point central sinon, FitBounds maxZoom 16) remplace l'aperçu stylisé `parcelle-map.tsx` (SUPPRIMÉ). Chargé en dynamic ssr:false depuis parcelle-detail.
