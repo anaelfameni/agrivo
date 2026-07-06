@@ -336,6 +336,10 @@ variables CSS dans `app/globals.css`.
 
 ## 📓 Journal de build (le plus récent en haut)
 
+### Session 18b — 2026-07-06 — P8 TERMINÉ : v1.0.0 EN PRODUCTION
+- 🚀 **CI verte** (commits v1.0.0 `78d456d` + docs `7f72923`) · `vercel --prod` Ready (37 s) · **alias `agrivo-io.vercel.app` réassigné** · smoke-test prod : 8/8 routes en 200 (dont /registre-demo.geojson) · le HTML de prod contient « prime négociée »/« Valorisation », zéro « micro-crédit ».
+- ✅ P8 clos. Restent : **P7** (clé Gemini AIza… d'Anael) et **P9** (répétition générale sur prod, vendredi 10).
+
 ### Session 18 — 2026-07-06 — RECHERCHE DE VALIDATION du pivot (en ligne, sourcée) — le pivot est CONFIRMÉ et renforcé
 - ✅ **Verdict : la réorientation Valorisation est la bonne**, validée par 5 preuves de marché ; 3 précisions de DISCOURS intégrées aux docs jury (aucun code touché, gel respecté).
 - 💶 **Primes chiffrées (nouvelles munitions)** : prime Fairtrade cacao 240 $/t → **250 €/t en CI au 1er oct. 2026 (+13 %), dont 40 % en CASH direct aux membres** ; prix minimum Fairtrade 3 200 €/t CI ; différentiel bio 410 €/t ; DRD 400 $/t. ⚠️ Formule exacte : le PRIX bord champ est fixé par l'État (2 800 → 1 200 FCFA en intermédiaire 2025-26) ; la coop négocie les PRIMES au-dessus, dans le cadre du CCC — ne jamais dire « négocier le prix ».
