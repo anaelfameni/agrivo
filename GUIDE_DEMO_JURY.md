@@ -18,7 +18,9 @@
    registre de démonstration » → « 63 % prêtes pour la RDUE, 19 parcelles sur 30 » + anomalies par
    catégorie (à compléter sur le terrain / à corriger au bureau). Phrase clé : « Les coopératives ont
    déjà des fichiers ; environ 30 % de ces données ne sont pas fiables pour la RDUE. AGRIVO les
-   transforme en conformité prouvable. »
+   transforme en conformité prouvable. » **Puis clic « Générer le plan d'action IA » (v1.2.0, Gemini
+   LIVE)** : « L'IA ne détecte pas seulement les problèmes, elle organise la mise en conformité :
+   bureau d'abord, terrain ensuite. »
 4. **Web : dashboard exportateur (1,5 min)** — carte du portefeuille, export GeoJSON TRACES NT,
    copilote IA (question : « Quelles parcelles présentent un risque dans la région de Soubré ? »).
 5. **Effet final (1 min)** — le jury **scanne le QR du certificat PDF** avec son propre téléphone →
@@ -41,10 +43,12 @@
   tous les tableaux ; les autres perdent l'accès au premier débouché du cacao ivoirien.
 
 ## Réponses aux questions pièges
-- **« Votre IA est-elle réelle ? »** — Oui : quand `GEMINI_API_KEY` est posée, l'OCR, le mémo DDS et le
-  copilote appellent réellement Gemini. Les verdicts et chiffres restent calculés sur les données
-  (l'IA met en mots, elle n'invente rien). Sans clé ou en cas de panne réseau : repli automatique sur
-  le mode démonstration, visible et assumé dans l'admin.
+- **« Votre IA est-elle réelle ? »** — Oui : **cinq usages appellent réellement Gemini en production**
+  (v1.2.0) : l'OCR de carte, le **plan d'action d'audit du registre**, le mémo DDS,
+  l'**argumentaire de prime** (étape Valorisation) et le copilote exportateur. Les verdicts et
+  chiffres restent calculés sur les données (l'IA met en mots, elle n'invente rien). Sans clé ou en
+  cas de panne réseau : repli automatique sur le mode démonstration, étiqueté honnêtement à l'écran
+  et visible dans l'admin.
 - **« Précision de Whisp ? »** — Nous ne citons aucun pourcentage : Whisp est l'outil ONU/FAO de
   référence, pilote Kenya 6 000+ parcelles ; méthode par convergence de preuves.
 - **« Pourquoi pas de crédit aux producteurs ? »** — Par choix, partagé par les coopératives : elles

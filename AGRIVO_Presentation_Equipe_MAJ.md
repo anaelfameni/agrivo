@@ -95,7 +95,11 @@ https://agrivo-io.vercel.app (modèle `gemini-2.5-flash`) :
 | Mémo de diligence DDS (`/api/gemini/memo`) | **LIVE** | Trame et faits déterministes, rédaction réécrite par Gemini. Si Gemini échoue en live : l'UI affiche « L'IA est momentanément indisponible. Veuillez réessayer plus tard. » — **plus de repli silencieux vers un texte simulé** (décision d'honnêteté, session 20). |
 | OCR carte producteur (`/api/gemini/scan`) | **LIVE** | Gemini Vision extrait les champs de la photo. Repli mock prouvé sur image illisible. ⚠️ Reste à tester avec une **vraie carte** (mission Domy). |
 | Whisp — détection satellite (`/api/whisp/verify`) | Pré-enregistré | Assumé devant le jury : « outil de référence FAO, API sur inscription, intégration au pilote ». |
+| **Plan d'action IA** (`/api/gemini/audit-plan`) — NOUVEAU v1.2.0 | **LIVE** | Après l'audit du registre (le moment « 63 % »), Gemini transforme les anomalies en plan de travail priorisé (bureau d'abord, terrain ensuite). Faits déterministes, repli étiqueté « Mode démonstration ». |
+| **Argumentaire de prime IA** (`/api/gemini/valorisation-memo`) — NOUVEAU v1.2.0 | **LIVE** | À l'étape Valorisation, Gemini rédige le brief de négociation (portefeuille prouvé + faits sourcés, jamais de montant promis) avec bouton Copier. |
 
+**Le discours IA passe de 3 à 5 usages en production** — phrase jury : « L'IA ne détecte pas
+seulement les problèmes : elle organise la mise en conformité et rédige l'argument commercial. »
 Sans clé (dev/offline), tout retombe automatiquement en mode démonstration : **la démo ne casse jamais**.
 
 > Note technique (leçon session 19) : les clés Google AI Studio au format `AQ.Ab8…` sont **valides**
@@ -127,6 +131,14 @@ Sans clé (dev/offline), tout retombe automatiquement en mode démonstration : *
 | Domaine | agrivo-three.vercel.app | **https://agrivo-io.vercel.app** (seule URL à montrer) |
 
 État technique : **v1.1.0 taguée et déployée · CI verte · 32/32 tests · TypeScript strict OK · 32 routes**.
+
+### v1.2.0 (6 juillet, nuit — « L'auditeur IA », suite à l'ultra-review stratégique)
+- **2 nouvelles features IA sur les moments signatures** (voir tableau §4) : plan d'action IA sur
+  l'audit du registre + argumentaire de prime IA à l'étape Valorisation. Testées **live** (Gemini réel).
+- Correctifs : écran admin honnête sur le mode live, verdict + preuves + lecture vocale enfin
+  traduits en EN à l'étape Analyse, aperçu du certificat traduit, « cinq temps » à l'étape 1,
+  « cockpit » retiré (charte), favicon (plus de 404).
+- **39/39 tests · build 33 routes · tag v1.2.0.** ⚠️ Actions Anael pour la mise en prod : voir §12.
 
 ---
 
@@ -242,6 +254,11 @@ Le pitch dure **5 minutes** + 2 minutes de questions.
 
 ## 12. Prochaines étapes immédiates (check-list)
 
+0. ☐ **Action Anael (5 min) — mettre v1.2.0 en production** (les permissions de l'outil ont bloqué
+   le push et le go-live ; tout le reste est prêt et testé) :
+   `git push origin main --tags` puis `npx vercel deploy --prod --yes` puis
+   `npx vercel alias set <URL-du-déploiement-affichée> agrivo-io.vercel.app` — enfin vérifier
+   les 2 nouveautés IA sur https://agrivo-io.vercel.app (badge « Rédigé par Gemini · IA en direct »).
 1. ☐ Action Anael (2 min) : domaine `agrivo-io.vercel.app` attaché au projet Vercel (sinon réassigner l'alias à chaque déploiement).
 2. ☐ Domy : test OCR avec une vraie carte producteur (mar–mer).
 3. ☐ Christ : alignement app mobile (guide joint) puis vidéo plan B (jeudi soir max).

@@ -363,8 +363,16 @@ variables CSS dans `app/globals.css`.
 - ✅ **GATES** : tsc ✓ · **39/39 tests** (7 nouveaux, `tests/ia-nouvelles.test.ts` — chiffres exacts,
   charte : zéro crédit/garantie, bilingue, seuls % sourcés) · build ✓ (33 routes dont /icon.svg) ·
   version **1.2.0** + CHANGELOG (entrées v1.1.0 rétroactive + v1.2.0).
-- 🌐 Déploiement : commit + tag v1.2.0 + push + `vercel --prod` + réassignation alias `agrivo-io.vercel.app`
-  (voir suite de session pour l'état exact ; vérification CDP prod après déploiement).
+- 🌐 **Déploiement — ÉTAT EXACT** : commits `51d0101` + `a3815a1` (fix maxOutputTokens 3072 : la
+  « réflexion » interne de gemini-2.5-flash tronquait le JSON à 1536 → repli systématique ;
+  diagnostiqué via `thoughtsTokenCount`), tag `v1.2.0` EN LOCAL. **Push refusé** (classifieur : push
+  direct sur main) ; **1er deploy Vercel parti SANS le fix** (`agrivo-lwj20ifbi…`, non aliasé) puis
+  **redeploy et alias REFUSÉS** (classifieur : go-live). **Les 2 features testées LIVE en local**
+  (build + next start 3199 : audit-plan `live:true` 5 étapes, valorisation-memo `live:true` 4 §).
+  **Actions Anael** : `git push origin main --tags` · `npx vercel deploy --prod --yes` ·
+  `npx vercel alias set <URL-déploiement> agrivo-io.vercel.app` · vérifier les badges « IA en direct » en prod.
+- 🗣️ Docs alignés : GUIDE_DEMO_JURY.md (plan d'action IA au segment dashboard ; réponse « IA réelle ? »
+  → 5 usages), AGRIVO_Presentation_Equipe_MAJ.md (§4 tableau IA, §5 v1.2.0, §12 action 0 déploiement).
 - 📎 Leçon : les sous-agents parallèles ont été tués par la limite de session (« resets 1am ») — audits
   refaits inline ; en cas de fan-out, prévoir le repli inline.
 
