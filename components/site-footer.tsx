@@ -18,12 +18,12 @@ const COLS_EN = [
 
 const FOOTER_TR = {
   fr: {
-    tagline: "La conformité agricole, simplifiée. Vérifier une parcelle, prouver la conformité, ouvrir l'accès au crédit du producteur.",
+    tagline: "La conformité agricole, simplifiée. Vérifier une parcelle, prouver la conformité, négocier la prime.",
     rights: "Agrivo © 2026. Tous droits réservés.",
     reg: "RDUE · Règlement (UE) 2023/1115 · échéance 30 décembre 2026",
   },
   en: {
-    tagline: "Agricultural compliance, simplified. Verify a plot, prove compliance, open access to the farmer's credit.",
+    tagline: "Agricultural compliance, simplified. Verify a plot, prove compliance, negotiate the premium.",
     rights: "Agrivo © 2026. All rights reserved.",
     reg: "EUDR · Regulation (EU) 2023/1115 · deadline 30 December 2026",
   },

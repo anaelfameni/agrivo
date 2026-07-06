@@ -14,7 +14,7 @@ const ETAPES = [
   { t: "2 · Nouvelle vérification", d: "Dashboard → « Nouvelle vérification » → écran de consentement ARTCI (cocher, insister : conçu conforme dès le départ)." },
   { t: "3 · Scan de la carte", d: "Sur mobile : viser la carte producteur (Gemini Vision pré-remplit). Sur desktop : « Saisir manuellement »." },
   { t: "4 · Analyse satellite", d: "LE moment signature : le polygone se dessine, Whisp (FAO) rend le verdict, badge sols, certificat PDF téléchargeable (QR de vérification publique)." },
-  { t: "5 · Micro-crédit", d: "Si Conforme : slider 50 000 à 250 000 FCFA → simulation Mobile Money. Dire « prêt remboursable via l'IMF partenaire », jamais « gratuit »." },
+  { t: "5 · Valorisation", d: "Si Conforme : la parcelle rejoint le dossier de la coopérative → « Partager le dossier avec l'exportateur ». Dire « primes de durabilité et acheteurs premium », jamais crédit ni financement." },
 ];
 
 const PHRASES = [

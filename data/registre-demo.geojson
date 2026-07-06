@@ -1,0 +1,776 @@
+{
+ "type": "FeatureCollection",
+ "name": "registre-demo Coopérative Agricole de Soubré (données fictives, défauts volontaires)",
+ "features": [
+  {
+   "type": "Feature",
+   "properties": {
+    "matricule": "AGR-R-001",
+    "nom": "Kouadio Jean",
+    "superficie_ha": 4
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -6.6535,
+       5.8265
+      ],
+      [
+       -6.6465,
+       5.8265
+      ],
+      [
+       -6.6465,
+       5.8335
+      ],
+      [
+       -6.6535,
+       5.8335
+      ],
+      [
+       -6.6535,
+       5.8265
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "matricule": "AGR-R-002",
+    "nom": "N'Dri Affoué",
+    "superficie_ha": 5
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -6.6325,
+       5.8265
+      ],
+      [
+       -6.6255,
+       5.8265
+      ],
+      [
+       -6.6255,
+       5.8335
+      ],
+      [
+       -6.6325,
+       5.8335
+      ],
+      [
+       -6.6325,
+       5.8265
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "matricule": "AGR-R-003",
+    "nom": "Soro Adama",
+    "superficie_ha": 6
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -6.6115,
+       5.8265
+      ],
+      [
+       -6.6045,
+       5.8265
+      ],
+      [
+       -6.6045,
+       5.8335
+      ],
+      [
+       -6.6115,
+       5.8335
+      ],
+      [
+       -6.6115,
+       5.8265
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "matricule": "AGR-R-004",
+    "nom": "Ouattara Minata",
+    "superficie_ha": 7
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -6.5905,
+       5.8265
+      ],
+      [
+       -6.5835,
+       5.8265
+      ],
+      [
+       -6.5835,
+       5.8335
+      ],
+      [
+       -6.5905,
+       5.8335
+      ],
+      [
+       -6.5905,
+       5.8265
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "matricule": "AGR-R-005",
+    "nom": "Koné Drissa",
+    "superficie_ha": 4
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -6.5695,
+       5.8265
+      ],
+      [
+       -6.5625,
+       5.8265
+      ],
+      [
+       -6.5625,
+       5.8335
+      ],
+      [
+       -6.5695,
+       5.8335
+      ],
+      [
+       -6.5695,
+       5.8265
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "matricule": "AGR-R-006",
+    "nom": "Yao Amlan",
+    "superficie_ha": 5
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -6.5485,
+       5.8265
+      ],
+      [
+       -6.5415,
+       5.8265
+      ],
+      [
+       -6.5415,
+       5.8335
+      ],
+      [
+       -6.5485,
+       5.8335
+      ],
+      [
+       -6.5485,
+       5.8265
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "matricule": "AGR-R-007",
+    "nom": "Kacou Berthe",
+    "superficie_ha": 6
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -6.6475,
+       5.8465
+      ],
+      [
+       -6.6405,
+       5.8465
+      ],
+      [
+       -6.6405,
+       5.8535
+      ],
+      [
+       -6.6475,
+       5.8535
+      ],
+      [
+       -6.6475,
+       5.8465
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "matricule": "AGR-R-008",
+    "nom": "Gnamien Paul",
+    "superficie_ha": 7
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -6.6265,
+       5.8465
+      ],
+      [
+       -6.6195,
+       5.8465
+      ],
+      [
+       -6.6195,
+       5.8535
+      ],
+      [
+       -6.6265,
+       5.8535
+      ],
+      [
+       -6.6265,
+       5.8465
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "matricule": "AGR-R-009",
+    "nom": "Touré Fanta",
+    "superficie_ha": 4
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -6.6055,
+       5.8465
+      ],
+      [
+       -6.5985,
+       5.8465
+      ],
+      [
+       -6.5985,
+       5.8535
+      ],
+      [
+       -6.6055,
+       5.8535
+      ],
+      [
+       -6.6055,
+       5.8465
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "matricule": "AGR-R-010",
+    "nom": "Assamoi Luc",
+    "superficie_ha": 5
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -6.5845,
+       5.8465
+      ],
+      [
+       -6.5775,
+       5.8465
+      ],
+      [
+       -6.5775,
+       5.8535
+      ],
+      [
+       -6.5845,
+       5.8535
+      ],
+      [
+       -6.5845,
+       5.8465
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "matricule": "AGR-R-011",
+    "nom": "Ehouman Sara",
+    "superficie_ha": 6
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -6.5635,
+       5.8465
+      ],
+      [
+       -6.5565,
+       5.8465
+      ],
+      [
+       -6.5565,
+       5.8535
+      ],
+      [
+       -6.5635,
+       5.8535
+      ],
+      [
+       -6.5635,
+       5.8465
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "matricule": "AGR-R-012",
+    "nom": "Brou Kouamé",
+    "superficie_ha": 7
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -6.5425,
+       5.8465
+      ],
+      [
+       -6.5355,
+       5.8465
+      ],
+      [
+       -6.5355,
+       5.8535
+      ],
+      [
+       -6.5425,
+       5.8535
+      ],
+      [
+       -6.5425,
+       5.8465
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "matricule": "AGR-R-013",
+    "nom": "Diaby Moussa",
+    "superficie_ha": 1
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -6.65,
+     5.92
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "matricule": "AGR-R-014",
+    "nom": "Tano Akissi",
+    "superficie_ha": 1.8
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -6.635,
+     5.93
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "matricule": "AGR-R-015",
+    "nom": "Zamblé Bi",
+    "superficie_ha": 2.6
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -6.62,
+     5.94
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "matricule": "AGR-R-016",
+    "nom": "Koffi Ahou",
+    "superficie_ha": 1
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -6.605,
+     5.92
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "matricule": "AGR-R-017",
+    "nom": "Silué Tenena",
+    "superficie_ha": 1.8
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -6.59,
+     5.93
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "matricule": "AGR-R-018",
+    "nom": "Bamba Awa",
+    "superficie_ha": 2.6
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -6.575,
+     5.94
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "matricule": "AGR-R-019",
+    "nom": "Djè Lou",
+    "superficie_ha": 1
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -6.56,
+     5.92
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "matricule": "AGR-R-020",
+    "nom": "Goli Zamblé",
+    "superficie_ha": 1.8
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -6.545,
+     5.93
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "matricule": "AGR-R-021",
+    "nom": "Loua Cécé",
+    "superficie_ha": 5.2
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -6.514,
+       5.826
+      ],
+      [
+       -6.506,
+       5.826
+      ],
+      [
+       -6.506,
+       5.834
+      ],
+      [
+       -6.514,
+       5.834
+      ],
+      [
+       -6.514,
+       5.8264
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "matricule": "AGR-R-022",
+    "nom": "Meité Sékou",
+    "superficie_ha": 4.6
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -6.4938,
+       5.8462
+      ],
+      [
+       -6.4862,
+       5.8462
+      ],
+      [
+       -6.4862,
+       5.8538
+      ],
+      [
+       -6.4938,
+       5.8538
+      ],
+      [
+       -6.4938,
+       5.8466
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "matricule": "AGR-R-005",
+    "nom": "Anoh Clarisse",
+    "superficie_ha": 2.1
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -6.6,
+     5.95
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "matricule": "AGR-R-005",
+    "nom": "Dosso Vassiriki",
+    "superficie_ha": 2.4
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -6.59,
+     5.96
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "matricule": "AGR-R-023",
+    "nom": "Anoh Clarisse",
+    "superficie_ha": 6.5
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -6.55,
+     5.88
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "matricule": "AGR-R-024",
+    "nom": "Dosso Vassiriki",
+    "superficie_ha": 4.8
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -6.54,
+     5.89
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "matricule": "AGR-R-025",
+    "nom": "Kra Yao",
+    "superficie_ha": 5.9
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -6.53,
+     5.9
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "matricule": "AGR-R-026",
+    "nom": "Ette Marcel",
+    "superficie_ha": 4.4
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -6.454,
+       5.826
+      ],
+      [
+       -6.446,
+       5.826
+      ],
+      [
+       -6.446,
+       5.834
+      ],
+      [
+       -6.454,
+       5.834
+      ],
+      [
+       -6.454,
+       5.826
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "matricule": "AGR-R-027",
+    "nom": "Niamké Adjo",
+    "superficie_ha": 4.2
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -6.452,
+       5.827
+      ],
+      [
+       -6.444,
+       5.827
+      ],
+      [
+       -6.444,
+       5.835
+      ],
+      [
+       -6.452,
+       5.835
+      ],
+      [
+       -6.452,
+       5.827
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "matricule": "AGR-R-028",
+    "nom": "Sess Eba",
+    "superficie_ha": 2.2
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     5.83,
+     -6.65
+    ]
+   }
+  }
+ ]
+}

@@ -23,8 +23,8 @@ const ARTICLES: Article[] = [
   { cat: "verifier", Icon: Satellite, title: { fr: "Lire un verdict Whisp (Conforme, Anomalie, Données insuffisantes)", en: "Read a Whisp verdict (Compliant, Anomaly, Insufficient data)" }, href: "/methodologie" },
   { cat: "certificats", Icon: ScrollText, title: { fr: "Générer un certificat PDF", en: "Generate a PDF certificate" }, href: "/app/verifier" },
   { cat: "certificats", Icon: ScrollText, title: { fr: "Exporter au format GeoJSON pour TRACES NT", en: "Export GeoJSON for TRACES NT" }, href: "/app/exportateur" },
-  { cat: "credit", Icon: HandCoins, title: { fr: "Proposer un micro-crédit à un producteur conforme", en: "Offer a micro-credit to a compliant farmer" }, href: "/app/verifier" },
-  { cat: "credit", Icon: HandCoins, title: { fr: "Comment fonctionne le remboursement", en: "How repayment works" }, href: "/faq" },
+  { cat: "valorisation", Icon: HandCoins, title: { fr: "Valoriser une parcelle conforme (primes, dossier exportateur)", en: "Valorise a compliant plot (premiums, exporter file)" }, href: "/app/verifier" },
+  { cat: "valorisation", Icon: HandCoins, title: { fr: "Négocier une prime avec son exportateur", en: "Negotiating a premium with your exporter" }, href: "/faq" },
   { cat: "securite", Icon: Shield, title: { fr: "Modifier son mot de passe", en: "Change your password" }, href: "/app/parametres" },
   { cat: "securite", Icon: Shield, title: { fr: "Gérer les filières couvertes", en: "Manage covered commodities" }, href: "/app/parametres" },
 ];
@@ -33,7 +33,7 @@ const CATS: { id: string; fr: string; en: string }[] = [
   { id: "demarrer", fr: "Démarrer", en: "Getting started" },
   { id: "verifier", fr: "Vérifier une parcelle", en: "Verify a plot" },
   { id: "certificats", fr: "Certificats", en: "Certificates" },
-  { id: "credit", fr: "Micro-crédit", en: "Micro-credit" },
+  { id: "valorisation", fr: "Valorisation", en: "Valorisation" },
   { id: "securite", fr: "Compte & sécurité", en: "Account & security" },
 ];
 

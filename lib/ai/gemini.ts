@@ -200,13 +200,13 @@ export function interrogerPortefeuille(question: string, parcelles: Parcelle[]):
     };
   }
 
-  // Micro-crédit / éligibilité (éligible = parcelle conforme)
-  if (wants("credit", "micro-credit", "microcredit", "eligible", "financement", "pret")) {
+  // Valorisation / dossier exportateur (seules les parcelles conformes y entrent)
+  if (wants("valorisation", "prime", "dossier", "exportateur", "acheteur", "premium")) {
     const plur = conformes.length > 1;
     return {
-      texte: `${conformes.length} producteur${plur ? "s sont éligibles" : " est éligible"} au micro-crédit${scope} : seule une parcelle conforme ouvre droit à un financement (un prêt remboursable de 50 000 à 250 000 FCFA, facilité via l'IMF partenaire). ${listNoms(conformes)}.`,
+      texte: `${conformes.length} parcelle${plur ? "s sont prêtes" : " est prête"} pour le dossier exportateur${scope} : seules les parcelles conformes rejoignent le dossier de valorisation (certificat vérifiable et éléments de diligence pour TRACES NT), l'argument de la coopérative pour négocier primes de durabilité et accès aux acheteurs premium. ${listNoms(conformes)}.`,
       parcelles: conformes,
-      metric: { label: "Producteurs éligibles au micro-crédit", value: String(conformes.length) },
+      metric: { label: "Parcelles prêtes pour le dossier exportateur", value: String(conformes.length) },
     };
   }
 
@@ -244,7 +244,7 @@ export const QUESTIONS_SUGGEREES = [
   "Quelles parcelles présentent un risque dans la région de Soubré ?",
   "Résume les anomalies détectées ce mois-ci",
   "Quelle est la superficie moyenne des parcelles non conformes ?",
-  "Combien de producteurs sont éligibles au micro-crédit ?",
+  "Combien de parcelles sont prêtes pour le dossier exportateur ?",
 ];
 
 /* ----------------------------- Dossier de diligence (DDS) généré par IA ----------------------------- */
@@ -420,9 +420,9 @@ export function analyserRisque(p: Parcelle): RiskAssessment {
       { label: "Verdict Whisp conforme, convergence des sources satellites", sens: "positif" },
       { label: "Dossier de diligence mobilisable pour TRACES NT", sens: "positif" },
       {
-        label: p.propositionCredit
-          ? "Parcelle éligible au micro-crédit (inclusion financière)"
-          : "Éligible au micro-crédit sous réserve d'une proposition",
+        label: p.dossierPartage
+          ? "Dossier de conformité déjà partagé avec l'exportateur"
+          : "Dossier de conformité prêt à être partagé avec l'exportateur",
         sens: "positif",
       },
       facteurPlafond("positif"),
@@ -432,34 +432,30 @@ export function analyserRisque(p: Parcelle): RiskAssessment {
   };
 }
 
-/* ----------------------------- Scoring de crédit explicable (inclusion, XAI) ----------------------------- */
+/* ----------------------------- Valorisation commerciale explicable (XAI) ----------------------------- */
 
-export type CreditClasse = "A" | "B" | "C" | "Non éligible";
-export interface CreditSignal {
+export interface ValorisationSignal {
   label: string;
   sens: "positif" | "négatif" | "neutre";
 }
-export interface CreditScore {
-  eligible: boolean;
-  classe: CreditClasse;
-  plafondFcfa: number;
-  signaux: CreditSignal[];
+export interface Valorisation {
+  /** Le dossier de la parcelle est-il prêt à être partagé avec l'exportateur ? */
+  pret: boolean;
+  signaux: ValorisationSignal[];
   explication: string;
 }
 
 /**
- * Score de crédit ALTERNATIF et EXPLICABLE pour l'inclusion financière (aide à la décision, jamais
- * automatisation : la validation du prêt reste humaine). Signaux : conformité RDUE, résilience des
- * sols, capacité de production, historique. Plafond RECOMMANDÉ borné à la fourchette de la charte
- * (50 000–250 000 FCFA) ; le micro-crédit reste un PRÊT REMBOURSABLE, jamais « gratuit ».
- * // TODO: enrichir avec des signaux Mobile Money réels (historique de transactions) une fois branché.
+ * Évaluation de VALORISATION explicable : ce que la conformité vérifiée d'une parcelle apporte
+ * commercialement à la coopérative (primes de durabilité négociables, accès aux acheteurs premium,
+ * dossier partageable avec l'exportateur). AUCUN score de crédit, plafond de financement ni montant
+ * de prime : AGRIVO n'évalue pas la solvabilité et n'invente aucun chiffre. Aide à la décision —
+ * la négociation reste humaine.
  */
-export function scorerCreditProducteur(p: Parcelle): CreditScore {
+export function evaluerValorisation(p: Parcelle): Valorisation {
   if (p.statut !== "conforme") {
     return {
-      eligible: false,
-      classe: "Non éligible",
-      plafondFcfa: 0,
+      pret: false,
       signaux: [
         {
           label:
@@ -468,29 +464,23 @@ export function scorerCreditProducteur(p: Parcelle): CreditScore {
               : "Verdict en attente : conformité non établie",
           sens: "négatif",
         },
-        { label: "Seule une parcelle conforme ouvre droit au préfinancement", sens: "neutre" },
+        { label: "Seule une parcelle conforme rejoint le dossier de valorisation", sens: "neutre" },
       ],
       explication:
-        "Le micro-crédit est conditionné à la conformité RDUE : il n'est pas proposé tant que la parcelle n'est pas conforme. Aide à la décision — la validation reste humaine.",
+        "Le dossier de valorisation ne mobilise que des parcelles conformes : c'est ce qui fait sa valeur face à un acheteur. Cette parcelle en reste écartée tant que le verdict ne le permet pas.",
     };
   }
 
-  const brut = 50_000 + Math.round(p.superficieHa * 42_000);
-  const plafond = Math.max(50_000, Math.min(250_000, Math.round(brut / 10_000) * 10_000));
-  const classe: CreditClasse = plafond >= 200_000 ? "A" : plafond >= 120_000 ? "B" : "C";
-
   return {
-    eligible: true,
-    classe,
-    plafondFcfa: plafond,
+    pret: true,
     signaux: [
       { label: "Parcelle conforme RDUE : accès au marché UE sécurisé", sens: "positif" },
-      { label: "Score de résilience des sols élevé (compostage vérifié)", sens: "positif" },
-      { label: `Superficie de ${fmtHa(p.superficieHa)} : capacité de production établie`, sens: "positif" },
-      { label: "Historique de vérification enregistré (traçabilité)", sens: "positif" },
+      { label: `Certificat n° ${p.numeroCertificat}, vérifiable par QR par tout acheteur`, sens: "positif" },
+      { label: "Éléments de diligence prêts pour TRACES NT (géolocalisation, sources satellite)", sens: "positif" },
+      { label: `Superficie vérifiée de ${fmtHa(p.superficieHa)}, volume réconciliable`, sens: "positif" },
     ],
     explication:
-      "Score explicable, sans bureau de crédit : il combine conformité, santé des sols et capacité de production. Le micro-crédit reste un prêt remboursable (50 000–250 000 FCFA), facilité via l'IMF partenaire ; la décision finale revient au gérant.",
+      "Une parcelle vérifiée renforce le dossier que la coopérative présente à son exportateur et à ses acheteurs : conformité prouvable, certificat vérifiable publiquement, diligence prête pour TRACES NT. C'est la base de négociation des primes de durabilité — sans qu'AGRIVO n'avance de montant.",
   };
 }
 

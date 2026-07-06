@@ -8,7 +8,8 @@ import {
   Receipt,
   Landmark,
   Building2,
-  ScanLine,
+  FileUp,
+  SearchCheck,
   MapPinned,
   Satellite,
   HandCoins,
@@ -50,28 +51,28 @@ const COPY = {
       items: [
         { suffix: " déc. 2026", title: "Le RDUE bloque l'accès au marché", body: "Dès le 30 décembre 2026, un lot sans preuve de zéro déforestation ne peut plus entrer dans l'Union européenne. Amendes jusqu'à 4 % du chiffre d'affaires réalisé en Europe." },
         { prefix: "20 à ", suffix: " M FCFA", title: "La certification manuelle coûte une fortune", body: "Vérifier une coopérative à la main coûte 20 à 40 millions FCFA par an. 94 % de ce coût finit par réduire le revenu réel des producteurs." },
-        { suffix: " %", title: "Le crédit reste hors de portée", body: "95 % des exploitants ruraux n'ont accès à aucun crédit bancaire. Impossible de financer intrants ou besoins familiaux urgents." },
+        { suffix: " %", title: "Des données terrain inexploitables", body: "Environ 30 % des données de parcelles collectées sur le terrain ne sont pas assez fiables pour la RDUE : polygones ouverts, doublons, points aberrants. Avoir des fichiers ne suffit pas." },
       ],
     },
     goldenPath: {
-      eyebrow: "Le parcours, de bout en bout",
-      title: "Du scan de la carte au crédit du producteur, en cinq gestes.",
-      sub: "Démontré en direct, sur un simple téléphone, en quelques minutes.",
+      eyebrow: "Comment ça marche",
+      title: "Vos données existent déjà. AGRIVO les rend prouvables.",
+      sub: "De vos fichiers existants au dossier prêt pour l'export, en cinq temps.",
       steps: [
-        { title: "Sélection", body: "Le gérant ouvre AGRIVO et choisit sa coopérative. Consentement du producteur enregistré." },
-        { title: "Scan de la carte", body: "La caméra scanne la carte du producteur. Gemini Vision extrait nom, numéro et localité." },
-        { title: "Cartographie", body: "La parcelle s'affiche sur fond satellite. Son contour GeoJSON et sa superficie sont calculés." },
-        { title: "Verdict Whisp", body: "En quelques secondes : Conforme, Anomalie détectée ou Données insuffisantes, expliqué et certifié." },
-        { title: "Micro-crédit", body: "Si conforme, une proposition de 50 000 à 250 000 FCFA, versée en Mobile Money." },
+        { title: "Importez votre registre", body: "Fichiers de certification, cartographies financées par vos exportateurs : chargez ce que la coopérative détient déjà (.geojson, .kml, .csv)." },
+        { title: "AGRIVO l'audite", body: "Chaque parcelle est passée au crible de la règle RDUE : polygones ouverts, doublons, chevauchements, points seuls au-delà de 4 ha." },
+        { title: "Complétez les trous", body: "Seules les parcelles manquantes ou rejetées repassent par le terrain : scan de la carte, capture GPS guidée, contrôles d'intégrité." },
+        { title: "Le satellite juge", body: "Whisp vérifie ce qu'il y a dans chaque polygone déclaré : Conforme, Anomalie détectée ou Données insuffisantes, expliqué et certifié." },
+        { title: "Valorisez", body: "Certificats vérifiables et dossier DDS prêt pour TRACES NT : la coopérative négocie primes de durabilité et acheteurs premium." },
       ],
     },
     triptyque: {
       eyebrow: "Le différenciateur",
-      title: "La seule solution qui combine conformité, santé des sols et inclusion financière.",
+      title: "La seule solution qui combine conformité, santé des sols et valorisation commerciale.",
       pillars: [
         { t: "Conformité RDUE", d: "La vérification satellite de chaque parcelle et le certificat prêt pour TRACES NT." },
         { t: "Santé des sols", d: "Un score de résilience des sols, méthodologie inspirée de standards reconnus type Kubeko." },
-        { t: "Inclusion financière", d: "Le producteur conforme accède à un micro-crédit, versé en Mobile Money." },
+        { t: "Valorisation commerciale", d: "La conformité prouvée devient l'argument des primes de durabilité et des acheteurs premium." },
       ],
     },
     fonctionnalites: {
@@ -81,7 +82,7 @@ const COPY = {
         { t: "Vérification satellite", d: "Le verdict Whisp (FAO) sur chaque parcelle, comparé à la date pivot du 31 décembre 2020." },
         { t: "Certificat prêt à l'export", d: "Un certificat PDF horodaté, aligné sur le format de déclaration TRACES NT." },
         { t: "Export GeoJSON", d: "Vos parcelles au format RFC 7946, 6 décimales, prêtes pour vos systèmes d'export." },
-        { t: "Inclusion financière", d: "Le producteur conforme accède à un micro-crédit, versé en Mobile Money." },
+        { t: "Valorisation commerciale", d: "La conformité prouvée devient l'argument des primes de durabilité et des acheteurs premium." },
         { t: "Français et Anglais", d: "Une interface bilingue ; l'assistant vocal parle aussi le dioula et le baoulé au producteur." },
         { t: "Mode hors connexion", d: "Le contrôle avance au bord du champ, même sans réseau ; la synchronisation suit." },
       ],
@@ -134,9 +135,9 @@ const COPY = {
       revenues: [
         { name: "Abonnement coopérative", price: "120 000", unit: "FCFA / mois", desc: "Vérifications illimitées, certificats PDF, mode hors connexion, support." },
         { name: "API exportateur", price: "1 500 000", unit: "FCFA / mois", desc: "API REST, export batch, déclarations TRACES NT intégrées, SLA garanti." },
-        { name: "Commission micro-crédit", price: "Commission", unit: "sur chaque prêt facilité", desc: "Versée par l'institution de micro-finance partenaire, pas par le producteur." },
+        { name: "Dossier exportateur", price: "Inclus", unit: "dans l'abonnement coopérative", desc: "Le dossier de conformité se partage avec l'exportateur : la coopérative le fait valoir pour négocier." },
       ],
-      note: "Le micro-crédit reste un prêt de 50 000 à 250 000 FCFA que le producteur rembourse. Ce qui est gratuit pour lui, c'est le service AGRIVO : il ne paie aucun frais pour être vérifié et financé.",
+      note: "Le service AGRIVO est gratuit pour le producteur : il ne paie aucun frais pour être vérifié. Le modèle repose sur l'abonnement coopérative et l'API exportateur.",
     },
     verdicts: {
       eyebrow: "Jamais un simple oui / non",
@@ -155,7 +156,7 @@ const COPY = {
     },
     cta: {
       title: "La conformité, prouvée en quelques secondes.",
-      body: "Déroulez le parcours complet, du scan de la carte du producteur au micro-crédit versé : chaque parcelle vérifiée, chaque certificat prêt pour TRACES NT.",
+      body: "Déroulez le parcours complet, du scan de la carte du producteur au dossier de valorisation : chaque parcelle vérifiée, chaque certificat prêt pour TRACES NT.",
       primary: "Créer un compte",
       secondary: "Comprendre la méthode",
       rights: "Agrivo © 2026. Tous droits réservés.",
@@ -168,28 +169,28 @@ const COPY = {
       items: [
         { suffix: " Dec 2026", title: "The EUDR blocks market access", body: "From 30 December 2026, a lot without proof of zero deforestation can no longer enter the European Union. Fines of up to 4% of turnover generated in Europe." },
         { prefix: "20 to ", suffix: "M FCFA", title: "Manual certification costs a fortune", body: "Verifying a cooperative by hand costs 20 to 40 million FCFA per year. 94% of that cost ends up cutting into farmers' real income." },
-        { suffix: " %", title: "Credit stays out of reach", body: "95% of rural smallholders have no access to bank credit. Impossible to finance inputs or urgent family needs." },
+        { suffix: " %", title: "Field data unfit for use", body: "Around 30% of plot data collected in the field is not reliable enough for the EUDR: open polygons, duplicates, outlier points. Having files is not enough." },
       ],
     },
     goldenPath: {
-      eyebrow: "The journey, end to end",
-      title: "From scanning the card to the farmer's credit, in five moves.",
-      sub: "Demonstrated live, on a simple phone, in a few minutes.",
+      eyebrow: "How it works",
+      title: "Your data already exists. AGRIVO makes it provable.",
+      sub: "From your existing files to an export-ready dossier, in five steps.",
       steps: [
-        { title: "Selection", body: "The manager opens AGRIVO and picks their cooperative. Farmer consent is recorded." },
-        { title: "Card scan", body: "The camera scans the farmer's card. Gemini Vision extracts name, number and locality." },
-        { title: "Mapping", body: "The plot appears over satellite imagery. Its GeoJSON outline and area are computed." },
-        { title: "Whisp verdict", body: "In seconds: Compliant, Anomaly detected or Insufficient data, explained and certified." },
-        { title: "Micro-credit", body: "If compliant, an offer of 50,000 to 250,000 FCFA, paid via Mobile Money." },
+        { title: "Import your register", body: "Certification files, exporter-funded mapping campaigns: load what the cooperative already owns (.geojson, .kml, .csv)." },
+        { title: "AGRIVO audits it", body: "Every plot is checked against the EUDR rule: open polygons, duplicates, overlaps, lone points above 4 ha." },
+        { title: "Fill the gaps", body: "Only missing or rejected plots go back to the field: card scan, guided GPS capture, integrity checks." },
+        { title: "The satellite judges", body: "Whisp verifies what is inside each declared polygon: Compliant, Anomaly detected or Insufficient data, explained and certified." },
+        { title: "Valorise", body: "Verifiable certificates and a DDS file ready for TRACES NT: the cooperative negotiates sustainability premiums and premium buyers." },
       ],
     },
     triptyque: {
       eyebrow: "The differentiator",
-      title: "The only solution that combines compliance, soil health and financial inclusion.",
+      title: "The only solution that combines compliance, soil health and commercial valorisation.",
       pillars: [
         { t: "EUDR compliance", d: "Satellite verification of every plot and a certificate ready for TRACES NT." },
         { t: "Soil health", d: "A soil resilience score, methodology inspired by recognised standards such as Kubeko." },
-        { t: "Financial inclusion", d: "The compliant farmer gains access to a micro-credit, paid via Mobile Money." },
+        { t: "Commercial valorisation", d: "Proven compliance becomes the argument for sustainability premiums and premium buyers." },
       ],
     },
     fonctionnalites: {
@@ -199,7 +200,7 @@ const COPY = {
         { t: "Satellite verification", d: "The Whisp (FAO) verdict on every plot, compared to the 31 December 2020 cut-off date." },
         { t: "Export-ready certificate", d: "A timestamped PDF certificate, aligned with the TRACES NT declaration format." },
         { t: "GeoJSON export", d: "Your plots in RFC 7946 format, 6 decimals, ready for your export systems." },
-        { t: "Financial inclusion", d: "The compliant farmer gains access to a micro-credit, paid via Mobile Money." },
+        { t: "Commercial valorisation", d: "Proven compliance becomes the argument for sustainability premiums and premium buyers." },
         { t: "French and English", d: "A bilingual interface; the voice assistant also speaks Dioula and Baoulé to the farmer." },
         { t: "Offline mode", d: "The check moves forward at the edge of the field, even without a network; syncing follows." },
       ],
@@ -252,9 +253,9 @@ const COPY = {
       revenues: [
         { name: "Cooperative subscription", price: "120,000", unit: "FCFA / month", desc: "Unlimited verifications, PDF certificates, offline mode, support." },
         { name: "Exporter API", price: "1,500,000", unit: "FCFA / month", desc: "REST API, batch export, integrated TRACES NT declarations, guaranteed SLA." },
-        { name: "Micro-credit commission", price: "Commission", unit: "on each facilitated loan", desc: "Paid by the partner microfinance institution, not by the farmer." },
+        { name: "Exporter file", price: "Included", unit: "in the cooperative subscription", desc: "The compliance file is shared with the exporter: the cooperative leverages it to negotiate." },
       ],
-      note: "The micro-credit remains a loan of 50,000 to 250,000 FCFA that the farmer repays. What is free for them is the AGRIVO service: they pay no fee to be verified and financed.",
+      note: "The AGRIVO service is free for the farmer: they pay no fee to be verified. The model relies on the cooperative subscription and the exporter API.",
     },
     verdicts: {
       eyebrow: "Never a plain yes / no",
@@ -273,7 +274,7 @@ const COPY = {
     },
     cta: {
       title: "Compliance, proven in seconds.",
-      body: "Run the full journey, from scanning the farmer's card to the micro-credit paid out: every plot verified, every certificate ready for TRACES NT.",
+      body: "Run the full journey, from scanning the farmer's card to the valorisation file: every plot verified, every certificate ready for TRACES NT.",
       primary: "Create an account",
       secondary: "Understand the method",
       rights: "Agrivo © 2026. All rights reserved.",
@@ -345,7 +346,7 @@ function ProblemeSection() {
     <Receipt key="1" size={22} className="text-amber-cacao" />,
     <Landmark key="2" size={22} className="text-forest-700" />,
   ];
-  const values = [30, 40, 95];
+  const values = [30, 40, 30];
   return (
     <section className="divide-fluid bg-ivory">
       <div className="mx-auto max-w-7xl px-6 py-24 md:px-8 lg:px-12">
@@ -379,7 +380,7 @@ function ProblemeSection() {
 /* ------------------------------------------------------------------ Golden path (signature) */
 function GoldenPathSection() {
   const c = useCopy().goldenPath;
-  const icons = [<Building2 key="0" size={22} />, <ScanLine key="1" size={22} />, <MapPinned key="2" size={22} />, <Satellite key="3" size={22} />, <HandCoins key="4" size={22} />];
+  const icons = [<FileUp key="0" size={22} />, <SearchCheck key="1" size={22} />, <MapPinned key="2" size={22} />, <Satellite key="3" size={22} />, <HandCoins key="4" size={22} />];
   const nums = ["01", "02", "03", "04", "05"];
   const reduce = useReducedMotion();
   return (

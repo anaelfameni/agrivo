@@ -3,7 +3,8 @@
 import { useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
-import { Search, ShieldCheck, ShieldAlert, ShieldQuestion, FileSearch } from "lucide-react";
+import Link from "next/link";
+import { Search, ShieldCheck, ShieldAlert, ShieldQuestion, FileSearch, ArrowRight } from "lucide-react";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { StatusBadge } from "@/components/ui/status-badge";
@@ -160,6 +161,49 @@ export function VerifierCertificatClient() {
             </motion.div>
           )}
         </div>
+
+        {/* Rappel des trois statuts possibles + méthode : l'écran reste complet même sans résultat. */}
+        <section className="mt-12 border-t border-black/[0.06] pt-8">
+          <h2 className="text-[11px] uppercase tracking-widest text-stone-500">
+            {en ? "The three possible statuses" : "Les trois statuts possibles"}
+          </h2>
+          <div className="mt-4 grid gap-3 sm:grid-cols-3">
+            <div className="rounded-xl border border-black/[0.06] bg-white p-4">
+              <div className="flex items-center gap-2">
+                <ShieldCheck className="h-4 w-4 text-green-signal" strokeWidth={2} aria-hidden />
+                <p className="text-sm font-semibold text-forest-950">{en ? "Compliant" : "Conforme"}</p>
+              </div>
+              <p className="mt-1.5 text-xs leading-relaxed text-stone-500">
+                {en ? STATUT_PHRASE_EN.conforme : STATUT_PHRASE.conforme}
+              </p>
+            </div>
+            <div className="rounded-xl border border-black/[0.06] bg-white p-4">
+              <div className="flex items-center gap-2">
+                <ShieldAlert className="h-4 w-4 text-red-block" strokeWidth={2} aria-hidden />
+                <p className="text-sm font-semibold text-forest-950">{en ? "Anomaly detected" : "Anomalie détectée"}</p>
+              </div>
+              <p className="mt-1.5 text-xs leading-relaxed text-stone-500">
+                {en ? STATUT_PHRASE_EN.anomalie : STATUT_PHRASE.anomalie}
+              </p>
+            </div>
+            <div className="rounded-xl border border-black/[0.06] bg-white p-4">
+              <div className="flex items-center gap-2">
+                <ShieldQuestion className="h-4 w-4 text-amber-cacao" strokeWidth={2} aria-hidden />
+                <p className="text-sm font-semibold text-forest-950">{en ? "Insufficient data" : "Données insuffisantes"}</p>
+              </div>
+              <p className="mt-1.5 text-xs leading-relaxed text-stone-500">
+                {en ? STATUT_PHRASE_EN.insuffisant : STATUT_PHRASE.insuffisant}
+              </p>
+            </div>
+          </div>
+          <Link
+            href="/methodologie"
+            className="mt-5 inline-flex items-center gap-1.5 text-sm font-medium text-green-signal outline-none transition-colors hover:text-forest-950 focus-visible:ring-2 focus-visible:ring-green-signal"
+          >
+            {en ? "How these verdicts are produced (methodology)" : "Comment ces verdicts sont produits (méthodologie)"}
+            <ArrowRight size={14} strokeWidth={2.25} aria-hidden />
+          </Link>
+        </section>
       </main>
       <SiteFooter />
     </div>

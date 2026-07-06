@@ -10,7 +10,7 @@ import { StepScan } from "@/components/verifier/step-scan";
 import { StepMapping } from "@/components/verifier/step-mapping";
 import { StepAnalysis } from "@/components/verifier/step-analysis";
 import { StepCertificate } from "@/components/verifier/step-certificate";
-import { StepCredit } from "@/components/verifier/step-credit";
+import { StepValorisation } from "@/components/verifier/step-valorisation";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { PinMark } from "@/components/ui/pin-mark";
 import { buildCertificat } from "@/lib/certificat-data";
@@ -32,12 +32,12 @@ const TR = {
     back: "Tableau de bord",
     eyebrow: "Parcours de vérification",
     title: "Nouvelle vérification",
-    nextCredit: "Proposer un crédit",
+    nextCredit: "Valoriser la parcelle",
     finish: "Terminer",
     confirm: {
       title: "Consentement enregistré",
       body: (coop: string) =>
-        `Vous vérifiez une parcelle pour la ${coop}. Le consentement éclairé du producteur a été recueilli. La vérification se déroule en quatre temps : scan de la carte, cartographie GPS de la parcelle, analyse satellite, puis verdict et suites (certificat, crédit).`,
+        `Vous vérifiez une parcelle pour la ${coop}. Le consentement éclairé du producteur a été recueilli. La vérification se déroule en quatre temps : scan de la carte, cartographie GPS de la parcelle, analyse satellite, puis verdict et suites (certificat, valorisation).`,
       coop: "Coopérative", gerant: "Gérant", artci: "Consentement ARTCI", recueilli: "Recueilli",
       start: "Commencer le scan",
     },
@@ -54,12 +54,12 @@ const TR = {
     back: "Dashboard",
     eyebrow: "Verification flow",
     title: "New verification",
-    nextCredit: "Propose a credit",
+    nextCredit: "Valorise the plot",
     finish: "Finish",
     confirm: {
       title: "Consent recorded",
       body: (coop: string) =>
-        `You are verifying a plot for ${coop}. The farmer's informed consent has been collected. The verification runs in four stages: card scan, GPS plot mapping, satellite analysis, then verdict and next steps (certificate, credit).`,
+        `You are verifying a plot for ${coop}. The farmer's informed consent has been collected. The verification runs in four stages: card scan, GPS plot mapping, satellite analysis, then verdict and next steps (certificate, valorisation).`,
       coop: "Cooperative", gerant: "Manager", artci: "ARTCI consent", recueilli: "Collected",
       start: "Start the scan",
     },
@@ -193,8 +193,8 @@ export default function VerifierPage() {
           )}
 
           {step === 6 && parcelle && (
-            <StepCredit
-              producteurNom={parcelle.producteurNom}
+            <StepValorisation
+              parcelle={parcelle}
               onFinish={finalize}
               onBack={() => setStep(5)}
             />

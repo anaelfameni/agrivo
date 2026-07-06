@@ -1,11 +1,12 @@
 "use client";
 
 import { useRef, type ReactNode } from "react";
-import { motion, useScroll, useTransform, type MotionValue } from "framer-motion";
+import { motion, useReducedMotion, useScroll, useTransform, type MotionValue } from "framer-motion";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
-/** Révélation au scroll : fade + translation, déclenchée une seule fois. */
+/** Révélation au scroll : fade + translation, déclenchée une seule fois.
+ * Reduced-motion : l'état initial EST l'état final (aucun contenu masqué). */
 export function Reveal({
   children,
   delay = 0,
@@ -15,6 +16,8 @@ export function Reveal({
   delay?: number;
   className?: string;
 }) {
+  const reduce = useReducedMotion();
+  if (reduce) return <div className={className}>{children}</div>;
   return (
     <motion.div
       initial={{ opacity: 0, y: 26 }}

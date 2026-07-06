@@ -45,10 +45,10 @@ const QA: { q: { fr: string; en: string }; a: { fr: string; en: string } }[] = [
     },
   },
   {
-    q: { fr: "Comment fonctionne le micro-crédit ?", en: "How does the micro-credit work?" },
+    q: { fr: "Pourquoi pas de crédit aux producteurs ?", en: "Why no credit for farmers?" },
     a: {
-      fr: "Quand une parcelle est conforme, le producteur peut recevoir une proposition de micro-crédit versée en Mobile Money. Agrivo reste un fournisseur de technologie : le prêt est accordé par une institution de micro-finance partenaire. Le service est gratuit pour le producteur.",
-      en: "When a plot is compliant, the farmer can receive a micro-credit offer paid out via Mobile Money. Agrivo remains a technology provider: the loan is granted by a partner microfinance institution. The service is free for the farmer.",
+      fr: "Par choix assumé, partagé par les coopératives : elles visent l'autonomie des producteurs, et le préfinancement individuel a historiquement produit impayés et fraudes. AGRIVO valorise la conformité par les primes de durabilité et l'accès aux acheteurs premium, pas par la dette.",
+      en: "A deliberate choice, shared by cooperatives: they aim for farmer autonomy, and individual pre-financing has historically produced defaults and fraud. AGRIVO valorises compliance through sustainability premiums and access to premium buyers, not through debt.",
     },
   },
   {
@@ -61,8 +61,8 @@ const QA: { q: { fr: string; en: string }; a: { fr: string; en: string } }[] = [
   {
     q: { fr: "En quoi Agrivo se distingue de Koltiva ou Farmerline ?", en: "How is Agrivo different from Koltiva or Farmerline?" },
     a: {
-      fr: "Ce sont de vraies plateformes numériques sérieuses. La différence d'Agrivo n'est pas « SaaS contre service » : c'est la combinaison, en un seul outil, de la conformité RDUE, du score de santé des sols et de l'inclusion financière du producteur, avec un ancrage local ivoirien.",
-      en: "Those are serious digital platforms. Agrivo's difference is not \"SaaS versus service\": it is the combination, in a single tool, of EUDR compliance, soil health scoring and farmer financial inclusion, with local Ivorian roots.",
+      fr: "Ce sont de vraies plateformes numériques sérieuses. La différence d'Agrivo n'est pas « SaaS contre service » : c'est la combinaison, en un seul outil, de la conformité RDUE, du score de santé des sols et de la valorisation commerciale de la conformité, avec un ancrage local ivoirien.",
+      en: "Those are serious digital platforms. Agrivo's difference is not \"SaaS versus service\": it is the combination, in a single tool, of EUDR compliance, soil health scoring and commercial valorisation of compliance, with local Ivorian roots.",
     },
   },
   {

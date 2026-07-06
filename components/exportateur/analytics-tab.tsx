@@ -343,10 +343,10 @@ export function AnalyticsTab({
                           }`}
                         >
                           <td className="px-4 py-2.5">
-                            <span className="block font-medium text-forest-950">{p.producteurNom}</span>
-                            <span className="num block text-[0.7rem] text-stone-400">{p.numeroCartePro}</span>
+                            <span className="block whitespace-nowrap font-medium text-forest-950">{p.producteurNom}</span>
+                            <span className="num block whitespace-nowrap text-[0.7rem] text-stone-400">{p.numeroCartePro}</span>
                           </td>
-                          <td className="hidden max-w-[8rem] truncate px-4 py-2.5 text-stone-600 md:table-cell" title={p.cooperative}>
+                          <td className="hidden max-w-[14rem] truncate px-4 py-2.5 text-stone-600 md:table-cell" title={p.cooperative}>
                             {p.cooperative}
                           </td>
                           <td className="hidden whitespace-nowrap px-4 py-2.5 text-stone-600 sm:table-cell">

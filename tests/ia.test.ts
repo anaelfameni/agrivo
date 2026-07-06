@@ -1,12 +1,12 @@
 /**
- * Tests de la couche IA déterministe : scoring de crédit, analyse de risque, assistant
+ * Tests de la couche IA déterministe : valorisation commerciale, analyse de risque, assistant
  * portefeuille, et ROBUSTESSE (cas « API IA indisponible » : le repli mock doit prendre
  * le relais, jamais une erreur devant le jury).
  */
 import { describe, it, expect } from "vitest";
 import { PARCELLES, getParcelle } from "@/data/mock-parcelles";
 import {
-  scorerCreditProducteur,
+  evaluerValorisation,
   analyserRisque,
   interrogerPortefeuille,
   genererMemoDiligence,
@@ -18,29 +18,31 @@ const conforme = PARCELLES.find((p) => p.statut === "conforme")!;
 const anomalie = PARCELLES.find((p) => p.statut === "anomalie")!;
 const insuffisant = PARCELLES.find((p) => p.statut === "insuffisant")!;
 
-describe("scorerCreditProducteur (inclusion financière explicable)", () => {
-  it("refuse toute parcelle non conforme (le crédit est conditionné à la conformité)", () => {
+describe("evaluerValorisation (valorisation commerciale explicable, frontière Nanti)", () => {
+  it("écarte toute parcelle non conforme du dossier de valorisation", () => {
     for (const p of [anomalie, insuffisant]) {
-      const score = scorerCreditProducteur(p);
-      expect(score.eligible).toBe(false);
-      expect(score.classe).toBe("Non éligible");
-      expect(score.plafondFcfa).toBe(0);
+      const v = evaluerValorisation(p);
+      expect(v.pret).toBe(false);
     }
   });
 
-  it("borne le plafond recommandé dans la fourchette de la charte (50 000 à 250 000 FCFA)", () => {
+  it("prépare toute parcelle conforme pour le dossier exportateur", () => {
     for (const p of PARCELLES.filter((x) => x.statut === "conforme")) {
-      const score = scorerCreditProducteur(p);
-      expect(score.eligible).toBe(true);
-      expect(score.plafondFcfa).toBeGreaterThanOrEqual(50_000);
-      expect(score.plafondFcfa).toBeLessThanOrEqual(250_000);
+      const v = evaluerValorisation(p);
+      expect(v.pret).toBe(true);
+      expect(v.signaux.length).toBeGreaterThan(0);
     }
   });
 
-  it("présente le crédit comme un prêt remboursable, jamais comme gratuit", () => {
-    const score = scorerCreditProducteur(conforme);
-    expect(score.explication.toLowerCase()).toContain("prêt remboursable");
-    expect(score.explication.toLowerCase()).not.toContain("gratuit");
+  it("ne produit jamais de score de crédit, de plafond ni de montant (frontière produit stricte)", () => {
+    for (const p of [conforme, anomalie, insuffisant]) {
+      const v = evaluerValorisation(p);
+      const texte = [v.explication, ...v.signaux.map((s) => s.label)].join(" ").toLowerCase();
+      expect(texte).not.toContain("crédit");
+      expect(texte).not.toContain("fcfa");
+      expect(texte).not.toContain("plafond");
+      expect(texte).not.toMatch(/\d+\s*%/);
+    }
   });
 });
 
@@ -67,8 +69,8 @@ describe("interrogerPortefeuille (raisonnement déterministe sur les données)",
     expect(r.parcelles.map((p) => p.id).sort()).toEqual(attendues.map((p) => p.id).sort());
   });
 
-  it("compte les producteurs éligibles au micro-crédit (les conformes uniquement)", () => {
-    const r = interrogerPortefeuille("Combien de producteurs sont éligibles au micro-crédit ?", PARCELLES);
+  it("compte les parcelles prêtes pour le dossier exportateur (les conformes uniquement)", () => {
+    const r = interrogerPortefeuille("Combien de parcelles sont prêtes pour le dossier exportateur ?", PARCELLES);
     const conformes = PARCELLES.filter((p) => p.statut === "conforme").length;
     expect(r.metric?.value).toBe(String(conformes));
   });

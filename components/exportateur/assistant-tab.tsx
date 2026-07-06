@@ -14,7 +14,7 @@ const EASE = [0.16, 1, 0.3, 1] as const;
 const COPY = {
   fr: {
     greeting:
-      "Bonjour Marc. Je raisonne sur votre portefeuille de parcelles vérifiées : conformité, anomalies, superficies, éligibilité au micro-crédit. Posez votre question, ou choisissez ci-dessous.",
+      "Bonjour Marc. Je raisonne sur votre portefeuille de parcelles vérifiées : conformité, anomalies, superficies, parcelles prêtes pour le dossier exportateur. Posez votre question, ou choisissez ci-dessous.",
     error: "Je n'ai pas pu interroger le portefeuille à l'instant. Réessayez dans un moment.",
     title: "Assistant AGRIVO",
     subtitle: "Copilote agentique · exécute des outils sur vos données vérifiées",
