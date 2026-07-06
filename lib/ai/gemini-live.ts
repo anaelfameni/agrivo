@@ -26,7 +26,7 @@ interface GeminiPart {
 /** Appel générique generateContent. Lève une erreur en cas d'échec (l'appelant replie sur le mock). */
 export async function callGemini(
   parts: GeminiPart[],
-  opts?: { system?: string; json?: boolean; maxOutputTokens?: number },
+  opts?: { system?: string; json?: boolean; maxOutputTokens?: number; thinkingBudget?: number },
 ): Promise<string> {
   const key = process.env.GEMINI_API_KEY;
   if (!key) throw new Error("GEMINI_API_KEY absent");
@@ -43,6 +43,11 @@ export async function callGemini(
         temperature: 0.4,
         maxOutputTokens: opts?.maxOutputTokens ?? 1024,
         ...(opts?.json ? { responseMimeType: "application/json" } : {}),
+        // gemini-2.5-flash « réfléchit » par défaut (500-1000 tokens invisibles) : lent et
+        // gourmand. Pour une simple mise en mots, thinkingBudget: 0 la coupe (latence ÷ 2-3).
+        ...(opts?.thinkingBudget !== undefined
+          ? { thinkingConfig: { thinkingBudget: opts.thinkingBudget } }
+          : {}),
       },
     }),
     // Un appel live ne doit jamais bloquer la démo : timeout court, repli mock derrière.
