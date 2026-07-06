@@ -336,6 +336,15 @@ variables CSS dans `app/globals.css`.
 
 ## 📓 Journal de build (le plus récent en haut)
 
+### Session 18 — 2026-07-06 — RECHERCHE DE VALIDATION du pivot (en ligne, sourcée) — le pivot est CONFIRMÉ et renforcé
+- ✅ **Verdict : la réorientation Valorisation est la bonne**, validée par 5 preuves de marché ; 3 précisions de DISCOURS intégrées aux docs jury (aucun code touché, gel respecté).
+- 💶 **Primes chiffrées (nouvelles munitions)** : prime Fairtrade cacao 240 $/t → **250 €/t en CI au 1er oct. 2026 (+13 %), dont 40 % en CASH direct aux membres** ; prix minimum Fairtrade 3 200 €/t CI ; différentiel bio 410 €/t ; DRD 400 $/t. ⚠️ Formule exacte : le PRIX bord champ est fixé par l'État (2 800 → 1 200 FCFA en intermédiaire 2025-26) ; la coop négocie les PRIMES au-dessus, dans le cadre du CCC — ne jamais dire « négocier le prix ».
+- 🗓️ **Argument massue « convergence 2026-27 »** : carte producteur 01/09/2026 + prime Fairtrade cash direct 01/10/2026 + RDUE 30/12/2026 — trois échéances sur une seule campagne.
+- 🛡️ **Objection « l'UE a simplifié » désamorcée** : la déclaration simplifiée unique (déc. 2025) ne vaut que pour les pays à risque FAIBLE ; la **CI est risque STANDARD (22/05/2025)** → diligence + géolocalisation pleines restent exigées ; 1re révision du benchmark en 2026.
+- 🏁 **Concurrence** : Meridia Verify (50+ tests) et KoltiVerify font de l'audit de géodonnées → besoin VALIDÉ par le marché ; différenciation AGRIVO = self-service côté coop + boucle complète (audit → complétion in-app → verdict satellite → certificat public → dossier partagé) + ancrage CI. Local : Trusty (blockchain, 60 kt tracées, 50 k producteurs) = traçabilité de LOTS pour exportateurs, complémentaire.
+- 📄 **Docs mis à jour** : GUIDE_DEMO_JURY.md (chiffres primes, convergence, 4 nouvelles réponses pièges : simplification UE / Meridia-Koltiva / Trusty / « accès vs prime ») et SUPPORTS_PIVOT_P6.md (frise convergence sur la slide marché, validation concurrentielle).
+- 📚 Sources principales : fairtrade.net (annonces prix cacao 2025-12 & 2026-03), Consilium/Parlement UE (révision déc. 2025), Commission (benchmark 22/05/2025, paquet simplification 04/05/2026), meridia.land, koltiva.com, AIP/Sikafinance (prix bord champ, SNT), agriculture.ci (Trusty).
+
 ### Session 17f — 2026-07-06 — P8 PARTIEL : gel v1.0.0 local (push/déploiement en attente d'Anael)
 - ✅ Outils QA supprimés (`public/dev-seed.html`, `dev-measure.html`) ; grep charte propre (aucun micro-crédit/garantie/valeur à risque fautif) ; version package.json → **1.0.0** ; CHANGELOG v1.0.0 rédigé (pivot + import registre + refonte).
 - ✅ GATES COMPLETS : lint 0 erreur (23 warnings assumés) · tsc ✓ · **32/32 tests** · build 32 routes ✓.

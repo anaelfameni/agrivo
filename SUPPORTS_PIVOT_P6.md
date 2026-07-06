@@ -25,7 +25,20 @@ coopératives (autonomie des producteurs ; le préfinancement individuel a histo
 impayés et fraudes — info terrain d'une professionnelle de l'export, 6+ ans). La valorisation passe
 par les primes et les marchés exigeants.
 
-### Slide « Marché » — fait à ajouter
+### Slide « Marché » — faits à ajouter (chiffres vérifiés en ligne, 2026-07-06)
+
+- **La convergence de la campagne 2026-27** (à mettre en frise sur la slide) :
+  **1er sept. 2026** carte producteur obligatoire → **1er oct. 2026** nouvelle prime Fairtrade
+  **250 €/t** en CI (+13 %), dont **40 % en cash direct aux membres** → **30 déc. 2026** RDUE
+  applicable aux grandes/moyennes entreprises. Trois échéances, une seule campagne : la coopérative
+  qui prouve sa conformité gagne sur tous les tableaux.
+- **Primes chiffrées** (si question) : Fairtrade 240 $/t aujourd'hui → 250 €/t au 01/10/2026 ;
+  prix minimum Fairtrade 3 200 €/t CI ; différentiel bio 410 €/t ; DRD 400 $/t. Le prix bord champ
+  reste fixé par l'État : les primes se négocient AU-DESSUS.
+- **Validation concurrentielle** (Innovation) : Meridia Verify (50+ tests qualité) et KoltiVerify
+  existent côté exportateurs/marques → le besoin d'audit de géodonnées est un marché prouvé ;
+  AGRIVO est le premier à le mettre EN SELF-SERVICE côté coopérative ivoirienne, intégré du fichier
+  au certificat public.
 
 - « **~3 millions d'hectares déjà géolocalisés** par le Conseil du Café-Cacao (1,1 M producteurs
   recensés, ~900 000 cartes distribuées). **AGRIVO est la couche qui rend ces données exploitables

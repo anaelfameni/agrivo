@@ -30,6 +30,15 @@
 - « C'est une évaluation, pas une garantie : l'opérateur reste responsable de sa déclaration. »
 - « La conformité prouvée est un argument commercial : primes de durabilité négociables, accès aux
   acheteurs premium, dossier partagé avec l'exportateur. Le service Agrivo est gratuit pour le producteur. »
+- **Chiffres primes (vérifiés juillet 2026, à citer si on nous pousse)** : prime Fairtrade cacao **240 $/t
+  aujourd'hui → 250 €/t en Côte d'Ivoire au 1er octobre 2026 (+13 %), dont 40 % versés EN CASH
+  directement aux membres** ; différentiel bio 410 €/t ; DRD/LID : 400 $/t. Le prix bord champ, lui, est
+  FIXÉ par l'État (2 800 FCFA campagne principale 2025-26, 1 200 FCFA en intermédiaire) : la coop ne
+  négocie pas le prix, elle négocie les primes AU-DESSUS du prix garanti, dans le cadre du CCC.
+- **La convergence 2026-27 (l'argument massue)** : carte producteur obligatoire au **1er sept. 2026** +
+  nouvelle prime Fairtrade avec cash direct au **1er oct. 2026** + RDUE au **30 déc. 2026**. Trois
+  échéances sur la même campagne : la coopérative qui PROUVE sa conformité à ce moment-là gagne sur
+  tous les tableaux ; les autres perdent l'accès au premier débouché du cacao ivoirien.
 
 ## Réponses aux questions pièges
 - **« Votre IA est-elle réelle ? »** — Oui : quand `GEMINI_API_KEY` est posée, l'OCR, le mémo DDS et le
@@ -72,6 +81,28 @@
   le verdict déforestation parcelle par parcelle (Whisp/FAO), le dossier de diligence prêt pour
   TRACES NT, le score sols et la valorisation commerciale. Complémentaire, pas concurrent : Agrivo relie la
   traçabilité nationale à l'exigence européenne.
+
+- **« L'Europe a simplifié la RDUE, votre produit sert encore ? »** — La déclaration simplifiée unique
+  (révision de déc. 2025) ne bénéficie qu'aux petits producteurs des pays classés **risque FAIBLE**.
+  La Côte d'Ivoire est classée **risque STANDARD** (Commission, 22 mai 2025) : la diligence complète
+  — géolocalisation parcelle par parcelle comprise — reste pleinement exigée pour le cacao ivoirien.
+  Et si la CI devient « risque faible » à la révision du classement, ce sera GRÂCE à une traçabilité
+  prouvée : exactement ce qu'AGRIVO produit.
+- **« Meridia Verify ou Koltiva font déjà de l'audit de données, non ? »** — Oui, et c'est la meilleure
+  preuve que le besoin est réel : des acteurs mondiaux ont bâti des produits entiers dessus. Trois
+  différences : (1) eux vendent aux exportateurs et aux marques, en top-down — AGRIVO met l'audit
+  DANS LES MAINS de la coopérative, en self-service ; (2) chez eux l'audit est un rapport — chez nous
+  chaque parcelle rejetée repart en capture guidée in-app et chaque parcelle valide reçoit un verdict
+  satellite + un certificat vérifiable publiquement ; (3) nous sommes conçus pour la Côte d'Ivoire :
+  carte producteur, SNT, français, hors-connexion, prix coopérative.
+- **« Et Trusty (blockchain ivoirienne) ? »** — Trusty trace des LOTS pour les exportateurs
+  (blockchain). AGRIVO vérifie des PARCELLES pour les coopératives (satellite + règle RDUE) et
+  transforme le résultat en dossier de valorisation. Complémentaires, pas concurrents.
+- **« La conformité RDUE ne donne pas droit à une prime, c'est juste l'accès au marché. »** — Les
+  deux. L'accès d'abord : sans géolocalisation conforme, plus d'exportation vers l'UE, premier
+  débouché du cacao ivoirien. Les primes ensuite : certification et programmes se négocient au-dessus
+  du prix garanti, et un portefeuille prouvé conforme est la pièce maîtresse de ces négociations —
+  Fairtrade passe à 250 €/t au 1er octobre 2026, dont 40 % en cash direct aux membres.
 
 ## PLAN B — script de la vidéo de secours (à tourner AVANT le 11 juillet)
 
