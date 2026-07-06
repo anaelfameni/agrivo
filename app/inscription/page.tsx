@@ -18,7 +18,7 @@ const COPY = {
     bullets: [
       "Vérifications de parcelles illimitées",
       "Certificats prêts pour TRACES NT",
-      "Accès au micro-crédit des producteurs conformes",
+      "Dossier de conformité partageable avec votre exportateur",
     ],
     name: "Nom complet",
     org: "Organisation",
@@ -41,7 +41,7 @@ const COPY = {
     bullets: [
       "Unlimited plot verifications",
       "Certificates ready for TRACES NT",
-      "Micro-credit access for compliant producers",
+      "Compliance file you can share with your exporter",
     ],
     name: "Full name",
     org: "Organization",

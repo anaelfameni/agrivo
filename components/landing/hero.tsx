@@ -43,7 +43,7 @@ const HERO_TR = {
   fr: {
     verbs: ["vérifie", "prouve", "certifie", "simplifie"],
     line2: "votre conformité RDUE",
-    sub: "Vérifiez chaque parcelle en quelques secondes, générez le certificat et ouvrez l'accès au crédit du producteur. Toutes vos filières d'exportation, prêtes avant le 30 décembre 2026.",
+    sub: "Vérifiez chaque parcelle en quelques secondes, générez le certificat et faites de la conformité prouvée l'argument de vos primes. Toutes vos filières d'exportation, prêtes avant le 30 décembre 2026.",
     cta1: "Commencer la vérification",
     cta2: "Accéder au tableau de bord",
     meta: ["Les 7 matières premières du RDUE", "Aligné sur le SNT ivoirien", "Whisp (FAO) + IA générative"],
@@ -61,7 +61,7 @@ const HERO_TR = {
   en: {
     verbs: ["verifies", "proves", "certifies", "simplifies"],
     line2: "your EUDR compliance",
-    sub: "Verify every plot in seconds, generate the certificate and open access to the farmer's credit. All your export commodities, ready before 30 December 2026.",
+    sub: "Verify every plot in seconds, generate the certificate and turn proven compliance into the argument for your premiums. All your export commodities, ready before 30 December 2026.",
     cta1: "Start verification",
     cta2: "Go to the dashboard",
     meta: ["The 7 EUDR raw materials", "Aligned with Côte d'Ivoire's NTS", "Whisp (FAO) + generative AI"],
@@ -159,13 +159,21 @@ export function Hero() {
       played = true;
       controls.start("show");
     };
+    // Reduced-motion : le hero est visible immédiatement (jamais d'écran vide).
+    if (reduced) {
+      controls.set("show");
+      played = true;
+      return;
+    }
+    // Si le splash a déjà été passé (retour depuis /app, flag skip), l'événement
+    // `agrivo:enter` peut avoir été émis avant notre montage : fallback court.
     window.addEventListener("agrivo:enter", play);
-    const fallback = setTimeout(play, 12000);
+    const fallback = setTimeout(play, 2500);
     return () => {
       window.removeEventListener("agrivo:enter", play);
       clearTimeout(fallback);
     };
-  }, [controls]);
+  }, [controls, reduced]);
 
   return (
     <section className="relative isolate overflow-hidden bg-forest-950 text-white">

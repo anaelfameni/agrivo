@@ -48,14 +48,14 @@ const EASE = [0.16, 1, 0.3, 1] as const;
 const SPLASH_TR = {
   fr: {
     line1: ["Bienvenue", "dans", "Agrivo"],
-    line2: ["De", "la", "parcelle", "vérifiée", "au", "crédit", "du", "producteur."],
+    line2: ["De", "la", "parcelle", "vérifiée", "à", "la", "prime", "négociée."],
     hint: "Cliquez n'importe où pour entrer plus vite",
     enter: "Entrer",
     aria: "Écran de bienvenue Agrivo",
   },
   en: {
     line1: ["Welcome", "to", "Agrivo"],
-    line2: ["From", "the", "verified", "plot", "to", "the", "farmer's", "credit."],
+    line2: ["From", "the", "verified", "plot", "to", "the", "negotiated", "premium."],
     hint: "Click anywhere to enter faster",
     enter: "Enter",
     aria: "Agrivo welcome screen",

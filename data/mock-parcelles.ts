@@ -4,8 +4,8 @@
  * exportateur (Prompt 5). Aucune donnée réelle : tout est fictif.
  *
  * Vocabulaire figé : statuts « Conforme » / « Anomalie détectée » / « Données insuffisantes ».
- * Pas de « valeur à risque » (concept hors AGRIVO). Le micro-crédit est un prêt que le
- * producteur rembourse (jamais « gratuit »).
+ * Pas de « valeur à risque » ni de score de crédit/plafond de financement (concepts hors AGRIVO) :
+ * la conformité se valorise par les primes et le dossier exportateur, jamais par du crédit.
  */
 
 import { type FiliereId, FILIERE_LABEL } from "@/config/filieres";
@@ -33,7 +33,8 @@ export interface Parcelle {
   sourcesDonnees: string[];
   numeroCertificat: string;
   referenceDDR?: string;
-  propositionCredit?: { montantFcfa: number; statut: "proposee" | "acceptee" | "versee" };
+  /** Dossier de conformité partagé avec l'exportateur (valorisation commerciale). */
+  dossierPartage?: { date: string; statut: "partage" | "consulte" };
   alerteActive?: boolean;
 }
 
@@ -102,10 +103,10 @@ const off = (c: [number, number], i: number): [number, number] => [c[0] + i * 0.
 
 const PARCELLES_BASE: Parcelle[] = [
   // --- Coopérative Agricole de Soubré (cacao) : 4 conformes, 3 anomalies, 3 données insuffisantes ---
-  { id: "p01", producteurNom: "Kouassi Yao", numeroCartePro: "CI-CCC-024517", cooperative: COOP_DEMO, region: "Nawa · Soubré", superficieHa: 3.2, filiere: "cacao", geojson: poly(...off(SOUBRE, 1)), statut: "conforme", dateVerification: "2026-07-01", datePivotAnalyse: "2020-12-31", sourcesDonnees: SOURCES, numeroCertificat: "AGV-2026-0417", referenceDDR: "DDR-CI-2026-10842", propositionCredit: { montantFcfa: 150000, statut: "proposee" } },
+  { id: "p01", producteurNom: "Kouassi Yao", numeroCartePro: "CI-CCC-024517", cooperative: COOP_DEMO, region: "Nawa · Soubré", superficieHa: 3.2, filiere: "cacao", geojson: poly(...off(SOUBRE, 1)), statut: "conforme", dateVerification: "2026-07-01", datePivotAnalyse: "2020-12-31", sourcesDonnees: SOURCES, numeroCertificat: "AGV-2026-0417", referenceDDR: "DDR-CI-2026-10842", dossierPartage: { date: "2026-07-01", statut: "partage" } },
   { id: "p02", producteurNom: "Konan Adjoua", numeroCartePro: "CI-CCC-024518", cooperative: COOP_DEMO, region: "Nawa · Soubré", superficieHa: 2.6, filiere: "cacao", geojson: poly(...off(SOUBRE, 2)), statut: "conforme", dateVerification: "2026-06-30", datePivotAnalyse: "2020-12-31", sourcesDonnees: SOURCES, numeroCertificat: "AGV-2026-0418", referenceDDR: "DDR-CI-2026-10843" },
-  { id: "p03", producteurNom: "Aya Brou", numeroCartePro: "CI-CCC-024519", cooperative: COOP_DEMO, region: "Nawa · Soubré", superficieHa: 4.8, filiere: "cacao", geojson: poly(...off(SOUBRE, 3)), statut: "conforme", dateVerification: "2026-06-29", datePivotAnalyse: "2020-12-31", sourcesDonnees: SOURCES, numeroCertificat: "AGV-2026-0419", referenceDDR: "DDR-CI-2026-10844", propositionCredit: { montantFcfa: 250000, statut: "versee" } },
-  { id: "p04", producteurNom: "Koffi N'Guessan", numeroCartePro: "CI-CCC-024520", cooperative: COOP_DEMO, region: "Nawa · Soubré", superficieHa: 1.9, filiere: "cacao", geojson: poly(...off(SOUBRE, 4)), statut: "conforme", dateVerification: "2026-06-28", datePivotAnalyse: "2020-12-31", sourcesDonnees: SOURCES, numeroCertificat: "AGV-2026-0420", referenceDDR: "DDR-CI-2026-10845", propositionCredit: { montantFcfa: 100000, statut: "acceptee" } },
+  { id: "p03", producteurNom: "Aya Brou", numeroCartePro: "CI-CCC-024519", cooperative: COOP_DEMO, region: "Nawa · Soubré", superficieHa: 4.8, filiere: "cacao", geojson: poly(...off(SOUBRE, 3)), statut: "conforme", dateVerification: "2026-06-29", datePivotAnalyse: "2020-12-31", sourcesDonnees: SOURCES, numeroCertificat: "AGV-2026-0419", referenceDDR: "DDR-CI-2026-10844", dossierPartage: { date: "2026-06-29", statut: "consulte" } },
+  { id: "p04", producteurNom: "Koffi N'Guessan", numeroCartePro: "CI-CCC-024520", cooperative: COOP_DEMO, region: "Nawa · Soubré", superficieHa: 1.9, filiere: "cacao", geojson: poly(...off(SOUBRE, 4)), statut: "conforme", dateVerification: "2026-06-28", datePivotAnalyse: "2020-12-31", sourcesDonnees: SOURCES, numeroCertificat: "AGV-2026-0420", referenceDDR: "DDR-CI-2026-10845", dossierPartage: { date: "2026-06-28", statut: "partage" } },
   { id: "p05", producteurNom: "Amenan Kouamé", numeroCartePro: "CI-CCC-024521", cooperative: COOP_DEMO, region: "Nawa · Soubré", superficieHa: 5.4, filiere: "cacao", geojson: poly(...off(SOUBRE, 5)), statut: "anomalie", dateVerification: "2026-07-02", datePivotAnalyse: "2020-12-31", sourcesDonnees: SOURCES, numeroCertificat: "AGV-2026-0421", alerteActive: true },
   { id: "p06", producteurNom: "Bakary Traoré", numeroCartePro: "CI-CCC-024522", cooperative: COOP_DEMO, region: "Nawa · Soubré", superficieHa: 3.7, filiere: "cacao", geojson: poly(...off(SOUBRE, 6)), statut: "anomalie", dateVerification: "2026-06-27", datePivotAnalyse: "2020-12-31", sourcesDonnees: SOURCES, numeroCertificat: "AGV-2026-0422" },
   { id: "p07", producteurNom: "Djédjé Serge", numeroCartePro: "CI-CCC-024523", cooperative: COOP_DEMO, region: "Nawa · Soubré", superficieHa: 2.1, filiere: "cacao", geojson: poly(...off(SOUBRE, 7)), statut: "anomalie", dateVerification: "2026-07-02", datePivotAnalyse: "2020-12-31", sourcesDonnees: SOURCES, numeroCertificat: "AGV-2026-0423", alerteActive: true },
@@ -125,13 +126,13 @@ const PARCELLES_BASE: Parcelle[] = [
  * séquentiels ; DDR pour les conformes) pour rester cohérentes et sans doublon. Données
  * 100 % synthétiques. Statuts figés inchangés ; jamais de « valeur à risque ».
  * ------------------------------------------------------------------------------------ */
-type CreditSpec = [montant: number, statut: "proposee" | "acceptee" | "versee"];
 interface Row {
   nom: string;
   ha: number;
   filiere: Filiere;
   statut: Statut;
-  credit?: CreditSpec;
+  /** Dossier de conformité partagé avec l'exportateur. */
+  dossier?: "partage" | "consulte";
   alerte?: boolean;
 }
 interface CoopBlock {
@@ -147,7 +148,7 @@ const EXTRA_BLOCKS: CoopBlock[] = [
     region: "Nawa · Soubré",
     center: SOUBRE,
     rows: [
-      { nom: "Tanoh Éric", ha: 3.4, filiere: "cacao", statut: "conforme", credit: [150000, "proposee"] },
+      { nom: "Tanoh Éric", ha: 3.4, filiere: "cacao", statut: "conforme", dossier: "partage" },
       { nom: "Gbagba Rose", ha: 2.2, filiere: "cacao", statut: "conforme" },
       { nom: "Séka Louis", ha: 4.1, filiere: "cacao", statut: "insuffisant" },
     ],
@@ -157,7 +158,7 @@ const EXTRA_BLOCKS: CoopBlock[] = [
     region: "Nawa · Méagui",
     center: MEAGUI,
     rows: [
-      { nom: "Kramo Félix", ha: 3.8, filiere: "cacao", statut: "conforme", credit: [200000, "acceptee"] },
+      { nom: "Kramo Félix", ha: 3.8, filiere: "cacao", statut: "conforme", dossier: "consulte" },
       { nom: "Assi Grace", ha: 2.9, filiere: "cacao", statut: "conforme" },
       { nom: "Yeboua Marc", ha: 5.2, filiere: "cacao", statut: "anomalie", alerte: true },
       { nom: "Kouassi Ida", ha: 1.7, filiere: "cacao", statut: "conforme" },
@@ -170,7 +171,7 @@ const EXTRA_BLOCKS: CoopBlock[] = [
     region: "Gôh · Gagnoa",
     center: GAGNOA,
     rows: [
-      { nom: "Digbeu Paul", ha: 4.6, filiere: "cacao", statut: "conforme", credit: [250000, "versee"] },
+      { nom: "Digbeu Paul", ha: 4.6, filiere: "cacao", statut: "conforme", dossier: "consulte" },
       { nom: "Zadi Ruth", ha: 2.0, filiere: "cafe", statut: "conforme" },
       { nom: "Gnepa Simon", ha: 3.3, filiere: "cacao", statut: "anomalie" },
       { nom: "Tra Bi Serge", ha: 2.7, filiere: "cafe", statut: "conforme" },
@@ -182,7 +183,7 @@ const EXTRA_BLOCKS: CoopBlock[] = [
     region: "Guémon · Duékoué",
     center: DUEKOUE,
     rows: [
-      { nom: "Goué Blaise", ha: 6.4, filiere: "hevea", statut: "conforme", credit: [200000, "proposee"] },
+      { nom: "Goué Blaise", ha: 6.4, filiere: "hevea", statut: "conforme", dossier: "partage" },
       { nom: "Sahi Prosper", ha: 3.0, filiere: "cacao", statut: "conforme" },
       { nom: "Bahi Estelle", ha: 2.5, filiere: "cacao", statut: "insuffisant" },
       { nom: "Zoro Kévin", ha: 5.8, filiere: "hevea", statut: "anomalie", alerte: true },
@@ -193,7 +194,7 @@ const EXTRA_BLOCKS: CoopBlock[] = [
     region: "San-Pédro · San Pédro",
     center: SANPEDRO,
     rows: [
-      { nom: "Wodié Alain", ha: 4.2, filiere: "cacao", statut: "conforme", credit: [150000, "proposee"] },
+      { nom: "Wodié Alain", ha: 4.2, filiere: "cacao", statut: "conforme", dossier: "partage" },
       { nom: "Méledje Sylvie", ha: 3.7, filiere: "palmier", statut: "conforme" },
       { nom: "Kipré Yves", ha: 7.1, filiere: "hevea", statut: "conforme" },
       { nom: "Aka Bernard", ha: 2.8, filiere: "cacao", statut: "conforme" },
@@ -206,7 +207,7 @@ const EXTRA_BLOCKS: CoopBlock[] = [
     region: "Haut-Sassandra · Daloa",
     center: DALOA,
     rows: [
-      { nom: "N'Zué Patrick", ha: 3.6, filiere: "cacao", statut: "conforme", credit: [100000, "acceptee"] },
+      { nom: "N'Zué Patrick", ha: 3.6, filiere: "cacao", statut: "conforme", dossier: "consulte" },
       { nom: "Koré Amélie", ha: 2.3, filiere: "cacao", statut: "conforme" },
       { nom: "Djaha Franck", ha: 4.4, filiere: "cacao", statut: "insuffisant" },
       { nom: "Bamba Salif", ha: 3.0, filiere: "cacao", statut: "conforme" },
@@ -261,7 +262,7 @@ function buildExtra(): Parcelle[] {
         ddr += 1;
         p.referenceDDR = `DDR-CI-2026-${ddr}`;
       }
-      if (r.credit) p.propositionCredit = { montantFcfa: r.credit[0], statut: r.credit[1] };
+      if (r.dossier) p.dossierPartage = { date: p.dateVerification, statut: r.dossier };
       if (r.alerte) p.alerteActive = true;
       out.push(p);
     });
@@ -286,7 +287,7 @@ export function coopStats(parcelles: Parcelle[]) {
     verifiees: total,
     conformes,
     tauxConformite: total ? Math.round((conformes / total) * 100) : 0,
-    propositionsCredit: parcelles.filter((p) => p.propositionCredit).length,
+    dossiersPartages: parcelles.filter((p) => p.dossierPartage).length,
     alertes: parcelles.filter((p) => p.alerteActive).length,
   };
 }

@@ -19,7 +19,7 @@ const COPY = {
     eyebrow: "Cartographie · GPS terrain",
     title: "Capture de la parcelle",
     intro:
-      "La parcelle est capturée au bord du champ par l'utilisateur de l'app (producteur, pisteur ou agent de coopérative), selon la règle RDUE : un point central suffit sous 4 ha, un polygone complet est requis à partir de 4 ha.",
+      "Complétez ici les parcelles absentes de votre registre (ou rejetées à l'audit) : la capture se fait au bord du champ par l'utilisateur de l'app (producteur, pisteur ou agent de coopérative), selon la règle RDUE : un point central suffit sous 4 ha, un polygone complet est requis à partir de 4 ha.",
     deskNote: "Un ajustement fin reste possible ensuite, au bureau, sur l'image satellite.",
     modePointTitle: "Point central",
     modePointDesc: (ha: string) => `Parcelle de ${ha} ha : un point GPS au centre du champ suffit (règle RDUE, moins de 4 ha).`,
@@ -45,7 +45,7 @@ const COPY = {
     eyebrow: "Mapping · Field GPS",
     title: "Plot capture",
     intro:
-      "The plot is captured at the edge of the field by the app user (farmer, field buyer or cooperative agent), following the EUDR rule: a centre point is enough below 4 ha, a full polygon is required from 4 ha.",
+      "Complete here the plots missing from your register (or rejected at audit): capture happens at the edge of the field by the app user (farmer, field buyer or cooperative agent), following the EUDR rule: a centre point is enough below 4 ha, a full polygon is required from 4 ha.",
     deskNote: "Fine adjustment remains possible afterwards, at the office, on the satellite image.",
     modePointTitle: "Centre point",
     modePointDesc: (ha: string) => `Plot of ${ha} ha: one GPS point at the centre of the field is enough (EUDR rule, under 4 ha).`,

@@ -42,7 +42,7 @@ const brandSerif = Newsreader({
 
 const SITE_URL = "https://agrivo-io.vercel.app";
 const DESCRIPTION =
-  "AGRIVO vérifie la conformité RDUE d'une parcelle agricole en quelques secondes, génère le certificat et ouvre l'accès au micro-crédit du producteur.";
+  "AGRIVO vérifie la conformité RDUE d'une parcelle agricole en quelques secondes, génère le certificat et transforme la conformité prouvée en primes négociables.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -52,7 +52,7 @@ export const metadata: Metadata = {
   },
   description: DESCRIPTION,
   applicationName: BRAND_NAME,
-  keywords: ["RDUE", "EUDR", "conformité", "déforestation", "cacao", "Côte d'Ivoire", "traçabilité", "micro-crédit"],
+  keywords: ["RDUE", "EUDR", "conformité", "déforestation", "cacao", "Côte d'Ivoire", "traçabilité", "primes de durabilité"],
   icons: { icon: "/icons/icon.svg" },
   openGraph: {
     type: "website",

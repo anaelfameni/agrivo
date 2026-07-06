@@ -3,11 +3,34 @@
 Versioning sémantique (MAJOR.MINOR.PATCH). Chaque release liste ce qui est ajouté, corrigé et
 vérifié, conformément à l'étape 8 du pipeline « Du besoin à la Release ».
 
-## v1.0.0 — Release de compétition (prévue au feature freeze du 9 juillet 2026)
+## v1.0.0 — 2026-07-06 — Release de compétition (gel du code)
 
-Sera taguée après les derniers correctifs de la semaine. Definition of done : les critères
-d'acceptation des 4 user stories de SPECS.md validés, CI verte, démonstration mobile et web
-répétées.
+### Changé (réorientation stratégique — PLAN_REORIENTATION_AGRIVO.md)
+- Le micro-crédit producteur est retiré du produit : l'étape 6 du parcours devient
+  « Valorisation » (contribution au dossier de conformité de la coopérative, primes de
+  durabilité, accès acheteurs premium, partage du dossier avec l'exportateur).
+- Purge complète du discours crédit (FR + EN) : hero, splash, landing, tarifs, FAQ,
+  méthodologie, à-propos, aide, inscription, CGU, confidentialité, métadonnées, guide de démo.
+  Nouvelle promesse : « De la parcelle vérifiée à la prime négociée. »
+- Couche IA : evaluerValorisation (XAI commerciale, aucun montant/plafond) remplace le
+  scoring de crédit ; le copilote répond sur la valorisation, plus sur l'éligibilité au crédit.
+- Posture donnée « de la collecte à l'audit » : section « Comment ça marche » réécrite
+  (Importez votre registre → AGRIVO l'audite → Complétez les trous → Le satellite juge → Valorisez).
+
+### Ajouté
+- Import & audit RDUE du registre de la coopérative (dashboard) : fichiers .geojson/.json/
+  .kml/.csv parsés 100 % côté client, audit (polygones ouverts, doublons, polygone manquant
+  à partir de 4 ha, chevauchements, hors zone), % prêt RDUE, actions « terrain » ou « bureau »,
+  fichier de démonstration à défauts volontaires (30 parcelles, 63 % prêtes).
+- /verifier-certificat : rappel des trois statuts possibles et lien méthodologie.
+- 8 tests Vitest sur le module d'audit du registre (32 tests au total).
+
+### Corrigé
+- Reduced-motion : le hero et les sections de la landing ne peuvent plus rester invisibles
+  (état initial = état final ; fallback d'entrée 2,5 s).
+- Cockpit exportateur : eyebrow « Espace exportateur » (route-aware), colonnes du tableau.
+- KPI « Dossiers partagés » en teinte verte ; détails d'anomalie bilingues ; accessibilité
+  (role=meter sur la jauge d'audit).
 
 ## v1.0.0-rc.1 — 2026-07-06 (release candidate)
 

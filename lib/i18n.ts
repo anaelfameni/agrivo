@@ -25,7 +25,7 @@ export type TranslationKey =
 
 export const translations: Record<Language, Record<TranslationKey, string>> = {
   fr: {
-    welcome: "De la parcelle vérifiée au crédit du producteur.",
+    welcome: "De la parcelle vérifiée à la prime négociée.",
     verify: "Commencer la vérification",
     viewDemo: "Voir le tableau de bord",
     contact: "Nous contacter",
@@ -36,7 +36,7 @@ export const translations: Record<Language, Record<TranslationKey, string>> = {
     language: "Langue",
   },
   en: {
-    welcome: "From the verified plot to the farmer's credit.",
+    welcome: "From the verified plot to the negotiated premium.",
     verify: "Start verification",
     viewDemo: "View the dashboard",
     contact: "Contact us",

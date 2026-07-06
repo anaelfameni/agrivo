@@ -7,7 +7,7 @@ import { Reveal } from "@/components/landing/reveal";
 import { useLanguage } from "@/components/language-provider";
 
 const ROADMAP = [
-  { step: "01", title: { fr: "Pilote", en: "Pilot" }, body: { fr: "Valider le parcours sur une coopérative de démonstration à Soubré, du scan au micro-crédit.", en: "Validate the journey on a demo cooperative in Soubré, from scan to micro-credit." } },
+  { step: "01", title: { fr: "Pilote", en: "Pilot" }, body: { fr: "Valider le parcours sur une coopérative de démonstration à Soubré, du scan à la valorisation.", en: "Validate the journey on a demo cooperative in Soubré, from scan to valorisation." } },
   { step: "02", title: { fr: "Conformité", en: "Compliance" }, body: { fr: "Brancher l'API Whisp en production et générer des certificats prêts pour TRACES NT.", en: "Plug the Whisp API in production and generate certificates ready for TRACES NT." } },
   { step: "03", title: { fr: "Lancement", en: "Launch" }, body: { fr: "Ouvrir aux coopératives et exportateurs cacao, avec le sélecteur de langue et le mode hors connexion.", en: "Open to cocoa cooperatives and exporters, with the language switcher and offline mode." } },
   { step: "04", title: { fr: "Expansion", en: "Expansion" }, body: { fr: "Étendre au café, à l'hévéa et au palmier à huile, puis aux autres pays de l'UMOA.", en: "Extend to coffee, rubber and oil palm, then to the other WAEMU countries." } },
@@ -15,7 +15,7 @@ const ROADMAP = [
 
 const NEXT = [
   { icon: <Radar size={20} className="text-green-signal" />, title: { fr: "Monitoring continu", en: "Continuous monitoring" }, body: { fr: "Surveillance satellite répétée et alertes précoces sur les parcelles à risque.", en: "Repeated satellite monitoring and early alerts on at-risk plots." } },
-  { icon: <Network size={20} className="text-amber-cacao" />, title: { fr: "Matching coopérative ↔ IMF", en: "Cooperative ↔ MFI matching" }, body: { fr: "Mise en relation automatisée des coopératives solides avec les institutions de micro-finance.", en: "Automated matching of solid cooperatives with microfinance institutions." } },
+  { icon: <Network size={20} className="text-amber-cacao" />, title: { fr: "Mise en relation acheteurs premium", en: "Premium buyer matching" }, body: { fr: "Mise en relation des coopératives au portefeuille conforme avec les acheteurs européens exigeants.", en: "Connecting cooperatives with compliant portfolios to demanding European buyers." } },
 ];
 
 const TEAM = [
@@ -43,8 +43,8 @@ export default function APropos() {
             </h1>
             <p className="mt-5 text-lg leading-relaxed text-stone-600">
               {en
-                ? "The new deforestation regulation is not only a threat. It is also the gateway to provable, financed agriculture. Agrivo aims to become the reference tool for compliance and credit access across West African export commodities."
-                : "La nouvelle réglementation sur la déforestation n'est pas seulement une menace. C'est aussi la porte d'entrée vers une agriculture prouvable et financée. Agrivo veut devenir l'outil de référence de la conformité et de l'accès au crédit pour les filières d'exportation d'Afrique de l'Ouest."}
+                ? "The new deforestation regulation is not only a threat. It is also the gateway to provable, better-paid agriculture. Agrivo aims to become the reference tool for compliance and its commercial valorisation across West African export commodities."
+                : "La nouvelle réglementation sur la déforestation n'est pas seulement une menace. C'est aussi la porte d'entrée vers une agriculture prouvable et mieux rémunérée. Agrivo veut devenir l'outil de référence de la conformité et de sa valorisation commerciale pour les filières d'exportation d'Afrique de l'Ouest."}
             </p>
           </Reveal>
         </section>
@@ -61,7 +61,7 @@ export default function APropos() {
               {[
                 { icon: <ShieldCheck size={22} className="text-green-signal" />, t: en ? "Compliance" : "Conformité", d: en ? "The satellite verdict and the certificate, ready for Europe." : "Le verdict satellite et le certificat, prêts pour l'Europe." },
                 { icon: <Sprout size={22} className="text-forest-700" />, t: en ? "Soil health" : "Santé des sols", d: en ? "A resilience score, methodology inspired by recognized standards such as Kubeko." : "Un score de résilience, méthodologie inspirée de standards reconnus type Kubeko." },
-                { icon: <Coins size={22} className="text-amber-cacao" />, t: en ? "Inclusion" : "Inclusion", d: en ? "Credit made accessible to the compliant farmer." : "Le crédit rendu accessible au producteur conforme." },
+                { icon: <Coins size={22} className="text-amber-cacao" />, t: en ? "Valorisation" : "Valorisation", d: en ? "Proven compliance turned into premiums and market access." : "La conformité prouvée transformée en primes et en accès aux marchés." },
               ].map((p, i) => (
                 <Reveal key={p.t} delay={i * 0.08}>
                   <div className="h-full rounded-2xl border border-black/[0.06] bg-white p-7">

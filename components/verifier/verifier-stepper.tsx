@@ -4,8 +4,8 @@ import { Check } from "lucide-react";
 import { useLanguage } from "@/components/language-provider";
 
 const STEPS = {
-  fr: ["Confirmation", "Scan", "Cartographie", "Analyse", "Certificat", "Crédit"],
-  en: ["Confirmation", "Scan", "Mapping", "Analysis", "Certificate", "Credit"],
+  fr: ["Confirmation", "Scan", "Cartographie", "Analyse", "Certificat", "Valorisation"],
+  en: ["Confirmation", "Scan", "Mapping", "Analysis", "Certificate", "Valorisation"],
 } as const;
 
 /** En-tête de progression du parcours (golden path). Compact sur mobile, complet sur desktop. */
@@ -32,7 +32,7 @@ export function VerifierStepper({ current }: { current: number }) {
       </div>
 
       {/* Desktop : stepper à pastilles */}
-      <ol className="hidden items-center gap-1 sm:flex">
+      <ol className="hidden max-w-4xl items-center gap-1 sm:flex">
         {steps.map((label, i) => {
           const n = i + 1;
           const done = n < current;

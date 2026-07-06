@@ -108,8 +108,8 @@ export default function Methodologie() {
                   <h3 className="mt-3 font-display text-lg text-forest-950">{en ? "3. The result" : "3. Le résultat"}</h3>
                   <p className="mt-2 text-sm leading-relaxed text-stone-600">
                     {en
-                      ? "A verdict among three states, a PDF certificate verifiable by QR code, a file ready for TRACES NT, and access to micro-credit if the plot is compliant."
-                      : "Un verdict parmi trois états, un certificat PDF vérifiable par QR code, un dossier prêt pour TRACES NT, et l'accès au micro-crédit si la parcelle est conforme."}
+                      ? "A verdict among three states, a PDF certificate verifiable by QR code, a file ready for TRACES NT, and a valorisation file if the plot is compliant."
+                      : "Un verdict parmi trois états, un certificat PDF vérifiable par QR code, un dossier prêt pour TRACES NT, et un dossier de valorisation si la parcelle est conforme."}
                   </p>
                 </div>
               </div>
@@ -216,8 +216,8 @@ export default function Methodologie() {
               <h2 className="font-display text-3xl">{en ? "See the method at work" : "Voir la méthode à l\u2019œuvre"}</h2>
               <p className="mx-auto mt-3 max-w-lg text-white/70">
                 {en
-                  ? "The demo runs the full journey: card scan, plot mapping, satellite verdict, certificate, micro-credit."
-                  : "La démo déroule le parcours complet : scan de la carte, cartographie de la parcelle, verdict satellite, certificat, micro-crédit."}
+                  ? "The demo runs the full journey: card scan, plot mapping, satellite verdict, certificate, valorisation."
+                  : "La démo déroule le parcours complet : scan de la carte, cartographie de la parcelle, verdict satellite, certificat, valorisation."}
               </p>
               <Link
                 href="/app/dashboard"

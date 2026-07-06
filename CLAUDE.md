@@ -39,7 +39,7 @@ doit venir de Nanti.**
 - **Modèle économique — 3 sources de revenu AGRIVO** :
   1. **Abonnement coopérative — 120 000 FCFA/mois** (vérifications illimitées, certificats PDF, hors connexion, support).
   2. **API exportateur — 1 500 000 FCFA/mois** (API REST, export batch, déclarations TRACES NT, SLA).
-  3. **Commission sur chaque micro-crédit facilité**, versée par l'**IMF partenaire**.
+  3. ~~Commission micro-crédit~~ **RETIRÉ (Session 17, pivot Valorisation)** : le modèle = abonnement coop + API exportateur uniquement.
   - ⚠️ Le **micro-crédit n'est PAS « gratuit »** : c'est un **prêt (50 000–250 000 FCFA) que le producteur
     rembourse**. Ce qui est gratuit = le **service AGRIVO** pour le producteur (aucun frais à AGRIVO). Ne
     JAMAIS présenter « Micro-crédit : Gratuit » comme un plan tarifaire.
@@ -50,7 +50,7 @@ doit venir de Nanti.**
   preuve) → **cartographie GPS de la parcelle** (point central < 4 ha / tour de champ ≥ 4 ha, règle
   RDUE ; contrôles d'intégrité : chevauchement, superficie plausible, signal GPS authentique,
   doublon) → verdict Whisp (3 états) + explication + badge sols + certificat PDF (GeoJSON RFC 7946) →
-  inclusion financière (slider 50 000–250 000 FCFA, Mobile Money).
+  **valorisation** (dossier de conformité de la coop : primes, acheteurs premium, partage exportateur).
 - **Personas** : Amadou (gérant coop, Soubré, 600 producteurs) · Marc (dir. durabilité, Abidjan) · Yao
   (productrice café, Man, 2 ha) · Kouassi (producteur cacao, Soubré, 15 ans).
 - **Chiffres marché (Conseil Café-Cacao)** : 3 M ha géolocalisés · 900 K cartes pro · 160 K+ t tracées
@@ -117,7 +117,7 @@ aucun logo fabriqué, formulations Lono/Finafrica).
   filière en dur** : tout dérive de `FILIERES`. La démo reste centrée cacao ; hero + dashboards rendent les
   7 visibles.
 - **Écran de bienvenue (copywriting figé)** : LINE1 = « **Bienvenue dans Agrivo** » (mots espacés via
-  vrais nœuds texte). LINE2 = « **De la parcelle vérifiée au crédit du producteur.** » — **tout blanc**,
+  vrais nœuds texte). LINE2 = « **De la parcelle vérifiée à la prime négociée.** » (pivot Session 17) — **tout blanc**,
   **sans** mentionner « Agrivo ». Mots révélés au fil du countdown + au survol.
 - **Vérif. visuelle** : Edge headless (`msedge --headless=new --screenshot`, + `--force-prefers-reduced-motion`
   pour figer le splash) et un script CDP (`scratchpad/cdp-shot.mjs`, Node fetch/WebSocket natifs) pour
@@ -232,7 +232,7 @@ honnête (ce que le produit fait aujourd'hui ≠ demain, jamais confondu) · sta
 4. **Analyse satellite** — carte satellite, polygone **GeoJSON RFC 7946**, verdict **Whisp** (3 états),
    explication langage naturel (Gemini), badge résilience des sols.
 5. **Certificat PDF** (+ QR de vérification publique).
-6. **Inclusion financière** — si Conforme : slider **50 000–250 000 FCFA**, simulation versement **Mobile Money**.
+6. **Valorisation** — si Conforme : la parcelle rejoint le dossier de conformité de la coopérative (primes de durabilité, acheteurs premium, bouton « Partager le dossier avec l'exportateur » simulé). AUCUN crédit ni score financier (frontière Nanti).
 
 ### Dashboard exportateur — 3 onglets
 - **Analytique & cartographie** : 4 KPI (producteurs audités, taux de conformité, superficie cartographiée, volume validé), carte portefeuille, export GeoJSON conforme **TRACES NT**.
@@ -261,7 +261,7 @@ Filière cacao : 1er mondial, 1,1 M+ producteurs enrôlés.
 - **BCEAO** : Option A retenue — **sous-traitant technologique B2B SaaS**, aucun agrément financier ; vend du scoring à une IMF partenaire. **ARTCI** : déclaration, consentement, souveraineté des données.
 
 ### Modèle économique
-Abonnement coopérative **120 000 FCFA/mois** · API exportateur **1 500 000 FCFA/mois** · commission micro-crédit (gratuite pour le producteur, payée par l'IMF).
+Abonnement coopérative **120 000 FCFA/mois** · API exportateur **1 500 000 FCFA/mois**. (Commission micro-crédit RETIRÉE — Session 17.)
 
 ---
 
@@ -335,6 +335,65 @@ variables CSS dans `app/globals.css`.
 ---
 
 ## 📓 Journal de build (le plus récent en haut)
+
+### Session 17e — 2026-07-06 — P6 EXÉCUTÉ : supports alignés sur le pivot
+- 📊 **`SUPPORTS_PIVOT_P6.md`** créé : contenu EXACT à reporter dans le PPTX (slide Valorisation avec bandeau « aucun crédit », slide marché « ~3 M ha CCC, AGRIVO = la couche qui les rend exploitables », slide roadmap 4 items), ⚠️ suppression de la mention « commission micro-crédit » du deck Session 14, consignes vidéo à Christ (plan 5 = Valorisation/partage dossier + plan 2bis import registre, tourner après le gel v1.0.0), checklist de cohérence.
+- 🗣️ **GUIDE_DEMO_JURY.md** : segment dashboard coop = démo import registre (« 63 % prêtes, 19/30 » + phrase clé ~30 %), avertissement Christ en tête du plan B.
+- 👥 Actions HUMAINES en attente : Anael reporte les slides dans PowerPoint ; Christ tourne la vidéo après P8 ; équipe met à jour les flashcards.
+
+### Session 17d — 2026-07-06 — P4 + P5 EXÉCUTÉS : audit design + refonte priorisée
+- 📋 **P4 : `AUDIT_INTERFACE_AGRIVO.md`** créé (constats numérotés par zone, sévérités, notes /10, top 15 « meilleur effet jury / moindre effort »). L2 (débordement mobile) requalifié FAUX POSITIF après mesure réelle (scrollWidth 380/390 — artefact de capture).
+- ✅ **P5 exécuté (12 des 15 items)** :
+  1. **Reduced-motion garanti** : hero = `controls.set("show")` immédiat si reduce ; fallback `agrivo:enter` 12 s → **2,5 s** (couvre le skip-splash) ; `Reveal` rend un div simple en reduce (plus AUCUN écran vide possible).
+  3. **AppEyebrow route-aware** : « Espace exportateur » sur /app/exportateur.
+  4. Tableau exportateur : coop `max-w-[14rem]`, nom + n° carte `whitespace-nowrap`.
+  5. **/verifier-certificat étoffé** : rappel des 3 statuts (phrases verbatim) + lien méthodologie — l'écran de l'effet final jury est complet.
+  6. KPI « Dossiers partagés » passé en teinte verte (l'ambre = « Données insuffisantes »).
+  8. Stepper desktop `max-w-4xl`. 9. Étape Valorisation : rappel parcelle (StatusBadge + n° certificat + superficie).
+  10. **Détails d'anomalie bilingues** (`detail: { fr, en }` dans lib/registre/audit.ts).
+  11. Bouton certificat page parcelle → vrai Link vers /app/verifier (« Générer le certificat »).
+  13. Badge « IA » retiré de ValorisationCard (dé-doublonnage). 14. `role=meter` + aria sur la barre % RDUE.
+- ⏭️ **Restants documentés dans l'audit** : V2 (harmonisation CTA parcours), D1 (import replié), T2 (focus liens texte), hors-top15 (L3/L4/C1/E3/E4/E5/PU2/PU3/P3/T4).
+- ✅ GATE : tsc ✓ · 32/32 ✓ · build ✓ · captures 1440 vérifiées (certificat, landing, exportateur).
+- ⚠️ Artefact outillage : en mode `--screenshot --virtual-time-budget`, les animations rAF (hero) restent figées à l'état initial — ne PAS conclure à un bug produit sans vérifier le DOM/chunk (le fallback 2,5 s est bien dans le bundle).
+
+### Session 17c — 2026-07-06 — P3 EXÉCUTÉ : reframe « collecte → vérification »
+- ✅ **Landing / section « Comment ça marche »** (ex-parcours golden path) réécrite dans la posture audit : titre « Vos données existent déjà. AGRIVO les rend prouvables. », 5 temps = Importez votre registre → AGRIVO l'audite → Complétez les trous → Le satellite juge → Valorisez (icônes FileUp/SearchCheck). FR + EN.
+- ✅ **Étape Cartographie** : intro FR/EN ajustée (« Complétez ici les parcelles absentes de votre registre (ou rejetées à l'audit)… »).
+- ✅ **GUIDE_DEMO_JURY.md** : réponse « D'où viennent les polygones ? » réécrite avec les 4 canaux (fichiers de certification détenus par la coop + étude Cavally ~30 % · capture in-app pour les trous · le satellite juge · registre CCC ~3 M ha = demande de partenariat) + faits sourcés (carte obligatoire 01/09/2026, RDUE grandes entreprises 01/01/2027).
+- ✅ GATE : tsc ✓ · 32/32 ✓ · build ✓ · capture 1440 de la landing vérifiée (nouvelles sections visibles).
+- 🛠️ **Outillage captures** : le CDP WebSocket est devenu instable → nouvelle méthode fiable : `public/dev-seed.html` (seed session+langue puis redirection, ⚠️ À SUPPRIMER au gel P8) + `msedge --headless=new --screenshot --virtual-time-budget=15000`.
+
+### Session 17b — 2026-07-06 — P2 EXÉCUTÉ : import & audit RDUE du registre coopérative
+- ✅ **`lib/registre/audit.ts`** (module PUR) : parsers GeoJSON/CSV/KML, validations (anneau fermé, emprise CI, polygone obligatoire ≥ 4 ha, doublons de matricule, chevauchement par emprises > 30 %), `auditerRegistre()` → % prêt RDUE + anomalies typées avec action « terrain » (→ étape Cartographie) ou « bureau ».
+- ✅ **`data/registre-demo.geojson`** (30 parcelles fictives Soubré, copié dans `public/`) : défauts volontaires = 2 polygones ouverts, matricule AGR-R-005 en triple, 3 parcelles ≥ 4 ha en point seul, 1 paire en chevauchement, 1 hors zone (lat/lon inversés) → audit = 63 % prêtes (19/30).
+- ✅ **`components/app/registre-import.tsx`** monté en tête de colonne principale du dashboard coop : import fichier (.geojson/.json/.kml/.csv, parsing 100 % client), bouton « Essayer avec le registre de démonstration » (fetch `/registre-demo.geojson`), écran « Audit RDUE du registre » (% + barre + anomalies groupées par catégorie, 3 exemples max + compteur, micro-copy ARTCI « Vos données restent la propriété de la coopérative »). FR/EN, reduced-motion.
+- ✅ **8 tests Vitest** (`tests/registre.test.ts`) → **32 tests au total**. GATE : tsc ✓ · 32/32 ✓ · build ✓ · CDP desktop 1440 FR + mobile 390 EN vérifiés (audit affiché, 0 débordement).
+- ⚠️ Dette mineure : les `detail` d'anomalie sont rédigés en FR par le module pur (labels UI bilingues, détails FR même en EN).
+- 🔑 **Leçon outillage (grosse perte de temps)** : ne JAMAIS laisser tourner `next start` pendant un `next build` — le serveur sert des chunks périmés → hydratation silencieusement cassée (pages /app figées sur « Chargement de votre espace… », zéro erreur console). Toujours redémarrer le serveur après un build avant toute vérification CDP.
+
+### Session 17 — 2026-07-06 — P1 EXÉCUTÉ : pivot Crédit → Valorisation + purge micro-crédit
+- ✅ **Étape 6 du golden path = « Valorisation »** : `step-valorisation.tsx` branché dans `/app/verifier` (remplace `step-credit.tsx`, supprimé) — contribution au portefeuille de la coop, 3 débouchés (prime, acheteurs premium, dossier TRACES NT), bouton « Partager le dossier avec l'exportateur » simulé. Stepper : libellé 6 = Valorisation (FR/EN).
+- ✅ **Couche IA** : `scorerCreditProducteur`/`CreditScore` → `evaluerValorisation`/`Valorisation` (aucun montant/plafond/classe) ; `credit-score-card.tsx` supprimé → `valorisation-card.tsx` ; `propositionCredit` → `dossierPartage` (data + parcelle-detail + dashboard KPI « Dossiers partagés ») ; copilote : intention « valorisation/prime/dossier » remplace « crédit ».
+- ✅ **Purge complète du micro-crédit** (FR+EN) : hero (« …l'argument de vos primes »), splash + i18n (« De la parcelle vérifiée à la prime négociée. »), landing (étape 5, triptyque, tarifs-section, CTA, carte problème 3 → « ~30 % de données terrain non fiables »), /tarifs (FAQ « Et pour le producteur ? », comparatif), /faq (« Pourquoi pas de crédit aux producteurs ? » avec la réponse terrain), /methodologie, /a-propos (vision, roadmap, matching acheteurs premium), /aide, /inscription, layout (metadata), CGU, confidentialité, demo-guide (Ctrl+Shift+D), assistant-tab, prompt système gemini-live, GUIDE_DEMO_JURY.md (déroulé, phrases clés, réponse BCEAO → « Pourquoi pas de crédit ? », plan 5 vidéo).
+- ✅ **Tests** : ia.test.ts réécrit (evaluerValorisation : conformes prêts / non-conformes écartés / jamais de crédit-FCFA-plafond-%). GATE : tsc ✓ · 24/24 ✓ · build 32 routes ✓ · grep micro-crédit/IMF/Mobile Money/250 000 = néant dans l'UI.
+- 🧭 Frontière Nanti respectée : AGRIVO n'affiche AUCUN score de crédit, plafond ni décision de financement.
+
+### Session 16 — 2026-07-06 — RÉORIENTATION STRATÉGIQUE (voir `PLAN_REORIENTATION_AGRIVO.md`)
+- 🎯 **Décision (Anael, sur infos terrain d'une pro de l'export cacao)** : le **micro-crédit producteur
+  est retiré du produit** (les coops n'en font pas, par choix : autonomie, impayés, fraudes) → l'étape 6
+  « Crédit » devient « **Valorisation** » (primes, acheteurs premium, partage du dossier de conformité
+  avec l'exportateur). **Frontière produit stricte** : AGRIVO ne fait AUCUN score de crédit/bancabilité
+  ni plafond de financement (domaine du produit personnel d'Anael côté exportateur).
+- 🗺️ **Posture donnée : de la collecte à l'audit.** Les coops détiennent déjà des géodonnées (fichiers
+  de certification RA en GeoJSON/KML avec polygones ≥ 4 ha ; cartographies financées par les
+  exportateurs ; registre CCC ~3 M ha = partenariat, pas prérequis). Recherche sourcée dans le plan :
+  carte producteur obligatoire au 1er sept. 2026, RDUE au 1er janv. 2027, ~30 % de données terrain
+  non fiables (étude Cavally) → la valeur d'AGRIVO = **import + audit RDUE du registre + complétion
+  ciblée in-app + verdict satellite**.
+- 📋 **`PLAN_REORIENTATION_AGRIVO.md` créé** (source de vérité) : prompts P1–P9 (pivot Valorisation,
+  import registre, reframe discours, audit + refonte design de l'interface client, supports, clé Gemini,
+  gel v1.0.0, répétition) + planning jusqu'au jury. Rien d'implémenté dans cette session : plan seulement.
 
 ### Session 15 — 2026-07-06 — Purge « délégué » + commit/CI/déploiement des sessions 11-12
 - 🧹 **Purge « délégué » (doctrine 100 % digital)** : `step-mapping.tsx` (intro + mode tour de champ,

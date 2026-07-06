@@ -25,7 +25,7 @@ export default function ConfidentialitePage() {
       </LegalSection>
 
       <LegalSection title="2. Finalités">
-        <p>Ces données servent uniquement à : évaluer la conformité RDUE d&apos;une parcelle, générer un certificat prêt pour une déclaration TRACES NT, et — avec le consentement du producteur — permettre l&apos;étude d&apos;une inclusion financière par une institution de micro-finance partenaire.</p>
+        <p>Ces données servent uniquement à : évaluer la conformité RDUE d&apos;une parcelle, générer un certificat prêt pour une déclaration TRACES NT, et — avec le consentement du producteur — constituer le dossier de conformité que la coopérative partage avec son exportateur.</p>
       </LegalSection>
 
       <LegalSection title="3. Base légale et consentement">
@@ -33,7 +33,7 @@ export default function ConfidentialitePage() {
       </LegalSection>
 
       <LegalSection title="4. Rôle d'AGRIVO">
-        <p>AGRIVO agit comme <strong>sous-traitant technologique</strong> (fournisseur de logiciel B2B) pour le compte des coopératives et exportateurs. AGRIVO ne détient aucun agrément financier : lorsqu&apos;un scoring est produit pour une demande de micro-crédit, il est transmis à une institution de micro-finance qui reste seule décisionnaire.</p>
+        <p>AGRIVO agit comme <strong>sous-traitant technologique</strong> (fournisseur de logiciel B2B) pour le compte des coopératives et exportateurs. AGRIVO ne détient aucun agrément financier et ne produit aucun scoring de crédit : les données servent exclusivement à la conformité et à sa valorisation commerciale.</p>
       </LegalSection>
 
       <LegalSection title="5. Souveraineté et hébergement des données">

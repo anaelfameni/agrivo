@@ -45,7 +45,7 @@ const PLANS = [
 const ROWS = [
   { label: { fr: "Conformité RDUE", en: "EUDR compliance" }, vals: ["x", "check", "check", "check"] },
   { label: { fr: "Score de santé des sols", en: "Soil health score" }, vals: ["x", "partial", "x", "check"] },
-  { label: { fr: "Inclusion financière (crédit)", en: "Financial inclusion (credit)" }, vals: ["x", "check", "partial", "check"] },
+  { label: { fr: "Valorisation commerciale (primes)", en: "Commercial valorisation (premiums)" }, vals: ["x", "check", "partial", "check"] },
   { label: { fr: "Les trois combinés", en: "All three combined" }, vals: ["x", "x", "x", "check"] },
   { label: { fr: "Mode hors connexion", en: "Offline mode" }, vals: ["x", "check", "check", "check"] },
   { label: { fr: "Ancrage local ivoirien", en: "Local Ivorian roots" }, vals: ["partial", "partial", "partial", "check"] },
@@ -136,10 +136,10 @@ export default function Tarifs() {
           <Reveal delay={0.15}>
             <div className="mt-6 rounded-2xl border border-black/[0.06] bg-white p-6 text-center">
               <p className="mx-auto max-w-2xl text-sm text-stone-600">
-                <span className="font-semibold text-forest-950">{en ? "What about the micro-credit?" : "Et le micro-crédit ?"}</span>{" "}
+                <span className="font-semibold text-forest-950">{en ? "Is it free for the farmer?" : "Et pour le producteur ?"}</span>{" "}
                 {en
-                  ? "It is a loan of 50,000 to 250,000 FCFA that the farmer repays. AGRIVO charges them nothing: our revenue is a commission on each facilitated loan, paid by the partner microfinance institution."
-                  : "C'est un prêt de 50 000 à 250 000 FCFA que le producteur rembourse. AGRIVO ne lui facture rien : notre revenu est une commission sur chaque prêt facilité, versée par l'institution de micro-finance partenaire."}
+                  ? "AGRIVO charges the farmer nothing: verification is covered by their cooperative's subscription. Our revenue comes from the cooperative subscription and the exporter API."
+                  : "AGRIVO ne facture rien au producteur : la vérification est prise en charge par l'abonnement de sa coopérative. Notre revenu vient de l'abonnement coopérative et de l'API exportateur."}
               </p>
             </div>
           </Reveal>
@@ -152,8 +152,8 @@ export default function Tarifs() {
               <h2 className="font-display text-3xl">{en ? "The real differentiator is not the price." : "Le vrai différenciateur n'est pas le prix."}</h2>
               <p className="mt-3 max-w-2xl text-sm text-stone-500">
                 {en
-                  ? "Other platforms exist and are serious. Agrivo is the only one combining compliance, soil health and financial inclusion, with local roots."
-                  : "D'autres plateformes existent et sont sérieuses. Agrivo est la seule à combiner conformité, santé des sols et inclusion financière, avec un ancrage local."}
+                  ? "Other platforms exist and are serious. Agrivo is the only one combining compliance, soil health and commercial valorisation, with local roots."
+                  : "D'autres plateformes existent et sont sérieuses. Agrivo est la seule à combiner conformité, santé des sols et valorisation commerciale, avec un ancrage local."}
               </p>
             </Reveal>
             <Reveal delay={0.1}>

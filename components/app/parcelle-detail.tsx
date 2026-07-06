@@ -6,46 +6,44 @@ import { StatusBadge } from "@/components/ui/status-badge";
 import { ParcelleMap } from "@/components/app/parcelle-map";
 import { DdsMemo } from "@/components/app/dds-memo";
 import { RiskCard } from "@/components/app/risk-card";
-import { CreditScoreCard } from "@/components/app/credit-score-card";
+import { ValorisationCard } from "@/components/app/valorisation-card";
 import { useLanguage } from "@/components/language-provider";
-import type { RiskAssessment, CreditScore, ChangementSatellite } from "@/lib/ai/gemini";
+import type { RiskAssessment, Valorisation, ChangementSatellite } from "@/lib/ai/gemini";
 import {
   FILIERE_LABEL,
   STATUT_PHRASE,
   STATUT_PHRASE_EN,
-  fmtFCFA,
   fmtHa,
   formatDate,
   type Parcelle,
 } from "@/data/mock-parcelles";
 
-const CREDIT_STATUT: Record<
-  NonNullable<Parcelle["propositionCredit"]>["statut"],
+const DOSSIER_STATUT: Record<
+  NonNullable<Parcelle["dossierPartage"]>["statut"],
   { label: { fr: string; en: string }; tint: string; color: string }
 > = {
-  proposee: { label: { fr: "Proposée", en: "Proposed" }, tint: "rgba(200,134,29,0.16)", color: "#6b4610" },
-  acceptee: { label: { fr: "Acceptée", en: "Accepted" }, tint: "rgba(22,163,74,0.13)", color: "#0d4f27" },
-  versee: { label: { fr: "Versée", en: "Disbursed" }, tint: "rgba(22,163,74,0.13)", color: "#0d4f27" },
+  partage: { label: { fr: "Partagé", en: "Shared" }, tint: "rgba(22,163,74,0.13)", color: "#0d4f27" },
+  consulte: { label: { fr: "Consulté par l'exportateur", en: "Viewed by the exporter" }, tint: "rgba(22,163,74,0.13)", color: "#0d4f27" },
 };
 
 /**
- * Détail d'une parcelle (îlot client, bilingue FR/EN). Les calculs IA (risque, score, lecture
- * satellite) restent faits côté serveur dans la page et arrivent en props sérialisables.
+ * Détail d'une parcelle (îlot client, bilingue FR/EN). Les calculs IA (risque, valorisation,
+ * lecture satellite) restent faits côté serveur dans la page et arrivent en props sérialisables.
  */
 export function ParcelleDetail({
   parcelle: p,
   risk,
-  score,
+  valorisation,
   changement,
 }: {
   parcelle: Parcelle;
   risk: RiskAssessment;
-  score: CreditScore;
+  valorisation: Valorisation;
   changement: ChangementSatellite;
 }) {
   const { lang } = useLanguage();
   const en = lang === "en";
-  const credit = p.propositionCredit;
+  const dossier = p.dossierPartage;
 
   return (
     <div className="flex flex-col gap-6">
@@ -132,7 +130,7 @@ export function ParcelleDetail({
           <RiskCard risk={risk} lang={lang} />
         </div>
 
-        {/* Colonne infos + crédit + certificat */}
+        {/* Colonne infos + valorisation + certificat */}
         <div className="flex flex-col gap-5">
           <div className="card-premium p-5">
             <h2 className="text-sm font-semibold text-forest-950">
@@ -150,35 +148,35 @@ export function ParcelleDetail({
             </dl>
           </div>
 
-          {/* Scoring de crédit explicable (feature IA — inclusion financière) */}
-          <CreditScoreCard score={score} lang={lang} />
+          {/* Valorisation commerciale explicable (feature IA) */}
+          <ValorisationCard valorisation={valorisation} lang={lang} />
 
-          {/* Section crédit (uniquement si une proposition existe) */}
-          {credit && (
+          {/* Dossier de conformité partagé avec l'exportateur (uniquement si partagé) */}
+          {dossier && (
             <div className="rounded-2xl border border-amber-cacao/20 bg-amber-cacao/[0.04] p-5">
               <div className="flex items-center justify-between gap-3">
                 <h2 className="text-sm font-semibold text-forest-950">
-                  {en ? "Financial inclusion" : "Inclusion financière"}
+                  {en ? "Compliance file" : "Dossier de conformité"}
                 </h2>
                 <span
                   className="rounded-full px-2.5 py-1 text-xs font-medium"
-                  style={{ background: CREDIT_STATUT[credit.statut].tint, color: CREDIT_STATUT[credit.statut].color }}
+                  style={{ background: DOSSIER_STATUT[dossier.statut].tint, color: DOSSIER_STATUT[dossier.statut].color }}
                 >
-                  {en ? CREDIT_STATUT[credit.statut].label.en : CREDIT_STATUT[credit.statut].label.fr}
+                  {en ? DOSSIER_STATUT[dossier.statut].label.en : DOSSIER_STATUT[dossier.statut].label.fr}
                 </span>
               </div>
-              <p className="num mt-3 text-2xl font-semibold text-forest-950">{fmtFCFA(credit.montantFcfa)}</p>
+              <p className="num mt-3 text-sm font-medium text-forest-950">{formatDate(dossier.date, lang)}</p>
               <p className="mt-2 text-xs leading-relaxed text-stone-500">
                 {en
-                  ? "Loan facilitated with the partner microfinance institution, repaid by the farmer. The AGRIVO service remains free for them."
-                  : "Prêt facilité auprès de l'institution de microfinance partenaire, remboursable par le producteur. Le service AGRIVO reste gratuit pour lui."}
+                  ? "The verified plot is part of the compliance file the cooperative shares with its exporter: the basis for negotiating sustainability premiums and accessing premium buyers."
+                  : "La parcelle vérifiée fait partie du dossier de conformité que la coopérative partage avec son exportateur : la base de négociation des primes de durabilité et de l'accès aux acheteurs premium."}
               </p>
             </div>
           )}
 
           {/* Certificat — généré dans le parcours de vérification (Prompt 4) */}
-          <button
-            type="button"
+          <Link
+            href="/app/verifier"
             title={
               en
                 ? "The PDF certificate is generated in the verification journey."
@@ -187,8 +185,8 @@ export function ParcelleDetail({
             className="inline-flex items-center justify-center gap-2 rounded-full border border-black/10 bg-white px-5 py-3 text-sm font-semibold text-forest-950 outline-none transition-colors hover:border-green-signal/40 focus-visible:ring-2 focus-visible:ring-green-signal focus-visible:ring-offset-2 focus-visible:ring-offset-ivory"
           >
             <Download size={16} strokeWidth={2} aria-hidden />
-            {en ? "Download the certificate" : "Télécharger le certificat"}
-          </button>
+            {en ? "Generate the certificate (verification journey)" : "Générer le certificat (parcours de vérification)"}
+          </Link>
         </div>
       </div>
 
