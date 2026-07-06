@@ -375,6 +375,14 @@ variables CSS dans `app/globals.css`.
   → 5 usages), AGRIVO_Presentation_Equipe_MAJ.md (§4 tableau IA, §5 v1.2.0, §12 action 0 déploiement).
 - 📎 Leçon : les sous-agents parallèles ont été tués par la limite de session (« resets 1am ») — audits
   refaits inline ; en cas de fan-out, prévoir le repli inline.
+- 🔑 **Leçons Gemini 2.5-flash (fiabilité live)** : (1) la « réflexion » par défaut consomme
+  ~500-1000 tokens INVISIBLES sur `maxOutputTokens` → en JSON, soit ≥ 3072, soit
+  `generationConfig.thinkingConfig.thinkingBudget: 0` pour une simple mise en mots (latence 10 s → 2 s,
+  appliqué aux 2 nouvelles routes, option `thinkingBudget` dans `callGemini`) ; (2) **quota gratuit
+  ~10 req/min** : les rafales de test déclenchent des **HTTP 429** → repli « Mode démonstration »
+  (voulu, honnête). ⚠️ AVANT LE JURY : ne pas spammer les features IA en répétition (1 appel suffit),
+  et envisager d'activer la facturation sur la clé AI Studio pour lever la limite. Diagnostic :
+  `npx vercel logs <url-deploiement> --json` puis grep « live échoué ».
 
 ### Session 20 — 2026-07-06 — v1.1.0 : correctifs UX d'Anael (cartes réelles partout, coordonnées coop, DDS sans simulation)
 - 🗺️ **Vraie carte satellite sur la page parcelle** : `components/app/parcelle-map-sat.tsx` (Leaflet + Esri World Imagery, polygone teinté au verdict, point central sinon, FitBounds maxZoom 16) remplace l'aperçu stylisé `parcelle-map.tsx` (SUPPRIMÉ). Chargé en dynamic ssr:false depuis parcelle-detail.
