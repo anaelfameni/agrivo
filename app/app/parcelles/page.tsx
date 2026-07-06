@@ -1,14 +1,25 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import dynamic from "next/dynamic";
 import Link from "next/link";
 import { Search, ChevronRight } from "lucide-react";
+import { motion, useReducedMotion } from "framer-motion";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { EmptyState } from "@/components/ui/empty-state";
 import { StatNumber } from "@/components/ui/stat-number";
 import { PARCELLES, portfolioStats, FILIERE_LABEL, fmtHa, formatDateFr, type Parcelle, type Statut } from "@/data/mock-parcelles";
 import { FILIERES, type FiliereId } from "@/config/filieres";
 import { useLanguage } from "@/components/language-provider";
+
+const PortfolioMap = dynamic(() => import("@/components/exportateur/portfolio-map"), {
+  ssr: false,
+  loading: () => (
+    <div className="grid h-full place-items-center bg-forest-950">
+      <span className="glow-pulse inline-block h-2.5 w-2.5 rounded-full bg-green-signal" aria-hidden />
+    </div>
+  ),
+});
 
 const TR = {
   fr: {
@@ -22,6 +33,7 @@ const TR = {
     allStatuts: "Tous statuts",
     statuts: { conforme: "Conforme", anomalie: "Anomalie détectée", insuffisant: "Données insuffisantes" },
     listTitle: "Liste des parcelles",
+    mapTitle: "Carte du portefeuille",
     emptyTitle: "Aucune parcelle trouvée",
     emptyDesc: "Ajustez la recherche ou les filtres pour élargir les résultats.",
   },
@@ -36,6 +48,7 @@ const TR = {
     allStatuts: "All statuses",
     statuts: { conforme: "Compliant", anomalie: "Anomaly detected", insuffisant: "Insufficient data" },
     listTitle: "Plot list",
+    mapTitle: "Portfolio map",
     emptyTitle: "No plot found",
     emptyDesc: "Adjust the search or the filters to widen the results.",
   },
@@ -44,9 +57,12 @@ const TR = {
 export default function ParcellesPage() {
   const { lang } = useLanguage();
   const t = TR[lang];
+  const reduce = useReducedMotion() ?? false;
   const [query, setQuery] = useState("");
   const [filiere, setFiliere] = useState<FiliereId | "all">("all");
   const [statut, setStatut] = useState<Statut | "all">("all");
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [hoveredId, setHoveredId] = useState<string | null>(null);
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -106,21 +122,50 @@ export default function ParcellesPage() {
         </div>
       </div>
 
-      <div className="card-premium p-2 sm:p-3">
-        <div className="flex items-center justify-between px-3 py-2.5">
-          <h2 className="flex items-center gap-2 text-sm font-semibold text-forest-950">
-            <span className="h-4 w-1 rounded-full bg-green-signal" aria-hidden />
-            {t.listTitle}
-          </h2>
-          <span className="num text-xs text-stone-400">{filtered.length} / {PARCELLES.length}</span>
+      <div className="grid gap-4 xl:grid-cols-12">
+        <div className="card-premium p-2 sm:p-3 xl:col-span-7">
+          <div className="flex items-center justify-between px-3 py-2.5">
+            <h2 className="flex items-center gap-2 text-sm font-semibold text-forest-950">
+              <span className="h-4 w-1 rounded-full bg-green-signal" aria-hidden />
+              {t.listTitle}
+            </h2>
+            <span className="num text-xs text-stone-400">{filtered.length} / {PARCELLES.length}</span>
+          </div>
+          {filtered.length === 0 ? (
+            <div className="p-2"><EmptyState title={t.emptyTitle} description={t.emptyDesc} /></div>
+          ) : (
+            <motion.ul
+              initial="hidden"
+              animate="show"
+              variants={{ show: { transition: { staggerChildren: reduce ? 0 : 0.03 } } }}
+              className="flex max-h-[560px] flex-col overflow-y-auto xl:max-h-[600px]"
+            >
+              {filtered.map((p) => (
+                <motion.li
+                  key={p.id}
+                  variants={{ hidden: reduce ? { opacity: 1 } : { opacity: 0, x: -8 }, show: { opacity: 1, x: 0, transition: { duration: 0.3 } } }}
+                  onMouseEnter={() => setHoveredId(p.id)}
+                  onMouseLeave={() => setHoveredId(null)}
+                >
+                  <ParcelleRow p={p} lang={lang} />
+                </motion.li>
+              ))}
+            </motion.ul>
+          )}
         </div>
-        {filtered.length === 0 ? (
-          <div className="p-2"><EmptyState title={t.emptyTitle} description={t.emptyDesc} /></div>
-        ) : (
-          <ul className="flex flex-col">
-            {filtered.map((p) => <li key={p.id}><ParcelleRow p={p} lang={lang} /></li>)}
-          </ul>
-        )}
+
+        {/* Carte satellite du portefeuille, liée à la liste (survol + clic) */}
+        <div className="xl:col-span-5">
+          <div className="h-[340px] overflow-hidden rounded-2xl border border-black/[0.06] shadow-[0_1px_2px_rgba(10,31,20,0.04)] xl:sticky xl:top-24 xl:h-[600px]">
+            <PortfolioMap
+              parcelles={filtered}
+              selectedId={selectedId}
+              hoveredId={hoveredId}
+              onSelect={(id) => setSelectedId(id === selectedId ? null : id)}
+              onHover={setHoveredId}
+            />
+          </div>
+        </div>
       </div>
     </div>
   );

@@ -336,6 +336,18 @@ variables CSS dans `app/globals.css`.
 
 ## 📓 Journal de build (le plus récent en haut)
 
+### Session 20 — 2026-07-06 — v1.1.0 : correctifs UX d'Anael (cartes réelles partout, coordonnées coop, DDS sans simulation)
+- 🗺️ **Vraie carte satellite sur la page parcelle** : `components/app/parcelle-map-sat.tsx` (Leaflet + Esri World Imagery, polygone teinté au verdict, point central sinon, FitBounds maxZoom 16) remplace l'aperçu stylisé `parcelle-map.tsx` (SUPPRIMÉ). Chargé en dynamic ssr:false depuis parcelle-detail.
+- 🗺️ **Carte du portefeuille sur /app/parcelles** : réutilise `PortfolioMap` (exportateur) liée à la liste (survol ligne ↔ pastille, liste scrollable 600px, stagger d'entrée).
+- 🧭 **Sidebar** : encart « Prêt pour le RDUE » SUPPRIMÉ (demande Anael) ; onglet renommé « **Vue exportateur** » ; sous-titre de la page exportateur clarifié (« Vue de démonstration : le cockpit que votre exportateur consulte — portefeuille multi-coopératives, dont la vôtre »).
+- 📍 **Étape Cartographie : 3e mode « J'ai déjà les coordonnées »** (la coop saisit les coordonnées qu'elle détient) : textarea « latitude, longitude » par ligne (1 ligne = point ; ≥3 = polygone fermé auto), validation format + emprise CI (lat 4–11, lon −9–−2), puis mêmes contrôles d'intégrité. Intro réécrite (données existantes d'abord).
+- 🤖 **DDS sans simulation en mode live** : si la clé est posée et que Gemini échoue → **503** et l'UI affiche « L'IA est momentanément indisponible. Veuillez réessayer plus tard. » (plus de repli silencieux vers la rédaction déterministe) ; sans clé (dev/offline), le mock reste.
+- 👤 **Producteurs** : champs **Latitude/Longitude (optionnels, validés zone CI)** au formulaire d'ajout ; producteurs ajoutés **persistés en localStorage** (`lib/producteurs-locaux.ts`, clé `agrivo:producteurs`) et **cliquables** → nouvelle fiche `components/app/parcelle-locale.tsx` (rendue par parcelle/[id] quand l'id est inconnu côté serveur : carte satellite du point fourni OU état « coordonnées à compléter », infos, bandeau « en attente de vérification », CTA « Lancer la vérification »).
+- ✨ Polish : focus-visible uniforme sur les liens texte du parcours (4 fichiers verifier).
+- ✅ Vérifié en captures : parcelle p15 (polygone sur imagerie réelle), /app/parcelles (carte liée), fiche « Test Ajout » (point 5.8321,-6.6478 affiché), sidebar propre. GATE : tsc ✓ · 32/32 ✓ · build ✓.
+- ⚠️ Leçon : ne pas injecter de regex/chaînes avec 
+ via node -e sur ce repo (échappements mangés → 3 corrections) ; préférer l'outil Edit ou Python ligne à ligne.
+
 ### Session 19 — 2026-07-06 — P7 TERMINÉ (IA LIVE en prod) + deck v3 + domaine
 - 🔑 **CORRECTION de la leçon Session 15 : les clés Gemini au format `AQ.Ab8…` sont désormais VALIDES** (nouveau format Google AI Studio, testé HTTP 200 sur generativelanguage). La clé d'Anael fonctionne.
 - ✅ **P7 fait** : `.env.local` posé (gitignoré ✓, jamais commité), `GEMINI_API_KEY` déjà en env Vercel (posée par Anael), **redéploiement prod** + alias réassigné. **Tests LIVE en prod réussis** : copilote `/api/gemini/query` → `live:true` (« Vingt-huit parcelles… »), mémo DDS `live:true` (rédaction fluide), scan → répond proprement avec repli mock sur image illisible (OCR réel à tester avec la vraie carte de Domy). Repli sans clé prouvé (ancien déploiement 200 + tests Vitest robustesse).

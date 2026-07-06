@@ -1,9 +1,17 @@
 "use client";
 
 import Link from "next/link";
+import dynamic from "next/dynamic";
 import { ArrowLeft, Download, FileCheck2, Layers, MapPin, Ruler, CalendarDays, Sparkles } from "lucide-react";
 import { StatusBadge } from "@/components/ui/status-badge";
-import { ParcelleMap } from "@/components/app/parcelle-map";
+const ParcelleMapSat = dynamic(() => import("@/components/app/parcelle-map-sat"), {
+  ssr: false,
+  loading: () => (
+    <div className="grid aspect-[16/10] place-items-center rounded-2xl border border-black/[0.08] bg-forest-950">
+      <span className="glow-pulse inline-block h-2.5 w-2.5 rounded-full bg-green-signal" aria-hidden />
+    </div>
+  ),
+});
 import { DdsMemo } from "@/components/app/dds-memo";
 import { RiskCard } from "@/components/app/risk-card";
 import { ValorisationCard } from "@/components/app/valorisation-card";
@@ -71,7 +79,7 @@ export function ParcelleDetail({
       <div className="grid gap-5 lg:grid-cols-[1.35fr_1fr]">
         {/* Colonne carte + verdict */}
         <div className="flex flex-col gap-5">
-          <ParcelleMap parcelle={p} className="aspect-[16/10]" />
+          <ParcelleMapSat parcelle={p} className="aspect-[16/10]" />
 
           {/* Verdict */}
           <div className="card-premium p-5">

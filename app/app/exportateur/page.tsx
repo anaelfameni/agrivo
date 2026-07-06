@@ -35,7 +35,7 @@ const COPY = {
     eyebrow: "Espace exportateur",
     subtitle: (coops: number, parcelles: number) =>
       `Directeur durabilité · ${coops} coopératives · ${parcelles} parcelles suivies`,
-    designed: "Conçu pour les grands opérateurs (jusqu'à plusieurs milliers de parcelles).",
+    designed: "Vue de démonstration : le cockpit que votre exportateur consulte — son portefeuille couvre plusieurs coopératives, dont la vôtre.",
     search: "Rechercher",
     alertsAria: (n: number) => `Centre d'alertes${n ? `, ${n} actives` : ""}`,
     tablist: "Sections du dashboard exportateur",
@@ -51,7 +51,7 @@ const COPY = {
     eyebrow: "Exporter workspace",
     subtitle: (coops: number, parcelles: number) =>
       `Sustainability director · ${coops} cooperatives · ${parcelles} plots tracked`,
-    designed: "Designed for large operators (up to several thousand plots).",
+    designed: "Demo view: the cockpit your exporter uses — their portfolio spans several cooperatives, including yours.",
     search: "Search",
     alertsAria: (n: number) => `Alert centre${n ? `, ${n} active` : ""}`,
     tablist: "Exporter dashboard sections",

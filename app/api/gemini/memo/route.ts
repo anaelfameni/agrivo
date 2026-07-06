@@ -38,11 +38,15 @@ export async function POST(req: Request) {
           live: true,
         });
       }
+      // Rédaction IA incomplète : traité comme un échec (pas de repli simulation en mode live).
+      return NextResponse.json({ error: "retry" }, { status: 503 });
     } catch (e) {
-      console.error("[gemini/memo] live échoué, repli déterministe:", e);
+      console.error("[gemini/memo] live échoué:", e);
+      return NextResponse.json({ error: "retry" }, { status: 503 });
     }
   }
 
+  // Sans clé API (développement / démo hors-ligne) : rédaction déterministe.
   if (MOCK_MODE) await sleep(1100);
   return NextResponse.json(base);
 }

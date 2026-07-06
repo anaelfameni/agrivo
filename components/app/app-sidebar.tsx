@@ -18,23 +18,15 @@ const NAV: { href: string; label: { fr: string; en: string }; Icon: LucideIcon }
   { href: "/app/dashboard", label: { fr: "Vue d'ensemble", en: "Overview" }, Icon: LayoutDashboard },
   { href: "/app/producteurs", label: { fr: "Producteurs", en: "Farmers" }, Icon: Users },
   { href: "/app/parcelles", label: { fr: "Parcelles", en: "Plots" }, Icon: Map },
-  { href: "/app/exportateur", label: { fr: "Exportateur", en: "Exporter" }, Icon: Globe },
+  { href: "/app/exportateur", label: { fr: "Vue exportateur", en: "Exporter view" }, Icon: Globe },
   { href: "/app/parametres", label: { fr: "Paramètres", en: "Settings" }, Icon: Settings },
 ];
 
 const ADMIN_ITEM = { href: "/app/admin", label: { fr: "Admin", en: "Admin" }, Icon: ShieldCheck };
 
 const SIDE_TR = {
-  fr: {
-    navLabel: "Navigation de l'espace",
-    readyTitle: "Prêt pour le RDUE",
-    readyText: "Chaque parcelle vérifiée, chaque certificat prêt pour TRACES NT.",
-  },
-  en: {
-    navLabel: "Workspace navigation",
-    readyTitle: "EUDR ready",
-    readyText: "Every plot verified, every certificate ready for TRACES NT.",
-  },
+  fr: { navLabel: "Navigation de l'espace" },
+  en: { navLabel: "Workspace navigation" },
 };
 
 const SPRING = { type: "spring", stiffness: 420, damping: 34 } as const;
@@ -91,11 +83,6 @@ export function AppSidebar() {
           );
         })}
 
-        {/* Signature discrète bas de sidebar */}
-        <div className="mt-4 rounded-xl border border-green-signal/15 bg-green-signal/[0.05] p-3">
-          <p className="text-xs font-semibold text-forest-950">{t.readyTitle}</p>
-          <p className="mt-0.5 text-[11px] leading-snug text-stone-500">{t.readyText}</p>
-        </div>
       </nav>
     </aside>
   );

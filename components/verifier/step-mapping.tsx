@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import { ArrowRight, Check, Crosshair, Footprints, MapPinned, RotateCcw, ShieldCheck } from "lucide-react";
+import { ArrowRight, Check, ClipboardPaste, Crosshair, Footprints, MapPinned, RotateCcw, ShieldCheck } from "lucide-react";
 import { PinMark } from "@/components/ui/pin-mark";
 import { useLanguage } from "@/components/language-provider";
 import type { MappingMode } from "@/components/verifier/mapping-map";
@@ -19,12 +19,23 @@ const COPY = {
     eyebrow: "Cartographie · GPS terrain",
     title: "Capture de la parcelle",
     intro:
-      "Complétez ici les parcelles absentes de votre registre (ou rejetées à l'audit) : la capture se fait au bord du champ par l'utilisateur de l'app (producteur, pisteur ou agent de coopérative), selon la règle RDUE : un point central suffit sous 4 ha, un polygone complet est requis à partir de 4 ha.",
+      "Si la coopérative possède déjà les coordonnées de cette parcelle (registre, certification, cartographie exportateur), saisissez-les directement. Sinon, capturez au bord du champ — règle RDUE : point central sous 4 ha, polygone complet à partir de 4 ha.",
     deskNote: "Un ajustement fin reste possible ensuite, au bureau, sur l'image satellite.",
     modePointTitle: "Point central",
     modePointDesc: (ha: string) => `Parcelle de ${ha} ha : un point GPS au centre du champ suffit (règle RDUE, moins de 4 ha).`,
     modePolyTitle: "Tour de champ GPS",
     modePolyDesc: (ha: string) => `Parcelle de ${ha} ha : l'utilisateur marche le périmètre, le téléphone enregistre les waypoints.`,
+    modeManualTitle: "J'ai déjà les coordonnées",
+    modeManualDesc: "La coopérative fournit les coordonnées GPS qu'elle détient : un point central, ou les sommets du polygone.",
+    manualBadge: "Données existantes",
+    manualLabel: "Coordonnées WGS-84 (une paire « latitude, longitude » par ligne)",
+    manualPlaceholder: "5.8321, -6.6478\n5.8330, -6.6461\n5.8318, -6.6452\n5.8309, -6.6470",
+    manualHint: "1 ligne = point central (moins de 4 ha) · 3 lignes ou plus = sommets du polygone (fermé automatiquement).",
+    manualSubmit: "Valider les coordonnées",
+    manualErrParse: "Format invalide : une paire « latitude, longitude » par ligne (ex. 5.8321, -6.6478).",
+    manualErrZone: "Ces coordonnées sortent de l'emprise de la Côte d'Ivoire (lat 4–11, lon −9–−2). Vérifiez l'ordre latitude, longitude.",
+    manualErrCount: "Saisissez 1 ligne (point central) ou au moins 3 lignes (polygone).",
+    manualCaptured: (n: number) => n > 1 ? `Coordonnées fournies par la coopérative : polygone de ${n} sommets (WGS-84, GeoJSON RFC 7946).` : "Coordonnées fournies par la coopérative : point central (WGS-84, GeoJSON RFC 7946).",
     recommended: "Recommandé",
     required: "Requis dès 4 ha",
     start: "Démarrer la capture",
@@ -45,12 +56,23 @@ const COPY = {
     eyebrow: "Mapping · Field GPS",
     title: "Plot capture",
     intro:
-      "Complete here the plots missing from your register (or rejected at audit): capture happens at the edge of the field by the app user (farmer, field buyer or cooperative agent), following the EUDR rule: a centre point is enough below 4 ha, a full polygon is required from 4 ha.",
+      "If the cooperative already holds this plot's coordinates (register, certification, exporter mapping), enter them directly. Otherwise capture at the edge of the field — EUDR rule: centre point under 4 ha, full polygon from 4 ha.",
     deskNote: "Fine adjustment remains possible afterwards, at the office, on the satellite image.",
     modePointTitle: "Centre point",
     modePointDesc: (ha: string) => `Plot of ${ha} ha: one GPS point at the centre of the field is enough (EUDR rule, under 4 ha).`,
     modePolyTitle: "GPS perimeter walk",
     modePolyDesc: (ha: string) => `Plot of ${ha} ha: the app user walks the perimeter, the phone records the waypoints.`,
+    modeManualTitle: "I already have the coordinates",
+    modeManualDesc: "The cooperative provides the GPS coordinates it holds: a centre point, or the polygon vertices.",
+    manualBadge: "Existing data",
+    manualLabel: "WGS-84 coordinates (one « latitude, longitude » pair per line)",
+    manualPlaceholder: "5.8321, -6.6478\n5.8330, -6.6461\n5.8318, -6.6452\n5.8309, -6.6470",
+    manualHint: "1 line = centre point (under 4 ha) · 3+ lines = polygon vertices (closed automatically).",
+    manualSubmit: "Validate the coordinates",
+    manualErrParse: "Invalid format: one « latitude, longitude » pair per line (e.g. 5.8321, -6.6478).",
+    manualErrZone: "These coordinates fall outside Côte d'Ivoire (lat 4–11, lon −9–−2). Check the latitude, longitude order.",
+    manualErrCount: "Enter 1 line (centre point) or at least 3 lines (polygon).",
+    manualCaptured: (n: number) => n > 1 ? `Coordinates provided by the cooperative: ${n}-vertex polygon (WGS-84, GeoJSON RFC 7946).` : "Coordinates provided by the cooperative: centre point (WGS-84, GeoJSON RFC 7946).",
     recommended: "Recommended",
     required: "Required from 4 ha",
     start: "Start the capture",
@@ -150,7 +172,10 @@ export function StepMapping({
   }, [waypoints, ring]);
 
   const smallPlot = parcelle.superficieHa < 4;
-  const [mode, setMode] = useState<MappingMode>(smallPlot ? "point" : "polygon");
+  const [mode, setMode] = useState<MappingMode | "manual">(smallPlot ? "point" : "polygon");
+  const [manualText, setManualText] = useState("");
+  const [manualErr, setManualErr] = useState<string | null>(null);
+  const [manualCoords, setManualCoords] = useState<number[][] | null>(null); // [lon, lat][]
   const [phase, setPhase] = useState<Phase>("choose");
   const [count, setCount] = useState(0);
   const [closed, setClosed] = useState(false);
@@ -192,7 +217,28 @@ export function StepMapping({
     return Math.round(d);
   }, [count, closed, waypoints]);
 
+  function validerManuel() {
+    const lignes = manualText.split(/\r?\n/).map((l) => l.trim()).filter(Boolean);
+    const coords: number[][] = [];
+    for (const l of lignes) {
+      const m = l.split(/[;,\s]+/).map(Number).filter((n) => Number.isFinite(n));
+      if (m.length < 2) { setManualErr(t.manualErrParse); return; }
+      const [lat, lon] = m; // convention de saisie : latitude, longitude
+      coords.push([lon, lat]);
+    }
+    if (coords.length !== 1 && coords.length < 3) { setManualErr(t.manualErrCount); return; }
+    const horsZone = coords.some(([lon, lat]) => lon < -9 || lon > -2 || lat < 4 || lat > 11);
+    if (horsZone) { setManualErr(t.manualErrZone); return; }
+    setManualErr(null);
+    setManualCoords(coords);
+    setCount(coords.length);
+    setClosed(true);
+    setChecksShown(0);
+    setPhase("captured");
+  }
+
   function demarrer() {
+    if (mode === "manual") { validerManuel(); return; }
     setPhase("capturing");
     setCount(0);
     setClosed(false);
@@ -236,13 +282,16 @@ export function StepMapping({
 
   function recommencer() {
     if (timerRef.current) clearInterval(timerRef.current);
+    setManualCoords(null);
+    setManualErr(null);
     setPhase("choose");
     setCount(0);
     setClosed(false);
     setChecksShown(0);
   }
 
-  const mapWaypoints = mode === "point" ? [centroid] : waypoints;
+  const mapMode: MappingMode = mode === "manual" ? (manualCoords && manualCoords.length > 1 ? "polygon" : "point") : mode;
+  const mapWaypoints = mode === "manual" && manualCoords ? manualCoords : mode === "point" ? [centroid] : waypoints;
 
   return (
     <div className="grid gap-5 lg:grid-cols-[1.5fr_1fr]">
@@ -251,7 +300,7 @@ export function StepMapping({
         <MappingMap
           waypoints={mapWaypoints}
           count={count}
-          mode={mode}
+          mode={mapMode}
           closed={closed}
           active={phase === "capturing"}
         />
@@ -289,7 +338,35 @@ export function StepMapping({
                   selected={mode === "polygon"}
                   onSelect={() => setMode("polygon")}
                 />
+                <ModeCard
+                  icon={<ClipboardPaste size={18} strokeWidth={2} aria-hidden />}
+                  title={t.modeManualTitle}
+                  desc={t.modeManualDesc}
+                  badge={t.manualBadge}
+                  selected={mode === "manual"}
+                  onSelect={() => setMode("manual")}
+                />
               </div>
+              {mode === "manual" && (
+                <div className="flex flex-col gap-1.5">
+                  <label htmlFor="coords-manual" className="text-xs font-medium text-forest-950">
+                    {t.manualLabel}
+                  </label>
+                  <textarea
+                    id="coords-manual"
+                    value={manualText}
+                    onChange={(e) => { setManualText(e.target.value); setManualErr(null); }}
+                    rows={4}
+                    spellCheck={false}
+                    placeholder={t.manualPlaceholder}
+                    className="num w-full resize-y rounded-xl border border-black/10 bg-white px-3.5 py-2.5 text-sm outline-none transition-colors placeholder:text-stone-300 focus:border-green-signal focus:ring-2 focus:ring-green-signal/15"
+                  />
+                  <p className="text-[0.7rem] leading-relaxed text-stone-400">{t.manualHint}</p>
+                  {manualErr && (
+                    <p role="alert" className="rounded-lg bg-red-block/[0.07] px-3 py-2 text-xs text-red-block">{manualErr}</p>
+                  )}
+                </div>
+              )}
               <p className="text-xs leading-relaxed text-stone-400">{t.deskNote}</p>
             </div>
           )}
@@ -320,7 +397,7 @@ export function StepMapping({
               <div className="flex items-start gap-2.5 rounded-xl bg-green-signal/[0.08] px-4 py-3">
                 <Check size={16} strokeWidth={2.5} className="mt-0.5 shrink-0 text-green-signal" aria-hidden />
                 <p className="text-sm leading-relaxed text-forest-950">
-                  {mode === "polygon" ? t.capturedPoly(waypoints.length) : t.capturedPoint}{" "}
+                  {mode === "manual" ? t.manualCaptured(manualCoords?.length ?? 1) : mode === "polygon" ? t.capturedPoly(waypoints.length) : t.capturedPoint}{" "}
                   <span className="font-semibold">
                     {t.superficie} : <span className="num">{haStr} ha</span>
                   </span>
@@ -369,8 +446,8 @@ export function StepMapping({
               onClick={demarrer}
               className="inline-flex items-center justify-center gap-2 rounded-full bg-green-signal px-6 py-3.5 text-sm font-semibold text-white shadow-[0_14px_34px_-12px_rgba(22,163,74,0.75)] outline-none transition-[filter,transform] hover:brightness-105 active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-green-signal focus-visible:ring-offset-2 focus-visible:ring-offset-white"
             >
-              {mode === "polygon" ? <Footprints size={16} strokeWidth={2} aria-hidden /> : <Crosshair size={16} strokeWidth={2} aria-hidden />}
-              {t.start}
+              {mode === "manual" ? <ClipboardPaste size={16} strokeWidth={2} aria-hidden /> : mode === "polygon" ? <Footprints size={16} strokeWidth={2} aria-hidden /> : <Crosshair size={16} strokeWidth={2} aria-hidden />}
+              {mode === "manual" ? t.manualSubmit : t.start}
             </button>
           )}
 
@@ -399,7 +476,7 @@ export function StepMapping({
           <button
             type="button"
             onClick={onBack}
-            className="text-center text-sm text-stone-400 outline-none transition-colors hover:text-forest-950 focus-visible:text-forest-950"
+            className="rounded-full px-3 py-1 text-center text-sm text-stone-400 outline-none transition-colors hover:text-forest-950 focus-visible:ring-2 focus-visible:ring-green-signal focus-visible:ring-offset-2 focus-visible:ring-offset-white"
           >
             {t.back}
           </button>

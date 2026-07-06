@@ -207,7 +207,7 @@ export function StepCertificate({
                 <button
                   type="button"
                   onClick={onBack}
-                  className="text-sm text-stone-400 outline-none transition-colors hover:text-forest-950 focus-visible:text-forest-950"
+                  className="rounded-full px-3 py-1 text-sm text-stone-400 outline-none transition-colors hover:text-forest-950 focus-visible:ring-2 focus-visible:ring-green-signal focus-visible:ring-offset-2 focus-visible:ring-offset-white"
                 >
                   {t.back}
                 </button>

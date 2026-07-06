@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { Search, UserPlus, ChevronRight, Check } from "lucide-react";
@@ -9,6 +9,7 @@ import { EmptyState } from "@/components/ui/empty-state";
 import { PARCELLES, FILIERE_LABEL, fmtHa, COOP_DEMO, type Statut } from "@/data/mock-parcelles";
 import { FILIERES, type FiliereId } from "@/config/filieres";
 import { useLanguage } from "@/components/language-provider";
+import { PRODUCTEURS_KEY, lireProducteursLocaux, type ProducteurLocal } from "@/lib/producteurs-locaux";
 
 const TR = {
   fr: {
@@ -29,8 +30,11 @@ const TR = {
       title: "Nouveau producteur",
       nom: "Nom du producteur", nomPh: "Ex. Kouassi Yao",
       filiere: "Filière", coop: "Coopérative", region: "Région", ha: "Superficie (ha)",
+      lat: "Latitude (optionnel)", latPh: "5.8321", lon: "Longitude", lonPh: "-6.6478",
+      coordsHint: "Si la coopérative possède déjà la géolocalisation du producteur (registre, certification), saisissez-la : elle apparaîtra sur la carte de sa fiche.",
       errNom: "Indiquez le nom du producteur.",
       errHa: "Indiquez une superficie valide (en hectares).",
+      errCoords: "Coordonnées invalides : latitude 4 à 11, longitude −9 à −2 (Côte d'Ivoire), ou laissez les deux champs vides.",
       submit: "Ajouter", cancel: "Annuler",
     },
   },
@@ -52,25 +56,18 @@ const TR = {
       title: "New farmer",
       nom: "Farmer name", nomPh: "E.g. Kouassi Yao",
       filiere: "Commodity", coop: "Cooperative", region: "Region", ha: "Area (ha)",
+      lat: "Latitude (optional)", latPh: "5.8321", lon: "Longitude", lonPh: "-6.6478",
+      coordsHint: "If the cooperative already holds the farmer's geolocation (register, certification), enter it: it will appear on the map of their record.",
       errNom: "Enter the farmer's name.",
       errHa: "Enter a valid area (in hectares).",
+      errCoords: "Invalid coordinates: latitude 4 to 11, longitude −9 to −2 (Côte d'Ivoire), or leave both fields empty.",
       submit: "Add", cancel: "Cancel",
     },
   },
 };
 type Tr = (typeof TR)["fr"];
 
-interface Producteur {
-  id: string;
-  producteurNom: string;
-  numeroCartePro: string;
-  cooperative: string;
-  region: string;
-  superficieHa: number;
-  filiere: FiliereId;
-  statut: Statut;
-  linkId?: string;
-}
+type Producteur = ProducteurLocal;
 
 const BASE: Producteur[] = PARCELLES.map((p) => ({
   id: p.id,
@@ -95,6 +92,11 @@ export default function ProducteursPage() {
   const [filiere, setFiliere] = useState<FiliereId | "all">("all");
   const [statut, setStatut] = useState<Statut | "all">("all");
   const [added, setAdded] = useState<Producteur[]>([]);
+
+  // Producteurs ajoutés par la coopérative : persistés en localStorage (fiche consultable après navigation).
+  useEffect(() => {
+    setAdded(lireProducteursLocaux());
+  }, []);
   const [showForm, setShowForm] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
 
@@ -109,10 +111,15 @@ export default function ProducteursPage() {
     });
   }, [all, query, filiere, statut]);
 
-  const addProducteur = (data: { producteurNom: string; cooperative: string; region: string; superficieHa: number; filiere: FiliereId }) => {
+  const addProducteur = (data: { producteurNom: string; cooperative: string; region: string; superficieHa: number; filiere: FiliereId; lat?: number; lon?: number }) => {
     const seq = 90001 + added.length;
-    const p: Producteur = { ...data, id: `new-${Date.now()}`, numeroCartePro: `CI-CCC-0${seq}`, statut: "insuffisant" };
-    setAdded((a) => [p, ...a]);
+    const id = `new-${Date.now()}`;
+    const p: Producteur = { ...data, id, linkId: id, numeroCartePro: `CI-CCC-0${seq}`, statut: "insuffisant" };
+    setAdded((a) => {
+      const next = [p, ...a];
+      try { localStorage.setItem(PRODUCTEURS_KEY, JSON.stringify(next)); } catch { /* stockage indisponible */ }
+      return next;
+    });
     setShowForm(false);
     setToast(t.toast(data.producteurNom));
     window.setTimeout(() => setToast(null), 4000);
@@ -223,11 +230,13 @@ function FilterPill({ active, onClick, children, dot }: { active: boolean; onCli
   );
 }
 
-function AddForm({ t, reduce, onCancel, onSubmit }: { t: Tr["form"]; reduce: boolean; onCancel: () => void; onSubmit: (d: { producteurNom: string; cooperative: string; region: string; superficieHa: number; filiere: FiliereId }) => void }) {
+function AddForm({ t, reduce, onCancel, onSubmit }: { t: Tr["form"]; reduce: boolean; onCancel: () => void; onSubmit: (d: { producteurNom: string; cooperative: string; region: string; superficieHa: number; filiere: FiliereId; lat?: number; lon?: number }) => void }) {
   const [nom, setNom] = useState("");
   const [coop, setCoop] = useState(COOP_DEMO);
   const [region, setRegion] = useState("Nawa · Soubré");
   const [ha, setHa] = useState("");
+  const [lat, setLat] = useState("");
+  const [lon, setLon] = useState("");
   const [filiere, setFiliere] = useState<FiliereId>("cacao");
   const [err, setErr] = useState<string | null>(null);
 
@@ -236,7 +245,15 @@ function AddForm({ t, reduce, onCancel, onSubmit }: { t: Tr["form"]; reduce: boo
     if (nom.trim().length < 2) { setErr(t.errNom); return; }
     const s = parseFloat(ha.replace(",", "."));
     if (!s || s <= 0) { setErr(t.errHa); return; }
-    onSubmit({ producteurNom: nom.trim(), cooperative: coop.trim(), region: region.trim(), superficieHa: Math.round(s * 10) / 10, filiere });
+    let coords: { lat?: number; lon?: number } = {};
+    if (lat.trim() || lon.trim()) {
+      const la = parseFloat(lat.replace(",", "."));
+      const lo = parseFloat(lon.replace(",", "."));
+      const ok = Number.isFinite(la) && Number.isFinite(lo) && la >= 4 && la <= 11 && lo >= -9 && lo <= -2;
+      if (!ok) { setErr(t.errCoords); return; }
+      coords = { lat: la, lon: lo };
+    }
+    onSubmit({ producteurNom: nom.trim(), cooperative: coop.trim(), region: region.trim(), superficieHa: Math.round(s * 10) / 10, filiere, ...coords });
   };
 
   return (
@@ -254,7 +271,12 @@ function AddForm({ t, reduce, onCancel, onSubmit }: { t: Tr["form"]; reduce: boo
         <Field label={t.coop}><input value={coop} onChange={(e) => setCoop(e.target.value)} className={inputCls} /></Field>
         <Field label={t.region}><input value={region} onChange={(e) => setRegion(e.target.value)} className={inputCls} /></Field>
         <Field label={t.ha}><input value={ha} onChange={(e) => setHa(e.target.value)} inputMode="decimal" placeholder="3,2" className={inputCls} /></Field>
+        <div className="grid grid-cols-2 gap-3">
+          <Field label={t.lat}><input value={lat} onChange={(e) => setLat(e.target.value)} inputMode="decimal" placeholder={t.latPh} className={`num ${inputCls}`} /></Field>
+          <Field label={t.lon}><input value={lon} onChange={(e) => setLon(e.target.value)} inputMode="decimal" placeholder={t.lonPh} className={`num ${inputCls}`} /></Field>
+        </div>
       </div>
+      <p className="mt-3 text-xs leading-relaxed text-stone-400">{t.coordsHint}</p>
       {err && <p className="mt-3 text-sm text-red-block">{err}</p>}
       <div className="mt-4 flex gap-2">
         <button type="submit" className="btn-green inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold">{t.submit}</button>

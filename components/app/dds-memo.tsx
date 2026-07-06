@@ -97,7 +97,9 @@ export function DdsMemo({ parcelleId }: { parcelleId: string }) {
       {state === "error" && (
         <div className="mt-3">
           <p className="text-sm text-red-block">
-            {en ? "Generation failed. Try again." : "La génération a échoué. Réessayez."}
+            {en
+              ? "The AI is temporarily unavailable. Please try again later."
+              : "L'IA est momentanément indisponible. Veuillez réessayer plus tard."}
           </p>
           <button type="button" onClick={generate} className="btn-green mt-3 inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold">
             <RefreshCw size={15} aria-hidden /> {en ? "Try again" : "Réessayer"}
