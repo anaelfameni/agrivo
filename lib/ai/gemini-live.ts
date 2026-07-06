@@ -31,36 +31,50 @@ export async function callGemini(
   const key = process.env.GEMINI_API_KEY;
   if (!key) throw new Error("GEMINI_API_KEY absent");
 
-  const res = await fetch(`${API_BASE}/${GEMINI_MODEL}:generateContent`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json", "x-goog-api-key": key },
-    body: JSON.stringify({
-      ...(opts?.system
-        ? { systemInstruction: { parts: [{ text: opts.system }] } }
+  const body = JSON.stringify({
+    ...(opts?.system
+      ? { systemInstruction: { parts: [{ text: opts.system }] } }
+      : {}),
+    contents: [{ role: "user", parts }],
+    generationConfig: {
+      temperature: 0.4,
+      maxOutputTokens: opts?.maxOutputTokens ?? 1024,
+      ...(opts?.json ? { responseMimeType: "application/json" } : {}),
+      // gemini-2.5-flash « réfléchit » par défaut (500-1000 tokens invisibles) : lent et
+      // gourmand. Pour une simple mise en mots, thinkingBudget: 0 la coupe (latence ÷ 2-3).
+      ...(opts?.thinkingBudget !== undefined
+        ? { thinkingConfig: { thinkingBudget: opts.thinkingBudget } }
         : {}),
-      contents: [{ role: "user", parts }],
-      generationConfig: {
-        temperature: 0.4,
-        maxOutputTokens: opts?.maxOutputTokens ?? 1024,
-        ...(opts?.json ? { responseMimeType: "application/json" } : {}),
-        // gemini-2.5-flash « réfléchit » par défaut (500-1000 tokens invisibles) : lent et
-        // gourmand. Pour une simple mise en mots, thinkingBudget: 0 la coupe (latence ÷ 2-3).
-        ...(opts?.thinkingBudget !== undefined
-          ? { thinkingConfig: { thinkingBudget: opts.thinkingBudget } }
-          : {}),
-      },
-    }),
-    // Un appel live ne doit jamais bloquer la démo : timeout court, repli mock derrière.
-    signal: AbortSignal.timeout(12_000),
+    },
   });
 
-  if (!res.ok) throw new Error(`Gemini HTTP ${res.status}: ${(await res.text()).slice(0, 200)}`);
-  const data = (await res.json()) as {
-    candidates?: { content?: { parts?: { text?: string }[] } }[];
-  };
-  const text = data.candidates?.[0]?.content?.parts?.map((p) => p.text ?? "").join("") ?? "";
-  if (!text.trim()) throw new Error("Réponse Gemini vide");
-  return text;
+  // Depuis les IP partagées d'un datacenter (Vercel), le free tier renvoie des 429 par vagues :
+  // un unique retry espacé récupère les créneaux libres. Jamais plus (la démo ne doit pas bloquer).
+  let lastErr: Error | null = null;
+  for (let attempt = 0; attempt < 2; attempt++) {
+    if (attempt > 0) await new Promise((r) => setTimeout(r, 800));
+    const res = await fetch(`${API_BASE}/${GEMINI_MODEL}:generateContent`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "x-goog-api-key": key },
+      body,
+      // Un appel live ne doit jamais bloquer la démo : timeout court, repli mock derrière.
+      signal: AbortSignal.timeout(12_000),
+    });
+
+    if (!res.ok) {
+      // 600 caractères : assez pour lire le détail du quota violé dans `vercel logs`.
+      lastErr = new Error(`Gemini HTTP ${res.status}: ${(await res.text()).slice(0, 600)}`);
+      if (res.status === 429 || res.status >= 500) continue;
+      throw lastErr;
+    }
+    const data = (await res.json()) as {
+      candidates?: { content?: { parts?: { text?: string }[] } }[];
+    };
+    const text = data.candidates?.[0]?.content?.parts?.map((p) => p.text ?? "").join("") ?? "";
+    if (!text.trim()) throw new Error("Réponse Gemini vide");
+    return text;
+  }
+  throw lastErr ?? new Error("Gemini indisponible");
 }
 
 /** Extrait le premier objet JSON d'une réponse (tolère les clôtures markdown). */
