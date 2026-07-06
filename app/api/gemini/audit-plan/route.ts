@@ -27,7 +27,9 @@ export async function POST(req: Request) {
             text: `Voici le plan d'action de mise en conformité RDUE d'un registre de coopérative. La trame et TOUS les chiffres sont vérifiés et non négociables. Réécris UNIQUEMENT la rédaction (titres et détails) dans un ${lang === "fr" ? "français" : "anglais"} professionnel, direct et motivant pour un gérant de coopérative, sans ajouter, retirer ni modifier AUCUN chiffre, compte ou fait. Garde le même nombre d'étapes et le même ordre. Réponds en JSON strict : {"etapes": [{"titre": string, "detail": string}], "conclusion": string}.\n\nPlan :\n${JSON.stringify({ etapes: base.etapes, conclusion: base.conclusion })}`,
           },
         ],
-        { system: CHARTE_SYSTEM, json: true, maxOutputTokens: 1536 },
+        // 3072 : gemini-2.5-flash consomme ~500-1000 tokens de « réflexion » interne AVANT le
+        // texte ; à 1536 le JSON était tronqué et le parse échouait (repli systématique).
+        { system: CHARTE_SYSTEM, json: true, maxOutputTokens: 3072 },
       );
       const rewritten = parseJson<Pick<PlanAction, "etapes" | "conclusion">>(raw);
       if (rewritten.etapes?.length === base.etapes.length && rewritten.conclusion) {

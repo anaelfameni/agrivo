@@ -26,7 +26,9 @@ export async function POST(req: Request) {
             text: `Voici l'argumentaire qu'un gérant de coopérative ivoirienne présente à son exportateur pour négocier des primes de durabilité AU-DESSUS du prix garanti par l'État (on ne négocie jamais le prix lui-même). La trame et TOUS les chiffres, dates et références sont vérifiés et non négociables. Réécris UNIQUEMENT la rédaction en ${lang === "fr" ? "français" : "anglais"} professionnel et convaincant, sans ajouter, retirer ni modifier AUCUN chiffre, date, référence ou fait, sans promettre aucun montant, sans aucun vocabulaire de crédit ou de financement. Garde le même nombre de paragraphes. Réponds en JSON strict : {"titre": string, "paragraphes": [string]}.\n\nArgumentaire :\n${JSON.stringify({ titre: base.titre, paragraphes: base.paragraphes })}`,
           },
         ],
-        { system: CHARTE_SYSTEM, json: true, maxOutputTokens: 1536 },
+        // 3072 : gemini-2.5-flash consomme ~500-1000 tokens de « réflexion » interne AVANT le
+        // texte ; à 1536 le JSON était tronqué et le parse échouait (repli systématique).
+        { system: CHARTE_SYSTEM, json: true, maxOutputTokens: 3072 },
       );
       const rewritten = parseJson<Pick<ArgumentairePrime, "titre" | "paragraphes">>(raw);
       if (rewritten.paragraphes?.length === base.paragraphes.length && rewritten.titre) {
