@@ -383,6 +383,13 @@ variables CSS dans `app/globals.css`.
   (voulu, honnête). ⚠️ AVANT LE JURY : ne pas spammer les features IA en répétition (1 appel suffit),
   et envisager d'activer la facturation sur la clé AI Studio pour lever la limite. Diagnostic :
   `npx vercel logs <url-deploiement> --json` puis grep « live échoué ».
+- 🔎 **Constat fin de session (23 h 45)** : la clé du `.env.local` répond 200 en direct, mais la clé
+  posée dans l'env VERCEL renvoie un **429 persistant** (« check your plan and billing ») → très
+  probablement **deux clés différentes**, celle de Vercel étant à quota épuisé (reset quotas gratuits :
+  ~07 h-08 h heure d'Abidjan). Alias actuel : `agrivo-io` → `omw4yrn5r` (v1.2.0 avec fix 3072, sans
+  thinkingBudget) ; le déploiement `attxgt0ar` (complet) attend l'alias. **Séquence Anael** :
+  remplacer `GEMINI_API_KEY` en production par la clé du .env.local (`npx vercel env rm/add`),
+  redéployer, réaliaser, puis UN clic de test par feature.
 
 ### Session 20 — 2026-07-06 — v1.1.0 : correctifs UX d'Anael (cartes réelles partout, coordonnées coop, DDS sans simulation)
 - 🗺️ **Vraie carte satellite sur la page parcelle** : `components/app/parcelle-map-sat.tsx` (Leaflet + Esri World Imagery, polygone teinté au verdict, point central sinon, FitBounds maxZoom 16) remplace l'aperçu stylisé `parcelle-map.tsx` (SUPPRIMÉ). Chargé en dynamic ssr:false depuis parcelle-detail.
