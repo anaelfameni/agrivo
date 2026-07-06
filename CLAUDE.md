@@ -336,6 +336,28 @@ variables CSS dans `app/globals.css`.
 
 ## 📓 Journal de build (le plus récent en haut)
 
+### Session 15 — 2026-07-06 — Purge « délégué » + commit/CI/déploiement des sessions 11-12
+- 🧹 **Purge « délégué » (doctrine 100 % digital)** : `step-mapping.tsx` (intro + mode tour de champ,
+  FR **et** EN) → « l'utilisateur de l'app (producteur, pisteur ou agent de coopérative) » / "app
+  user (farmer, field buyer or cooperative agent)" ; `GUIDE_DEMO_JURY.md` (verrou n°2 reformulé :
+  utilisateur identifié, trace horodatée rattachée au compte ; réponse registre CCC) ; golden path
+  de ce fichier. ⚠️ « Délégué à la protection des données » (page confidentialité) = terme légal
+  DPO, PAS touché. Vérifié visuellement en CDP (FR + EN, phase choose de l'étape Cartographie).
+- 🚀 **38 fichiers des sessions 11-12 enfin commités/déployés** (ils n'étaient ni commités ni en
+  prod !) : commit `7c5879f` (i18n EN + anti-fraude + purge délégué), CI GitHub **verte**
+  (lint/types/tests/build), `vercel --prod` + **alias `agrivo-io.vercel.app` réassigné**, parcours
+  vérifié EN PROD via CDP (étape Cartographie visible FR/EN). Gates locaux avant commit :
+  `tsc` ✓ · 24/24 tests ✓ · `next build` ✓.
+- 🔑 **Clé Gemini : ÉCHEC — la chaîne fournie par Anael (`AQ.Ab8…`) n'est PAS une clé API** (401
+  Google ACCESS_TOKEN_TYPE_UNSUPPORTED = code OAuth copié au mauvais endroit). Une vraie clé
+  commence par `AIza…` : aistudio.google.com/apikey → « Create API key ». Rien n'a été câblé
+  (pas de `.env.local`), l'app reste en MOCK assumé ; repli mock revérifié en live sur
+  `/api/gemini/query` et `/api/gemini/memo`. À refaire dès qu'Anael fournit la bonne clé
+  (local + `vercel env add GEMINI_API_KEY production` + redéploiement).
+- ⚠️ **Leçon outillage** : deux serveurs dev fantômes de sessions précédentes tournaient (ports
+  3111 ET 3000) et servaient du code périmé — toujours vérifier/tuer les process sur les ports
+  avant une vérification visuelle (`netstat -ano | grep LISTEN`).
+
 ### Session 14 — 2026-07-06 — PowerPoint de pitch jury (structure masterclass 11 slides)
 - 📊 **Livrable : `C:\Users\Anael FAMENI\Desktop\AGRIVO_Pitch_Vibeathon2026.pptx`** — **v2 : 11 slides
   EXACTEMENT** (demande d'Anael ; la v1 à 14 slides est remplacée). Couleurs charte, python-pptx
