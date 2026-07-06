@@ -12,8 +12,9 @@ function SignalIcon({ sens }: { sens: CreditScore["signaux"][number]["sens"] }) 
   return <Minus size={14} strokeWidth={2.5} className="text-stone-400" aria-hidden />;
 }
 
-export function CreditScoreCard({ score }: { score: CreditScore }) {
+export function CreditScoreCard({ score, lang = "fr" }: { score: CreditScore; lang?: "fr" | "en" }) {
   const eligible = score.eligible;
+  const en = lang === "en";
   return (
     <div className="card-premium p-5">
       <div className="flex flex-wrap items-center justify-between gap-3">
@@ -21,7 +22,7 @@ export function CreditScoreCard({ score }: { score: CreditScore }) {
           <span className="chip-green grid h-8 w-8 place-items-center rounded-xl" aria-hidden>
             <Coins size={16} strokeWidth={2} className="text-green-signal" />
           </span>
-          Score de crédit
+          {en ? "Credit score" : "Score de crédit"}
           <span className="inline-flex items-center rounded-full bg-green-signal/12 px-2 py-0.5 text-[0.6rem] font-semibold uppercase tracking-wide text-green-signal">
             IA
           </span>
@@ -33,7 +34,7 @@ export function CreditScoreCard({ score }: { score: CreditScore }) {
               ? { background: "rgba(22,163,74,0.12)", color: "var(--color-green-signal)" }
               : { background: "rgba(107,98,86,0.12)", color: "var(--color-stone-600)" }
           }
-          aria-label={`Classe ${score.classe}`}
+          aria-label={en ? `Class ${score.classe}` : `Classe ${score.classe}`}
         >
           {score.classe}
         </span>
@@ -42,7 +43,7 @@ export function CreditScoreCard({ score }: { score: CreditScore }) {
       {eligible && (
         <div className="mt-3 flex items-end gap-2">
           <span className="num text-2xl font-semibold text-forest-950">{fmtFCFA(score.plafondFcfa)}</span>
-          <span className="mb-0.5 text-xs text-stone-500">plafond recommandé</span>
+          <span className="mb-0.5 text-xs text-stone-500">{en ? "recommended ceiling" : "plafond recommandé"}</span>
         </div>
       )}
 

@@ -10,9 +10,11 @@ import * as React from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { Logo } from "@/components/ui/logo";
 import { useAuth } from "@/components/auth-provider";
+import { useLanguage } from "@/components/language-provider";
 
 export function RouteGuard({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth();
+  const { lang } = useLanguage();
   const router = useRouter();
   const pathname = usePathname();
 
@@ -30,7 +32,9 @@ export function RouteGuard({ children }: { children: React.ReactNode }) {
           <span className="glow-pulse">
             <Logo size={30} showWord={false} />
           </span>
-          <span className="text-sm text-stone-500">Chargement de votre espace…</span>
+          <span className="text-sm text-stone-500">
+            {lang === "en" ? "Loading your workspace…" : "Chargement de votre espace…"}
+          </span>
         </div>
       </div>
     );

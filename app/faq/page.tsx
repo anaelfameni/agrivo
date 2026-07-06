@@ -6,43 +6,71 @@ import { AnimatePresence, motion } from "framer-motion";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { Reveal } from "@/components/landing/reveal";
+import { useLanguage } from "@/components/language-provider";
 
-const QA = [
+const QA: { q: { fr: string; en: string }; a: { fr: string; en: string } }[] = [
   {
-    q: "Le RDUE peut-il encore être reporté ?",
-    a: "Non. Une révision ciblée adoptée en décembre 2025 a repoussé et simplifié le règlement, mais confirmé l'échéance : 30 décembre 2026 pour les grands et moyens opérateurs, 30 juin 2027 pour les petites entreprises. Le calendrier ne bouge plus.",
+    q: { fr: "Le RDUE peut-il encore être reporté ?", en: "Can the EUDR still be postponed?" },
+    a: {
+      fr: "Non. Une révision ciblée adoptée en décembre 2025 a repoussé et simplifié le règlement, mais confirmé l'échéance : 30 décembre 2026 pour les grands et moyens opérateurs, 30 juin 2027 pour les petites entreprises. Le calendrier ne bouge plus.",
+      en: "No. A targeted revision adopted in December 2025 delayed and simplified the regulation, but confirmed the deadline: 30 December 2026 for large and medium operators, 30 June 2027 for small businesses. The timeline is now fixed.",
+    },
   },
   {
-    q: "Qu'est-ce que le RDUE, en une phrase ?",
-    a: "Le règlement européen (UE) 2023/1115 interdit d'importer dans l'Union des produits issus de terres déforestées après le 31 décembre 2020, avec une traçabilité géolocalisée obligatoire.",
+    q: { fr: "Qu'est-ce que le RDUE, en une phrase ?", en: "What is the EUDR, in one sentence?" },
+    a: {
+      fr: "Le règlement européen (UE) 2023/1115 interdit d'importer dans l'Union des produits issus de terres déforestées après le 31 décembre 2020, avec une traçabilité géolocalisée obligatoire.",
+      en: "EU Regulation 2023/1115 bans importing into the Union products grown on land deforested after 31 December 2020, with mandatory geolocated traceability.",
+    },
   },
   {
-    q: "La Côte d'Ivoire est-elle vraiment concernée par la géolocalisation ?",
-    a: "Oui. La Côte d'Ivoire est classée « risque standard ». Que le pays soit à risque standard ou élevé, la géolocalisation complète des parcelles reste obligatoire. Seuls les pays à « faible risque » bénéficient d'une diligence simplifiée, et la Côte d'Ivoire n'en fait pas partie.",
+    q: { fr: "La Côte d'Ivoire est-elle vraiment concernée par la géolocalisation ?", en: "Is Côte d'Ivoire really concerned by geolocation?" },
+    a: {
+      fr: "Oui. La Côte d'Ivoire est classée « risque standard ». Que le pays soit à risque standard ou élevé, la géolocalisation complète des parcelles reste obligatoire. Seuls les pays à « faible risque » bénéficient d'une diligence simplifiée, et la Côte d'Ivoire n'en fait pas partie.",
+      en: "Yes. Côte d'Ivoire is classified as \"standard risk\". Whether a country is standard or high risk, full plot geolocation remains mandatory. Only \"low risk\" countries benefit from simplified due diligence, and Côte d'Ivoire is not one of them.",
+    },
   },
   {
-    q: "Agrivo signe-t-il la déclaration de conformité à ma place ?",
-    a: "Non. C'est l'importateur européen qui dépose sa Déclaration de Diligence Raisonnée sur TRACES NT. Agrivo fournit l'évaluation technique et le certificat qui alimentent cette déclaration. Nous parlons d'évaluation, jamais de garantie légale.",
+    q: { fr: "Agrivo signe-t-il la déclaration de conformité à ma place ?", en: "Does Agrivo sign the compliance declaration for me?" },
+    a: {
+      fr: "Non. C'est l'importateur européen qui dépose sa Déclaration de Diligence Raisonnée sur TRACES NT. Agrivo fournit l'évaluation technique et le certificat qui alimentent cette déclaration. Nous parlons d'évaluation, jamais de garantie légale.",
+      en: "No. The European importer files their Due Diligence Statement on TRACES NT. Agrivo provides the technical assessment and the certificate that feed this declaration. We speak of assessment, never of legal guarantee.",
+    },
   },
   {
-    q: "Quelle est la fiabilité de la détection ?",
-    a: "La détection repose sur Whisp, l'outil open-source de référence de la FAO pour le RDUE, déjà utilisé en production. Sa méthode de convergence de preuves croise plusieurs jeux de données satellites indépendants. Quand les données ne permettent pas de conclure, Agrivo affiche « Données insuffisantes » plutôt que de deviner.",
+    q: { fr: "Quelle est la fiabilité de la détection ?", en: "How reliable is the detection?" },
+    a: {
+      fr: "La détection repose sur Whisp, l'outil open-source de référence de la FAO pour le RDUE, déjà utilisé en production. Sa méthode de convergence de preuves croise plusieurs jeux de données satellites indépendants. Quand les données ne permettent pas de conclure, Agrivo affiche « Données insuffisantes » plutôt que de deviner.",
+      en: "Detection relies on Whisp, FAO's open-source reference tool for the EUDR, already used in production. Its convergence-of-evidence method crosses several independent satellite datasets. When the data does not allow a conclusion, Agrivo displays \"Insufficient data\" rather than guessing.",
+    },
   },
   {
-    q: "Comment fonctionne le micro-crédit ?",
-    a: "Quand une parcelle est conforme, le producteur peut recevoir une proposition de micro-crédit versée en Mobile Money. Agrivo reste un fournisseur de technologie : le prêt est accordé par une institution de micro-finance partenaire. Le service est gratuit pour le producteur.",
+    q: { fr: "Comment fonctionne le micro-crédit ?", en: "How does the micro-credit work?" },
+    a: {
+      fr: "Quand une parcelle est conforme, le producteur peut recevoir une proposition de micro-crédit versée en Mobile Money. Agrivo reste un fournisseur de technologie : le prêt est accordé par une institution de micro-finance partenaire. Le service est gratuit pour le producteur.",
+      en: "When a plot is compliant, the farmer can receive a micro-credit offer paid out via Mobile Money. Agrivo remains a technology provider: the loan is granted by a partner microfinance institution. The service is free for the farmer.",
+    },
   },
   {
-    q: "Agrivo couvre-t-il d'autres filières que le cacao ?",
-    a: "Oui. Le moteur est multi-filières : cacao, café, hévéa et palmier à huile. La démonstration se concentre sur le cacao, la filière la plus documentée et la plus urgente.",
+    q: { fr: "Agrivo couvre-t-il d'autres filières que le cacao ?", en: "Does Agrivo cover commodities other than cocoa?" },
+    a: {
+      fr: "Oui. Le moteur est multi-filières : cacao, café, hévéa et palmier à huile. La démonstration se concentre sur le cacao, la filière la plus documentée et la plus urgente.",
+      en: "Yes. The engine is multi-commodity: cocoa, coffee, rubber and oil palm. The demo focuses on cocoa, the most documented and most urgent commodity.",
+    },
   },
   {
-    q: "En quoi Agrivo se distingue de Koltiva ou Farmerline ?",
-    a: "Ce sont de vraies plateformes numériques sérieuses. La différence d'Agrivo n'est pas « SaaS contre service » : c'est la combinaison, en un seul outil, de la conformité RDUE, du score de santé des sols et de l'inclusion financière du producteur, avec un ancrage local ivoirien.",
+    q: { fr: "En quoi Agrivo se distingue de Koltiva ou Farmerline ?", en: "How is Agrivo different from Koltiva or Farmerline?" },
+    a: {
+      fr: "Ce sont de vraies plateformes numériques sérieuses. La différence d'Agrivo n'est pas « SaaS contre service » : c'est la combinaison, en un seul outil, de la conformité RDUE, du score de santé des sols et de l'inclusion financière du producteur, avec un ancrage local ivoirien.",
+      en: "Those are serious digital platforms. Agrivo's difference is not \"SaaS versus service\": it is the combination, in a single tool, of EUDR compliance, soil health scoring and farmer financial inclusion, with local Ivorian roots.",
+    },
   },
   {
-    q: "Mes données restent-elles protégées ?",
-    a: "Agrivo est conçu conforme à la loi ivoirienne n°2013-450 sous le contrôle de l'ARTCI : consentement éclairé du producteur, hébergement souverain et chiffrement. Un écran de consentement précède toute vérification.",
+    q: { fr: "Mes données restent-elles protégées ?", en: "Is my data protected?" },
+    a: {
+      fr: "Agrivo est conçu conforme à la loi ivoirienne n°2013-450 sous le contrôle de l'ARTCI : consentement éclairé du producteur, hébergement souverain et chiffrement. Un écran de consentement précède toute vérification.",
+      en: "Agrivo is designed to comply with Ivorian law no. 2013-450 under ARTCI oversight: informed farmer consent, sovereign hosting and encryption. A consent screen precedes every verification.",
+    },
   },
 ];
 
@@ -77,6 +105,8 @@ function Item({ q, a, open, onToggle }: { q: string; a: string; open: boolean; o
 }
 
 export default function Faq() {
+  const { lang } = useLanguage();
+  const en = lang === "en";
   const [open, setOpen] = React.useState<number | null>(0);
   return (
     <div className="min-h-screen bg-ivory text-forest-950">
@@ -84,9 +114,11 @@ export default function Faq() {
       <main>
         <section className="mx-auto max-w-3xl px-6 pb-6 pt-20 md:px-8">
           <Reveal>
-            <span className="eyebrow text-amber-cacao">Questions fréquentes</span>
+            <span className="eyebrow text-amber-cacao">{en ? "Frequently asked questions" : "Questions fréquentes"}</span>
             <h1 className="mt-4 font-display text-4xl leading-tight sm:text-5xl">
-              Tout ce qu'un jury, un exportateur ou une coopérative se demande.
+              {en
+                ? "Everything a jury, an exporter or a cooperative wants to know."
+                : "Tout ce qu'un jury, un exportateur ou une coopérative se demande."}
             </h1>
           </Reveal>
         </section>
@@ -95,7 +127,7 @@ export default function Faq() {
           <Reveal>
             <div>
               {QA.map((item, i) => (
-                <Item key={item.q} q={item.q} a={item.a} open={open === i} onToggle={() => setOpen(open === i ? null : i)} />
+                <Item key={item.q.fr} q={en ? item.q.en : item.q.fr} a={en ? item.a.en : item.a.fr} open={open === i} onToggle={() => setOpen(open === i ? null : i)} />
               ))}
             </div>
           </Reveal>
@@ -104,12 +136,12 @@ export default function Faq() {
         <section className="bg-forest-950 text-white">
           <div className="mx-auto max-w-3xl px-6 py-16 text-center md:px-8">
             <Reveal>
-              <h2 className="font-display text-3xl">Une autre question ?</h2>
+              <h2 className="font-display text-3xl">{en ? "Another question?" : "Une autre question ?"}</h2>
               <p className="mx-auto mt-3 max-w-md text-white/70">
-                Le plus simple reste de voir le produit tourner.
+                {en ? "The simplest thing is to see the product running." : "Le plus simple reste de voir le produit tourner."}
               </p>
               <Link href="/app/dashboard" className="mt-7 inline-flex items-center gap-3 rounded-full bg-green-signal px-7 py-4 text-sm font-semibold text-white transition-transform hover:scale-[1.03] active:scale-95">
-                Accéder au tableau de bord <ArrowRight size={16} />
+                {en ? "Go to the dashboard" : "Accéder au tableau de bord"} <ArrowRight size={16} />
               </Link>
             </Reveal>
           </div>

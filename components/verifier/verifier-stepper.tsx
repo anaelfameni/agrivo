@@ -1,20 +1,26 @@
 "use client";
 
 import { Check } from "lucide-react";
+import { useLanguage } from "@/components/language-provider";
 
-const STEPS = ["Confirmation", "Scan", "Analyse", "Certificat", "Crédit"] as const;
+const STEPS = {
+  fr: ["Confirmation", "Scan", "Cartographie", "Analyse", "Certificat", "Crédit"],
+  en: ["Confirmation", "Scan", "Mapping", "Analysis", "Certificate", "Credit"],
+} as const;
 
 /** En-tête de progression du parcours (golden path). Compact sur mobile, complet sur desktop. */
 export function VerifierStepper({ current }: { current: number }) {
-  const total = STEPS.length;
+  const { lang } = useLanguage();
+  const steps = STEPS[lang];
+  const total = steps.length;
   return (
     <div>
       {/* Mobile : étape courante + barre */}
       <div className="sm:hidden">
         <div className="flex items-center justify-between">
-          <span className="text-sm font-semibold text-forest-950">{STEPS[current - 1]}</span>
+          <span className="text-sm font-semibold text-forest-950">{steps[current - 1]}</span>
           <span className="num text-xs text-stone-400">
-            Étape {current}/{total}
+            {lang === "en" ? "Step" : "Étape"} {current}/{total}
           </span>
         </div>
         <div className="mt-2 h-1 w-full overflow-hidden rounded-full bg-black/[0.07]">
@@ -27,7 +33,7 @@ export function VerifierStepper({ current }: { current: number }) {
 
       {/* Desktop : stepper à pastilles */}
       <ol className="hidden items-center gap-1 sm:flex">
-        {STEPS.map((label, i) => {
+        {steps.map((label, i) => {
           const n = i + 1;
           const done = n < current;
           const active = n === current;

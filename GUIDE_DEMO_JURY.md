@@ -10,8 +10,9 @@
 
 ## Déroulé recommandé (7 minutes)
 1. **Splash + landing (30 s)** — la promesse : « De la parcelle vérifiée au crédit du producteur. »
-2. **Mobile (Christ) : golden path (3 min)** — consentement ARTCI → scan carte (Gemini Vision) →
-   polygone → verdict Whisp → certificat PDF → micro-crédit Mobile Money.
+2. **Mobile (Christ) : golden path (3 min)** — consentement ARTCI → scan carte (QR + Gemini Vision) →
+   cartographie GPS (point central < 4 ha / tour de champ ≥ 4 ha) + contrôles d'intégrité →
+   verdict Whisp → certificat PDF → micro-crédit Mobile Money.
 3. **Web : dashboard coopérative (1 min)** — 4 KPI officiels, alertes, dernière vérification remontée.
 4. **Web : dashboard exportateur (1,5 min)** — carte du portefeuille, export GeoJSON TRACES NT,
    copilote IA (question : « Quelles parcelles présentent un risque dans la région de Soubré ? »).
@@ -34,6 +35,27 @@
   référence, pilote Kenya 6 000+ parcelles ; méthode par convergence de preuves.
 - **« Et la BCEAO ? »** — Sous-traitant technologique B2B SaaS : aucun agrément financier requis,
   le crédit est porté par l'IMF partenaire.
+- **« Et si le producteur ment sur sa parcelle ? »** — Personne n'est cru sur parole : cinq verrous
+  se croisent. (1) Identité : carte scannée, photo conservée, matricule unique (anti-doublon).
+  (2) La capture GPS est guidée par l'app et faite par un **utilisateur identifié** (producteur,
+  pisteur ou agent de coopérative) : chaque trace est horodatée et rattachée à son compte —
+  AGRIVO reste 100 % logiciel, aucun personnel de terrain.
+  (3) Contrôles automatiques : chevauchement avec les parcelles enrôlées, superficie plausible,
+  signal GPS authentique (pas de position simulée). (4) La **vérité satellite** : Whisp vérifie ce
+  qu'il y a réellement dans le polygone ; un contour mensonger inclut de la forêt perdue ou le champ
+  du voisin, et se voit. (5) Réconciliation économique : le volume acheté est plafonné par
+  superficie × rendement régional ; une parcelle de 2 ha ne peut pas « produire » 10 tonnes.
+- **« D'où viennent les données des parcelles ? Vous avez accès au registre du Conseil Café-Cacao ? »**
+  — Non, et nous n'en dépendons pas : la carte donne l'**identité** (imprimée sur toutes les
+  générations de cartes, avec ou sans QR), le **terrain** donne la parcelle (capture GPS par
+  l'utilisateur de l'app, règle RDUE : point < 4 ha, polygone ≥ 4 ha), et le **satellite** donne le verdict. Trois
+  sources indépendantes. Un accès au registre CCC (vérification des matricules) est notre demande
+  de partenariat, pas un prérequis.
+- **« Pourquoi Agrivo alors que le SNT du Conseil Café-Cacao existe déjà ? »** — Le SNT trace les
+  **transactions** du bord champ à l'export. Agrivo produit ce que le SNT ne donne pas aux acteurs :
+  le verdict déforestation parcelle par parcelle (Whisp/FAO), le dossier de diligence prêt pour
+  TRACES NT, le score sols et l'accès au crédit. Complémentaire, pas concurrent : Agrivo relie la
+  traçabilité nationale à l'exigence européenne.
 
 ## PLAN B — script de la vidéo de secours (à tourner AVANT le 11 juillet)
 Format : capture d'écran 1080p, 2 min 30, sans musique forte, voix off ou sous-titres.

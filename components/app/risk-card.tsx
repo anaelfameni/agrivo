@@ -18,8 +18,17 @@ function FactorIcon({ sens }: { sens: RiskAssessment["facteurs"][number]["sens"]
   return <Minus size={14} strokeWidth={2.5} className="text-stone-400" aria-hidden />;
 }
 
-export function RiskCard({ risk }: { risk: RiskAssessment }) {
+/** Niveaux en anglais (affichage uniquement — la clé métier reste le mot français). */
+const LEVEL_EN: Record<RiskLevel, string> = {
+  Faible: "Low",
+  Modéré: "Moderate",
+  Élevé: "High",
+  Bloquant: "Blocking",
+};
+
+export function RiskCard({ risk, lang = "fr" }: { risk: RiskAssessment; lang?: "fr" | "en" }) {
   const l = LEVEL[risk.niveau];
+  const en = lang === "en";
   return (
     <div className="card-premium p-5">
       <div className="flex flex-wrap items-center justify-between gap-3">
@@ -27,13 +36,13 @@ export function RiskCard({ risk }: { risk: RiskAssessment }) {
           <span className="grid h-8 w-8 place-items-center rounded-xl" style={{ background: l.tint }} aria-hidden>
             <l.Icon size={16} strokeWidth={2} style={{ color: l.color }} />
           </span>
-          Analyse de risque RDUE
+          {en ? "EUDR risk analysis" : "Analyse de risque RDUE"}
           <span className="inline-flex items-center rounded-full bg-green-signal/12 px-2 py-0.5 text-[0.6rem] font-semibold uppercase tracking-wide text-green-signal">
             IA
           </span>
         </h2>
         <span className="rounded-full px-3 py-1 text-xs font-semibold" style={{ background: l.tint, color: l.color }}>
-          Risque {risk.niveau}
+          {en ? `${LEVEL_EN[risk.niveau]} risk` : `Risque ${risk.niveau}`}
         </span>
       </div>
 
@@ -52,7 +61,7 @@ export function RiskCard({ risk }: { risk: RiskAssessment }) {
 
       <div className="mt-4 rounded-xl border p-3.5" style={{ borderColor: `${l.color}33`, background: l.tint }}>
         <p className="text-[0.7rem] font-semibold uppercase tracking-wide" style={{ color: l.color }}>
-          Recommandation
+          {en ? "Recommendation" : "Recommandation"}
         </p>
         <p className="mt-1 text-sm leading-relaxed text-forest-800">{risk.recommandation}</p>
       </div>

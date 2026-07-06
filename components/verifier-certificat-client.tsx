@@ -7,12 +7,14 @@ import { Search, ShieldCheck, ShieldAlert, ShieldQuestion, FileSearch } from "lu
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { StatusBadge } from "@/components/ui/status-badge";
+import { useLanguage } from "@/components/language-provider";
 import {
   PARCELLES,
   STATUT_PHRASE,
+  STATUT_PHRASE_EN,
   FILIERE_LABEL,
   fmtHa,
-  formatDateFr,
+  formatDate,
   type Parcelle,
 } from "@/data/mock-parcelles";
 
@@ -22,6 +24,8 @@ import {
  * personnelle au-delà de ce que le certificat porte déjà. Préremplissage via ?ref=.
  */
 export function VerifierCertificatClient() {
+  const { lang } = useLanguage();
+  const en = lang === "en";
   const params = useSearchParams();
   const initial = (params.get("ref") ?? "").toUpperCase();
   const [query, setQuery] = useState(initial);
@@ -39,13 +43,16 @@ export function VerifierCertificatClient() {
     <div className="flex min-h-dvh flex-col bg-ivory">
       <SiteHeader variant="solid" />
       <main className="mx-auto w-full max-w-3xl flex-1 px-6 py-14 sm:py-20">
-        <p className="text-[11px] uppercase tracking-widest text-stone-500">Vérification publique</p>
+        <p className="text-[11px] uppercase tracking-widest text-stone-500">
+          {en ? "Public verification" : "Vérification publique"}
+        </p>
         <h1 className="font-display mt-2 text-3xl font-semibold text-forest-950 sm:text-4xl">
-          Vérifier un certificat Agrivo
+          {en ? "Verify an Agrivo certificate" : "Vérifier un certificat Agrivo"}
         </h1>
         <p className="mt-3 max-w-xl text-sm leading-relaxed text-stone-600">
-          Saisissez le numéro imprimé sur le certificat (ou scannez son QR code) pour confirmer
-          son authenticité et le statut de la parcelle au moment de l&apos;émission.
+          {en
+            ? "Enter the number printed on the certificate (or scan its QR code) to confirm its authenticity and the plot's status at the time of issuance."
+            : "Saisissez le numéro imprimé sur le certificat (ou scannez son QR code) pour confirmer son authenticité et le statut de la parcelle au moment de l'émission."}
         </p>
 
         <form
@@ -56,7 +63,7 @@ export function VerifierCertificatClient() {
           }}
         >
           <label className="sr-only" htmlFor="cert-ref">
-            Numéro de certificat
+            {en ? "Certificate number" : "Numéro de certificat"}
           </label>
           <input
             id="cert-ref"
@@ -72,7 +79,7 @@ export function VerifierCertificatClient() {
             className="btn-green inline-flex items-center justify-center gap-2 rounded-xl px-5 py-3 text-sm font-semibold"
           >
             <Search className="h-4 w-4" strokeWidth={1.75} aria-hidden />
-            Vérifier
+            {en ? "Verify" : "Vérifier"}
           </button>
         </form>
 
@@ -94,39 +101,41 @@ export function VerifierCertificatClient() {
                   )}
                   <p className="font-mono text-sm text-forest-950">{result.numeroCertificat}</p>
                 </div>
-                <StatusBadge statut={result.statut} />
+                <StatusBadge statut={result.statut} lang={lang} />
               </div>
-              <p className="mt-4 text-sm leading-relaxed text-stone-600">{STATUT_PHRASE[result.statut]}</p>
+              <p className="mt-4 text-sm leading-relaxed text-stone-600">
+                {en ? STATUT_PHRASE_EN[result.statut] : STATUT_PHRASE[result.statut]}
+              </p>
               <dl className="mt-5 grid grid-cols-2 gap-4 border-t border-black/[0.06] pt-5 text-sm sm:grid-cols-3">
                 <div>
-                  <dt className="text-[11px] uppercase tracking-wide text-stone-500">Producteur</dt>
+                  <dt className="text-[11px] uppercase tracking-wide text-stone-500">{en ? "Farmer" : "Producteur"}</dt>
                   <dd className="mt-0.5 font-medium text-forest-950">{result.producteurNom}</dd>
                 </div>
                 <div>
-                  <dt className="text-[11px] uppercase tracking-wide text-stone-500">Coopérative</dt>
+                  <dt className="text-[11px] uppercase tracking-wide text-stone-500">{en ? "Cooperative" : "Coopérative"}</dt>
                   <dd className="mt-0.5 text-forest-950">{result.cooperative}</dd>
                 </div>
                 <div>
-                  <dt className="text-[11px] uppercase tracking-wide text-stone-500">Filière</dt>
+                  <dt className="text-[11px] uppercase tracking-wide text-stone-500">{en ? "Commodity" : "Filière"}</dt>
                   <dd className="mt-0.5 text-forest-950">{FILIERE_LABEL[result.filiere]}</dd>
                 </div>
                 <div>
-                  <dt className="text-[11px] uppercase tracking-wide text-stone-500">Superficie</dt>
+                  <dt className="text-[11px] uppercase tracking-wide text-stone-500">{en ? "Area" : "Superficie"}</dt>
                   <dd className="mt-0.5 font-mono text-forest-950">{fmtHa(result.superficieHa)}</dd>
                 </div>
                 <div>
-                  <dt className="text-[11px] uppercase tracking-wide text-stone-500">Vérifiée le</dt>
-                  <dd className="mt-0.5 font-mono text-forest-950">{formatDateFr(result.dateVerification)}</dd>
+                  <dt className="text-[11px] uppercase tracking-wide text-stone-500">{en ? "Verified on" : "Vérifiée le"}</dt>
+                  <dd className="mt-0.5 font-mono text-forest-950">{formatDate(result.dateVerification, lang)}</dd>
                 </div>
                 <div>
-                  <dt className="text-[11px] uppercase tracking-wide text-stone-500">Date pivot</dt>
-                  <dd className="mt-0.5 font-mono text-forest-950">{formatDateFr(result.datePivotAnalyse)}</dd>
+                  <dt className="text-[11px] uppercase tracking-wide text-stone-500">{en ? "Cut-off date" : "Date pivot"}</dt>
+                  <dd className="mt-0.5 font-mono text-forest-950">{formatDate(result.datePivotAnalyse, lang)}</dd>
                 </div>
               </dl>
               <p className="mt-5 rounded-lg bg-ivory px-3.5 py-2.5 text-xs leading-relaxed text-stone-500">
-                Ce résultat reflète l&apos;évaluation au moment de l&apos;émission du certificat. Il ne
-                constitue pas une garantie et ne se substitue pas à la déclaration de diligence de
-                l&apos;opérateur.
+                {en
+                  ? "This result reflects the assessment at the time the certificate was issued. It is not a guarantee and does not replace the operator's due diligence statement."
+                  : "Ce résultat reflète l'évaluation au moment de l'émission du certificat. Il ne constitue pas une garantie et ne se substitue pas à la déclaration de diligence de l'opérateur."}
               </p>
             </motion.div>
           )}
@@ -139,10 +148,13 @@ export function VerifierCertificatClient() {
             >
               <FileSearch className="mt-0.5 h-5 w-5 shrink-0 text-red-block" strokeWidth={1.75} aria-hidden />
               <div>
-                <p className="text-sm font-semibold text-forest-950">Certificat introuvable</p>
+                <p className="text-sm font-semibold text-forest-950">
+                  {en ? "Certificate not found" : "Certificat introuvable"}
+                </p>
                 <p className="mt-1 text-sm leading-relaxed text-stone-600">
-                  Aucun certificat ne correspond au numéro « {searched.trim()} ». Vérifiez la saisie
-                  (format AGV-AAAA-NNNN) ou contactez la coopérative émettrice.
+                  {en
+                    ? `No certificate matches the number "${searched.trim()}". Check the input (format AGV-YYYY-NNNN) or contact the issuing cooperative.`
+                    : `Aucun certificat ne correspond au numéro « ${searched.trim()} ». Vérifiez la saisie (format AGV-AAAA-NNNN) ou contactez la coopérative émettrice.`}
                 </p>
               </div>
             </motion.div>

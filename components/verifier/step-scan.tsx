@@ -4,11 +4,69 @@ import { useEffect, useRef, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { ArrowRight, Camera, RotateCcw, ScanLine } from "lucide-react";
 import { PinMark } from "@/components/ui/pin-mark";
-import { FILIERE_LABEL, type Filiere } from "@/data/mock-parcelles";
+import { useLanguage } from "@/components/language-provider";
+import { FILIERE_LABEL, PARCELLES, type Filiere } from "@/data/mock-parcelles";
 import type { ScanResult } from "@/lib/ai/gemini";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 type Phase = "aim" | "scanning" | "review";
+
+const COPY = {
+  fr: {
+    cardLabel: "Carte producteur",
+    reading: "Lecture en cours…",
+    cameraActive: "Caméra active",
+    demoMode: "Mode démonstration",
+    mobileOnly: "Scan sur mobile uniquement",
+    eyebrow: "Scan · Gemini Vision",
+    title: "Carte producteur",
+    aimHelp:
+      "Positionnez la carte du producteur dans le cadre. La lecture tente d'abord le QR code, puis l'OCR des champs imprimés : toutes les générations de cartes sont couvertes, avec ou sans QR. La photo est conservée comme pièce justificative.",
+    scanBtn: "Scanner la carte",
+    enableCamera: "Activer la caméra",
+    webHelp:
+      "Le scan de la carte producteur (caméra + OCR Gemini Vision) est réservé à l'application mobile Agrivo, au bord du champ. Sur le web, saisissez les informations de la carte manuellement.",
+    manualEntry: "Saisir manuellement",
+    extracted: "Informations extraites · vérifiez et corrigez si besoin.",
+    viaQr: "Lues depuis le QR code de la carte",
+    knownProducer: (nom: string) => `Producteur reconnu : dossier de ${nom} rattaché, aucun doublon créé.`,
+    newProducer: "Nouveau matricule : unicité vérifiée dans le registre de la coopérative.",
+    fieldName: "Nom du producteur",
+    fieldCard: "N° de carte producteur",
+    fieldLocality: "Localité",
+    fieldFiliere: "Filière",
+    confirm: "Confirmer",
+    rescan: "Rescanner",
+    back: "Retour",
+  },
+  en: {
+    cardLabel: "Farmer card",
+    reading: "Reading…",
+    cameraActive: "Camera active",
+    demoMode: "Demo mode",
+    mobileOnly: "Scanning on mobile only",
+    eyebrow: "Scan · Gemini Vision",
+    title: "Farmer card",
+    aimHelp:
+      "Position the farmer's card inside the frame. The reading tries the QR code first, then OCR of the printed fields: every card generation is covered, with or without QR. The photo is kept as supporting evidence.",
+    scanBtn: "Scan the card",
+    enableCamera: "Enable camera",
+    webHelp:
+      "Scanning the farmer card (camera + Gemini Vision OCR) is reserved for the Agrivo mobile app, at the edge of the field. On the web, enter the card details manually.",
+    manualEntry: "Enter manually",
+    extracted: "Extracted information · review and correct if needed.",
+    viaQr: "Read from the card's QR code",
+    knownProducer: (nom: string) => `Known farmer: ${nom}'s file attached, no duplicate created.`,
+    newProducer: "New card number: uniqueness checked against the cooperative register.",
+    fieldName: "Farmer name",
+    fieldCard: "Farmer card number",
+    fieldLocality: "Locality",
+    fieldFiliere: "Commodity",
+    confirm: "Confirm",
+    rescan: "Rescan",
+    back: "Back",
+  },
+} as const;
 
 /**
  * Étape 2 — scan de la carte producteur. Cadre de visée animé (caméra du navigateur si autorisée,
@@ -23,9 +81,12 @@ export function StepScan({
   onConfirm: (scan: ScanResult) => void;
 }) {
   const reduce = useReducedMotion();
+  const { lang } = useLanguage();
+  const t = COPY[lang];
   const [phase, setPhase] = useState<Phase>("aim");
   const [cameraOn, setCameraOn] = useState(false);
   const [form, setForm] = useState<ScanResult | null>(null);
+  const [viaQr, setViaQr] = useState(false);
   // Le scan caméra + OCR est réservé à l'application mobile. Sur le web (pointeur fin), on bascule
   // en saisie manuelle : pas de caméra, pas de bouton « Scanner ».
   const [isMobile, setIsMobile] = useState(false);
@@ -91,19 +152,59 @@ export function StepScan({
     }
   }
 
+  /**
+   * Tente de décoder le QR code de la carte (BarcodeDetector natif, mobile). Silencieux si l'API
+   * est absente ou si la carte n'a pas de QR : le repli OCR couvre toutes les générations de cartes.
+   */
+  async function lireQr(): Promise<ScanResult | null> {
+    const v = videoRef.current;
+    if (!cameraOn || !v || !v.videoWidth) return null;
+    try {
+      const BD = (
+        window as unknown as {
+          BarcodeDetector?: new (o: { formats: string[] }) => {
+            detect: (s: CanvasImageSource) => Promise<{ rawValue: string }[]>;
+          };
+        }
+      ).BarcodeDetector;
+      if (!BD) return null;
+      const codes = await new BD({ formats: ["qr_code"] }).detect(v);
+      const raw = codes[0]?.rawValue;
+      if (!raw) return null;
+      const j = JSON.parse(raw) as Partial<ScanResult>;
+      if (!j.producteurNom && !j.numeroCartePro) return null;
+      return {
+        producteurNom: j.producteurNom ?? "",
+        numeroCartePro: j.numeroCartePro ?? "",
+        localite: j.localite ?? "",
+        filiere: (j.filiere as Filiere) ?? "cacao",
+      };
+    } catch {
+      return null;
+    }
+  }
+
   async function scanner() {
     setPhase("scanning");
     const imageBase64 = captureFrame();
-    try {
-      const r = await fetch("/api/gemini/scan", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(imageBase64 ? { imageBase64, mimeType: "image/jpeg" } : {}),
-      });
-      const data: ScanResult = await r.json();
-      setForm(data);
-    } catch {
-      setForm({ producteurNom: "", numeroCartePro: "", localite: "", filiere: "cacao" });
+    // QR d'abord (instantané, zéro coût) ; sinon OCR des champs imprimés (cartes sans QR incluses).
+    const qr = await lireQr();
+    if (qr) {
+      setViaQr(true);
+      setForm(qr);
+    } else {
+      setViaQr(false);
+      try {
+        const r = await fetch("/api/gemini/scan", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(imageBase64 ? { imageBase64, mimeType: "image/jpeg" } : {}),
+        });
+        const data: ScanResult = await r.json();
+        setForm(data);
+      } catch {
+        setForm({ producteurNom: "", numeroCartePro: "", localite: "", filiere: "cacao" });
+      }
     }
     stopCamera();
     setCameraOn(false);
@@ -132,7 +233,7 @@ export function StepScan({
               <div className="w-full max-w-[240px] rounded-lg bg-white/[0.06] p-4 ring-1 ring-white/10 backdrop-blur-sm">
                 <div className="flex items-center gap-2">
                   <PinMark size={20} color="#eafff2" leafColor="rgba(224,166,75,0.9)" />
-                  <span className="text-[0.6rem] uppercase tracking-widest text-white/60">Carte producteur</span>
+                  <span className="text-[0.6rem] uppercase tracking-widest text-white/60">{t.cardLabel}</span>
                 </div>
                 <div className="mt-3 space-y-1.5">
                   <div className="h-2 w-3/4 rounded bg-white/15" />
@@ -168,12 +269,12 @@ export function StepScan({
         <div className="absolute left-3 top-3">
           <span className="eyebrow rounded-full bg-black/35 px-2.5 py-1 text-[0.6rem] text-white/85 backdrop-blur-sm">
             {phase === "scanning"
-              ? "Lecture en cours…"
+              ? t.reading
               : cameraOn
-                ? "Caméra active"
+                ? t.cameraActive
                 : isMobile
-                  ? "Mode démonstration"
-                  : "Scan sur mobile uniquement"}
+                  ? t.demoMode
+                  : t.mobileOnly}
           </span>
         </div>
       </div>
@@ -182,18 +283,15 @@ export function StepScan({
       <div className="flex flex-col rounded-2xl border border-black/[0.05] bg-white p-5 shadow-[0_1px_2px_rgba(10,31,20,0.04)]">
         <div className="flex items-center gap-2">
           <ScanLine size={16} strokeWidth={2} className="text-green-signal" aria-hidden />
-          <p className="eyebrow text-green-signal">Scan · Gemini Vision</p>
+          <p className="eyebrow text-green-signal">{t.eyebrow}</p>
         </div>
-        <h2 className="mt-2 font-display text-2xl leading-tight text-forest-950">Carte producteur</h2>
+        <h2 className="mt-2 font-display text-2xl leading-tight text-forest-950">{t.title}</h2>
 
         {phase !== "review" ? (
           <div className="mt-4 flex flex-1 flex-col">
             {isMobile ? (
               <>
-                <p className="text-sm leading-relaxed text-stone-500">
-                  Positionnez la carte du producteur dans le cadre. La lecture extrait le nom, le numéro de
-                  carte et la localité, que vous pourrez corriger avant de continuer.
-                </p>
+                <p className="text-sm leading-relaxed text-stone-500">{t.aimHelp}</p>
                 <div className="mt-6 flex flex-col gap-3">
                   <button
                     type="button"
@@ -202,7 +300,7 @@ export function StepScan({
                     className="inline-flex items-center justify-center gap-2 rounded-full bg-green-signal px-6 py-3.5 text-sm font-semibold text-white shadow-[0_14px_34px_-12px_rgba(22,163,74,0.75)] outline-none transition-[filter,transform,opacity] hover:brightness-105 active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-green-signal focus-visible:ring-offset-2 focus-visible:ring-offset-white disabled:cursor-not-allowed disabled:opacity-60"
                   >
                     <ScanLine size={16} strokeWidth={2} aria-hidden />
-                    {phase === "scanning" ? "Lecture en cours…" : "Scanner la carte"}
+                    {phase === "scanning" ? t.reading : t.scanBtn}
                   </button>
                   {!cameraOn && phase === "aim" && (
                     <button
@@ -211,18 +309,14 @@ export function StepScan({
                       className="inline-flex items-center justify-center gap-2 rounded-full border border-black/10 px-5 py-3 text-sm font-medium text-stone-600 outline-none transition-colors hover:border-green-signal/40 hover:text-forest-950 focus-visible:ring-2 focus-visible:ring-green-signal"
                     >
                       <Camera size={15} strokeWidth={2} aria-hidden />
-                      Activer la caméra
+                      {t.enableCamera}
                     </button>
                   )}
                 </div>
               </>
             ) : (
               <>
-                <p className="text-sm leading-relaxed text-stone-500">
-                  Le scan de la carte producteur (caméra + OCR Gemini Vision) est réservé à
-                  l&apos;application mobile Agrivo, au bord du champ. Sur le web, saisissez les
-                  informations de la carte manuellement.
-                </p>
+                <p className="text-sm leading-relaxed text-stone-500">{t.webHelp}</p>
                 <div className="mt-6 flex flex-col gap-3">
                   <button
                     type="button"
@@ -230,7 +324,7 @@ export function StepScan({
                     className="inline-flex items-center justify-center gap-2 rounded-full bg-green-signal px-6 py-3.5 text-sm font-semibold text-white shadow-[0_14px_34px_-12px_rgba(22,163,74,0.75)] outline-none transition-[filter,transform] hover:brightness-105 active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-green-signal focus-visible:ring-offset-2 focus-visible:ring-offset-white"
                   >
                     <ArrowRight size={16} strokeWidth={2.25} aria-hidden />
-                    Saisir manuellement
+                    {t.manualEntry}
                   </button>
                 </div>
               </>
@@ -248,12 +342,27 @@ export function StepScan({
               }}
               className="mt-4 flex flex-1 flex-col gap-3.5"
             >
-              <p className="text-sm text-stone-500">Informations extraites · vérifiez et corrigez si besoin.</p>
-              <Field label="Nom du producteur" value={form.producteurNom} onChange={(v) => setForm({ ...form, producteurNom: v })} />
-              <Field label="N° de carte producteur" value={form.numeroCartePro} mono onChange={(v) => setForm({ ...form, numeroCartePro: v })} />
-              <Field label="Localité" value={form.localite} onChange={(v) => setForm({ ...form, localite: v })} />
+              <p className="text-sm text-stone-500">{t.extracted}</p>
+              {viaQr && (
+                <p className="inline-flex items-center gap-1.5 text-xs font-medium text-green-signal">
+                  <span className="h-1.5 w-1.5 rounded-full bg-green-signal" aria-hidden />
+                  {t.viaQr}
+                </p>
+              )}
+              {form.numeroCartePro && (
+                <p className="flex items-start gap-1.5 rounded-lg bg-ivory-deep/60 px-3 py-2 text-xs leading-relaxed text-stone-600">
+                  <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-green-signal" aria-hidden />
+                  {(() => {
+                    const connu = PARCELLES.find((p) => p.numeroCartePro === form.numeroCartePro);
+                    return connu ? t.knownProducer(connu.producteurNom) : t.newProducer;
+                  })()}
+                </p>
+              )}
+              <Field label={t.fieldName} value={form.producteurNom} onChange={(v) => setForm({ ...form, producteurNom: v })} />
+              <Field label={t.fieldCard} value={form.numeroCartePro} mono onChange={(v) => setForm({ ...form, numeroCartePro: v })} />
+              <Field label={t.fieldLocality} value={form.localite} onChange={(v) => setForm({ ...form, localite: v })} />
               <div className="flex flex-col gap-1.5">
-                <label className="text-xs font-medium text-stone-500" htmlFor="filiere">Filière</label>
+                <label className="text-xs font-medium text-stone-500" htmlFor="filiere">{t.fieldFiliere}</label>
                 <select
                   id="filiere"
                   value={form.filiere}
@@ -271,7 +380,7 @@ export function StepScan({
                   type="submit"
                   className="group inline-flex flex-1 items-center justify-center gap-2 rounded-full bg-green-signal px-6 py-3.5 text-sm font-semibold text-white shadow-[0_14px_34px_-12px_rgba(22,163,74,0.75)] outline-none transition-[filter,transform] hover:brightness-105 active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-green-signal focus-visible:ring-offset-2 focus-visible:ring-offset-white"
                 >
-                  Confirmer
+                  {t.confirm}
                   <ArrowRight size={16} strokeWidth={2.25} aria-hidden className="transition-transform group-hover:translate-x-0.5" />
                 </button>
                 <button
@@ -280,7 +389,7 @@ export function StepScan({
                   className="inline-flex items-center justify-center gap-2 rounded-full border border-black/10 px-4 py-3.5 text-sm font-medium text-stone-600 outline-none transition-colors hover:border-green-signal/40 hover:text-forest-950 focus-visible:ring-2 focus-visible:ring-green-signal"
                 >
                   <RotateCcw size={15} strokeWidth={2} aria-hidden />
-                  Rescanner
+                  {t.rescan}
                 </button>
               </div>
             </motion.form>
@@ -292,7 +401,7 @@ export function StepScan({
           onClick={onBack}
           className="mt-5 border-t border-black/[0.05] pt-4 text-center text-sm text-stone-400 outline-none transition-colors hover:text-forest-950 focus-visible:text-forest-950"
         >
-          Retour
+          {t.back}
         </button>
       </div>
     </div>

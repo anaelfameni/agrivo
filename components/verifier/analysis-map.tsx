@@ -6,7 +6,23 @@ import L, { type Map as LeafletMap } from "leaflet";
 import { motion, useReducedMotion } from "framer-motion";
 import "leaflet/dist/leaflet.css";
 import { PinMark } from "@/components/ui/pin-mark";
+import { useLanguage } from "@/components/language-provider";
 import { type Statut } from "@/data/mock-parcelles";
+
+const LABELS = {
+  fr: {
+    idle: "Parcelle prête",
+    drawing: "Cartographie…",
+    scanning: "Analyse satellite en cours…",
+    verdict: "Analyse terminée",
+  },
+  en: {
+    idle: "Plot ready",
+    drawing: "Mapping…",
+    scanning: "Satellite analysis in progress…",
+    verdict: "Analysis complete",
+  },
+} as const;
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 // Couleurs en HEX explicite : les variables CSS ne sont pas fiables en attribut SVG (stroke/fill).
@@ -61,6 +77,8 @@ export default function AnalysisMap({
   phase: AnalysisPhase;
 }) {
   const reduce = useReducedMotion();
+  const { lang } = useLanguage();
+  const tl = LABELS[lang];
   const uid = useId().replace(/[^a-zA-Z0-9]/g, "");
   const wrapRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<LeafletMap | null>(null);
@@ -312,10 +330,7 @@ export default function AnalysisMap({
       {/* Étiquette d'état */}
       <div className="pointer-events-none absolute left-3 top-3 z-[500]">
         <span className="eyebrow rounded-full bg-black/35 px-3 py-1.5 text-[0.62rem] text-white/90 backdrop-blur-sm">
-          {phase === "idle" && "Parcelle prête"}
-          {phase === "drawing" && "Cartographie…"}
-          {phase === "scanning" && "Analyse satellite en cours…"}
-          {phase === "verdict" && "Analyse terminée"}
+          {tl[phase]}
         </span>
       </div>
     </div>

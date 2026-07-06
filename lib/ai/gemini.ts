@@ -9,6 +9,7 @@
  */
 import {
   FILIERE_LABEL,
+  RENDEMENT_T_HA,
   STATUT_PHRASE,
   fmtHa,
   fmtTonnes,
@@ -376,6 +377,14 @@ export interface RiskAssessment {
  */
 export function analyserRisque(p: Parcelle): RiskAssessment {
   const filiere = FILIERE_LABEL[p.filiere].toLowerCase();
+  // Réconciliation économique (anti-fraude) : le volume acheté au producteur est plafonné par
+  // superficie × rendement régional indicatif. Déclarer une petite parcelle conforme pour y faire
+  // transiter du volume non conforme devient détectable (méthode type Fairtrade).
+  const plafondT = Math.round(p.superficieHa * RENDEMENT_T_HA[p.filiere] * 10) / 10;
+  const facteurPlafond = (sens: RiskFactor["sens"]): RiskFactor => ({
+    label: `Plafond d'achat anti-fraude : ${plafondT.toLocaleString("fr-FR")} t/an (superficie × rendement régional ${filiere})`,
+    sens,
+  });
   if (p.statut === "anomalie") {
     return {
       niveau: "Bloquant",
@@ -384,6 +393,7 @@ export function analyserRisque(p: Parcelle): RiskAssessment {
         { label: "Perte de couverture détectée après le 31 décembre 2020", sens: "négatif" },
         { label: "Anomalie corroborée par une seconde source satellite", sens: "négatif" },
         { label: `Filière ${filiere} exposée au marché européen`, sens: "négatif" },
+        facteurPlafond("neutre"),
       ],
       recommandation:
         "Écarter le lot des expéditions vers l'Union européenne. Documenter l'anomalie et engager une remédiation avant toute nouvelle soumission.",
@@ -397,6 +407,7 @@ export function analyserRisque(p: Parcelle): RiskAssessment {
         { label: "Couverture nuageuse persistante sur les passages disponibles", sens: "neutre" },
         { label: "Aucune perte de couverture confirmée à ce stade", sens: "positif" },
         { label: "Verdict définitif en attente de convergence de preuves", sens: "négatif" },
+        facteurPlafond("neutre"),
       ],
       recommandation:
         "Programmer un nouveau passage satellite. Ne pas inclure la parcelle dans un lot destiné à l'UE tant que le verdict n'est pas rendu.",
@@ -414,6 +425,7 @@ export function analyserRisque(p: Parcelle): RiskAssessment {
           : "Éligible au micro-crédit sous réserve d'une proposition",
         sens: "positif",
       },
+      facteurPlafond("positif"),
     ],
     recommandation:
       "Lot éligible à l'expédition UE. Joindre le dossier de diligence (DDS) et conserver la référence du certificat.",

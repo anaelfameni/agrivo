@@ -5,7 +5,15 @@ import { CircleMarker, MapContainer, Polygon, TileLayer, Tooltip, useMap } from 
 import L from "leaflet";
 import { useReducedMotion } from "framer-motion";
 import "leaflet/dist/leaflet.css";
+import { useLanguage } from "@/components/language-provider";
 import { FILIERE_LABEL, STATUT_LABEL, fmtHa, type Parcelle, type Statut } from "@/data/mock-parcelles";
+
+/** Statuts figés en anglais (mêmes termes que StatusBadge et lib/i18n.ts). */
+const STATUT_LABEL_EN: Record<Statut, string> = {
+  conforme: "Compliant",
+  anomalie: "Anomaly detected",
+  insuffisant: "Insufficient data",
+};
 
 // HEX explicite : var() CSS n'est pas fiable dans les options de tracé Leaflet.
 const HEX: Record<Statut, string> = {
@@ -80,6 +88,7 @@ function ParcelleShape({
 }) {
   const polyRef = useRef<L.Polygon | null>(null);
   const dotRef = useRef<L.CircleMarker | null>(null);
+  const { lang } = useLanguage();
   const { p, ring, center } = shape;
   const color = HEX[p.statut];
 
@@ -120,7 +129,7 @@ function ParcelleShape({
         <Tooltip direction="top" offset={[0, -6]} opacity={1}>
           <span className="block text-[0.7rem] font-semibold text-forest-950">{p.producteurNom}</span>
           <span className="block text-[0.65rem] text-stone-600">
-            {STATUT_LABEL[p.statut]} · {FILIERE_LABEL[p.filiere]} · {fmtHa(p.superficieHa)}
+            {(lang === "en" ? STATUT_LABEL_EN : STATUT_LABEL)[p.statut]} · {FILIERE_LABEL[p.filiere]} · {fmtHa(p.superficieHa)}
           </span>
         </Tooltip>
       </CircleMarker>
@@ -148,6 +157,7 @@ export default function PortfolioMap({
   onHover: (id: string | null) => void;
 }) {
   const reduce = useReducedMotion() ?? false;
+  const { lang } = useLanguage();
   const shapes = useMemo(() => parcelles.map(toShape), [parcelles]);
 
   const bounds = useMemo(() => {
@@ -189,14 +199,14 @@ export default function PortfolioMap({
         {legende.map((statut) => (
           <span key={statut} className="flex items-center gap-2 text-[0.65rem] font-medium text-white/90">
             <span className="h-2.5 w-2.5 rounded-full" style={{ background: HEX[statut] }} aria-hidden />
-            {STATUT_LABEL[statut]}
+            {(lang === "en" ? STATUT_LABEL_EN : STATUT_LABEL)[statut]}
           </span>
         ))}
       </div>
 
       <div className="pointer-events-none absolute right-3 top-3 z-[500]">
         <span className="eyebrow rounded-full bg-forest-950/70 px-3 py-1.5 text-[0.6rem] text-white/90 backdrop-blur-sm">
-          {parcelles.length} parcelle{parcelles.length > 1 ? "s" : ""}
+          {parcelles.length} {lang === "en" ? `plot${parcelles.length > 1 ? "s" : ""}` : `parcelle${parcelles.length > 1 ? "s" : ""}`}
         </span>
       </div>
     </div>

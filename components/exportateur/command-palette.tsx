@@ -4,9 +4,43 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { CornerDownLeft, Download, MessageSquareText, Bell, MapPin, Search } from "lucide-react";
 import { StatusBadge } from "@/components/ui/status-badge";
+import { useLanguage } from "@/components/language-provider";
 import { FILIERE_LABEL, fmtHa, type Parcelle } from "@/data/mock-parcelles";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
+
+const COPY = {
+  fr: {
+    actExport: "Exporter le portefeuille en GeoJSON",
+    actAssistant: "Poser une question à l'assistant",
+    actAlerts: "Voir le centre d'alertes",
+    hintAlerts: "Alertes",
+    closeAria: "Fermer la palette de commandes",
+    dialogAria: "Palette de commandes",
+    inputAria: "Rechercher une parcelle, un producteur ou une commande",
+    placeholder: "Rechercher un producteur, une parcelle, une commande…",
+    esc: "Échap",
+    noResult: (q: string) => `Aucun résultat pour « ${q} ».`,
+    results: "Résultats",
+    navigate: "naviguer",
+    open: "ouvrir",
+  },
+  en: {
+    actExport: "Export the portfolio as GeoJSON",
+    actAssistant: "Ask the assistant a question",
+    actAlerts: "Open the alert centre",
+    hintAlerts: "Alerts",
+    closeAria: "Close the command palette",
+    dialogAria: "Command palette",
+    inputAria: "Search a plot, a farmer or a command",
+    placeholder: "Search a farmer, a plot, a command…",
+    esc: "Esc",
+    noResult: (q: string) => `No result for "${q}".`,
+    results: "Results",
+    navigate: "navigate",
+    open: "open",
+  },
+} as const;
 
 export type CommandAction = "export-geojson" | "go-assistant" | "go-alerts";
 
@@ -33,6 +67,8 @@ export function CommandPalette({
   onAction: (a: CommandAction) => void;
 }) {
   const reduce = useReducedMotion();
+  const { lang } = useLanguage();
+  const t = COPY[lang];
   const [query, setQuery] = useState("");
   const [active, setActive] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -53,7 +89,7 @@ export function CommandPalette({
       {
         kind: "action",
         id: "act-export",
-        label: "Exporter le portefeuille en GeoJSON",
+        label: t.actExport,
         hint: "RFC 7946",
         Icon: Download,
         run: () => onAction("export-geojson"),
@@ -61,7 +97,7 @@ export function CommandPalette({
       {
         kind: "action",
         id: "act-assistant",
-        label: "Poser une question à l'assistant",
+        label: t.actAssistant,
         hint: "IA",
         Icon: MessageSquareText,
         run: () => onAction("go-assistant"),
@@ -69,13 +105,13 @@ export function CommandPalette({
       {
         kind: "action",
         id: "act-alerts",
-        label: "Voir le centre d'alertes",
-        hint: "Alertes",
+        label: t.actAlerts,
+        hint: t.hintAlerts,
         Icon: Bell,
         run: () => onAction("go-alerts"),
       },
     ],
-    [onAction],
+    [onAction, t],
   );
 
   const results: Item[] = useMemo(() => {
@@ -146,7 +182,7 @@ export function CommandPalette({
           {/* Fond assombri (scrim) */}
           <button
             type="button"
-            aria-label="Fermer la palette de commandes"
+            aria-label={t.closeAria}
             onClick={onClose}
             className="absolute inset-0 cursor-default bg-forest-950/45 backdrop-blur-[2px]"
           />
@@ -154,7 +190,7 @@ export function CommandPalette({
           <motion.div
             role="dialog"
             aria-modal="true"
-            aria-label="Palette de commandes"
+            aria-label={t.dialogAria}
             initial={reduce ? { opacity: 0 } : { opacity: 0, scale: 0.97, y: -8 }}
             animate={reduce ? { opacity: 1 } : { opacity: 1, scale: 1, y: 0 }}
             exit={reduce ? { opacity: 0 } : { opacity: 0, scale: 0.98, y: -6 }}
@@ -170,23 +206,23 @@ export function CommandPalette({
                 type="text"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                aria-label="Rechercher une parcelle, un producteur ou une commande"
+                aria-label={t.inputAria}
                 aria-activedescendant={results[active] ? `cmd-${results[active].id}` : undefined}
-                placeholder="Rechercher un producteur, une parcelle, une commande…"
+                placeholder={t.placeholder}
                 className="h-14 flex-1 bg-transparent text-[0.95rem] text-forest-950 outline-none placeholder:text-stone-400"
               />
               <kbd className="hidden rounded-md border border-black/10 bg-ivory px-1.5 py-0.5 text-[0.65rem] font-medium text-stone-500 sm:block">
-                Échap
+                {t.esc}
               </kbd>
             </div>
 
             {/* Résultats */}
             {results.length === 0 ? (
               <div className="px-4 py-10 text-center text-sm text-stone-500">
-                Aucun résultat pour « {query.trim()} ».
+                {t.noResult(query.trim())}
               </div>
             ) : (
-              <ul ref={listRef} role="listbox" aria-label="Résultats" className="max-h-[52vh] overflow-y-auto p-2">
+              <ul ref={listRef} role="listbox" aria-label={t.results} className="max-h-[52vh] overflow-y-auto p-2">
                 {results.map((item, idx) => {
                   const isActive = idx === active;
                   return (
@@ -232,7 +268,7 @@ export function CommandPalette({
                                 <span className="num">{fmtHa(item.parcelle.superficieHa)}</span>
                               </span>
                             </span>
-                            <StatusBadge statut={item.parcelle.statut} size="sm" className="shrink-0" />
+                            <StatusBadge statut={item.parcelle.statut} size="sm" className="shrink-0" lang={lang} />
                           </>
                         )}
                         {isActive && (
@@ -250,11 +286,11 @@ export function CommandPalette({
               <span className="flex items-center gap-1.5">
                 <kbd className="rounded border border-black/10 bg-ivory px-1 py-0.5 num text-[0.62rem]">↑</kbd>
                 <kbd className="rounded border border-black/10 bg-ivory px-1 py-0.5 num text-[0.62rem]">↓</kbd>
-                naviguer
+                {t.navigate}
               </span>
               <span className="flex items-center gap-1.5">
                 <kbd className="rounded border border-black/10 bg-ivory px-1 py-0.5 num text-[0.62rem]">↵</kbd>
-                ouvrir
+                {t.open}
               </span>
             </div>
           </motion.div>

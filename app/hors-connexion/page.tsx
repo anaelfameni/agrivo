@@ -15,6 +15,11 @@ export default function HorsConnexionPage() {
         Cette page n&apos;est pas encore disponible sans réseau. Les écrans déjà visités restent
         consultables ; reconnectez-vous pour lancer une nouvelle vérification.
       </p>
+      {/* Page servie hors ligne par le SW : pas de contexte de langue fiable → rappel bilingue. */}
+      <p className="mt-4 max-w-md text-xs leading-relaxed text-white/45">
+        You are offline. Screens you already visited remain available; reconnect to start a new
+        verification.
+      </p>
     </main>
   );
 }

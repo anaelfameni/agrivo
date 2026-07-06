@@ -28,7 +28,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
       <header className="sticky top-0 z-40 border-b border-black/[0.06] bg-ivory/75 backdrop-blur-xl">
         {/* Fine ligne verte : signature de marque sous la topbar */}
         <div aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-green-signal/45 to-transparent" />
-        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-5 md:px-8">
+        <div className="flex h-16 w-full items-center justify-between gap-4 px-5 md:px-8">
           <div className="flex items-center gap-3">
             <Link
               href="/app/dashboard"
@@ -49,7 +49,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
         </div>
       </header>
 
-      <div className="relative mx-auto max-w-7xl px-5 pb-24 md:px-8">
+      <div className="relative w-full px-5 pb-24 md:px-8">
         <AppMobileNav />
         <div className="flex gap-6 pt-4 md:pt-9">
           <AppSidebar />

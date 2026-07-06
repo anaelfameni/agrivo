@@ -5,15 +5,47 @@ import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
 import { Activity, Bell, ChevronRight } from "lucide-react";
 import { PinMark } from "@/components/ui/pin-mark";
+import { useLanguage } from "@/components/language-provider";
 import { alertesParCoop, FILIERE_LABEL, type Parcelle } from "@/data/mock-parcelles";
 import { type LogEntry } from "@/components/exportateur/types";
 
-const PINGS = [
-  { service: "Whisp API", label: "Convergence de preuves vérifiée", range: [700, 1200] as const },
-  { service: "Gemini API", label: "Explication de verdict générée", range: [400, 900] as const },
-  { service: "Copernicus", label: "Tuile Sentinel-2 récupérée", range: [900, 1600] as const },
-  { service: "TRACES NT", label: "État de dépôt interrogé", range: [300, 700] as const },
-];
+const PINGS = {
+  fr: [
+    { service: "Whisp API", label: "Convergence de preuves vérifiée", range: [700, 1200] as const },
+    { service: "Gemini API", label: "Explication de verdict générée", range: [400, 900] as const },
+    { service: "Copernicus", label: "Tuile Sentinel-2 récupérée", range: [900, 1600] as const },
+    { service: "TRACES NT", label: "État de dépôt interrogé", range: [300, 700] as const },
+  ],
+  en: [
+    { service: "Whisp API", label: "Convergence of evidence verified", range: [700, 1200] as const },
+    { service: "Gemini API", label: "Verdict explanation generated", range: [400, 900] as const },
+    { service: "Copernicus", label: "Sentinel-2 tile fetched", range: [900, 1600] as const },
+    { service: "TRACES NT", label: "Submission status queried", range: [300, 700] as const },
+  ],
+} as const;
+
+const COPY = {
+  fr: {
+    seedLog: "Connexion établie (MOCK_MODE)",
+    networkLog: "Journal réseau",
+    live: "en direct",
+    waiting: "En attente de trafic réseau…",
+    alertCentre: "Centre d'alertes",
+    alertSub: "Parcelles en anomalie, regroupées par coopérative.",
+    noAlert: "Aucune alerte active sur le portefeuille.",
+    newAnomaly: "Nouvelle anomalie détectée",
+  },
+  en: {
+    seedLog: "Connection established (MOCK_MODE)",
+    networkLog: "Network log",
+    live: "live",
+    waiting: "Waiting for network traffic…",
+    alertCentre: "Alert centre",
+    alertSub: "Plots with anomalies, grouped by cooperative.",
+    noAlert: "No active alert on the portfolio.",
+    newAnomaly: "New anomaly detected",
+  },
+} as const;
 
 export function ConfigTab({
   parcelles,
@@ -24,6 +56,8 @@ export function ConfigTab({
   log: LogEntry[];
   pushLog: (e: { service: string; label: string; ms?: number; status?: "ok" | "warn" }) => void;
 }) {
+  const { lang } = useLanguage();
+  const t = COPY[lang];
   const groupes = alertesParCoop(parcelles);
   const totalAlertes = groupes.reduce((s, g) => s + g.items.length, 0);
   const seeded = useRef(false);
@@ -32,10 +66,11 @@ export function ConfigTab({
   useEffect(() => {
     if (!seeded.current) {
       seeded.current = true;
-      pushLog({ service: "Whisp API", label: "Connexion établie (MOCK_MODE)", ms: 214, status: "ok" });
+      pushLog({ service: "Whisp API", label: t.seedLog, ms: 214, status: "ok" });
     }
     const timer = setInterval(() => {
-      const p = PINGS[Math.floor(Math.random() * PINGS.length)];
+      const pings = PINGS[lang];
+      const p = pings[Math.floor(Math.random() * pings.length)];
       const ms = Math.round(p.range[0] + Math.random() * (p.range[1] - p.range[0]));
       pushLog({ service: p.service, label: p.label, ms, status: "ok" });
     }, 4200);
@@ -52,20 +87,20 @@ export function ConfigTab({
           <div className="flex items-center justify-between">
             <h3 className="flex items-center gap-2 text-sm font-semibold text-forest-950">
               <Activity size={16} strokeWidth={2} className="text-forest-800" aria-hidden />
-              Journal réseau
+              {t.networkLog}
             </h3>
             <span className="flex items-center gap-1.5 text-[0.7rem] text-stone-500">
               <span className="relative flex h-2 w-2">
                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-signal/60" />
                 <span className="relative inline-flex h-2 w-2 rounded-full bg-green-signal" />
               </span>
-              en direct
+              {t.live}
             </span>
           </div>
 
           <div className="mt-3 max-h-72 overflow-y-auto rounded-xl border border-black/[0.05] bg-forest-950 p-2">
             {log.length === 0 ? (
-              <p className="px-2 py-6 text-center text-xs text-white/40">En attente de trafic réseau…</p>
+              <p className="px-2 py-6 text-center text-xs text-white/40">{t.waiting}</p>
             ) : (
               <ul className="flex flex-col">
                 <AnimatePresence initial={false}>
@@ -104,7 +139,7 @@ export function ConfigTab({
             <span className="relative grid h-8 w-8 place-items-center rounded-xl" style={{ background: "rgba(180,35,30,0.10)" }} aria-hidden>
               <Bell size={16} strokeWidth={2} className="text-red-block" />
             </span>
-            Centre d'alertes
+            {t.alertCentre}
           </h3>
           {totalAlertes > 0 && (
             <span className="num inline-flex h-6 min-w-6 items-center justify-center rounded-full bg-red-block px-1.5 text-xs font-semibold text-white">
@@ -112,10 +147,10 @@ export function ConfigTab({
             </span>
           )}
         </div>
-        <p className="mt-1 text-xs text-stone-500">Parcelles en anomalie, regroupées par coopérative.</p>
+        <p className="mt-1 text-xs text-stone-500">{t.alertSub}</p>
 
         {groupes.length === 0 ? (
-          <p className="mt-5 text-sm text-stone-500">Aucune alerte active sur le portefeuille.</p>
+          <p className="mt-5 text-sm text-stone-500">{t.noAlert}</p>
         ) : (
           <div className="mt-4 flex flex-col gap-4">
             {groupes.map((g) => (
@@ -133,7 +168,7 @@ export function ConfigTab({
                       >
                         <PinMark size={22} color="var(--color-red-block)" pulse className="mt-0.5 shrink-0" />
                         <span className="min-w-0 flex-1">
-                          <span className="block text-sm font-medium text-forest-950">Nouvelle anomalie détectée</span>
+                          <span className="block text-sm font-medium text-forest-950">{t.newAnomaly}</span>
                           <span className="mt-0.5 block text-xs text-stone-500">
                             {p.producteurNom} · {p.region} · {FILIERE_LABEL[p.filiere]}
                           </span>

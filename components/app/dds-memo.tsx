@@ -5,6 +5,7 @@ import { motion, useReducedMotion } from "framer-motion";
 import { FileText, RefreshCw, Sparkles } from "lucide-react";
 import { StatusBadge } from "@/components/ui/status-badge";
 import type { MemoDiligence } from "@/lib/ai/gemini";
+import { useLanguage } from "@/components/language-provider";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
@@ -14,6 +15,8 @@ const EASE = [0.16, 1, 0.3, 1] as const;
  */
 export function DdsMemo({ parcelleId }: { parcelleId: string }) {
   const reduce = useReducedMotion();
+  const { lang } = useLanguage();
+  const en = lang === "en";
   const [state, setState] = useState<"idle" | "loading" | "done" | "error">("idle");
   const [memo, setMemo] = useState<MemoDiligence | null>(null);
 
@@ -40,7 +43,7 @@ export function DdsMemo({ parcelleId }: { parcelleId: string }) {
           <span className="chip-green grid h-9 w-9 place-items-center rounded-xl" aria-hidden>
             <FileText size={17} strokeWidth={2} className="text-green-signal" />
           </span>
-          Dossier de diligence
+          {en ? "Due diligence file" : "Dossier de diligence"}
           <span className="inline-flex items-center gap-1 rounded-full bg-green-signal/12 px-2 py-0.5 text-[0.62rem] font-semibold uppercase tracking-wide text-green-signal">
             <Sparkles size={11} strokeWidth={2.5} aria-hidden /> IA
           </span>
@@ -51,7 +54,7 @@ export function DdsMemo({ parcelleId }: { parcelleId: string }) {
             onClick={generate}
             className="inline-flex items-center gap-1.5 rounded-full border border-black/10 px-3.5 py-1.5 text-xs font-medium text-stone-600 outline-none transition-colors hover:border-green-signal/40 hover:text-forest-950 focus-visible:ring-2 focus-visible:ring-green-signal"
           >
-            <RefreshCw size={13} strokeWidth={2} aria-hidden /> Régénérer
+            <RefreshCw size={13} strokeWidth={2} aria-hidden /> {en ? "Regenerate" : "Régénérer"}
           </button>
         )}
       </div>
@@ -59,8 +62,9 @@ export function DdsMemo({ parcelleId }: { parcelleId: string }) {
       {state === "idle" && (
         <div className="mt-3">
           <p className="max-w-xl text-sm leading-relaxed text-stone-500">
-            L&apos;IA compose un dossier « audit-ready » à partir des données vérifiées de la parcelle
-            (opérateur, géolocalisation, verdict, méthodologie), prêt pour une déclaration TRACES NT.
+            {en
+              ? "The AI composes an audit-ready file from the plot's verified data (operator, geolocation, verdict, methodology), ready for a TRACES NT declaration."
+              : "L'IA compose un dossier « audit-ready » à partir des données vérifiées de la parcelle (opérateur, géolocalisation, verdict, méthodologie), prêt pour une déclaration TRACES NT."}
           </p>
           <button
             type="button"
@@ -68,7 +72,7 @@ export function DdsMemo({ parcelleId }: { parcelleId: string }) {
             className="btn-green mt-4 inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold outline-none focus-visible:ring-2 focus-visible:ring-green-signal focus-visible:ring-offset-2 focus-visible:ring-offset-white"
           >
             <Sparkles size={16} strokeWidth={2.25} aria-hidden />
-            Générer le dossier
+            {en ? "Generate the file" : "Générer le dossier"}
           </button>
         </div>
       )}
@@ -80,7 +84,7 @@ export function DdsMemo({ parcelleId }: { parcelleId: string }) {
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-signal/60" />
               <span className="relative inline-flex h-2 w-2 rounded-full bg-green-signal" />
             </span>
-            L&apos;IA compose le dossier de diligence…
+            {en ? "The AI is composing the due diligence file…" : "L'IA compose le dossier de diligence…"}
           </p>
           {[0, 1, 2, 3].map((i) => (
             <div key={i} className="relative h-3 overflow-hidden rounded-full bg-black/[0.05]" style={{ width: `${92 - i * 12}%` }}>
@@ -92,9 +96,11 @@ export function DdsMemo({ parcelleId }: { parcelleId: string }) {
 
       {state === "error" && (
         <div className="mt-3">
-          <p className="text-sm text-red-block">La génération a échoué. Réessayez.</p>
+          <p className="text-sm text-red-block">
+            {en ? "Generation failed. Try again." : "La génération a échoué. Réessayez."}
+          </p>
           <button type="button" onClick={generate} className="btn-green mt-3 inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold">
-            <RefreshCw size={15} aria-hidden /> Réessayer
+            <RefreshCw size={15} aria-hidden /> {en ? "Try again" : "Réessayer"}
           </button>
         </div>
       )}
@@ -112,7 +118,9 @@ export function DdsMemo({ parcelleId }: { parcelleId: string }) {
           >
             <span className="num text-xs font-semibold text-forest-950">{memo.reference}</span>
             <StatusBadge statut={memo.statut} size="sm" />
-            <span className="text-xs text-stone-400">Généré à l&apos;instant · évaluation, non garantie</span>
+            <span className="text-xs text-stone-400">
+              {en ? "Generated just now · assessment, not a guarantee" : "Généré à l'instant · évaluation, non garantie"}
+            </span>
           </motion.div>
 
           {memo.sections.map((s) => (

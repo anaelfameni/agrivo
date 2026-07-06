@@ -48,6 +48,12 @@ export const STATUT_PHRASE: Record<Statut, string> = {
   anomalie: "Une perte de couverture forestière a été identifiée sur cette zone.",
   insuffisant: "Présence de nuages ou données satellites insuffisantes pour statuer.",
 };
+/** Phrases de verdict en anglais (mêmes formulations que la landing). */
+export const STATUT_PHRASE_EN: Record<Statut, string> = {
+  conforme: "No deforestation detected after 31 December 2020.",
+  anomalie: "A loss of forest cover was identified on this area.",
+  insuffisant: "Clouds or insufficient satellite data to decide.",
+};
 export const STATUT_COLOR: Record<Statut, string> = {
   conforme: "var(--color-green-signal)",
   anomalie: "var(--color-red-block)",
@@ -81,7 +87,9 @@ function poly(lon: number, lat: number): ParcelleGeometry {
 }
 
 // Centres approximatifs par zone (filières RDUE ivoiriennes)
-const SOUBRE: [number, number] = [-6.6039, 5.7853];
+// Zone RURALE au nord-ouest de Soubré (mosaïque de plantations, vérifiée sur l'imagerie Esri) :
+// le centre-ville faisait tomber les parcelles de démo en plein tissu urbain, peu crédible au jury.
+const SOUBRE: [number, number] = [-6.65, 5.83];
 const MAN: [number, number] = [-7.5539, 7.4125];
 const ABOISSO: [number, number] = [-3.2074, 5.4699];
 const DABOU: [number, number] = [-4.3773, 5.3239];
@@ -382,5 +390,13 @@ export const fmtHa = (n: number) => `${new Intl.NumberFormat("fr-FR", { maximumF
 export const fmtFCFA = (n: number) => `${new Intl.NumberFormat("fr-FR").format(n)} FCFA`;
 export function formatDateFr(iso: string): string {
   return new Date(iso).toLocaleDateString("fr-FR", { day: "numeric", month: "short", year: "numeric" });
+}
+/** Variante bilingue : mêmes options, locale selon la langue d'interface. */
+export function formatDate(iso: string, lang: "fr" | "en" = "fr"): string {
+  return new Date(iso).toLocaleDateString(lang === "en" ? "en-GB" : "fr-FR", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  });
 }
 export const fmtTonnes = (n: number) => `${new Intl.NumberFormat("fr-FR", { maximumFractionDigits: 0 }).format(n)} t`;

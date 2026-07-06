@@ -6,9 +6,41 @@ import { ArrowUp, Sparkles, Wrench } from "lucide-react";
 import { PinMark } from "@/components/ui/pin-mark";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { QUESTIONS_SUGGEREES } from "@/lib/ai/gemini";
+import { useLanguage } from "@/components/language-provider";
 import { type Parcelle } from "@/data/mock-parcelles";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
+
+const COPY = {
+  fr: {
+    greeting:
+      "Bonjour Marc. Je raisonne sur votre portefeuille de parcelles vérifiées : conformité, anomalies, superficies, éligibilité au micro-crédit. Posez votre question, ou choisissez ci-dessous.",
+    error: "Je n'ai pas pu interroger le portefeuille à l'instant. Réessayez dans un moment.",
+    title: "Assistant AGRIVO",
+    subtitle: "Copilote agentique · exécute des outils sur vos données vérifiées",
+    logAria: "Conversation avec l'assistant",
+    tools: "Outils exécutés",
+    seeOnMap: (nom: string) => `Voir ${nom} sur la carte`,
+    typing: "L'assistant rédige",
+    inputAria: "Votre question sur le portefeuille",
+    placeholder: "Posez une question sur votre portefeuille…",
+    send: "Envoyer",
+  },
+  en: {
+    greeting:
+      "Hello Marc. I reason over your portfolio of verified plots: compliance, anomalies, areas, micro-loan eligibility. Ask your question, or pick one below.",
+    error: "I could not query the portfolio just now. Please try again in a moment.",
+    title: "AGRIVO Assistant",
+    subtitle: "Agentic copilot · runs tools on your verified data",
+    logAria: "Conversation with the assistant",
+    tools: "Tools executed",
+    seeOnMap: (nom: string) => `See ${nom} on the map`,
+    typing: "The assistant is writing",
+    inputAria: "Your question about the portfolio",
+    placeholder: "Ask a question about your portfolio…",
+    send: "Send",
+  },
+} as const;
 
 interface Msg {
   id: string;
@@ -57,13 +89,10 @@ export function AssistantTab({
   pushLog: (e: { service: string; label: string; ms?: number; status?: "ok" | "warn" }) => void;
 }) {
   const reduce = useReducedMotion();
-  const [messages, setMessages] = useState<Msg[]>([
-    {
-      id: nid(),
-      role: "assistant",
-      text: "Bonjour Marc. Je raisonne sur votre portefeuille de parcelles vérifiées : conformité, anomalies, superficies, éligibilité au micro-crédit. Posez votre question, ou choisissez ci-dessous.",
-    },
-  ]);
+  const { lang } = useLanguage();
+  const t = COPY[lang];
+  // Le message d'accueil est identifié par un id sentinelle : son texte suit la langue active.
+  const [messages, setMessages] = useState<Msg[]>([{ id: "greeting", role: "assistant", text: "" }]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -104,7 +133,7 @@ export function AssistantTab({
     } catch {
       setMessages((m) => [
         ...m,
-        { id: nid(), role: "assistant", text: "Je n'ai pas pu interroger le portefeuille à l'instant. Réessayez dans un moment." },
+        { id: nid(), role: "assistant", text: t.error },
       ]);
       pushLog({ service: "Gemini API", label: "Requête assistant · échec", status: "warn" });
     } finally {
@@ -120,16 +149,16 @@ export function AssistantTab({
           <PinMark size={20} />
         </span>
         <div>
-          <p className="text-sm font-semibold text-forest-950">Assistant AGRIVO</p>
+          <p className="text-sm font-semibold text-forest-950">{t.title}</p>
           <p className="flex items-center gap-1.5 text-xs text-stone-500">
             <Sparkles size={12} strokeWidth={2} className="text-green-signal" aria-hidden />
-            Copilote agentique · exécute des outils sur vos données vérifiées
+            {t.subtitle}
           </p>
         </div>
       </div>
 
       {/* Fil de discussion */}
-      <div ref={scrollRef} role="log" aria-live="polite" aria-label="Conversation avec l'assistant" className="flex-1 space-y-4 overflow-y-auto px-4 py-5">
+      <div ref={scrollRef} role="log" aria-live="polite" aria-label={t.logAria} className="flex-1 space-y-4 overflow-y-auto px-4 py-5">
         {messages.map((m) =>
           m.role === "user" ? (
             <motion.div
@@ -154,13 +183,13 @@ export function AssistantTab({
               </span>
               <div className="min-w-0 max-w-[85%] space-y-2.5">
                 <div className="rounded-2xl rounded-tl-md bg-ivory-deep/60 px-4 py-2.5 text-sm leading-relaxed text-forest-950">
-                  <TypedText text={m.text} animate={m.animate} onTick={scrollToEnd} />
+                  <TypedText text={m.id === "greeting" ? t.greeting : m.text} animate={m.animate} onTick={scrollToEnd} />
                 </div>
 
                 {m.tools && m.tools.length > 0 && (
                   <div className="flex flex-wrap items-center gap-1.5">
                     <span className="inline-flex items-center gap-1 text-[0.62rem] font-semibold uppercase tracking-wide text-stone-400">
-                      <Wrench size={11} strokeWidth={2.5} aria-hidden /> Outils exécutés
+                      <Wrench size={11} strokeWidth={2.5} aria-hidden /> {t.tools}
                     </span>
                     {m.tools.map((t, i) => (
                       <span
@@ -190,9 +219,9 @@ export function AssistantTab({
                         type="button"
                         onClick={() => onCiteSelect(p.id)}
                         className="group inline-flex items-center gap-1.5 rounded-full border border-black/[0.08] bg-white py-1 pl-1 pr-2.5 text-xs outline-none transition-colors hover:border-green-signal/40 focus-visible:ring-2 focus-visible:ring-green-signal"
-                        title={`Voir ${p.producteurNom} sur la carte`}
+                        title={t.seeOnMap(p.producteurNom)}
                       >
-                        <StatusBadge statut={p.statut} size="sm" />
+                        <StatusBadge statut={p.statut} size="sm" lang={lang} />
                         <span className="font-medium text-forest-950">{p.producteurNom}</span>
                       </button>
                     ))}
@@ -216,7 +245,7 @@ export function AssistantTab({
               <span className="mt-0.5 grid h-7 w-7 shrink-0 place-items-center rounded-lg" style={{ background: "rgba(22,163,74,0.1)" }} aria-hidden>
                 <PinMark size={15} pulse />
               </span>
-              <div className="flex items-center gap-1 rounded-2xl rounded-tl-md bg-ivory-deep/60 px-4 py-3.5" aria-label="L'assistant rédige">
+              <div className="flex items-center gap-1 rounded-2xl rounded-tl-md bg-ivory-deep/60 px-4 py-3.5" aria-label={t.typing}>
                 {[0, 1, 2].map((i) => (
                   <motion.span
                     key={i}
@@ -258,14 +287,14 @@ export function AssistantTab({
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            aria-label="Votre question sur le portefeuille"
-            placeholder="Posez une question sur votre portefeuille…"
+            aria-label={t.inputAria}
+            placeholder={t.placeholder}
             className="h-11 flex-1 rounded-full border border-black/[0.08] bg-white px-4 text-sm text-forest-950 outline-none transition-colors placeholder:text-stone-400 focus:border-green-signal/50 focus:ring-2 focus:ring-green-signal/15"
           />
           <button
             type="submit"
             disabled={loading || !input.trim()}
-            aria-label="Envoyer"
+            aria-label={t.send}
             className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-green-signal text-white outline-none transition-[filter,transform] hover:brightness-105 active:scale-95 focus-visible:ring-2 focus-visible:ring-green-signal focus-visible:ring-offset-2 focus-visible:ring-offset-ivory disabled:opacity-40"
           >
             <ArrowUp size={18} strokeWidth={2.25} />

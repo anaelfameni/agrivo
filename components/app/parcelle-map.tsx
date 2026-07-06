@@ -2,6 +2,7 @@
 
 import { motion, useReducedMotion } from "framer-motion";
 import { PinMark } from "@/components/ui/pin-mark";
+import { useLanguage } from "@/components/language-provider";
 import { type Parcelle, type Statut } from "@/data/mock-parcelles";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
@@ -38,6 +39,8 @@ function project(ring: number[][]): [number, number][] {
  */
 export function ParcelleMap({ parcelle, className = "" }: { parcelle: Parcelle; className?: string }) {
   const reduce = useReducedMotion();
+  const { lang } = useLanguage();
+  const en = lang === "en";
   const color = HEX[parcelle.statut];
   const geo = parcelle.geojson;
 
@@ -83,7 +86,11 @@ export function ParcelleMap({ parcelle, className = "" }: { parcelle: Parcelle; 
         viewBox={`0 0 ${W} ${H}`}
         className="relative block w-full"
         role="img"
-        aria-label={`Emplacement de la parcelle de ${parcelle.producteurNom} (${parcelle.region})`}
+        aria-label={
+          en
+            ? `Location of ${parcelle.producteurNom}'s plot (${parcelle.region})`
+            : `Emplacement de la parcelle de ${parcelle.producteurNom} (${parcelle.region})`
+        }
       >
         {geo.type === "Polygon" ? (
           <>
@@ -131,14 +138,14 @@ export function ParcelleMap({ parcelle, className = "" }: { parcelle: Parcelle; 
       {/* Étiquettes coin */}
       <div className="pointer-events-none absolute left-3 top-3">
         <span className="eyebrow rounded-full bg-black/25 px-2.5 py-1 text-[0.62rem] text-white/85 backdrop-blur-sm">
-          Zone analysée
+          {en ? "Analyzed area" : "Zone analysée"}
         </span>
       </div>
       {centroid.length === 2 && (
         <div className="pointer-events-none absolute bottom-3 left-3">
           <span className="num rounded-full bg-black/25 px-2.5 py-1 text-[0.68rem] text-white/80 backdrop-blur-sm">
             {Math.abs(centroid[1]).toFixed(4)}° {centroid[1] >= 0 ? "N" : "S"} ·{" "}
-            {Math.abs(centroid[0]).toFixed(4)}° {centroid[0] >= 0 ? "E" : "O"}
+            {Math.abs(centroid[0]).toFixed(4)}° {centroid[0] >= 0 ? "E" : en ? "W" : "O"}
           </span>
         </div>
       )}

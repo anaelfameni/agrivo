@@ -6,20 +6,23 @@ import { motion, useReducedMotion } from "framer-motion";
 import { Activity, KeyRound, Lock, Server, ShieldCheck, ShieldAlert } from "lucide-react";
 import { useAuth } from "@/components/auth-provider";
 import { MOCK_MODE } from "@/lib/ai/config";
+import { useLanguage } from "@/components/language-provider";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
 const SERVICES = [
-  { name: "Whisp API (FAO)", desc: "Détection satellite de déforestation", status: "ok" as const },
-  { name: "Gemini API (Google)", desc: "Vision, langage, copilote", status: "ok" as const },
-  { name: "Copernicus / Sentinel-2", desc: "Imagerie satellite", status: "ok" as const },
-  { name: "TRACES NT", desc: "Dépôt des déclarations (DDS)", status: "ok" as const },
+  { name: "Whisp API (FAO)", desc: { fr: "Détection satellite de déforestation", en: "Satellite deforestation detection" }, status: "ok" as const },
+  { name: "Gemini API (Google)", desc: { fr: "Vision, langage, copilote", en: "Vision, language, copilot" }, status: "ok" as const },
+  { name: "Copernicus / Sentinel-2", desc: { fr: "Imagerie satellite", en: "Satellite imagery" }, status: "ok" as const },
+  { name: "TRACES NT", desc: { fr: "Dépôt des déclarations (DDS)", en: "Declaration filing (DDS)" }, status: "ok" as const },
 ];
 
 const API_KEYS = ["WHISP_API_KEY", "GEMINI_API_KEY", "GOOGLE_EARTH_ENGINE_KEY"];
 
 export default function AdminPage() {
   const { user, loading } = useAuth();
+  const { lang } = useLanguage();
+  const en = lang === "en";
   const router = useRouter();
   const reduce = useReducedMotion();
 
@@ -35,7 +38,9 @@ export default function AdminPage() {
           <span className="grid h-12 w-12 place-items-center rounded-2xl bg-red-block/10">
             <ShieldAlert size={24} className="text-red-block" aria-hidden />
           </span>
-          <p className="text-sm text-stone-500">Espace réservé aux administrateurs. Redirection…</p>
+          <p className="text-sm text-stone-500">
+            {en ? "Restricted to administrators. Redirecting…" : "Espace réservé aux administrateurs. Redirection…"}
+          </p>
         </div>
       </div>
     );
@@ -55,11 +60,15 @@ export default function AdminPage() {
         <div className="relative">
           <p className="eyebrow flex items-center gap-2 text-green-signal">
             <ShieldCheck size={14} strokeWidth={2.5} aria-hidden />
-            Administration
+            {en ? "Administration" : "Administration"}
           </p>
-          <h1 className="mt-2.5 font-display text-3xl leading-tight text-white sm:text-[2.4rem]">Console admin</h1>
+          <h1 className="mt-2.5 font-display text-3xl leading-tight text-white sm:text-[2.4rem]">
+            {en ? "Admin console" : "Console admin"}
+          </h1>
           <p className="mt-1.5 text-sm text-white/55">
-            Clés d&apos;API, mode de démonstration et état des services externes. Accès restreint.
+            {en
+              ? "API keys, demo mode and external service status. Restricted access."
+              : "Clés d'API, mode de démonstration et état des services externes. Accès restreint."}
           </p>
         </div>
       </motion.div>
@@ -71,17 +80,19 @@ export default function AdminPage() {
             <span className="chip-green grid h-9 w-9 place-items-center rounded-xl" aria-hidden>
               <KeyRound size={17} strokeWidth={2} className="text-green-signal" />
             </span>
-            <h2 className="text-sm font-semibold text-forest-950">Clés d&apos;API</h2>
+            <h2 className="text-sm font-semibold text-forest-950">{en ? "API keys" : "Clés d'API"}</h2>
           </div>
           <p className="mt-2 text-xs text-stone-500">
-            Injectées côté serveur, jamais exposées au client. Le parcours passe toujours par une route API.
+            {en
+              ? "Injected server-side, never exposed to the client. The flow always goes through an API route."
+              : "Injectées côté serveur, jamais exposées au client. Le parcours passe toujours par une route API."}
           </p>
           <div className="mt-4 flex flex-col gap-2.5">
             {API_KEYS.map((k) => (
               <div key={k} className="flex items-center gap-3 rounded-xl border border-black/[0.06] bg-ivory/50 px-3 py-2.5">
                 <Lock size={14} strokeWidth={2} className="shrink-0 text-stone-400" aria-hidden />
                 <span className="num flex-1 text-xs text-stone-600">{k}</span>
-                <span className="num tracking-widest text-stone-400" aria-label="Valeur masquée">••••••••••</span>
+                <span className="num tracking-widest text-stone-400" aria-label={en ? "Hidden value" : "Valeur masquée"}>••••••••••</span>
               </div>
             ))}
           </div>
@@ -95,11 +106,12 @@ export default function AdminPage() {
                 <span className="chip-green grid h-9 w-9 place-items-center rounded-xl" aria-hidden>
                   <ShieldCheck size={17} strokeWidth={2} className="text-green-signal" />
                 </span>
-                Mode démonstration
+                {en ? "Demo mode" : "Mode démonstration"}
               </h2>
               <p className="mt-2 max-w-sm text-xs text-stone-500">
-                Forcé activé : aucun appel réseau live ne part de l&apos;application. Les résultats sont
-                pré-enregistrés avec une latence simulée. La démo ne dépend d&apos;aucun service externe.
+                {en
+                  ? "Forced on: no live network call leaves the application. Results are pre-recorded with simulated latency. The demo depends on no external service."
+                  : "Forcé activé : aucun appel réseau live ne part de l'application. Les résultats sont pré-enregistrés avec une latence simulée. La démo ne dépend d'aucun service externe."}
               </p>
               <p className="num mt-2 text-[0.7rem] text-stone-400">MOCK_MODE = {String(MOCK_MODE)}</p>
             </div>
@@ -107,9 +119,9 @@ export default function AdminPage() {
               role="switch"
               aria-checked={MOCK_MODE}
               aria-disabled="true"
-              aria-label="MOCK_MODE forcé activé"
+              aria-label={en ? "MOCK_MODE forced on" : "MOCK_MODE forcé activé"}
               className="relative mt-0.5 h-6 w-11 shrink-0 cursor-not-allowed rounded-full bg-green-signal"
-              title="Verrouillé pour sécuriser la démonstration"
+              title={en ? "Locked to secure the demo" : "Verrouillé pour sécuriser la démonstration"}
             >
               <span className="absolute right-0.5 top-0.5 h-5 w-5 rounded-full bg-white shadow-sm" />
             </div>
@@ -123,14 +135,14 @@ export default function AdminPage() {
               <span className="chip-green grid h-9 w-9 place-items-center rounded-xl" aria-hidden>
                 <Server size={17} strokeWidth={2} className="text-green-signal" />
               </span>
-              État des services
+              {en ? "Service status" : "État des services"}
             </h2>
             <span className="flex items-center gap-1.5 text-[0.7rem] text-stone-500">
               <span className="relative flex h-2 w-2">
                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-signal/60" />
                 <span className="relative inline-flex h-2 w-2 rounded-full bg-green-signal" />
               </span>
-              opérationnel
+              {en ? "operational" : "opérationnel"}
             </span>
           </div>
           <ul className="mt-4 grid gap-2.5 sm:grid-cols-2">
@@ -141,7 +153,7 @@ export default function AdminPage() {
                 </span>
                 <div className="min-w-0 flex-1">
                   <p className="truncate text-sm font-medium text-forest-950">{s.name}</p>
-                  <p className="truncate text-xs text-stone-500">{s.desc}</p>
+                  <p className="truncate text-xs text-stone-500">{en ? s.desc.en : s.desc.fr}</p>
                 </div>
                 <span className="inline-flex items-center gap-1.5 rounded-full bg-green-signal/12 px-2.5 py-1 text-[0.7rem] font-semibold text-green-signal">
                   <span className="h-1.5 w-1.5 rounded-full bg-green-signal" /> OK

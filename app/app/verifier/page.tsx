@@ -7,6 +7,7 @@ import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { ArrowLeft, ArrowRight, CheckCircle2, RotateCcw, ShieldCheck } from "lucide-react";
 import { VerifierStepper } from "@/components/verifier/verifier-stepper";
 import { StepScan } from "@/components/verifier/step-scan";
+import { StepMapping } from "@/components/verifier/step-mapping";
 import { StepAnalysis } from "@/components/verifier/step-analysis";
 import { StepCertificate } from "@/components/verifier/step-certificate";
 import { StepCredit } from "@/components/verifier/step-credit";
@@ -22,13 +23,64 @@ import {
 } from "@/data/mock-parcelles";
 import type { ScanResult } from "@/lib/ai/gemini";
 import type { WhispResult } from "@/lib/ai/whisp";
+import { useLanguage } from "@/components/language-provider";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
+
+const TR = {
+  fr: {
+    back: "Tableau de bord",
+    eyebrow: "Parcours de vérification",
+    title: "Nouvelle vérification",
+    nextCredit: "Proposer un crédit",
+    finish: "Terminer",
+    confirm: {
+      title: "Consentement enregistré",
+      body: (coop: string) =>
+        `Vous vérifiez une parcelle pour la ${coop}. Le consentement éclairé du producteur a été recueilli. La vérification se déroule en quatre temps : scan de la carte, cartographie GPS de la parcelle, analyse satellite, puis verdict et suites (certificat, crédit).`,
+      coop: "Coopérative", gerant: "Gérant", artci: "Consentement ARTCI", recueilli: "Recueilli",
+      start: "Commencer le scan",
+    },
+    done: {
+      title: "Vérification terminée",
+      anomalie: "L'anomalie a été signalée. Le certificat documente la perte de couverture détectée pour la suite du dossier.",
+      insuffisant: "L'analyse n'est pas concluante : un nouveau passage satellite est nécessaire. Aucun certificat n'est émis à ce stade.",
+      conforme: "La parcelle est conforme, le certificat est prêt pour TRACES NT.",
+      backDash: "Retour au tableau de bord",
+      again: "Nouvelle vérification",
+    },
+  },
+  en: {
+    back: "Dashboard",
+    eyebrow: "Verification flow",
+    title: "New verification",
+    nextCredit: "Propose a credit",
+    finish: "Finish",
+    confirm: {
+      title: "Consent recorded",
+      body: (coop: string) =>
+        `You are verifying a plot for ${coop}. The farmer's informed consent has been collected. The verification runs in four stages: card scan, GPS plot mapping, satellite analysis, then verdict and next steps (certificate, credit).`,
+      coop: "Cooperative", gerant: "Manager", artci: "ARTCI consent", recueilli: "Collected",
+      start: "Start the scan",
+    },
+    done: {
+      title: "Verification complete",
+      anomalie: "The anomaly has been flagged. The certificate documents the detected cover loss for the case file.",
+      insuffisant: "The analysis is inconclusive: a new satellite pass is required. No certificate is issued at this stage.",
+      conforme: "The plot is compliant; the certificate is ready for TRACES NT.",
+      backDash: "Back to dashboard",
+      again: "New verification",
+    },
+  },
+};
+type Tr = (typeof TR)["fr"];
 
 export default function VerifierPage() {
   const router = useRouter();
   const reduce = useReducedMotion();
-  const [step, setStep] = useState(1); // 1-5 ; 6 = écran de fin
+  const { lang } = useLanguage();
+  const t = TR[lang];
+  const [step, setStep] = useState(1); // 1-6 ; 7 = écran de fin
   const [, setScan] = useState<ScanResult | null>(null);
   const [parcelle, setParcelle] = useState<Parcelle | null>(null);
   const [whisp, setWhisp] = useState<WhispResult | null>(null);
@@ -52,10 +104,10 @@ export default function VerifierPage() {
   }
 
   function afterAnalysis() {
-    setStep(whisp?.statut === "insuffisant" ? 6 : 4);
+    setStep(whisp?.statut === "insuffisant" ? 7 : 5);
   }
   function afterCertificate() {
-    setStep(whisp?.statut === "conforme" ? 5 : 6);
+    setStep(whisp?.statut === "conforme" ? 6 : 7);
   }
 
   function finalize() {
@@ -79,7 +131,7 @@ export default function VerifierPage() {
     setStep(1);
   }
 
-  const stepperCurrent = Math.min(step, 5);
+  const stepperCurrent = Math.min(step, 6);
 
   return (
     <div className="flex flex-col gap-7">
@@ -89,15 +141,15 @@ export default function VerifierPage() {
           className="inline-flex w-fit items-center gap-1.5 rounded-full text-sm text-stone-500 outline-none transition-colors hover:text-forest-950 focus-visible:ring-2 focus-visible:ring-green-signal focus-visible:ring-offset-2 focus-visible:ring-offset-ivory"
         >
           <ArrowLeft size={15} strokeWidth={2} aria-hidden />
-          Tableau de bord
+          {t.back}
         </Link>
         <div>
-          <p className="eyebrow text-green-signal">Parcours de vérification</p>
+          <p className="eyebrow text-green-signal">{t.eyebrow}</p>
           <h1 className="mt-1 font-display text-3xl leading-tight text-forest-950 sm:text-4xl">
-            Nouvelle vérification
+            {t.title}
           </h1>
         </div>
-        {step <= 5 && <VerifierStepper current={stepperCurrent} />}
+        {step <= 6 && <VerifierStepper current={stepperCurrent} />}
       </div>
 
       <AnimatePresence mode="wait">
@@ -109,39 +161,47 @@ export default function VerifierPage() {
           transition={{ duration: 0.32, ease: EASE }}
         >
           {step === 1 && (
-            <StepConfirm onStart={() => setStep(2)} />
+            <StepConfirm t={t} onStart={() => setStep(2)} />
           )}
 
           {step === 2 && <StepScan onBack={() => setStep(1)} onConfirm={onScanConfirm} />}
 
           {step === 3 && parcelle && (
-            <StepAnalysis
+            <StepMapping
               parcelle={parcelle}
-              onVerdict={setWhisp}
-              onNext={afterAnalysis}
+              onNext={() => setStep(4)}
               onBack={() => setStep(2)}
             />
           )}
 
-          {step === 4 && certData && whisp && (
-            <StepCertificate
-              data={certData}
-              nextLabel={whisp.statut === "conforme" ? "Proposer un crédit" : "Terminer"}
-              onNext={afterCertificate}
+          {step === 4 && parcelle && (
+            <StepAnalysis
+              parcelle={parcelle}
+              onVerdict={setWhisp}
+              onNext={afterAnalysis}
               onBack={() => setStep(3)}
             />
           )}
 
-          {step === 5 && parcelle && (
-            <StepCredit
-              producteurNom={parcelle.producteurNom}
-              onFinish={finalize}
+          {step === 5 && certData && whisp && (
+            <StepCertificate
+              data={certData}
+              nextLabel={whisp.statut === "conforme" ? t.nextCredit : t.finish}
+              onNext={afterCertificate}
               onBack={() => setStep(4)}
             />
           )}
 
-          {step === 6 && (
-            <StepDone parcelle={parcelle} whisp={whisp} onFinish={finalize} onReset={reset} />
+          {step === 6 && parcelle && (
+            <StepCredit
+              producteurNom={parcelle.producteurNom}
+              onFinish={finalize}
+              onBack={() => setStep(5)}
+            />
+          )}
+
+          {step === 7 && (
+            <StepDone t={t} lang={lang} parcelle={parcelle} whisp={whisp} onFinish={finalize} onReset={reset} />
           )}
         </motion.div>
       </AnimatePresence>
@@ -150,23 +210,19 @@ export default function VerifierPage() {
 }
 
 /* --------------------------------- Étape 1 : Confirmation --------------------------------- */
-function StepConfirm({ onStart }: { onStart: () => void }) {
+function StepConfirm({ t, onStart }: { t: Tr; onStart: () => void }) {
   return (
     <div className="card-premium mx-auto max-w-xl p-6 sm:p-8">
       <span className="chip-green grid h-12 w-12 place-items-center rounded-2xl" aria-hidden>
         <ShieldCheck size={24} strokeWidth={1.75} className="text-green-signal" />
       </span>
-      <h2 className="mt-4 font-display text-2xl leading-tight text-forest-950">Consentement enregistré</h2>
-      <p className="mt-2 text-sm leading-relaxed text-stone-500">
-        Vous vérifiez une parcelle pour la {COOP_DEMO}. Le consentement éclairé du producteur a été
-        recueilli. La vérification se déroule en trois temps : scan de la carte, cartographie satellite,
-        puis verdict et suites (certificat, crédit).
-      </p>
+      <h2 className="mt-4 font-display text-2xl leading-tight text-forest-950">{t.confirm.title}</h2>
+      <p className="mt-2 text-sm leading-relaxed text-stone-500">{t.confirm.body(COOP_DEMO)}</p>
 
       <dl className="mt-5 flex flex-col divide-y divide-black/[0.05] rounded-xl bg-ivory-deep/40 px-4">
-        <Row label="Coopérative" value={COOP_DEMO} />
-        <Row label="Gérant" value={MANAGER_DEMO} />
-        <Row label="Consentement ARTCI" value="Recueilli" />
+        <Row label={t.confirm.coop} value={COOP_DEMO} />
+        <Row label={t.confirm.gerant} value={MANAGER_DEMO} />
+        <Row label={t.confirm.artci} value={t.confirm.recueilli} />
       </dl>
 
       <button
@@ -174,7 +230,7 @@ function StepConfirm({ onStart }: { onStart: () => void }) {
         onClick={onStart}
         className="btn-green group mt-6 inline-flex w-full items-center justify-center gap-2 rounded-full px-6 py-3.5 text-sm font-semibold outline-none focus-visible:ring-2 focus-visible:ring-green-signal focus-visible:ring-offset-2 focus-visible:ring-offset-white"
       >
-        Commencer le scan
+        {t.confirm.start}
         <ArrowRight size={16} strokeWidth={2.25} aria-hidden className="transition-transform group-hover:translate-x-0.5" />
       </button>
     </div>
@@ -192,23 +248,22 @@ function Row({ label, value }: { label: string; value: string }) {
 
 /* --------------------------------- Étape finale --------------------------------- */
 function StepDone({
+  t,
+  lang,
   parcelle,
   whisp,
   onFinish,
   onReset,
 }: {
+  t: Tr;
+  lang: "fr" | "en";
   parcelle: Parcelle | null;
   whisp: WhispResult | null;
   onFinish: () => void;
   onReset: () => void;
 }) {
   const statut = whisp?.statut ?? "conforme";
-  const message =
-    statut === "anomalie"
-      ? "L'anomalie a été signalée. Le certificat documente la perte de couverture détectée pour la suite du dossier."
-      : statut === "insuffisant"
-        ? "L'analyse n'est pas concluante : un nouveau passage satellite est nécessaire. Aucun certificat n'est émis à ce stade."
-        : "La parcelle est conforme, le certificat est prêt pour TRACES NT.";
+  const message = t.done[statut];
 
   return (
     <div className="card-premium mx-auto max-w-xl p-8 text-center">
@@ -219,11 +274,11 @@ function StepDone({
           <CheckCircle2 size={34} strokeWidth={1.75} className="text-green-signal" />
         )}
       </div>
-      <h2 className="mt-5 font-display text-2xl text-forest-950">Vérification terminée</h2>
+      <h2 className="mt-5 font-display text-2xl text-forest-950">{t.done.title}</h2>
       {parcelle && (
         <div className="mt-3 flex items-center justify-center gap-2">
           <span className="text-sm text-stone-500">{parcelle.producteurNom}</span>
-          <StatusBadge statut={statut} size="sm" />
+          <StatusBadge statut={statut} size="sm" lang={lang} />
         </div>
       )}
       <p className="mx-auto mt-3 max-w-prose text-sm leading-relaxed text-stone-500">{message}</p>
@@ -234,7 +289,7 @@ function StepDone({
           onClick={onFinish}
           className="group inline-flex items-center justify-center gap-2 rounded-full bg-forest-950 px-6 py-3.5 text-sm font-semibold text-white outline-none transition-transform hover:scale-[1.02] active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-green-signal focus-visible:ring-offset-2 focus-visible:ring-offset-white"
         >
-          Retour au tableau de bord
+          {t.done.backDash}
           <ArrowRight size={16} strokeWidth={2.25} aria-hidden className="transition-transform group-hover:translate-x-0.5" />
         </button>
         <button
@@ -243,7 +298,7 @@ function StepDone({
           className="inline-flex items-center justify-center gap-2 rounded-full border border-black/10 px-5 py-3 text-sm font-medium text-stone-600 outline-none transition-colors hover:border-green-signal/40 hover:text-forest-950 focus-visible:ring-2 focus-visible:ring-green-signal"
         >
           <RotateCcw size={15} strokeWidth={2} aria-hidden />
-          Nouvelle vérification
+          {t.done.again}
         </button>
       </div>
     </div>

@@ -6,6 +6,7 @@ import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { ArrowRight, Leaf, RotateCcw, Sparkles, Volume2, VolumeX, X } from "lucide-react";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { PinMark } from "@/components/ui/pin-mark";
+import { useLanguage } from "@/components/language-provider";
 import type { AnalysisPhase } from "@/components/verifier/analysis-map";
 import type { WhispResult } from "@/lib/ai/whisp";
 import type { ScoreSols } from "@/lib/ai/gemini";
@@ -13,6 +14,53 @@ import { STATUT_COLOR, type Parcelle } from "@/data/mock-parcelles";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
+const COPY = {
+  fr: {
+    eyebrow: "Détection Whisp · FAO",
+    intro:
+      "L'analyse combine plusieurs sources satellites publiques (convergence de preuves, méthode FAO) autour de la date pivot du 31 décembre 2020.",
+    drawing: "Cartographie de la parcelle…",
+    scanning: "Analyse satellite en cours…",
+    stopListen: "Arrêter la lecture",
+    listenAria: "Écouter l'explication du verdict",
+    stop: "Arrêter",
+    listen: "Écouter",
+    soilScore: "Score de résilience des sols",
+    soilDialog: "Explication du score de résilience des sols",
+    score: "Score",
+    generating: "Explication en cours de génération…",
+    methodology: "Méthodologie inspirée de standards reconnus type Kubeko.",
+    close: "Fermer",
+    launch: "Lancer l'analyse",
+    analyzing: "Analyse en cours…",
+    next: "Continuer",
+    replay: "Revoir l'analyse",
+    back: "Retour",
+  },
+  en: {
+    eyebrow: "Whisp detection · FAO",
+    intro:
+      "The analysis combines several public satellite sources (convergence of evidence, FAO method) around the cut-off date of 31 December 2020.",
+    drawing: "Mapping the plot…",
+    scanning: "Satellite analysis in progress…",
+    stopListen: "Stop reading",
+    listenAria: "Listen to the verdict explanation",
+    stop: "Stop",
+    listen: "Listen",
+    soilScore: "Soil resilience score",
+    soilDialog: "Soil resilience score explanation",
+    score: "Score",
+    generating: "Explanation being generated…",
+    methodology: "Methodology inspired by recognised standards such as Kubeko.",
+    close: "Close",
+    launch: "Run the analysis",
+    analyzing: "Analysis in progress…",
+    next: "Continue",
+    replay: "Replay the analysis",
+    back: "Back",
+  },
+} as const;
 
 const AnalysisMap = dynamic(() => import("@/components/verifier/analysis-map"), {
   ssr: false,
@@ -40,6 +88,8 @@ export function StepAnalysis({
   onBack: () => void;
 }) {
   const reduce = useReducedMotion();
+  const { lang } = useLanguage();
+  const t = COPY[lang];
   const [phase, setPhase] = useState<AnalysisPhase>("idle");
   const [whisp, setWhisp] = useState<WhispResult | null>(null);
   const [scoreOpen, setScoreOpen] = useState(false);
@@ -142,7 +192,7 @@ export function StepAnalysis({
       <div className="flex flex-col rounded-2xl border border-black/[0.05] bg-white p-5 shadow-[0_1px_2px_rgba(10,31,20,0.04)]">
         <div className="flex items-center gap-2">
           <Sparkles size={16} strokeWidth={2} className="text-green-signal" aria-hidden />
-          <p className="eyebrow text-green-signal">Détection Whisp · FAO</p>
+          <p className="eyebrow text-green-signal">{t.eyebrow}</p>
         </div>
         <h2 className="mt-2 font-display text-2xl leading-tight text-forest-950">
           {parcelle.producteurNom}
@@ -154,15 +204,12 @@ export function StepAnalysis({
         <div className="mt-5 flex-1">
           {!done ? (
             <div className="flex h-full flex-col">
-              <p className="text-sm leading-relaxed text-stone-500">
-                L&apos;analyse combine plusieurs sources satellites publiques (convergence de preuves,
-                méthode FAO) autour de la date pivot du 31 décembre 2020.
-              </p>
+              <p className="text-sm leading-relaxed text-stone-500">{t.intro}</p>
               {phase !== "idle" && (
                 <div className="mt-5 flex items-center gap-3 rounded-xl bg-ivory-deep/50 px-4 py-3">
                   <PinMark size={22} color="var(--color-green-signal)" pulse />
                   <span className="text-sm font-medium text-forest-950">
-                    {phase === "drawing" ? "Cartographie de la parcelle…" : "Analyse satellite en cours…"}
+                    {phase === "drawing" ? t.drawing : t.scanning}
                   </span>
                 </div>
               )}
@@ -175,16 +222,16 @@ export function StepAnalysis({
               className="flex flex-col gap-4"
             >
               <div className="flex flex-wrap items-center gap-2">
-                <StatusBadge statut={whisp.statut} />
+                <StatusBadge statut={whisp.statut} lang={lang} />
                 {canSpeak && (
                   <button
                     type="button"
                     onClick={speaking ? stopParler : parler}
-                    aria-label={speaking ? "Arrêter la lecture" : "Écouter l'explication du verdict"}
+                    aria-label={speaking ? t.stopListen : t.listenAria}
                     className="inline-flex items-center gap-1.5 rounded-full border border-black/10 px-3 py-1.5 text-xs font-medium text-forest-950 outline-none transition-colors hover:border-green-signal/40 focus-visible:ring-2 focus-visible:ring-green-signal"
                   >
                     {speaking ? <VolumeX size={14} strokeWidth={2} /> : <Volume2 size={14} strokeWidth={2} />}
-                    {speaking ? "Arrêter" : "Écouter"}
+                    {speaking ? t.stop : t.listen}
                   </button>
                 )}
               </div>
@@ -212,13 +259,13 @@ export function StepAnalysis({
                   className="inline-flex items-center gap-2 rounded-full border border-amber-cacao/25 bg-amber-cacao/[0.06] px-3.5 py-2 text-xs font-medium text-amber-cacao outline-none transition-colors hover:bg-amber-cacao/[0.12] focus-visible:ring-2 focus-visible:ring-amber-cacao/40"
                 >
                   <Leaf size={14} strokeWidth={2} aria-hidden />
-                  Score de résilience des sols
+                  {t.soilScore}
                 </button>
                 <AnimatePresence>
                   {scoreOpen && (
                     <motion.div
                       role="dialog"
-                      aria-label="Explication du score de résilience des sols"
+                      aria-label={t.soilDialog}
                       initial={reduce ? { opacity: 0 } : { opacity: 0, y: -6, scale: 0.98 }}
                       animate={{ opacity: 1, y: 0, scale: 1 }}
                       exit={reduce ? { opacity: 0 } : { opacity: 0, y: -6, scale: 0.98 }}
@@ -227,24 +274,22 @@ export function StepAnalysis({
                     >
                       <div className="flex items-start justify-between gap-2">
                         <span className="text-sm font-semibold text-forest-950">
-                          Score {score ? `· ${score.niveau}` : "…"}
+                          {t.score} {score ? `· ${score.niveau}` : "…"}
                         </span>
                         <button
                           type="button"
                           onClick={() => setScoreOpen(false)}
-                          aria-label="Fermer"
+                          aria-label={t.close}
                           className="grid h-6 w-6 place-items-center rounded-full text-stone-400 transition-colors hover:bg-black/5 hover:text-forest-950"
                         >
                           <X size={14} strokeWidth={2} />
                         </button>
                       </div>
                       <p className="mt-1.5 text-xs leading-relaxed text-stone-500">
-                        {score
-                          ? score.explication
-                          : "Explication en cours de génération…"}
+                        {score ? score.explication : t.generating}
                       </p>
                       <p className="mt-2 border-t border-black/[0.05] pt-2 text-[0.68rem] text-stone-400">
-                        Méthodologie inspirée de standards reconnus type Kubeko.
+                        {t.methodology}
                       </p>
                     </motion.div>
                   )}
@@ -263,7 +308,7 @@ export function StepAnalysis({
               onClick={() => lancer(false)}
               className="inline-flex items-center justify-center gap-2 rounded-full bg-green-signal px-6 py-3.5 text-sm font-semibold text-white shadow-[0_14px_34px_-12px_rgba(22,163,74,0.75)] outline-none transition-[filter,transform,opacity] hover:brightness-105 active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-green-signal focus-visible:ring-offset-2 focus-visible:ring-offset-white disabled:cursor-not-allowed disabled:opacity-50"
             >
-              {phase === "idle" ? "Lancer l'analyse" : "Analyse en cours…"}
+              {phase === "idle" ? t.launch : t.analyzing}
             </button>
           ) : (
             <div className="flex flex-col gap-2 sm:flex-row">
@@ -272,7 +317,7 @@ export function StepAnalysis({
                 onClick={onNext}
                 className="group inline-flex flex-1 items-center justify-center gap-2 rounded-full bg-green-signal px-6 py-3.5 text-sm font-semibold text-white shadow-[0_14px_34px_-12px_rgba(22,163,74,0.75)] outline-none transition-[filter,transform] hover:brightness-105 active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-green-signal focus-visible:ring-offset-2 focus-visible:ring-offset-white"
               >
-                Continuer
+                {t.next}
                 <ArrowRight size={16} strokeWidth={2.25} aria-hidden className="transition-transform group-hover:translate-x-0.5" />
               </button>
               <button
@@ -281,7 +326,7 @@ export function StepAnalysis({
                 className="inline-flex items-center justify-center gap-2 rounded-full border border-black/10 px-4 py-3.5 text-sm font-medium text-stone-600 outline-none transition-colors hover:border-green-signal/40 hover:text-forest-950 focus-visible:ring-2 focus-visible:ring-green-signal"
               >
                 <RotateCcw size={15} strokeWidth={2} aria-hidden />
-                Revoir l&apos;analyse
+                {t.replay}
               </button>
             </div>
           )}
@@ -290,7 +335,7 @@ export function StepAnalysis({
             onClick={onBack}
             className="text-center text-sm text-stone-400 outline-none transition-colors hover:text-forest-950 focus-visible:text-forest-950"
           >
-            Retour
+            {t.back}
           </button>
         </div>
       </div>

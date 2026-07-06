@@ -4,12 +4,44 @@ import { useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { ArrowRight, Check, Loader2, Smartphone } from "lucide-react";
 import { PinMark } from "@/components/ui/pin-mark";
+import { useLanguage } from "@/components/language-provider";
 import { fmtFCFA } from "@/data/mock-parcelles";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 const MIN = 50000;
 const MAX = 250000;
 const STEP = 10000;
+
+const COPY = {
+  fr: {
+    eyebrow: "Inclusion financière",
+    title: (nom: string) => `${nom} est éligible au micro-crédit`,
+    desc: "Sa parcelle est conforme. Proposez un montant : c'est un prêt facilité auprès de l'institution de microfinance partenaire, remboursable par le producteur. Le service AGRIVO reste gratuit pour lui.",
+    amountLabel: "Montant proposé",
+    sliderAria: "Montant du micro-crédit en FCFA",
+    back: "Retour",
+    sending: "Envoi Mobile Money…",
+    propose: "Proposer au producteur",
+    sent: "Proposition envoyée",
+    sentDesc: (montant: string, nom: string) => `${montant} proposés à ${nom} par Mobile Money.`,
+    motto: "Le vert prouve, l'or récompense.",
+    backToDashboard: "Retour au tableau de bord",
+  },
+  en: {
+    eyebrow: "Financial inclusion",
+    title: (nom: string) => `${nom} is eligible for a micro-loan`,
+    desc: "Their plot is compliant. Propose an amount: it is a loan facilitated through the partner microfinance institution, repayable by the farmer. The AGRIVO service remains free for them.",
+    amountLabel: "Proposed amount",
+    sliderAria: "Micro-loan amount in FCFA",
+    back: "Back",
+    sending: "Sending via Mobile Money…",
+    propose: "Propose to the farmer",
+    sent: "Proposal sent",
+    sentDesc: (montant: string, nom: string) => `${montant} proposed to ${nom} via Mobile Money.`,
+    motto: "Green proves, gold rewards.",
+    backToDashboard: "Back to the dashboard",
+  },
+} as const;
 
 /**
  * Étape 5 — inclusion financière (uniquement si conforme). Le producteur conforme devient
@@ -27,6 +59,8 @@ export function StepCredit({
   onBack: () => void;
 }) {
   const reduce = useReducedMotion();
+  const { lang } = useLanguage();
+  const t = COPY[lang];
   const [amount, setAmount] = useState(150000);
   const [status, setStatus] = useState<"idle" | "sending" | "done">("idle");
 
@@ -42,7 +76,7 @@ export function StepCredit({
     <div className="mx-auto max-w-xl">
       <div className="mb-5 flex items-center gap-2">
         <Smartphone size={16} strokeWidth={2} className="text-amber-cacao" aria-hidden />
-        <p className="eyebrow text-amber-cacao">Inclusion financière</p>
+        <p className="eyebrow text-amber-cacao">{t.eyebrow}</p>
       </div>
 
       <AnimatePresence mode="wait">
@@ -55,17 +89,13 @@ export function StepCredit({
             className="rounded-2xl border border-black/[0.06] bg-white p-6 shadow-[0_1px_2px_rgba(10,31,20,0.04)]"
           >
             <h2 className="font-display text-2xl leading-tight text-forest-950">
-              {producteurNom} est éligible au micro-crédit
+              {t.title(producteurNom)}
             </h2>
-            <p className="mt-2 text-sm leading-relaxed text-stone-500">
-              Sa parcelle est conforme. Proposez un montant : c&apos;est un prêt facilité auprès de
-              l&apos;institution de microfinance partenaire, remboursable par le producteur. Le service
-              AGRIVO reste gratuit pour lui.
-            </p>
+            <p className="mt-2 text-sm leading-relaxed text-stone-500">{t.desc}</p>
 
             <div className="mt-7">
               <div className="flex items-baseline justify-between">
-                <span className="eyebrow text-stone-400">Montant proposé</span>
+                <span className="eyebrow text-stone-400">{t.amountLabel}</span>
                 <span className="num text-2xl font-semibold text-forest-950">{fmtFCFA(amount)}</span>
               </div>
               <input
@@ -75,7 +105,7 @@ export function StepCredit({
                 step={STEP}
                 value={amount}
                 onChange={(e) => setAmount(Number(e.target.value))}
-                aria-label="Montant du micro-crédit en FCFA"
+                aria-label={t.sliderAria}
                 className="mt-4 h-2 w-full cursor-pointer appearance-none rounded-full outline-none focus-visible:ring-2 focus-visible:ring-green-signal focus-visible:ring-offset-2 focus-visible:ring-offset-white"
                 style={{
                   background: `linear-gradient(to right, var(--color-green-signal) ${pct}%, var(--color-stone-100) ${pct}%)`,
@@ -94,7 +124,7 @@ export function StepCredit({
                 onClick={onBack}
                 className="text-sm text-stone-400 outline-none transition-colors hover:text-forest-950 focus-visible:text-forest-950"
               >
-                Retour
+                {t.back}
               </button>
               <button
                 type="button"
@@ -105,12 +135,12 @@ export function StepCredit({
                 {status === "sending" ? (
                   <>
                     <Loader2 size={16} strokeWidth={2} className="animate-spin" />
-                    Envoi Mobile Money…
+                    {t.sending}
                   </>
                 ) : (
                   <>
                     <Smartphone size={16} strokeWidth={2} aria-hidden />
-                    Proposer au producteur
+                    {t.propose}
                   </>
                 )}
               </button>
@@ -143,20 +173,18 @@ export function StepCredit({
               </motion.span>
             </motion.div>
 
-            <h2 className="relative mt-5 font-display text-2xl text-forest-950">Proposition envoyée</h2>
+            <h2 className="relative mt-5 font-display text-2xl text-forest-950">{t.sent}</h2>
             <p className="relative mt-1.5 text-sm text-stone-500">
-              {fmtFCFA(amount)} proposés à {producteurNom} par Mobile Money.
+              {t.sentDesc(fmtFCFA(amount), producteurNom)}
             </p>
-            <p className="relative mt-3 font-display text-sm italic text-amber-cacao">
-              Le vert prouve, l&apos;or récompense.
-            </p>
+            <p className="relative mt-3 font-display text-sm italic text-amber-cacao">{t.motto}</p>
 
             <button
               type="button"
               onClick={onFinish}
               className="group relative mt-7 inline-flex items-center justify-center gap-2 rounded-full bg-forest-950 px-6 py-3.5 text-sm font-semibold text-white outline-none transition-transform hover:scale-[1.02] active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-green-signal focus-visible:ring-offset-2 focus-visible:ring-offset-white"
             >
-              Retour au tableau de bord
+              {t.backToDashboard}
               <ArrowRight size={16} strokeWidth={2.25} aria-hidden className="transition-transform group-hover:translate-x-0.5" />
             </button>
           </motion.div>

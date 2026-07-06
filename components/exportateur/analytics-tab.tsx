@@ -7,6 +7,7 @@ import { ArrowUpDown, Download, MapPin, Search, ShieldCheck, Sprout, Users, X } 
 import { StatNumber } from "@/components/ui/stat-number";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { EmptyState } from "@/components/ui/empty-state";
+import { useLanguage } from "@/components/language-provider";
 import {
   FILIERE_LABEL,
   fmtHa,
@@ -24,22 +25,63 @@ const PortfolioMap = dynamic(() => import("@/components/exportateur/portfolio-ma
   ssr: false,
   loading: () => (
     <div className="grid h-full w-full place-items-center rounded-2xl bg-forest-950 text-white/60">
-      <div className="flex flex-col items-center gap-2">
-        <div className="h-6 w-6 animate-spin rounded-full border-2 border-white/20 border-t-white/70" />
-        <span className="text-xs">Chargement de la carte…</span>
-      </div>
+      <div className="h-6 w-6 animate-spin rounded-full border-2 border-white/20 border-t-white/70" aria-hidden />
     </div>
   ),
 });
 
 type SortKey = "producteur" | "cooperative" | "filiere" | "superficie" | "statut" | "date";
 const STATUT_RANK: Record<Statut, number> = { conforme: 0, anomalie: 1, insuffisant: 2 };
-const STATUT_FILTERS: { key: Statut | "tous"; label: string }[] = [
-  { key: "tous", label: "Tous" },
-  { key: "conforme", label: "Conforme" },
-  { key: "anomalie", label: "Anomalie" },
-  { key: "insuffisant", label: "Insuffisant" },
-];
+const STATUT_KEYS: (Statut | "tous")[] = ["tous", "conforme", "anomalie", "insuffisant"];
+
+const COPY = {
+  fr: {
+    statutFilters: { tous: "Tous", conforme: "Conforme", anomalie: "Anomalie", insuffisant: "Insuffisant" },
+    kpi: {
+      producteurs: "Producteurs audités",
+      taux: "Taux de conformité",
+      superficie: "Superficie cartographiée",
+      volume: "Volume validé",
+    },
+    searchAria: "Rechercher une parcelle, un producteur, une coopérative",
+    searchPlaceholder: "Rechercher…",
+    clear: "Effacer",
+    filterStatut: "Filtrer par statut",
+    filterFiliere: "Filtrer par filière",
+    allFilieres: "Toutes filières",
+    export: "Exporter GeoJSON",
+    filteredView: "vue filtrée",
+    tableTitle: "Parcelles du portefeuille",
+    emptyTitle: "Aucune parcelle",
+    emptyDesc: "Aucune parcelle ne correspond à ces filtres.",
+    resetFilters: "Réinitialiser les filtres",
+    th: { producteur: "Producteur", cooperative: "Coopérative", filiere: "Filière", superficie: "Superficie", statut: "Statut", date: "Date" },
+    sortLocale: "fr",
+  },
+  en: {
+    statutFilters: { tous: "All", conforme: "Compliant", anomalie: "Anomaly", insuffisant: "Insufficient" },
+    kpi: {
+      producteurs: "Farmers audited",
+      taux: "Compliance rate",
+      superficie: "Area mapped",
+      volume: "Validated volume",
+    },
+    searchAria: "Search a plot, a farmer, a cooperative",
+    searchPlaceholder: "Search…",
+    clear: "Clear",
+    filterStatut: "Filter by status",
+    filterFiliere: "Filter by commodity",
+    allFilieres: "All commodities",
+    export: "Export GeoJSON",
+    filteredView: "filtered view",
+    tableTitle: "Portfolio plots",
+    emptyTitle: "No plot",
+    emptyDesc: "No plot matches these filters.",
+    resetFilters: "Reset filters",
+    th: { producteur: "Farmer", cooperative: "Cooperative", filiere: "Commodity", superficie: "Area", statut: "Status", date: "Date" },
+    sortLocale: "en",
+  },
+} as const;
 
 export function AnalyticsTab({
   parcelles,
@@ -57,6 +99,8 @@ export function AnalyticsTab({
   onExport: (list: Parcelle[], scope: string) => void;
 }) {
   const reduce = useReducedMotion();
+  const { lang } = useLanguage();
+  const t = COPY[lang];
   const [query, setQuery] = useState("");
   const [statut, setStatut] = useState<Statut | "tous">("tous");
   const [filiere, setFiliere] = useState<Filiere | "toutes">("toutes");
@@ -103,9 +147,9 @@ export function AnalyticsTab({
       const va = val(a);
       const vb = val(b);
       if (typeof va === "number" && typeof vb === "number") return (va - vb) * dir;
-      return String(va).localeCompare(String(vb), "fr") * dir;
+      return String(va).localeCompare(String(vb), t.sortLocale) * dir;
     });
-  }, [filtered, sortKey, sortDir]);
+  }, [filtered, sortKey, sortDir, t.sortLocale]);
 
   const resetFilters = () => {
     setQuery("");
@@ -150,10 +194,10 @@ export function AnalyticsTab({
   }
 
   const kpis = [
-    { label: "Producteurs audités", value: stats.producteurs, suffix: "", Icon: Users },
-    { label: "Taux de conformité", value: stats.tauxConformite, suffix: " %", Icon: ShieldCheck },
-    { label: "Superficie cartographiée", value: Math.round(stats.superficieHa), suffix: " ha", Icon: MapPin },
-    { label: "Volume validé", value: stats.volumeTonnes, suffix: " t", Icon: Sprout },
+    { label: t.kpi.producteurs, value: stats.producteurs, suffix: "", Icon: Users },
+    { label: t.kpi.taux, value: stats.tauxConformite, suffix: " %", Icon: ShieldCheck },
+    { label: t.kpi.superficie, value: Math.round(stats.superficieHa), suffix: " ha", Icon: MapPin },
+    { label: t.kpi.volume, value: stats.volumeTonnes, suffix: " t", Icon: Sprout },
   ];
 
   return (
@@ -194,43 +238,43 @@ export function AnalyticsTab({
               type="search"
               value={query}
               onChange={(e) => onQuery(e.target.value)}
-              aria-label="Rechercher une parcelle, un producteur, une coopérative"
-              placeholder="Rechercher…"
+              aria-label={t.searchAria}
+              placeholder={t.searchPlaceholder}
               className="h-10 w-full rounded-full border border-black/[0.08] bg-white pl-10 pr-9 text-sm text-forest-950 outline-none transition-colors placeholder:text-stone-400 focus:border-green-signal/50 focus:ring-2 focus:ring-green-signal/15"
             />
             {query && (
-              <button type="button" onClick={() => onQuery("")} aria-label="Effacer" className="absolute right-2.5 top-1/2 grid h-7 w-7 -translate-y-1/2 place-items-center rounded-full text-stone-400 hover:bg-black/5 hover:text-forest-950">
+              <button type="button" onClick={() => onQuery("")} aria-label={t.clear} className="absolute right-2.5 top-1/2 grid h-7 w-7 -translate-y-1/2 place-items-center rounded-full text-stone-400 hover:bg-black/5 hover:text-forest-950">
                 <X size={14} strokeWidth={2} />
               </button>
             )}
           </div>
 
           {/* Filtre statut (segmenté) */}
-          <div className="flex items-center gap-1 rounded-full border border-black/[0.06] bg-white p-1" role="group" aria-label="Filtrer par statut">
-            {STATUT_FILTERS.map((s) => (
+          <div className="flex items-center gap-1 rounded-full border border-black/[0.06] bg-white p-1" role="group" aria-label={t.filterStatut}>
+            {STATUT_KEYS.map((k) => (
               <button
-                key={s.key}
+                key={k}
                 type="button"
-                aria-pressed={statut === s.key}
-                onClick={() => onStatut(s.key)}
+                aria-pressed={statut === k}
+                onClick={() => onStatut(k)}
                 className={`rounded-full px-3 py-1.5 text-xs font-medium outline-none transition-colors focus-visible:ring-2 focus-visible:ring-green-signal ${
-                  statut === s.key ? "bg-forest-950 text-white" : "text-stone-500 hover:text-forest-950"
+                  statut === k ? "bg-forest-950 text-white" : "text-stone-500 hover:text-forest-950"
                 }`}
               >
-                {s.label}
+                {t.statutFilters[k]}
               </button>
             ))}
           </div>
 
           {/* Filtre filière */}
-          <label className="sr-only" htmlFor="filiere-filter">Filtrer par filière</label>
+          <label className="sr-only" htmlFor="filiere-filter">{t.filterFiliere}</label>
           <select
             id="filiere-filter"
             value={filiere}
             onChange={(e) => onFiliere(e.target.value as Filiere | "toutes")}
             className="h-10 rounded-full border border-black/[0.08] bg-white px-4 text-sm text-forest-950 outline-none transition-colors focus:border-green-signal/50 focus:ring-2 focus:ring-green-signal/15"
           >
-            <option value="toutes">Toutes filières</option>
+            <option value="toutes">{t.allFilieres}</option>
             <option value="cacao">Cacao</option>
             <option value="cafe">Café</option>
             <option value="hevea">Hévéa</option>
@@ -240,11 +284,11 @@ export function AnalyticsTab({
 
         <button
           type="button"
-          onClick={() => onExport(sorted, "vue filtrée")}
+          onClick={() => onExport(sorted, t.filteredView)}
           className="inline-flex h-10 shrink-0 items-center justify-center gap-2 rounded-full border border-green-signal/30 bg-green-signal/[0.06] px-4 text-sm font-semibold text-forest-950 outline-none transition-colors hover:bg-green-signal/[0.12] focus-visible:ring-2 focus-visible:ring-green-signal"
         >
           <Download size={16} strokeWidth={2} aria-hidden />
-          Exporter GeoJSON
+          {t.export}
         </button>
       </div>
 
@@ -254,18 +298,18 @@ export function AnalyticsTab({
         <div className="xl:col-span-8">
           <div className="overflow-hidden rounded-2xl border border-black/[0.05] bg-white shadow-[0_1px_2px_rgba(10,31,20,0.04)]">
             <div className="flex items-center justify-between border-b border-black/[0.05] px-4 py-2.5">
-              <h3 className="text-sm font-semibold text-forest-950">Parcelles du portefeuille</h3>
+              <h3 className="text-sm font-semibold text-forest-950">{t.tableTitle}</h3>
               <span className="num text-xs text-stone-400">{sorted.length} / {parcelles.length}</span>
             </div>
 
             {sorted.length === 0 ? (
               <div className="p-3">
                 <EmptyState
-                  title="Aucune parcelle"
-                  description="Aucune parcelle ne correspond à ces filtres."
+                  title={t.emptyTitle}
+                  description={t.emptyDesc}
                   action={
                     <button type="button" onClick={resetFilters} className="inline-flex items-center gap-1.5 rounded-full border border-black/10 px-4 py-2 text-sm font-medium text-forest-950 outline-none transition-colors hover:border-green-signal/40 focus-visible:ring-2 focus-visible:ring-green-signal">
-                      Réinitialiser les filtres
+                      {t.resetFilters}
                     </button>
                   }
                 />
@@ -275,12 +319,12 @@ export function AnalyticsTab({
                 <table className="w-full border-collapse text-sm">
                   <thead className="sticky top-0 z-10 bg-ivory-deep/80 backdrop-blur-sm">
                     <tr className="text-left">
-                      <Th label="Producteur" k="producteur" sortKey={sortKey} sortDir={sortDir} onSort={toggleSort} />
-                      <Th label="Coopérative" k="cooperative" sortKey={sortKey} sortDir={sortDir} onSort={toggleSort} className="hidden md:table-cell" />
-                      <Th label="Filière" k="filiere" sortKey={sortKey} sortDir={sortDir} onSort={toggleSort} className="hidden sm:table-cell" />
-                      <Th label="Superficie" k="superficie" sortKey={sortKey} sortDir={sortDir} onSort={toggleSort} align="right" className="hidden sm:table-cell" />
-                      <Th label="Statut" k="statut" sortKey={sortKey} sortDir={sortDir} onSort={toggleSort} />
-                      <Th label="Date" k="date" sortKey={sortKey} sortDir={sortDir} onSort={toggleSort} className="hidden lg:table-cell" />
+                      <Th label={t.th.producteur} k="producteur" sortKey={sortKey} sortDir={sortDir} onSort={toggleSort} />
+                      <Th label={t.th.cooperative} k="cooperative" sortKey={sortKey} sortDir={sortDir} onSort={toggleSort} className="hidden md:table-cell" />
+                      <Th label={t.th.filiere} k="filiere" sortKey={sortKey} sortDir={sortDir} onSort={toggleSort} className="hidden sm:table-cell" />
+                      <Th label={t.th.superficie} k="superficie" sortKey={sortKey} sortDir={sortDir} onSort={toggleSort} align="right" className="hidden sm:table-cell" />
+                      <Th label={t.th.statut} k="statut" sortKey={sortKey} sortDir={sortDir} onSort={toggleSort} />
+                      <Th label={t.th.date} k="date" sortKey={sortKey} sortDir={sortDir} onSort={toggleSort} className="hidden lg:table-cell" />
                     </tr>
                   </thead>
                   <tbody>
@@ -309,7 +353,7 @@ export function AnalyticsTab({
                             {p.filiere === "palmier" ? "Palmier" : FILIERE_LABEL[p.filiere]}
                           </td>
                           <td className="num hidden whitespace-nowrap px-4 py-2.5 text-right text-forest-950 sm:table-cell">{fmtHa(p.superficieHa)}</td>
-                          <td className="px-4 py-2.5"><StatusBadge statut={p.statut} size="sm" /></td>
+                          <td className="px-4 py-2.5"><StatusBadge statut={p.statut} size="sm" lang={lang} /></td>
                           <td className="num hidden whitespace-nowrap px-4 py-2.5 text-stone-500 lg:table-cell">{formatDateFr(p.dateVerification)}</td>
                         </tr>
                       );

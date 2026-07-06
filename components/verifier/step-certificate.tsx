@@ -4,10 +4,56 @@ import { useEffect, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { ArrowRight, Download, FileCheck2, Loader2 } from "lucide-react";
 import { PinMark } from "@/components/ui/pin-mark";
+import { useLanguage } from "@/components/language-provider";
 import type { CertificatData } from "@/lib/certificat-data";
 import type { Statut } from "@/data/mock-parcelles";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
+
+const COPY = {
+  fr: {
+    eyebrow: "Certificat de conformité RDUE",
+    generating: "Génération du certificat…",
+    subtitle: "Évaluation de conformité RDUE",
+    certNo: "N° de certificat",
+    producer: "Producteur",
+    cardNo: "N° de carte",
+    coop: "Coopérative",
+    filiere: "Filière",
+    region: "Région",
+    area: "Superficie",
+    coords: "Coordonnées WGS-84 · 6 décimales (RFC 7946)",
+    sources: "Sources de données",
+    traces:
+      "Dossier prêt pour soumission sur TRACES NT. Traitement réalisé avec le consentement éclairé du producteur (loi n°2013-450, ARTCI).",
+    disclaimer:
+      "Évaluation technique produite à partir de données satellites publiques. Ne se substitue pas à la responsabilité légale de l'opérateur qui dépose la déclaration de diligence raisonnée.",
+    preparing: "Préparation…",
+    download: "Télécharger le PDF",
+    back: "Retour",
+  },
+  en: {
+    eyebrow: "EUDR compliance certificate",
+    generating: "Generating the certificate…",
+    subtitle: "EUDR compliance assessment",
+    certNo: "Certificate no.",
+    producer: "Farmer",
+    cardNo: "Card no.",
+    coop: "Cooperative",
+    filiere: "Commodity",
+    region: "Region",
+    area: "Area",
+    coords: "WGS-84 coordinates · 6 decimals (RFC 7946)",
+    sources: "Data sources",
+    traces:
+      "File ready for submission on TRACES NT. Processing carried out with the farmer's informed consent (law no. 2013-450, ARTCI).",
+    disclaimer:
+      "Technical assessment produced from public satellite data. It does not replace the legal responsibility of the operator filing the due diligence statement.",
+    preparing: "Preparing…",
+    download: "Download the PDF",
+    back: "Back",
+  },
+} as const;
 const TINT: Record<Statut, { bg: string; text: string; border: string }> = {
   conforme: { bg: "rgba(22,163,74,0.10)", text: "#0d4f27", border: "rgba(22,163,74,0.30)" },
   anomalie: { bg: "rgba(180,35,30,0.09)", text: "#8a1712", border: "rgba(180,35,30,0.30)" },
@@ -30,6 +76,8 @@ export function StepCertificate({
   onBack: () => void;
 }) {
   const reduce = useReducedMotion();
+  const { lang } = useLanguage();
+  const t = COPY[lang];
   const [generating, setGenerating] = useState(true);
   const [downloading, setDownloading] = useState(false);
   const tint = TINT[data.statut];
@@ -55,7 +103,7 @@ export function StepCertificate({
     <div className="mx-auto max-w-3xl">
       <div className="mb-5 flex items-center gap-2">
         <FileCheck2 size={16} strokeWidth={2} className="text-green-signal" aria-hidden />
-        <p className="eyebrow text-green-signal">Certificat de conformité RDUE</p>
+        <p className="eyebrow text-green-signal">{t.eyebrow}</p>
       </div>
 
       <AnimatePresence mode="wait">
@@ -69,7 +117,7 @@ export function StepCertificate({
           >
             <div className="flex flex-col items-center gap-4 text-center">
               <PinMark size={48} color="var(--color-green-signal)" leafColor="rgba(224,166,75,0.95)" pulse />
-              <p className="text-sm font-medium text-forest-950">Génération du certificat…</p>
+              <p className="text-sm font-medium text-forest-950">{t.generating}</p>
             </div>
           </motion.div>
         ) : (
@@ -86,10 +134,10 @@ export function StepCertificate({
                   <p className="font-display text-2xl not-italic text-forest-950" style={{ fontStyle: "normal", fontWeight: 600 }}>
                     Agrivo
                   </p>
-                  <p className="font-display text-sm text-stone-500">Évaluation de conformité RDUE</p>
+                  <p className="font-display text-sm text-stone-500">{t.subtitle}</p>
                 </div>
                 <div className="text-right">
-                  <p className="eyebrow text-[0.6rem] text-stone-400">N° de certificat</p>
+                  <p className="eyebrow text-[0.6rem] text-stone-400">{t.certNo}</p>
                   <p className="num text-sm text-forest-950">{data.numeroCertificat}</p>
                   <p className="mt-1 text-[0.7rem] text-stone-400">{data.emisLe}</p>
                 </div>
@@ -105,16 +153,16 @@ export function StepCertificate({
                 </div>
 
                 <dl className="mt-5 grid grid-cols-2 gap-x-4 gap-y-4">
-                  <Cell label="Producteur" value={data.producteurNom} />
-                  <Cell label="N° de carte" value={data.numeroCartePro} mono />
-                  <Cell label="Coopérative" value={data.cooperative} />
-                  <Cell label="Filière" value={data.filiereLabel} />
-                  <Cell label="Région" value={data.region} />
-                  <Cell label="Superficie" value={data.superficie} mono />
+                  <Cell label={t.producer} value={data.producteurNom} />
+                  <Cell label={t.cardNo} value={data.numeroCartePro} mono />
+                  <Cell label={t.coop} value={data.cooperative} />
+                  <Cell label={t.filiere} value={data.filiereLabel} />
+                  <Cell label={t.region} value={data.region} />
+                  <Cell label={t.area} value={data.superficie} mono />
                 </dl>
 
                 <div className="mt-5">
-                  <p className="eyebrow text-[0.6rem] text-stone-400">Coordonnées WGS-84 · 6 décimales (RFC 7946)</p>
+                  <p className="eyebrow text-[0.6rem] text-stone-400">{t.coords}</p>
                   <ul className="mt-2 flex flex-col gap-1">
                     {data.vertices.map((v, i) => (
                       <li key={i} className="num text-xs text-forest-950">
@@ -125,7 +173,7 @@ export function StepCertificate({
                 </div>
 
                 <div className="mt-5">
-                  <p className="eyebrow text-[0.6rem] text-stone-400">Sources de données</p>
+                  <p className="eyebrow text-[0.6rem] text-stone-400">{t.sources}</p>
                   <div className="mt-2 flex flex-wrap gap-1.5">
                     {data.sources.map((s) => (
                       <span key={s} className="rounded-full border border-black/[0.06] bg-ivory-deep/50 px-2.5 py-1 text-[0.72rem] text-stone-600">
@@ -136,12 +184,10 @@ export function StepCertificate({
                 </div>
 
                 <p className="mt-5 rounded-xl bg-[#f0f7f1] p-3.5 text-xs leading-relaxed text-[#0d4f27]">
-                  Dossier prêt pour soumission sur TRACES NT. Traitement réalisé avec le consentement
-                  éclairé du producteur (loi n°2013-450, ARTCI).
+                  {t.traces}
                 </p>
                 <p className="mt-3 text-[0.7rem] leading-relaxed text-stone-400">
-                  Évaluation technique produite à partir de données satellites publiques. Ne se substitue
-                  pas à la responsabilité légale de l&apos;opérateur qui dépose la déclaration de diligence raisonnée.
+                  {t.disclaimer}
                 </p>
               </div>
             </article>
@@ -155,7 +201,7 @@ export function StepCertificate({
                 className="inline-flex items-center justify-center gap-2 rounded-full border border-black/10 bg-white px-5 py-3 text-sm font-semibold text-forest-950 outline-none transition-colors hover:border-green-signal/40 focus-visible:ring-2 focus-visible:ring-green-signal focus-visible:ring-offset-2 focus-visible:ring-offset-ivory disabled:opacity-60"
               >
                 {downloading ? <Loader2 size={16} strokeWidth={2} className="animate-spin" /> : <Download size={16} strokeWidth={2} aria-hidden />}
-                {downloading ? "Préparation…" : "Télécharger le PDF"}
+                {downloading ? t.preparing : t.download}
               </button>
               <div className="flex items-center gap-3">
                 <button
@@ -163,7 +209,7 @@ export function StepCertificate({
                   onClick={onBack}
                   className="text-sm text-stone-400 outline-none transition-colors hover:text-forest-950 focus-visible:text-forest-950"
                 >
-                  Retour
+                  {t.back}
                 </button>
                 <button
                   type="button"

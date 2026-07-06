@@ -45,8 +45,11 @@ doit venir de Nanti.**
     JAMAIS présenter « Micro-crédit : Gratuit » comme un plan tarifaire.
   - ⚠️ Honnêteté marge : Whisp/Copernicus gratuits en base, mais imagerie haute résolution + quotas Google
     Earth Engine commerciaux = coûts de licence à absorber.
-- **Golden path (5 étapes)** : sélection coopérative → scan carte producteur (Gemini Vision) → cartographie
-  parcelle (GeoJSON RFC 7946) → verdict Whisp (3 états) + explication + badge sols + certificat PDF →
+- **Golden path (6 étapes, depuis Session 12)** : sélection coopérative → scan carte producteur
+  (QR d'abord si présent, sinon OCR Gemini Vision ; anti-doublon matricule ; photo conservée comme
+  preuve) → **cartographie GPS de la parcelle** (point central < 4 ha / tour de champ ≥ 4 ha, règle
+  RDUE ; contrôles d'intégrité : chevauchement, superficie plausible, signal GPS authentique,
+  doublon) → verdict Whisp (3 états) + explication + badge sols + certificat PDF (GeoJSON RFC 7946) →
   inclusion financière (slider 50 000–250 000 FCFA, Mobile Money).
 - **Personas** : Amadou (gérant coop, Soubré, 600 producteurs) · Marc (dir. durabilité, Abidjan) · Yao
   (productrice café, Man, 2 ha) · Kouassi (producteur cacao, Soubré, 15 ans).
@@ -215,12 +218,21 @@ honnête (ce que le produit fait aujourd'hui ≠ demain, jamais confondu) · sta
 
 ## 🧭 PRODUIT (faits à connaître)
 
-### Golden path — 5 étapes (démontrées EN DIRECT au jury)
+### Golden path — 6 étapes (démontrées EN DIRECT au jury ; 6 étapes depuis Session 12)
 1. **Connexion & sélection coopérative** (ex. `COOP-SOU : Coopérative Agricole de Soubré`).
-2. **Scan carte producteur** — caméra → **Gemini Vision** extrait nom/n° carte/localité → formulaire pré-rempli.
-3. **Cartographie & validation parcelle** — carte satellite, polygone **GeoJSON RFC 7946**, superficie calculée, sommets ajustables.
-4. **Résultat d'audit** — verdict **Whisp** (3 états), explication langage naturel (Gemini), badge résilience des sols, **certificat PDF**.
-5. **Inclusion financière** — si Conforme : slider **50 000–250 000 FCFA**, simulation versement **Mobile Money**.
+2. **Scan carte producteur** — caméra → **QR d'abord** (BarcodeDetector natif) puis repli **OCR Gemini
+   Vision** (toutes générations de cartes, avec ou sans QR) → formulaire pré-rempli ; **anti-doublon
+   matricule** (producteur reconnu = dossier rattaché) ; photo conservée comme pièce justificative.
+3. **Cartographie GPS de la parcelle** (`step-mapping.tsx`) — capture par **l'utilisateur de
+   l'app** (producteur, pisteur ou agent de coopérative ; AGRIVO = 100 % logiciel) :
+   **point central** (< 4 ha, règle RDUE) ou **tour de champ GPS** (waypoints posés le long du
+   périmètre, distance + précision live) ; puis **contrôles d'intégrité** (chevauchement, superficie
+   plausible/plafond t/an, signal GPS authentique, matricule unique). Simulation web ; le vrai GPS
+   (watchPosition) vit dans l'app mobile de Christ.
+4. **Analyse satellite** — carte satellite, polygone **GeoJSON RFC 7946**, verdict **Whisp** (3 états),
+   explication langage naturel (Gemini), badge résilience des sols.
+5. **Certificat PDF** (+ QR de vérification publique).
+6. **Inclusion financière** — si Conforme : slider **50 000–250 000 FCFA**, simulation versement **Mobile Money**.
 
 ### Dashboard exportateur — 3 onglets
 - **Analytique & cartographie** : 4 KPI (producteurs audités, taux de conformité, superficie cartographiée, volume validé), carte portefeuille, export GeoJSON conforme **TRACES NT**.
@@ -323,6 +335,104 @@ variables CSS dans `app/globals.css`.
 ---
 
 ## 📓 Journal de build (le plus récent en haut)
+
+### Session 14 — 2026-07-06 — PowerPoint de pitch jury (structure masterclass 11 slides)
+- 📊 **Livrable : `C:\Users\Anael FAMENI\Desktop\AGRIVO_Pitch_Vibeathon2026.pptx`** — **v2 : 11 slides
+  EXACTEMENT** (demande d'Anael ; la v1 à 14 slides est remplacée). Couleurs charte, python-pptx
+  (`build_pitch.py`), les 11 slides vérifiées visuellement via export PowerPoint COM. Structure = la
+  séquence 2 de la Pitch Masterclass AFRINOVATECH à la lettre ; slide 1 Grande Vision = couverture ;
+  annexes Q&A supprimées → tout le contenu Q&A/cold-call déplacé dans les NOTES ORATEUR (slide 5 :
+  réponses 1 min « pourquoi l'IA ? » / « si l'IA se trompe ? » ; slide 11 : mapping cold-call équipe).
+  Design v2 : gros chiffres (52 % / 40 % / 172 j), numéros fantômes, chevrons CARTE→TÉLÉPHONE→SATELLITE,
+  timeline Prototype→Pilote→Croissance→Échelle (+ Ghana), héros storytelling « Yao, 2 ha à Soubré ».
+  Timing notes : 5:00 pile, démo 90 s slide 4, répartition de parole Anael/Christ/Gaddiel/Domy.
+  ⚠️ 172 j = compte à rebours 11 juil → 30 déc 2026 (à recalculer si la date du jury change).
+- Grille officielle jury (masterclass slide 32) : Impact 30 % · Faisabilité 20 % · Usage IA 20 % ·
+  Innovation 15 % · Pitch 15 %. Analyse : AGRIVO top 3-5 réaliste ; zone de risque = discours IA.
+- Décisions figées dans le deck :
+  - **Slide IA « Donnée → IA → Résultat »** : 3 usages (OCR Gemini carte, scoring de risque,
+    classification satellite Whisp) + bandeau « jamais de faux Conforme » (statuts verbatim).
+  - **Modèle économique** : 1 500 FCFA/producteur vérifié/an (≈2,3 €) facturé coop/exportateur,
+    présenté comme HYPOTHÈSE à valider au pilote (benchmark 2-5 $ Koltiva/Meridia) ; ex. coop
+    1 000 producteurs = 1,5 M FCFA/an ; revenus futurs = commission micro-crédit (jamais gratuit).
+  - **Demande** : pilote nommé **ECOOKIM** + mentorat AFRINOVATECH + mise en relation CCC
+    (accélérateur, pas prérequis).
+  - **Annexes Q&A 1 min** : « pourquoi l'IA ? » (Gaddiel) et « si l'IA se trompe ? » (statut
+    « Données insuffisantes » + revérification) ; annexe C = mapping cold-call par membre.
+- Reformulation actée (question d'Anael) : plus de « délégué » — c'est **l'utilisateur de l'app**
+  (producteur, pisteur ou agent de coopérative) qui capture le GPS ; AGRIVO reste 100 % logiciel.
+  Données déforestation RDUE = 100 % publiques (JRC 2020, Hansen, TMF/RADD via Whisp).
+
+### Session 13 — 2026-07-06 — Document PDF équipe (fonctionnement + plan de la semaine)
+- 📄 **Livrable : `C:\Users\Anael FAMENI\Desktop\AGRIVO_Plan_Fonctionnement_et_Equipe.pdf`**
+  (~10 pages, couleurs de la charte AGRIVO, généré via HTML → Edge headless ; source :
+  `agrivo-plan.html` dans le scratchpad de session). Écrit à la 1re personne (Anael, chef de
+  projet), pour l'équipe. Contenu : réponse détaillée au doute de l'équipe (« la carte ne contient
+  PAS les parcelles — carte = QUI, terrain = OÙ, satellite = VERDICT »), 5 verrous, chiffres
+  sourcés (52 % intraçable Trase · ~30 % données non fiables Meridia · 376 kg/ha Nature),
+  positionnement vs SNT/Farmforce/Koltiva/Meridia, annexe des 23 questions au directeur avec
+  réponses recherchées, 45 sources.
+- ✅ **Vérification finale en ligne (06/07)** : carte producteur (QR + matricule + puce) obligatoire
+  au 1er sept. 2026 confirmé (AIP/KOACI, lancement officiel SNT le 12 juin 2026) ; **RDUE reporté
+  au 30 déc. 2026 / 30 juin 2027 par le règlement (UE) 2025/2650** (JO du 23 déc. 2025, déclaration
+  simplifiée unique pour les petits producteurs primaires — argument pitch) ; Whisp actif et gratuit.
+- 👥 **Équipe figée (Fatim hors projet)** : Anael = chef de projet/pitch/démo · Christ = app mobile
+  (capture GPS réelle + vidéo de secours) · Gaddiel = backend/API Whisp/export GeoJSON TRACES NT/
+  sécurité · Domy = recherches/qualité (mission n°1 : scanner une VRAIE carte pour trancher le
+  contenu du QR). Jalons : gel fonctionnalités mer. 8 soir, gel code jeu. 9 soir, répétition
+  générale ven. 10 ; jury samedi 11 juillet.
+
+### Session 12 — 2026-07-05 — Anti-fraude : étape Cartographie GPS + scanner QR/OCR + 5 verrous
+- 🔍 **Contexte (question d'Anael : « le producteur peut mentir »)** : recherche en ligne approfondie
+  (TraceX, Farmforce, Meridia, ImpactBuying, Fairtrade, Incognia, World Bank). Standard du secteur
+  confirmé : **capture par agent formé** (tour de champ GPS ≥ 4 ha, **point central < 4 ha** = règle
+  RDUE) + **contrôles croisés en couches**. Doctrine AGRIVO = **5 verrous** : identité (carte + photo
+  + anti-doublon) · capture par le délégué formé · contrôles automatiques (chevauchement, plausibilité,
+  GPS authentique) · vérité satellite (Whisp voit le terrain réel) · réconciliation économique
+  (volume acheté ≤ superficie × rendement régional, anti « blanchiment de cacao »). **Pas de
+  dépendance au registre CCC** : la carte donne l'identité, le terrain donne la parcelle, le satellite
+  donne le verdict ; l'accès CCC = demande de partenariat du pitch, pas un prérequis.
+- 🗺️ **Nouvelle étape 3 « Cartographie »** dans `/app/verifier` (parcours 5 → **6 étapes**, écran de
+  fin = step 7) : `components/verifier/step-mapping.tsx` (sélecteur de mode point central / tour de
+  champ, recommandation auto selon superficie, simulation waypoints ~300 ms/point avec compteurs
+  live points/distance haversine/précision ±m déterministe, panneau « Contrôles d'intégrité » à 4
+  coches séquentielles, reduced-motion = états finaux directs) + `components/verifier/mapping-map.tsx`
+  (même plomberie Leaflet/projection SVG qu'`analysis-map.tsx` : geomEqual, mountedRef, ResizeObserver ;
+  projection des waypoints UNE fois, l'anim ne dépend que de `count`). Stepper 6 libellés FR/EN.
+- 📷 **Scanner (étape 2) renforcé** : tentative **QR d'abord** (`BarcodeDetector` natif, silencieux si
+  absent/pas de QR → couvre les cartes SANS QR par OCR comme avant), chip « Lues depuis le QR code » ;
+  **anti-doublon matricule** contre PARCELLES (« Producteur reconnu : dossier rattaché » / « Nouveau
+  matricule : unicité vérifiée ») ; aide : « photo conservée comme pièce justificative ».
+- ⚖️ **`analyserRisque`** (lib/ai/gemini.ts) : nouveau facteur « **Plafond d'achat anti-fraude :
+  X t/an (superficie × rendement régional)** » (positif si conforme, neutre sinon) — visible sur
+  `/app/parcelle/[id]` via risk-card.
+- 🗣️ **GUIDE_DEMO_JURY.md** : 3 nouvelles réponses cold-call (« et s'il ment ? » = 5 verrous ·
+  « accès au registre CCC ? » = 3 sources indépendantes · « pourquoi Agrivo si le SNT existe ? » =
+  complémentaire, verdict parcelle + DDS + crédit). ⚠️ Formulation « dernière brique » évitée (Nanti).
+- ℹ️ **Correction d'Anael (post-recherche)** : le QR code sera finalement présent sur TOUTES les
+  cartes producteur CCC. L'architecture QR-d'abord/OCR-en-repli reste la bonne : le QR devient le
+  chemin principal, l'OCR couvre les QR abîmés/illisibles au champ.
+- 🛰️ **Coordonnées de démo déplacées en zone RURALE** : `SOUBRE = [-6.65, 5.83]`
+  (`data/mock-parcelles.ts`) — le centre-ville faisait tomber les parcelles de démo en plein tissu
+  urbain sur l'imagerie Esri (peu crédible pour une plantation de cacao). Nouvelle zone vérifiée
+  visuellement (tuile Esri z15 : mosaïque de plantations + piste). Toutes les parcelles Soubré
+  (démo golden path + carte exportateur) en profitent.
+- ✅ GATE : `tsc` ✓ · 24/24 tests ✓ · `next build` ✓ · parcours 6 étapes vérifié en CDP (1440 + 390).
+
+### Session 11 — 2026-07-05 — i18n EN terminée (tranche 3) + interface /app full page
+- 🌍 **Traduction EN terminée** : auth (`connexion`, `inscription`), `/app/admin`,
+  `/app/parcelle/[id]` (refactor : page serveur → îlot client `components/app/parcelle-detail.tsx`,
+  calculs IA restent serveur et passent en props), `dds-memo`, `risk-card`/`credit-score-card`
+  (prop `lang`), `route-guard`, `parcelle-map`, `verifier-certificat-client`, pages marketing
+  (`tarifs`, `faq`, `contact`, `aide`, `a-propos`, `methodologie`), `hors-connexion` (rappel EN
+  statique, servie par le SW sans contexte de langue). Ajouts `data/mock-parcelles.ts` :
+  `STATUT_PHRASE_EN` (mêmes formulations que la landing) + `formatDate(iso, lang)`.
+  **Restent volontairement FR** : pages légales (cgu, confidentialité, mentions — documents
+  juridiques ivoiriens, composants serveur) et le PDF de certificat (document officiel).
+- 🖥️ **Interface /app full page** (demande Anael : espaces vides gauche/droite) :
+  `app/app/layout.tsx` — `max-w-7xl mx-auto` retirés de la topbar et du conteneur principal →
+  `w-full`. Sidebar + contenu occupent toute la largeur de l'écran.
+- ✅ GATE : `tsc` ✓ · `next build` vert.
 
 ### Session 10 (suite 3) — 2026-07-05/06 — PREUVES DE MÉTHODE (pipeline 8 étapes) livrées
 - ✅ **CI GitHub Actions** (`.github/workflows/ci.yml`) : lint + `tsc` + tests + build à chaque
