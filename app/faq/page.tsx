@@ -7,6 +7,7 @@ import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { Reveal } from "@/components/landing/reveal";
 import { useLanguage } from "@/components/language-provider";
+import { CopiloteRdue } from "@/components/app/copilote-rdue";
 
 const QA: { q: { fr: string; en: string }; a: { fr: string; en: string } }[] = [
   {
@@ -68,8 +69,8 @@ const QA: { q: { fr: string; en: string }; a: { fr: string; en: string } }[] = [
   {
     q: { fr: "Mes données restent-elles protégées ?", en: "Is my data protected?" },
     a: {
-      fr: "Agrivo est conçu conforme à la loi ivoirienne n°2013-450 sous le contrôle de l'ARTCI : consentement éclairé du producteur, hébergement souverain et chiffrement. Un écran de consentement précède toute vérification.",
-      en: "Agrivo is designed to comply with Ivorian law no. 2013-450 under ARTCI oversight: informed farmer consent, sovereign hosting and encryption. A consent screen precedes every verification.",
+      fr: "Agrivo est conçu conforme à la loi ivoirienne n°2013-450 sous le contrôle de l'ARTCI : consentement éclairé du producteur, registre des traitements tenu à jour et chiffrement des échanges. Pendant la phase pilote, l'application est hébergée par Vercel ; un hébergement régional est prévu à la mise en production. Un écran de consentement précède toute vérification.",
+      en: "Agrivo is designed to comply with Ivorian law no. 2013-450 under ARTCI oversight: informed farmer consent, a maintained processing register and encrypted exchanges. During the pilot phase the app is hosted on Vercel; regional hosting is planned for production. A consent screen precedes every verification.",
     },
   },
 ];
@@ -148,6 +149,7 @@ export default function Faq() {
         </section>
       </main>
       <SiteFooter />
+      <CopiloteRdue />
     </div>
   );
 }

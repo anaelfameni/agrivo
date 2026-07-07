@@ -1,0 +1,210 @@
+/**
+ * Base de faits RDUE curée et SOURCÉE — socle du Copilote de conformité (route
+ * /api/gemini/rdue-qa). Tous les faits sont vérifiés (règlement (UE) 2023/1115,
+ * amendement (UE) 2025/2650 de décembre 2025, benchmarking pays du 22 mai 2025).
+ *
+ * Charte : ces faits GROUNDENT la réponse de Gemini (il ne peut rien inventer) et servent
+ * de repli déterministe si l'IA est indisponible. Aucun chiffre inventé, statuts figés,
+ * « évaluation » jamais « garantie », ZÉRO vocabulaire de crédit/financement.
+ */
+
+export interface FaitRDUE {
+  id: string;
+  /** Mots-clés normalisés (sans accents, minuscules) pour l'appariement déterministe. */
+  motsCles: string[];
+  question: { fr: string; en: string };
+  reponse: { fr: string; en: string };
+  /** Citation courte de la source / date, affichée sous la réponse. */
+  source: { fr: string; en: string };
+}
+
+export const FAITS_RDUE: FaitRDUE[] = [
+  {
+    id: "definition",
+    motsCles: ["rdue", "eudr", "reglement", "cest quoi", "definition", "quest", "loi", "2023", "1115", "regulation"],
+    question: { fr: "Qu'est-ce que le RDUE ?", en: "What is the EUDR?" },
+    reponse: {
+      fr: "Le RDUE — Règlement (UE) 2023/1115 — interdit d'importer dans l'Union des produits issus de terres déforestées après le 31 décembre 2020. Il impose une traçabilité géolocalisée parcelle par parcelle et une déclaration de diligence raisonnée.",
+      en: "The EUDR — Regulation (EU) 2023/1115 — bans importing into the Union products grown on land deforested after 31 December 2020. It requires plot-by-plot geolocated traceability and a due diligence statement.",
+    },
+    source: { fr: "Règlement (UE) 2023/1115", en: "Regulation (EU) 2023/1115" },
+  },
+  {
+    id: "echeances",
+    motsCles: ["date", "echeance", "quand", "delai", "report", "reporte", "2026", "2027", "calendrier", "entree", "vigueur", "applicable", "deadline", "deadlines", "when", "postpone", "postponed", "delay", "timeline"],
+    question: { fr: "Quelles sont les échéances ?", en: "What are the deadlines?" },
+    reponse: {
+      fr: "La révision (UE) 2025/2650 de décembre 2025 a confirmé le calendrier : 30 décembre 2026 pour les grands et moyens opérateurs, 30 juin 2027 pour les micro et petites entreprises. Le calendrier ne bouge plus.",
+      en: "The (EU) 2025/2650 revision of December 2025 confirmed the timeline: 30 December 2026 for large and medium operators, 30 June 2027 for micro and small businesses. The timeline is now fixed.",
+    },
+    source: { fr: "Révision (UE) 2025/2650, décembre 2025", en: "Revision (EU) 2025/2650, December 2025" },
+  },
+  {
+    id: "cote-ivoire",
+    motsCles: ["cote", "ivoire", "ivoirienne", "risque", "standard", "faible", "eleve", "benchmarking", "classement", "concernee", "concerne", "ivory", "coast", "concerned", "classified"],
+    question: { fr: "La Côte d'Ivoire est-elle concernée ?", en: "Is Côte d'Ivoire concerned?" },
+    reponse: {
+      fr: "Oui. Le benchmarking pays du 22 mai 2025 classe la Côte d'Ivoire en « risque standard ». La géolocalisation complète des parcelles y reste obligatoire : seuls les pays à « faible risque » ont une diligence simplifiée, et la Côte d'Ivoire n'en fait pas partie.",
+      en: "Yes. The 22 May 2025 country benchmarking classifies Côte d'Ivoire as \"standard risk\". Full plot geolocation remains mandatory there: only \"low risk\" countries get simplified due diligence, and Côte d'Ivoire is not one of them.",
+    },
+    source: { fr: "Benchmarking pays, 22 mai 2025", en: "Country benchmarking, 22 May 2025" },
+  },
+  {
+    id: "geolocalisation",
+    motsCles: ["geolocalisation", "geolocaliser", "coordonnees", "gps", "polygone", "parcelle", "cartographier", "cartographie", "point", "geolocation", "geolocate", "coordinates", "polygon", "plot", "mapping"],
+    question: { fr: "Que faut-il géolocaliser ?", en: "What must be geolocated?" },
+    reponse: {
+      fr: "Chaque parcelle de production doit être localisée : un polygone pour les parcelles de plus de 4 hectares, un point de coordonnées en dessous. C'est exactement ce que produit le mode terrain d'AGRIVO, au format GeoJSON (RFC 7946).",
+      en: "Every production plot must be located: a polygon for plots over 4 hectares, a coordinate point below. That is exactly what AGRIVO's field mode produces, in GeoJSON format (RFC 7946).",
+    },
+    source: { fr: "Art. 9 du Règlement (UE) 2023/1115", en: "Art. 9 of Regulation (EU) 2023/1115" },
+  },
+  {
+    id: "qui-declare",
+    motsCles: ["qui", "declare", "declaration", "dds", "diligence", "traces", "depose", "operateur", "importateur", "signe", "responsable", "who", "file", "files", "statement", "operator", "importer"],
+    question: { fr: "Qui dépose la déclaration ?", en: "Who files the declaration?" },
+    reponse: {
+      fr: "C'est l'opérateur qui met le produit sur le marché de l'Union — l'importateur européen — qui dépose la déclaration de diligence raisonnée sur TRACES NT. Depuis la simplification de 2025, seul le premier opérateur dépose la déclaration complète ; l'aval peut la référencer.",
+      en: "It is the operator placing the product on the Union market — the European importer — who files the due diligence statement on TRACES NT. Since the 2025 simplification, only the first operator files the full statement; downstream operators can reference it.",
+    },
+    source: { fr: "Art. 4 & révision (UE) 2025/2650", en: "Art. 4 & revision (EU) 2025/2650" },
+  },
+  {
+    id: "role-agrivo",
+    motsCles: ["agrivo", "role", "fait", "certificat", "garantie", "responsabilite", "aide", "sert", "apporte", "certificate", "guarantee", "does"],
+    question: { fr: "Que fait AGRIVO, exactement ?", en: "What exactly does AGRIVO do?" },
+    reponse: {
+      fr: "AGRIVO produit une évaluation technique de conformité et un certificat vérifiable qui alimentent la déclaration de l'opérateur. C'est une évaluation, jamais une garantie légale : la responsabilité réglementaire reste celle de l'opérateur qui met le produit sur le marché.",
+      en: "AGRIVO produces a technical compliance assessment and a verifiable certificate that feed the operator's declaration. It is an assessment, never a legal guarantee: regulatory responsibility remains with the operator placing the product on the market.",
+    },
+    source: { fr: "Périmètre AGRIVO", en: "AGRIVO scope" },
+  },
+  {
+    id: "produits",
+    motsCles: ["produit", "filiere", "cacao", "cafe", "hevea", "caoutchouc", "palme", "soja", "bois", "bovin", "couvre", "commodity", "commodities", "cocoa", "coffee", "rubber", "covered"],
+    question: { fr: "Quels produits sont couverts ?", en: "Which commodities are covered?" },
+    reponse: {
+      fr: "Le RDUE couvre sept matières premières : cacao, café, bois, caoutchouc (hévéa), huile de palme, soja et bovins, ainsi que leurs produits dérivés. AGRIVO cible en priorité le cacao, le café, l'hévéa et le palmier à huile.",
+      en: "The EUDR covers seven commodities: cocoa, coffee, wood, rubber, palm oil, soy and cattle, plus their derived products. AGRIVO focuses first on cocoa, coffee, rubber and oil palm.",
+    },
+    source: { fr: "Annexe I du Règlement (UE) 2023/1115", en: "Annex I of Regulation (EU) 2023/1115" },
+  },
+  {
+    id: "sanctions",
+    motsCles: ["sanction", "amende", "penalite", "risque", "risques", "sanctions", "punition", "consequence", "non conformite", "penalty", "penalties", "fine", "fines"],
+    question: { fr: "Que risque-t-on en cas de non-conformité ?", en: "What are the penalties for non-compliance?" },
+    reponse: {
+      fr: "Le règlement prévoit des amendes pouvant atteindre 4 % du chiffre d'affaires annuel réalisé dans l'Union, la confiscation des produits et l'exclusion temporaire des marchés publics. Concrètement, un lot non tracé peut être bloqué à l'entrée de l'Union.",
+      en: "The regulation provides for fines of up to 4% of annual EU turnover, confiscation of products and temporary exclusion from public procurement. In practice, an untraced batch can be blocked at the Union border.",
+    },
+    source: { fr: "Art. 25 du Règlement (UE) 2023/1115", en: "Art. 25 of Regulation (EU) 2023/1115" },
+  },
+  {
+    id: "petits-producteurs",
+    motsCles: ["petit", "producteur", "planteur", "cooperative", "coop", "smallholder", "comment", "faire", "aider", "farmer", "comply", "how"],
+    question: { fr: "Comment un petit producteur s'y conforme-t-il ?", en: "How does a smallholder comply?" },
+    reponse: {
+      fr: "Le petit producteur ne dépose rien lui-même : la charge documentaire remonte via sa coopérative et l'exportateur. AGRIVO outille la coopérative pour cartographier les parcelles, auditer le registre et produire les preuves, sans que le planteur ait à gérer la complexité réglementaire.",
+      en: "A smallholder files nothing themselves: the documentary burden flows up through their cooperative and the exporter. AGRIVO equips the cooperative to map plots, audit the register and produce the evidence, without the farmer having to handle regulatory complexity.",
+    },
+    source: { fr: "Périmètre AGRIVO", en: "AGRIVO scope" },
+  },
+  {
+    id: "cutoff",
+    motsCles: ["2020", "decembre", "coupure", "cutoff", "avant", "apres", "ancienne", "plantation", "historique", "reference", "deforestation", "december"],
+    question: { fr: "Quelle est la date de référence pour la déforestation ?", en: "What is the deforestation cut-off date?" },
+    reponse: {
+      fr: "La date de référence est le 31 décembre 2020. Une parcelle plantée sur une terre déjà défrichée avant cette date reste éligible ; une parcelle issue d'une déforestation postérieure ne l'est pas. AGRIVO évalue précisément ce critère par convergence de preuves satellites.",
+      en: "The cut-off date is 31 December 2020. A plot on land already cleared before that date remains eligible; a plot from later deforestation is not. AGRIVO assesses this criterion precisely through satellite convergence of evidence.",
+    },
+    source: { fr: "Art. 2 du Règlement (UE) 2023/1115", en: "Art. 2 of Regulation (EU) 2023/1115" },
+  },
+];
+
+/** Questions d'amorce proposées dans le widget (les plus fréquentes en démo). */
+export const QUESTIONS_SUGGEREES: { fr: string; en: string }[] = [
+  { fr: "Le RDUE peut-il encore être reporté ?", en: "Can the EUDR still be postponed?" },
+  { fr: "La Côte d'Ivoire est-elle concernée ?", en: "Is Côte d'Ivoire concerned?" },
+  { fr: "Qui dépose la déclaration ?", en: "Who files the declaration?" },
+  { fr: "Que risque-t-on en cas de non-conformité ?", en: "What are the penalties?" },
+];
+
+/** Réponse charte quand la question glisse vers le crédit / financement (frontière Nanti). */
+export const HORS_PERIMETRE_FINANCE = {
+  fr: "AGRIVO ne propose aucun crédit, prêt ni financement : ce n'est pas notre métier. Nous valorisons la conformité par les primes de durabilité et l'accès aux acheteurs premium. Pour la conformité RDUE elle-même, je peux tout vous expliquer.",
+  en: "AGRIVO offers no credit, loan or financing: that is not our business. We valorise compliance through sustainability premiums and access to premium buyers. On EUDR compliance itself, I can explain everything.",
+};
+
+/** Réponse de repli quand aucune correspondance nette n'est trouvée. */
+export const HORS_SUJET = {
+  fr: "Je suis spécialisé dans le règlement européen contre la déforestation (RDUE) et son application aux coopératives ivoiriennes. Reformulez votre question sur la conformité, les échéances, la géolocalisation ou la déclaration, et j'y réponds précisément.",
+  en: "I specialise in the EU Deforestation Regulation (EUDR) and how it applies to Ivorian cooperatives. Rephrase your question about compliance, deadlines, geolocation or the declaration, and I will answer precisely.",
+};
+
+const MOTS_FINANCE = ["credit", "pret", "prete", "financement", "financer", "emprunt", "microcredit", "prefinancement", "dette", "avance", "tresorerie", "plafond", "solvabilite"];
+
+function normaliser(s: string): string {
+  return s
+    .toLowerCase()
+    .normalize("NFD")
+    // Retire les accents (marques combinantes U+0300–U+036F) SANS insérer d'espace,
+    // sinon « crédit » deviendrait « cre dit » et casserait l'appariement.
+    .replace(/[̀-ͯ]/g, "")
+    // Puis la ponctuation devient un espace.
+    .replace(/[^a-z0-9\s]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+export interface ReponseDeterministe {
+  reponse: string;
+  source: string | null;
+  /** true si la question sortait du périmètre RDUE (finance ou hors-sujet). */
+  horsPerimetre: boolean;
+  faitId: string | null;
+}
+
+/**
+ * Répond de façon 100 % déterministe (aucun appel réseau) en appariant la question
+ * aux faits curés. Sert de repli quand Gemini est indisponible, et de source de
+ * vérité que le prompt live ne peut pas contredire.
+ */
+export function repondreDeterministe(question: string, lang: "fr" | "en"): ReponseDeterministe {
+  const q = normaliser(question);
+  const mots = q.split(" ").filter((m) => m.length > 2);
+
+  // Garde-fou charte : toute dérive vers le financement est renvoyée à la frontière Nanti.
+  if (MOTS_FINANCE.some((f) => q.includes(f))) {
+    return { reponse: HORS_PERIMETRE_FINANCE[lang], source: null, horsPerimetre: true, faitId: null };
+  }
+
+  let meilleur: { fait: FaitRDUE; score: number } | null = null;
+  for (const fait of FAITS_RDUE) {
+    let score = 0;
+    for (const mc of fait.motsCles) {
+      if (q.includes(mc)) score += mc.length > 4 ? 2 : 1;
+    }
+    // Bonus : recoupement avec les mots de la question (robustesse aux formulations).
+    for (const m of mots) {
+      if (fait.motsCles.some((mc) => mc.includes(m) || m.includes(mc))) score += 1;
+    }
+    if (!meilleur || score > meilleur.score) meilleur = { fait, score };
+  }
+
+  if (!meilleur || meilleur.score < 2) {
+    return { reponse: HORS_SUJET[lang], source: null, horsPerimetre: true, faitId: null };
+  }
+  return {
+    reponse: meilleur.fait.reponse[lang],
+    source: meilleur.fait.source[lang],
+    horsPerimetre: false,
+    faitId: meilleur.fait.id,
+  };
+}
+
+/** Bloc de faits injecté dans le prompt live pour grounder Gemini (il ne peut rien ajouter). */
+export function faitsPourPrompt(lang: "fr" | "en"): string {
+  return FAITS_RDUE.map(
+    (f) => `- [${f.id}] ${f.question[lang]} → ${f.reponse[lang]} (source : ${f.source[lang]})`,
+  ).join("\n");
+}

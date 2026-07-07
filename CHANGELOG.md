@@ -3,6 +3,28 @@
 Versioning sémantique (MAJOR.MINOR.PATCH). Chaque release liste ce qui est ajouté, corrigé et
 vérifié, conformément à l'étape 8 du pipeline « Du besoin à la Release ».
 
+## v1.4.0 — 2026-07-07 — Copilote de conformité RDUE (8ᵉ usage IA) + honnêteté hébergement
+
+### Ajouté
+- Copilote de conformité RDUE : assistant conversationnel flottant (dashboard coopérative + FAQ)
+  qui répond aux questions du gérant sur le règlement (UE) 2023/1115 — échéances, risque pays,
+  géolocalisation, dépôt de la déclaration, sanctions, date de coupure 2020. Chaque réponse est
+  GROUNDÉE sur une base de faits curée et SOURCÉE (`lib/ai/rdue-faits.ts`, 10 faits vérifiés :
+  révision (UE) 2025/2650 de déc. 2025, benchmarking pays du 22 mai 2025). Gemini ne fait que la
+  mise en mots ; il ne peut ni inventer un chiffre, ni sortir des faits, ni parler de crédit.
+- Route `/api/gemini/rdue-qa` : garde-fou charte déterministe AVANT tout appel IA (toute question
+  de crédit/financement est renvoyée à la frontière Nanti), grounding des faits injecté au prompt,
+  repli déterministe sourcé si Gemini est indisponible. Badge honnête « IA en direct » / « Base
+  RDUE vérifiée ». Widget bilingue FR/EN, questions d'amorce, citation de la source par réponse.
+- 58 tests Vitest au total (47 + 11) : appariement des faits, garde-fou finance, hors-sujet,
+  bilingue, complétude de la base — le repli fonctionne même sans clé Gemini.
+
+### Corrigé
+- FAQ, protection des données : la mention « hébergement souverain » (qui contredisait la page
+  Confidentialité, hébergée sur Vercel pendant le pilote) est remplacée par une formulation
+  honnête et défendable — registre des traitements, chiffrement des échanges, hébergement Vercel
+  au pilote, hébergement régional prévu en production. Aligne la FAQ sur la posture réelle.
+
 ## v1.3.0 — 2026-07-07 — Mode terrain PWA (tour de champ GPS réel) + filet anti-quota IA
 
 ### Ajouté

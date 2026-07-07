@@ -10,6 +10,7 @@ import { PinMark } from "@/components/ui/pin-mark";
 import { EmptyState } from "@/components/ui/empty-state";
 import { Magnetic } from "@/components/ui/motion-primitives";
 import { RegistreImport } from "@/components/app/registre-import";
+import { CopiloteRdue } from "@/components/app/copilote-rdue";
 import { useLanguage } from "@/components/language-provider";
 import {
   COOP_DEMO,
@@ -384,6 +385,7 @@ export default function DashboardPage() {
           </div>
         </aside>
       </div>
+      <CopiloteRdue />
     </div>
   );
 }
