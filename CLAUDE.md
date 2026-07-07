@@ -336,6 +336,55 @@ variables CSS dans `app/globals.css`.
 
 ## 📓 Journal de build (le plus récent en haut)
 
+### Session 22 — 2026-07-07 — v1.2.1 : vérification prod v1.2.0 (5 points) + prompts 2-5 de la feuille de route
+- ✅ **Prompt 1 — vérification prod CDP** (script `verify-v120.mjs`, 25+ captures desktop/mobile FR/EN) :
+  « cinq temps » ✓ · cockpit absent ✓ · devise non italique (fontStyle normal mesuré) ✓ · icon.svg 200 ✓
+  · étape 4 EN 100 % anglaise (phrase, preuves, Listen) ✓ · **plan d'action IA FR LIVE en prod**
+  (badge « RÉDIGÉ PAR GEMINI · IA EN DIRECT », prose réécrite, comptes exacts 63 %/19/1 doublon/3 manquants)
+  ✓ · **argumentaire de prime FR LIVE** (4 §, Copier, zéro vocabulaire crédit) ✓ · plan EN = repli
+  « DEMO MODE » honnête (loterie quota free tier, documentée S21) · ⚠️ pièges d'audit : les badges sont
+  rendus en MAJUSCULES (CSS uppercase → innerText) et `grep -i` ne replie pas les accents (RÉDIGÉ≠rédigé
+  en locale C) — toujours grepper en casse exacte.
+- 🐛 **VRAI KO trouvé et corrigé : la console admin lisait `MOCK_MODE` (constante serveur) depuis un
+  composant CLIENT** → env client = undefined → affichait toujours « MOCK_MODE = true / aucune clé posée »
+  même en IA live (bug présent depuis la création de la page). Fix : route `app/api/admin/etat`
+  (force-dynamic, renvoie l'état serveur réel) + fetch dans l'admin (état « Vérification… » pendant le chargement).
+- ✅ **Prompt 2 — pages légales sans placeholders** (aucune info fournie → consigne de repli appliquée) :
+  composant `<Todo>` SUPPRIMÉ de legal-shell ; mentions légales = « société en cours de constitution,
+  RCCM publié à l'issue », directeur de la publication **Anael Fameni**, contact via la page contact ;
+  confidentialité = hébergement Vercel pilote + registre des traitements sur demande + DPO désigné à
+  l'immatriculation ; CGU = juridictions ivoiriennes compétentes. Grep « À compléter » : 0 dans app/
+  (le seul hit components/ = libellé métier « À compléter sur le terrain » de l'audit registre, légitime).
+- ✅ **Prompt 3 — FR-glais résorbé** : `buildCertificat(p, verdict, lang)` (date en-GB, table
+  `FILIERE_LABEL_EN` Cocoa/Coffee/Rubber/Oil palm/Cattle/Soy/Wood, coordonnées N/S/E/**W**) ; l'aperçu
+  utilise la langue courante, **le PDF téléchargé reste FR** (prop `pdfData` séparée dans step-certificate) ;
+  « guaranteed SLA » → « SLA commitment » (landing EN + tarifs EN). Vérifié CDP local EN étape 5 :
+  Compliant/Cocoa/date anglaise/° W, zéro « ° O ».
+- ✅ **Prompt 4 — polish** : U-11 import registre **replié par défaut** (une ligne : icône + titre + CTA
+  « Auditer mon registre », s'étend au clic, « Réduire » disponible, reste ouvert dès qu'un import vit ;
+  GUIDE_DEMO_JURY mis à jour : un clic de plus au segment dashboard) · U-15 pastilles carte 5→6,5 px,
+  fitBounds padding 28→16, bouton Exporter GeoJSON aligné secondaire neutre, `.scroll-slim` (globals.css)
+  sur le tableau · U-16 : DÉJÀ RÉSOLU par le pivot (l'ancienne carte « Dossier exportateur/Inclus »
+  n'existe plus — grep prod = 0) · U-17 : règle codifiée « en-tête public = ambre, section = vert »
+  (fix : eyebrow Roadmap d'à-propos → vert ; landing déjà centralisée via <Eyebrow>).
+- ✅ **Prompt 5 — durcissement** (lancé par Anael avant le jury, implémenté sans fragiliser la démo) :
+  U-07 identifiants démo RETIRÉS de /connexion (bouton 1 clic conservé + phrase descriptive ; vérifié
+  sur le HTML servi : zéro « 123client123 ») · `components/ui/skeleton.tsx` + `app/app/loading.tsx` en
+  silhouette de dashboard (⚠️ leçon : `@/lib/utils` n'existe plus depuis la S2 — ne pas l'importer) ·
+  états vides CONTEXTUELS (recherche vs filtres vs les deux) + bouton « Effacer la recherche et les
+  filtres » sur Producteurs et Parcelles · transitions d'onglets exportateur (AnimatePresence wait,
+  180 ms, x±8, reduce = fondu) · **`PLAN_V2.md`** créé (ce qui devient serveur : auth, BDD/PostGIS,
+  Whisp live, registre de certificats ; chantiers P0-P2 ; invariants : frontière Nanti, statuts verbatim).
+- 🧹 Reliquat pivot trouvé pendant l'attente du classifieur : **SPECS.md US3 « Accéder au crédit »**
+  (50-250 k FCFA, Mobile Money) réécrit en « US3 Valoriser la conformité » + périmètre IN/OUT aligné
+  (6 étapes, import registre, 3 features IA rédactionnelles).
+- 📎 Guide présentateur intégré (demo-guide.tsx) : PAS encore mis à jour avec les 2 clics IA (étapes 4-5)
+  — micro-édit optionnel avant vendredi.
+- ✅ GATES à chaque lot : tsc ✓ · 39/39 ✓ · build 35 pages ✓ (×3). Version **1.2.1** + CHANGELOG.
+  Vérification CDP locale post-build (`verify-local.mjs`, 9 captures) : tout vert.
+- 📌 Commits : `f97f72c` (admin réel + légal + certificat EN + SPECS) · polish U-11/15/17 · durcissement.
+  Déploiement : voir fin de session (deploy + alias tentés ; sinon commandes Anael).
+
 ### Session 21 — 2026-07-06 soir — v1.2.0 « L'auditeur IA » : ultra-review stratégique + 2 features IA + correctifs (ordre direct d'Anael, gel levé)
 - 🧭 **Ultra-review stratégique** (`AGRIVO_Ultra_Review_Strategique.md` + .pdf, racine) : 6 options de
   réorientation notées contre la grille jury → **le pivot Valorisation est CONFIRMÉ** (84/100), aucun

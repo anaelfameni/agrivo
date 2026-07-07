@@ -3,6 +3,32 @@
 Versioning sémantique (MAJOR.MINOR.PATCH). Chaque release liste ce qui est ajouté, corrigé et
 vérifié, conformément à l'étape 8 du pipeline « Du besoin à la Release ».
 
+## v1.2.1 — 2026-07-07 — Vérification prod + résorption de l'ultra-review (prompts 1 à 5)
+
+### Corrigé
+- Console admin : l'écran lisait une constante serveur depuis le client et affichait toujours
+  « MOCK_MODE = true » même en IA live ; il interroge désormais l'état RÉEL via /api/admin/etat.
+- Pages légales sans placeholders : les « [À compléter : …] » (RCCM, DPO, directeur de la
+  publication…) sont remplacés par des formulations honnêtes d'avant-immatriculation ;
+  directeur de la publication : Anael Fameni.
+- Aperçu du certificat en anglais : date en-GB, filières traduites (Cocoa, Coffee…), coordonnées
+  N/S/E/W ; le PDF téléchargé reste le document officiel en français. « Guaranteed SLA » →
+  « SLA commitment » (landing EN + tarifs EN).
+- SPECS.md aligné sur le pivot (US3 « Accéder au crédit » → « Valoriser la conformité »).
+
+### Amélioré
+- Import du registre : démarre replié (une ligne) et s'étend au clic — la colonne du dashboard
+  respire ; guide démo mis à jour (un clic de plus).
+- Vue exportateur : pastilles de la carte plus lisibles, cadrage initial resserré, bouton
+  « Exporter GeoJSON » aligné sur la hiérarchie des CTA, barre de défilement discrète du tableau,
+  transitions d'onglets (180 ms, fondu + léger slide, reduced-motion respecté).
+- Identifiants du compte démo retirés de l'écran de connexion (le bouton un-clic reste).
+- Squelettes de chargement de l'espace /app (silhouette du dashboard) ; états vides contextuels
+  (recherche vs filtres) avec bouton de réinitialisation sur Producteurs et Parcelles.
+- Eyebrows de sections uniformisés (règle : en-tête de page publique = ambre, section = vert).
+- PLAN_V2.md : chemin vers la production réelle (auth serveur, base de données, Whisp live,
+  registre de certificats) — post-jury.
+
 ## v1.2.0 — 2026-07-06 — « L'auditeur IA » : deux nouvelles features IA sur les moments signatures
 
 ### Ajouté
