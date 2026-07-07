@@ -26,6 +26,10 @@ import {
   type CategorieAnomalie,
 } from "@/lib/registre/audit";
 import { resumerAudit, type PlanAction } from "@/lib/registre/plan";
+import { chargerLive, heureCache, sauverLive } from "@/lib/ai/live-cache";
+
+/** Plan affiché : celui de l'API, ou la dernière rédaction live re-servie (cachedAt renseigné). */
+type PlanAffiche = PlanAction & { cachedAt?: number };
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
@@ -55,6 +59,7 @@ const COPY = {
     planLoading: "Rédaction du plan d'action…",
     planTitle: "Plan d'action de mise en conformité",
     planLive: "Rédigé par Gemini · IA en direct",
+    planCache: (h: string) => `Rédigé par Gemini à ${h}`,
     planDemo: "Mode démonstration",
     planError: "Le plan n'a pas pu être généré. Réessayez.",
     cat: {
@@ -90,6 +95,7 @@ const COPY = {
     planLoading: "Writing the action plan…",
     planTitle: "Compliance action plan",
     planLive: "Written by Gemini · live AI",
+    planCache: (h: string) => `Written by Gemini at ${h}`,
     planDemo: "Demo mode",
     planError: "The plan could not be generated. Try again.",
     cat: {
@@ -122,7 +128,7 @@ export function RegistreImport() {
   const inputRef = useRef<HTMLInputElement>(null);
   const [status, setStatus] = useState<"idle" | "loading" | "error" | "done">("idle");
   const [audit, setAudit] = useState<AuditRegistre | null>(null);
-  const [plan, setPlan] = useState<PlanAction | null>(null);
+  const [plan, setPlan] = useState<PlanAffiche | null>(null);
   const [planStatus, setPlanStatus] = useState<"idle" | "loading" | "error" | "done">("idle");
   // U-11 : démarre replié (une ligne) pour alléger la colonne ; s'étend au clic et le reste
   // dès qu'un import est en cours ou fait.
@@ -132,17 +138,32 @@ export function RegistreImport() {
   async function genererPlan() {
     if (!audit) return;
     setPlanStatus("loading");
+    const payload = { resume: resumerAudit(audit), lang };
+    // Filet anti-quota (429 free tier sur IP partagées) : si le live échoue, on re-sert la
+    // DERNIÈRE rédaction produite par Gemini pour ce même audit, étiquetée avec son heure.
+    const repli = () => {
+      const cache = chargerLive<PlanAction>("audit-plan", payload);
+      if (cache) {
+        setPlan({ ...cache.data, cachedAt: cache.at });
+        setPlanStatus("done");
+        return true;
+      }
+      return false;
+    };
     try {
       const r = await fetch("/api/gemini/audit-plan", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ resume: resumerAudit(audit), lang }),
+        body: JSON.stringify(payload),
       });
       if (!r.ok) throw new Error(String(r.status));
-      setPlan((await r.json()) as PlanAction);
+      const data = (await r.json()) as PlanAction;
+      if (data.live) sauverLive("audit-plan", payload, data);
+      else if (repli()) return;
+      setPlan(data);
       setPlanStatus("done");
     } catch {
-      setPlanStatus("error");
+      if (!repli()) setPlanStatus("error");
     }
   }
 
@@ -425,7 +446,7 @@ export function RegistreImport() {
                       {t.planTitle}
                     </h3>
                     <span className="rounded-full bg-white px-2 py-0.5 text-[0.62rem] font-semibold uppercase tracking-wider text-stone-500 ring-1 ring-black/[0.06]">
-                      {plan.live ? t.planLive : t.planDemo}
+                      {plan.live ? t.planLive : plan.cachedAt ? t.planCache(heureCache(plan.cachedAt, lang)) : t.planDemo}
                     </span>
                   </div>
                   <ol className="mt-2.5 flex flex-col gap-2">

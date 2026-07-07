@@ -3,9 +3,12 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion, useReducedMotion } from "framer-motion";
-import { Activity, KeyRound, Lock, Server, ShieldCheck, ShieldAlert } from "lucide-react";
+import { Activity, KeyRound, Loader2, Lock, Server, ShieldCheck, ShieldAlert, Sparkles } from "lucide-react";
 import { useAuth } from "@/components/auth-provider";
 import { useLanguage } from "@/components/language-provider";
+import { auditerRegistre, parserRegistre } from "@/lib/registre/audit";
+import { resumerAudit } from "@/lib/registre/plan";
+import { sauverLive } from "@/lib/ai/live-cache";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
@@ -17,6 +20,12 @@ const SERVICES = [
 ];
 
 const API_KEYS = ["WHISP_API_KEY", "GEMINI_API_KEY", "GOOGLE_EARTH_ENGINE_KEY"];
+
+type EtatChauffe = "live" | "repli" | "erreur";
+interface ResultatChauffe {
+  plan: EtatChauffe;
+  memo: EtatChauffe;
+}
 
 export default function AdminPage() {
   const { user, loading } = useAuth();
@@ -47,6 +56,52 @@ export default function AdminPage() {
   useEffect(() => {
     if (!loading && user && user.role !== "admin") router.replace("/app/dashboard");
   }, [loading, user, router]);
+
+  // Préchauffage démo : appelle les 2 features IA signatures avec les payloads EXACTS du déroulé
+  // (registre de démonstration → plan ; parcelle fil rouge p01 → argumentaire). Une réponse live
+  // est mémorisée dans CE navigateur (cache client) : si Gemini plafonne (429 free tier sur IP
+  // partagées) pendant la démo, la dernière rédaction live se ré-affiche, étiquetée de son heure.
+  const [chauffe, setChauffe] = useState<"idle" | "running" | ResultatChauffe>("idle");
+
+  async function prechauffer() {
+    setChauffe("running");
+    const res: ResultatChauffe = { plan: "erreur", memo: "erreur" };
+    try {
+      const texte = await (await fetch("/registre-demo.geojson")).text();
+      const payload = {
+        resume: resumerAudit(auditerRegistre(parserRegistre("registre-demo.geojson", texte))),
+        lang: "fr" as const,
+      };
+      const r = await fetch("/api/gemini/audit-plan", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      const d = (await r.json()) as { live?: boolean };
+      if (r.ok && d.live) {
+        sauverLive("audit-plan", payload, d);
+        res.plan = "live";
+      } else if (r.ok) res.plan = "repli";
+    } catch {
+      /* res.plan reste « erreur » */
+    }
+    try {
+      const payload = { parcelleId: "p01", lang: "fr" as const };
+      const r = await fetch("/api/gemini/valorisation-memo", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      const d = (await r.json()) as { live?: boolean };
+      if (r.ok && d.live) {
+        sauverLive("valorisation-memo", payload, d);
+        res.memo = "live";
+      } else if (r.ok) res.memo = "repli";
+    } catch {
+      /* res.memo reste « erreur » */
+    }
+    setChauffe(res);
+  }
 
   if (!user || user.role !== "admin") {
     return (
@@ -161,6 +216,50 @@ export default function AdminPage() {
           </div>
         </section>
 
+        {/* Préparation démo : préchauffe les 2 features IA signatures (cache client anti-quota) */}
+        <section className="card-premium p-5 lg:col-span-2">
+          <div className="flex items-center gap-2">
+            <span className="chip-green grid h-9 w-9 place-items-center rounded-xl" aria-hidden>
+              <Sparkles size={17} strokeWidth={2} className="text-green-signal" />
+            </span>
+            <h2 className="text-sm font-semibold text-forest-950">
+              {en ? "Demo warm-up (AI)" : "Préparation démo (IA)"}
+            </h2>
+          </div>
+          <p className="mt-2 max-w-2xl text-xs leading-relaxed text-stone-500">
+            {en
+              ? "Calls the two signature AI features with the exact payloads of the demo run-through. A response generated live is kept in THIS browser: if Gemini hits its free-tier cap during the demo, the latest live wording is shown again, labelled with its generation time. Click backstage before going on stage."
+              : "Appelle les deux features IA signatures avec les payloads exacts du déroulé de démonstration. Une réponse générée en direct est mémorisée dans CE navigateur : si Gemini plafonne (free tier) pendant la démo, la dernière rédaction live se ré-affiche, étiquetée de son heure. À cliquer en coulisses, avant de monter sur scène."}
+          </p>
+          <div className="mt-4 flex flex-wrap items-center gap-3">
+            <button
+              type="button"
+              disabled={chauffe === "running"}
+              onClick={prechauffer}
+              className="inline-flex items-center gap-2 rounded-full border border-green-signal/30 bg-green-signal/[0.06] px-4 py-2 text-xs font-semibold text-green-signal outline-none transition-colors hover:bg-green-signal/[0.12] focus-visible:ring-2 focus-visible:ring-green-signal disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              {chauffe === "running" ? (
+                <Loader2 size={13} strokeWidth={2} className="animate-spin" aria-hidden />
+              ) : (
+                <Sparkles size={13} strokeWidth={2} aria-hidden />
+              )}
+              {chauffe === "running"
+                ? en
+                  ? "Warming up…"
+                  : "Préchauffage…"
+                : en
+                  ? "Warm up the AI (demo)"
+                  : "Préchauffer l'IA (démo)"}
+            </button>
+            {typeof chauffe === "object" && (
+              <div className="flex flex-wrap gap-2" aria-live="polite">
+                <ChipChauffe label={en ? "Action plan" : "Plan d'action"} etat={chauffe.plan} en={en} />
+                <ChipChauffe label={en ? "Premium brief" : "Argumentaire de prime"} etat={chauffe.memo} en={en} />
+              </div>
+            )}
+          </div>
+        </section>
+
         {/* État des services */}
         <section className="card-premium p-5 lg:col-span-2">
           <div className="flex items-center justify-between">
@@ -197,5 +296,33 @@ export default function AdminPage() {
         </section>
       </div>
     </div>
+  );
+}
+
+/** Pastille d'état du préchauffage : live (vert) · repli démonstration (ambre) · erreur (rouge). */
+function ChipChauffe({ label, etat, en }: { label: string; etat: EtatChauffe; en: boolean }) {
+  const style =
+    etat === "live"
+      ? "bg-green-signal/12 text-green-signal"
+      : etat === "repli"
+        ? "bg-amber-cacao/15 text-amber-cacao"
+        : "bg-red-block/10 text-red-block";
+  const txt =
+    etat === "live"
+      ? en
+        ? "live AI"
+        : "IA en direct"
+      : etat === "repli"
+        ? en
+          ? "demo fallback"
+          : "repli démonstration"
+        : en
+          ? "network error"
+          : "erreur réseau";
+  return (
+    <span className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[0.7rem] font-semibold ${style}`}>
+      <span className="h-1.5 w-1.5 rounded-full bg-current" aria-hidden />
+      {label} · {txt}
+    </span>
   );
 }

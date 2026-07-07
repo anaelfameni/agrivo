@@ -3,6 +3,30 @@
 Versioning sémantique (MAJOR.MINOR.PATCH). Chaque release liste ce qui est ajouté, corrigé et
 vérifié, conformément à l'étape 8 du pipeline « Du besoin à la Release ».
 
+## v1.3.0 — 2026-07-07 — Mode terrain PWA (tour de champ GPS réel) + filet anti-quota IA
+
+### Ajouté
+- Cartographie, mode « Tour de champ GPS (réel) » sur mobile : là où le web simulait la marche,
+  la PWA écoute désormais la géolocalisation réelle de l'appareil (`watchPosition`, haute
+  précision). Un waypoint se pose tous les ~8 m (filtre du bruit GPS à l'arrêt), compteurs live
+  réels (waypoints, distance parcourue, précision ±m de l'appareil, distance de retour au départ),
+  fermeture du polygone dès 3 sommets, validation de l'emprise Côte d'Ivoire, anneau fermé au
+  standard GeoJSON RFC 7946 (6 décimales). Une seule application, du bureau du gérant au bord du
+  champ, sans passer par un store. Les modes simulés (point central, tour de champ, « j'ai déjà
+  les coordonnées ») restent inchangés sur desktop et en secours. Permission demandée au moment
+  de l'usage avec la mention ARTCI ; refus → aucun blocage, les autres modes restent disponibles.
+- Géométrie du terrain extraite en module pur testé (`lib/geo/terrain.ts` : haversine, distance
+  cumulée, seuil de waypoint, arrondi RFC 7946, fermeture d'anneau, emprise CI) — 6 tests.
+- Filet anti-quota de démonstration pour les 2 features IA signatures (`lib/ai/live-cache.ts`,
+  2 tests) : une réponse générée EN DIRECT est mémorisée dans le navigateur ; si Gemini plafonne
+  (429 du free tier depuis les IP partagées Vercel) lors d'un nouvel appel, la dernière rédaction
+  live se ré-affiche pour le MÊME contenu, étiquetée « Rédigé par Gemini à HH:MM » (jamais un
+  texte inventé, jamais un autre contenu). Le repli « Mode démonstration » reste le dernier filet.
+- Admin, encart « Préparation démo (IA) » : bouton « Préchauffer l'IA (démo) » qui appelle les 2
+  routes signatures avec les payloads exacts du déroulé et affiche l'état par feature (IA en
+  direct / repli / erreur) — à cliquer en coulisses avant de monter sur scène pour amorcer le cache.
+- 47 tests Vitest au total (39 + 8).
+
 ## v1.2.1 — 2026-07-07 — Vérification prod + résorption de l'ultra-review (prompts 1 à 5)
 
 ### Corrigé

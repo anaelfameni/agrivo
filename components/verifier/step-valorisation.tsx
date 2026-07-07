@@ -4,6 +4,10 @@ import { useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { ArrowRight, Award, BadgeCheck, Check, ClipboardCopy, FileCheck2, Loader2, Send, Sparkles } from "lucide-react";
 import type { ArgumentairePrime } from "@/lib/ai/argumentaire";
+import { chargerLive, heureCache, sauverLive } from "@/lib/ai/live-cache";
+
+/** Argumentaire affiché : celui de l'API, ou la dernière rédaction live re-servie (cachedAt). */
+type ArgumentaireAffiche = ArgumentairePrime & { cachedAt?: number };
 import { PinMark } from "@/components/ui/pin-mark";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { useLanguage } from "@/components/language-provider";
@@ -34,6 +38,7 @@ const COPY = {
     memoCta: "Générer l'argumentaire de prime (IA)",
     memoLoading: "Rédaction de l'argumentaire…",
     memoLive: "Rédigé par Gemini · IA en direct",
+    memoCache: (h: string) => `Rédigé par Gemini à ${h}`,
     memoDemo: "Mode démonstration",
     memoError: "L'argumentaire n'a pas pu être généré. Réessayez.",
     memoCopy: "Copier",
@@ -61,6 +66,7 @@ const COPY = {
     memoCta: "Generate the premium brief (AI)",
     memoLoading: "Writing the brief…",
     memoLive: "Written by Gemini · live AI",
+    memoCache: (h: string) => `Written by Gemini at ${h}`,
     memoDemo: "Demo mode",
     memoError: "The brief could not be generated. Try again.",
     memoCopy: "Copy",
@@ -89,7 +95,7 @@ export function StepValorisation({
   const { lang } = useLanguage();
   const t = COPY[lang];
   const [status, setStatus] = useState<"idle" | "sharing" | "done">("idle");
-  const [memo, setMemo] = useState<ArgumentairePrime | null>(null);
+  const [memo, setMemo] = useState<ArgumentaireAffiche | null>(null);
   const [memoStatus, setMemoStatus] = useState<"idle" | "loading" | "error" | "done">("idle");
   const [copied, setCopied] = useState(false);
 
@@ -105,17 +111,32 @@ export function StepValorisation({
 
   async function genererMemo() {
     setMemoStatus("loading");
+    const payload = { parcelleId: parcelle.id, lang };
+    // Filet anti-quota (429 free tier sur IP partagées) : si le live échoue, on re-sert la
+    // DERNIÈRE rédaction produite par Gemini pour cette même parcelle, étiquetée avec son heure.
+    const repli = () => {
+      const cache = chargerLive<ArgumentairePrime>("valorisation-memo", payload);
+      if (cache) {
+        setMemo({ ...cache.data, cachedAt: cache.at });
+        setMemoStatus("done");
+        return true;
+      }
+      return false;
+    };
     try {
       const r = await fetch("/api/gemini/valorisation-memo", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ parcelleId: parcelle.id, lang }),
+        body: JSON.stringify(payload),
       });
       if (!r.ok) throw new Error(String(r.status));
-      setMemo((await r.json()) as ArgumentairePrime);
+      const data = (await r.json()) as ArgumentairePrime;
+      if (data.live) sauverLive("valorisation-memo", payload, data);
+      else if (repli()) return;
+      setMemo(data);
       setMemoStatus("done");
     } catch {
-      setMemoStatus("error");
+      if (!repli()) setMemoStatus("error");
     }
   }
 
@@ -282,7 +303,7 @@ export function StepValorisation({
                     </h3>
                     <span className="flex items-center gap-2">
                       <span className="rounded-full bg-white px-2 py-0.5 text-[0.62rem] font-semibold uppercase tracking-wider text-stone-500 ring-1 ring-black/[0.06]">
-                        {memo.live ? t.memoLive : t.memoDemo}
+                        {memo.live ? t.memoLive : memo.cachedAt ? t.memoCache(heureCache(memo.cachedAt, lang)) : t.memoDemo}
                       </span>
                       <button
                         type="button"

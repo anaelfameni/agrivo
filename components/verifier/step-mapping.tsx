@@ -3,11 +3,12 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import { ArrowRight, Check, ClipboardPaste, Crosshair, Footprints, MapPinned, RotateCcw, ShieldCheck } from "lucide-react";
+import { ArrowRight, Check, ClipboardPaste, Crosshair, Footprints, LocateFixed, MapPinned, RotateCcw, ShieldCheck } from "lucide-react";
 import { PinMark } from "@/components/ui/pin-mark";
 import { useLanguage } from "@/components/language-provider";
 import type { MappingMode } from "@/components/verifier/mapping-map";
 import { FILIERE_LABEL, PARCELLES, RENDEMENT_T_HA, type Parcelle } from "@/data/mock-parcelles";
+import { arrondi6, dansEmpriseCI, distanceCumuleeM, estNouveauWaypoint, haversineM } from "@/lib/geo/terrain";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 const WALK_TICK_MS = 280; // pose d'un waypoint (simulation démo ; le mobile réel écoute watchPosition)
@@ -36,6 +37,17 @@ const COPY = {
     manualErrZone: "Ces coordonnées sortent de l'emprise de la Côte d'Ivoire (lat 4–11, lon −9–−2). Vérifiez l'ordre latitude, longitude.",
     manualErrCount: "Saisissez 1 ligne (point central) ou au moins 3 lignes (polygone).",
     manualCaptured: (n: number) => n > 1 ? `Coordonnées fournies par la coopérative : polygone de ${n} sommets (WGS-84, GeoJSON RFC 7946).` : "Coordonnées fournies par la coopérative : point central (WGS-84, GeoJSON RFC 7946).",
+    modeGpsTitle: "Tour de champ GPS (réel)",
+    modeGpsDesc: "Marchez le périmètre avec le téléphone : la géolocalisation réelle de l'appareil pose les waypoints (un point tous les 8 m environ).",
+    gpsBadge: "Terrain",
+    gpsPrivacy: "Votre position sert uniquement à cartographier la parcelle. Vos données restent la propriété de la coopérative.",
+    gpsSearching: "Recherche du signal GPS…",
+    gpsClose: "Fermer le polygone",
+    gpsCancel: "Annuler la capture",
+    gpsToStart: (m: string) => `Retour au départ : ${m} m`,
+    gpsNeed: "Posez au moins 3 waypoints en marchant le périmètre.",
+    gpsErrPerm: "Géolocalisation refusée ou indisponible. Utilisez un autre mode de capture — rien n'est bloqué.",
+    capturedGps: (n: number) => `Tour de champ réel : polygone fermé, ${n} sommets (WGS-84, GeoJSON RFC 7946).`,
     recommended: "Recommandé",
     required: "Requis dès 4 ha",
     start: "Démarrer la capture",
@@ -73,6 +85,17 @@ const COPY = {
     manualErrZone: "These coordinates fall outside Côte d'Ivoire (lat 4–11, lon −9–−2). Check the latitude, longitude order.",
     manualErrCount: "Enter 1 line (centre point) or at least 3 lines (polygon).",
     manualCaptured: (n: number) => n > 1 ? `Coordinates provided by the cooperative: ${n}-vertex polygon (WGS-84, GeoJSON RFC 7946).` : "Coordinates provided by the cooperative: centre point (WGS-84, GeoJSON RFC 7946).",
+    modeGpsTitle: "GPS perimeter walk (real)",
+    modeGpsDesc: "Walk the perimeter with the phone: the device's real geolocation drops the waypoints (about one every 8 m).",
+    gpsBadge: "Field",
+    gpsPrivacy: "Your position is only used to map the plot. Your data remains the cooperative's property.",
+    gpsSearching: "Searching for GPS signal…",
+    gpsClose: "Close the polygon",
+    gpsCancel: "Cancel the capture",
+    gpsToStart: (m: string) => `Back to start: ${m} m`,
+    gpsNeed: "Drop at least 3 waypoints while walking the perimeter.",
+    gpsErrPerm: "Geolocation denied or unavailable. Use another capture mode — nothing is blocked.",
+    capturedGps: (n: number) => `Real perimeter walk: polygon closed, ${n} vertices (WGS-84, GeoJSON RFC 7946).`,
     recommended: "Recommended",
     required: "Required from 4 ha",
     start: "Start the capture",
@@ -101,17 +124,6 @@ const MappingMap = dynamic(() => import("@/components/verifier/mapping-map"), {
 });
 
 type Phase = "choose" | "capturing" | "captured";
-
-/** Distance haversine en mètres entre deux [lon, lat]. */
-function haversineM(a: number[], b: number[]): number {
-  const R = 6371000;
-  const dLat = ((b[1] - a[1]) * Math.PI) / 180;
-  const dLon = ((b[0] - a[0]) * Math.PI) / 180;
-  const la1 = (a[1] * Math.PI) / 180;
-  const la2 = (b[1] * Math.PI) / 180;
-  const h = Math.sin(dLat / 2) ** 2 + Math.cos(la1) * Math.cos(la2) * Math.sin(dLon / 2) ** 2;
-  return 2 * R * Math.asin(Math.sqrt(h));
-}
 
 /** Densifie le contour en waypoints réguliers (~4 par arête) : la trajectoire du tour de champ. */
 function densifier(ring: number[][], perEdge = 4): number[][] {
@@ -172,7 +184,7 @@ export function StepMapping({
   }, [waypoints, ring]);
 
   const smallPlot = parcelle.superficieHa < 4;
-  const [mode, setMode] = useState<MappingMode | "manual">(smallPlot ? "point" : "polygon");
+  const [mode, setMode] = useState<MappingMode | "manual" | "gps">(smallPlot ? "point" : "polygon");
   const [manualText, setManualText] = useState("");
   const [manualErr, setManualErr] = useState<string | null>(null);
   const [manualCoords, setManualCoords] = useState<number[][] | null>(null); // [lon, lat][]
@@ -182,10 +194,31 @@ export function StepMapping({
   const [checksShown, setChecksShown] = useState(0);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
+  // Mode terrain (PWA installée) : tour de champ GPS RÉEL via watchPosition — proposé sur
+  // mobile quand la géolocalisation existe. Le mode simulé reste la démo de secours desktop.
+  const [gpsOk, setGpsOk] = useState(false);
+  const [gpsPts, setGpsPts] = useState<number[][]>([]); // fixes réels [lon, lat], 6 décimales
+  const [gpsAcc, setGpsAcc] = useState<number | null>(null); // précision réelle du dernier fix (m)
+  const [gpsErr, setGpsErr] = useState<string | null>(null);
+  const watchRef = useRef<number | null>(null);
+
   useEffect(() => {
     return () => {
       if (timerRef.current) clearInterval(timerRef.current);
+      if (watchRef.current !== null) navigator.geolocation?.clearWatch(watchRef.current);
     };
+  }, []);
+
+  useEffect(() => {
+    try {
+      const mq = window.matchMedia("(pointer: coarse)");
+      const maj = () => setGpsOk(mq.matches && "geolocation" in navigator);
+      maj();
+      mq.addEventListener?.("change", maj);
+      return () => mq.removeEventListener?.("change", maj);
+    } catch {
+      /* matchMedia indisponible */
+    }
   }, []);
 
   const plafondT = Math.round(parcelle.superficieHa * RENDEMENT_T_HA[parcelle.filiere] * 10) / 10;
@@ -237,8 +270,63 @@ export function StepMapping({
     setPhase("captured");
   }
 
+  function stopGps() {
+    if (watchRef.current !== null) {
+      navigator.geolocation?.clearWatch(watchRef.current);
+      watchRef.current = null;
+    }
+  }
+
+  /** Tour de champ RÉEL : chaque fix GPS à ≥ 8 m du dernier devient un waypoint (RFC 7946). */
+  function demarrerGps() {
+    setGpsErr(null);
+    setGpsPts([]);
+    setGpsAcc(null);
+    setClosed(false);
+    setChecksShown(0);
+    setPhase("capturing");
+    watchRef.current = navigator.geolocation.watchPosition(
+      (pos) => {
+        const fix = [arrondi6(pos.coords.longitude), arrondi6(pos.coords.latitude)];
+        setGpsAcc(Math.round(pos.coords.accuracy));
+        setGpsPts((prev) => (estNouveauWaypoint(prev[prev.length - 1], fix) ? [...prev, fix] : prev));
+      },
+      () => {
+        stopGps();
+        setGpsErr(t.gpsErrPerm);
+        setPhase("choose");
+      },
+      { enableHighAccuracy: true, maximumAge: 0, timeout: 20000 },
+    );
+  }
+
+  /** Ferme le polygone du tour de champ réel (≥ 3 sommets, emprise CI vérifiée). */
+  function fermerGps() {
+    if (gpsPts.length < 3) return;
+    if (!dansEmpriseCI(gpsPts)) {
+      setGpsErr(t.manualErrZone);
+      return;
+    }
+    stopGps();
+    setGpsErr(null);
+    setClosed(true);
+    setChecksShown(0);
+    setPhase("captured");
+  }
+
+  function annulerGps() {
+    stopGps();
+    setGpsPts([]);
+    setGpsAcc(null);
+    setGpsErr(null);
+    setClosed(false);
+    setChecksShown(0);
+    setPhase("choose");
+  }
+
   function demarrer() {
     if (mode === "manual") { validerManuel(); return; }
+    if (mode === "gps") { demarrerGps(); return; }
     setPhase("capturing");
     setCount(0);
     setClosed(false);
@@ -282,6 +370,10 @@ export function StepMapping({
 
   function recommencer() {
     if (timerRef.current) clearInterval(timerRef.current);
+    stopGps();
+    setGpsPts([]);
+    setGpsAcc(null);
+    setGpsErr(null);
     setManualCoords(null);
     setManualErr(null);
     setPhase("choose");
@@ -290,8 +382,27 @@ export function StepMapping({
     setChecksShown(0);
   }
 
-  const mapMode: MappingMode = mode === "manual" ? (manualCoords && manualCoords.length > 1 ? "polygon" : "point") : mode;
-  const mapWaypoints = mode === "manual" && manualCoords ? manualCoords : mode === "point" ? [centroid] : waypoints;
+  const mapMode: MappingMode =
+    mode === "manual"
+      ? manualCoords && manualCoords.length > 1
+        ? "polygon"
+        : "point"
+      : mode === "gps"
+        ? "polygon"
+        : mode;
+  const mapWaypoints =
+    mode === "manual" && manualCoords
+      ? manualCoords
+      : mode === "gps"
+        ? gpsPts.length
+          ? gpsPts
+          : [centroid]
+        : mode === "point"
+          ? [centroid]
+          : waypoints;
+  const mapCount = mode === "gps" ? gpsPts.length : count;
+  const gpsDistanceM = mode === "gps" ? Math.round(distanceCumuleeM(gpsPts)) : 0;
+  const gpsToStartM = mode === "gps" && gpsPts.length > 1 ? Math.round(haversineM(gpsPts[gpsPts.length - 1], gpsPts[0])) : null;
 
   return (
     <div className="grid gap-5 lg:grid-cols-[1.5fr_1fr]">
@@ -299,7 +410,7 @@ export function StepMapping({
       <div className="relative h-[44vh] min-h-[320px] overflow-hidden rounded-2xl border border-black/[0.08] lg:h-[62vh]">
         <MappingMap
           waypoints={mapWaypoints}
-          count={count}
+          count={mapCount}
           mode={mapMode}
           closed={closed}
           active={phase === "capturing"}
@@ -338,6 +449,16 @@ export function StepMapping({
                   selected={mode === "polygon"}
                   onSelect={() => setMode("polygon")}
                 />
+                {gpsOk && (
+                  <ModeCard
+                    icon={<LocateFixed size={18} strokeWidth={2} aria-hidden />}
+                    title={t.modeGpsTitle}
+                    desc={t.modeGpsDesc}
+                    badge={t.gpsBadge}
+                    selected={mode === "gps"}
+                    onSelect={() => setMode("gps")}
+                  />
+                )}
                 <ModeCard
                   icon={<ClipboardPaste size={18} strokeWidth={2} aria-hidden />}
                   title={t.modeManualTitle}
@@ -347,6 +468,12 @@ export function StepMapping({
                   onSelect={() => setMode("manual")}
                 />
               </div>
+              {mode === "gps" && (
+                <p className="text-[0.7rem] leading-relaxed text-stone-400">{t.gpsPrivacy}</p>
+              )}
+              {mode === "gps" && gpsErr && (
+                <p role="alert" className="rounded-lg bg-red-block/[0.07] px-3 py-2 text-xs text-red-block">{gpsErr}</p>
+              )}
               {mode === "manual" && (
                 <div className="flex flex-col gap-1.5">
                   <label htmlFor="coords-manual" className="text-xs font-medium text-forest-950">
@@ -376,14 +503,43 @@ export function StepMapping({
               <div className="flex items-center gap-3 rounded-xl bg-ivory-deep/50 px-4 py-3">
                 <PinMark size={22} color="var(--color-green-signal)" pulse />
                 <span className="text-sm font-medium text-forest-950">
-                  {mode === "polygon" ? t.walking : t.pointing}
+                  {mode === "point" ? t.pointing : t.walking}
                 </span>
               </div>
               <dl className="grid grid-cols-3 gap-2">
-                <Meter label={t.waypoints} value={mode === "polygon" ? `${count}/${waypoints.length}` : "1"} />
-                <Meter label={t.distance} value={`${distanceM.toLocaleString(lang === "fr" ? "fr-FR" : "en-GB")} m`} />
-                <Meter label={t.accuracy} value={`±${accuracyAt(count).toFixed(1).replace(".", lang === "fr" ? "," : ".")} m`} />
+                <Meter
+                  label={t.waypoints}
+                  value={mode === "gps" ? String(gpsPts.length) : mode === "polygon" ? `${count}/${waypoints.length}` : "1"}
+                />
+                <Meter
+                  label={t.distance}
+                  value={`${(mode === "gps" ? gpsDistanceM : distanceM).toLocaleString(lang === "fr" ? "fr-FR" : "en-GB")} m`}
+                />
+                <Meter
+                  label={t.accuracy}
+                  value={
+                    mode === "gps"
+                      ? gpsAcc === null
+                        ? "…"
+                        : `±${gpsAcc.toLocaleString(lang === "fr" ? "fr-FR" : "en-GB")} m`
+                      : `±${accuracyAt(count).toFixed(1).replace(".", lang === "fr" ? "," : ".")} m`
+                  }
+                />
               </dl>
+              {mode === "gps" && (
+                <div className="flex flex-col gap-1.5" aria-live="polite">
+                  {gpsAcc === null && <p className="text-xs text-stone-400">{t.gpsSearching}</p>}
+                  {gpsPts.length < 3 && <p className="text-xs leading-relaxed text-stone-400">{t.gpsNeed}</p>}
+                  {gpsToStartM !== null && (
+                    <p className="num text-xs text-stone-500">
+                      {t.gpsToStart(gpsToStartM.toLocaleString(lang === "fr" ? "fr-FR" : "en-GB"))}
+                    </p>
+                  )}
+                  {gpsErr && (
+                    <p role="alert" className="rounded-lg bg-red-block/[0.07] px-3 py-2 text-xs text-red-block">{gpsErr}</p>
+                  )}
+                </div>
+              )}
             </div>
           )}
 
@@ -397,7 +553,7 @@ export function StepMapping({
               <div className="flex items-start gap-2.5 rounded-xl bg-green-signal/[0.08] px-4 py-3">
                 <Check size={16} strokeWidth={2.5} className="mt-0.5 shrink-0 text-green-signal" aria-hidden />
                 <p className="text-sm leading-relaxed text-forest-950">
-                  {mode === "manual" ? t.manualCaptured(manualCoords?.length ?? 1) : mode === "polygon" ? t.capturedPoly(waypoints.length) : t.capturedPoint}{" "}
+                  {mode === "manual" ? t.manualCaptured(manualCoords?.length ?? 1) : mode === "gps" ? t.capturedGps(gpsPts.length) : mode === "polygon" ? t.capturedPoly(waypoints.length) : t.capturedPoint}{" "}
                   <span className="font-semibold">
                     {t.superficie} : <span className="num">{haStr} ha</span>
                   </span>
@@ -449,6 +605,28 @@ export function StepMapping({
               {mode === "manual" ? <ClipboardPaste size={16} strokeWidth={2} aria-hidden /> : mode === "polygon" ? <Footprints size={16} strokeWidth={2} aria-hidden /> : <Crosshair size={16} strokeWidth={2} aria-hidden />}
               {mode === "manual" ? t.manualSubmit : t.start}
             </button>
+          )}
+
+          {phase === "capturing" && mode === "gps" && (
+            <div className="flex flex-col gap-2 sm:flex-row">
+              <button
+                type="button"
+                disabled={gpsPts.length < 3}
+                onClick={fermerGps}
+                className="inline-flex flex-1 items-center justify-center gap-2 rounded-full bg-green-signal px-6 py-3.5 text-sm font-semibold text-white shadow-[0_14px_34px_-12px_rgba(22,163,74,0.75)] outline-none transition-[filter,transform,opacity] hover:brightness-105 active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-green-signal focus-visible:ring-offset-2 focus-visible:ring-offset-white disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                <Check size={16} strokeWidth={2.5} aria-hidden />
+                {t.gpsClose}
+              </button>
+              <button
+                type="button"
+                onClick={annulerGps}
+                className="inline-flex items-center justify-center gap-2 rounded-full border border-black/10 px-4 py-3.5 text-sm font-medium text-stone-600 outline-none transition-colors hover:border-green-signal/40 hover:text-forest-950 focus-visible:ring-2 focus-visible:ring-green-signal"
+              >
+                <RotateCcw size={15} strokeWidth={2} aria-hidden />
+                {t.gpsCancel}
+              </button>
+            </div>
           )}
 
           {phase === "captured" && (
