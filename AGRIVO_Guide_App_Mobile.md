@@ -1,14 +1,14 @@
 # AGRIVO — Guide technique de l'app mobile (pour Christ)
 
 > **Spécification de référence** — version du 6 juillet 2026, mise à jour le 7 juillet (backend
-> v1.3.0 EN PROD), rédigée par Anael (chef de projet).
+> v1.7.0 EN PROD), rédigée par Anael (chef de projet).
 > Objectif : permettre à un dev mobile expérimenté de **reprendre l'app mobile existante et l'aligner**
 > sur la vision AGRIVO sans avoir à poser de questions. L'app est déjà commencée : on ne repart pas de
-> zéro, on réadapte (voir §7). Backend de référence : **https://agrivo-io.vercel.app** (**v1.3.0** —
+> zéro, on réadapte (voir §7). Backend de référence : **https://agrivo-io.vercel.app** (**v1.7.0** —
 > les nouveautés backend qui te concernent sont dans l'encadré §4.6).
 > Jury : samedi 11 juillet 2026 — priorité absolue aux écrans du golden path.
 
-> ⚠️ **MISE À JOUR STRATÉGIQUE IMPORTANTE (7 juillet, v1.3.0) — à lire avant tout.**
+> ⚠️ **MISE À JOUR STRATÉGIQUE IMPORTANTE (7 juillet, v1.7.0) — à lire avant tout.**
 > **La PWA web fait désormais la capture GPS RÉELLE au bord du champ** (mode « Tour de champ GPS
 > réel » : `navigator.geolocation.watchPosition`, waypoints en marchant, fermeture de polygone,
 > RFC 7946). Autrement dit : **une seule application (la PWA), installable depuis le navigateur, du
@@ -437,3 +437,14 @@ Formulation imposée du score sols : « méthodologie inspirée de standards rec
 rédigé par Anael pour Christ.
 Jumeau : `AGRIVO_Guide_App_Mobile.pdf`. Références : `CLAUDE.md`, `PLAN_REORIENTATION_AGRIVO.md`,
 `GUIDE_DEMO_JURY.md`, code web `components/verifier/*` et `app/api/*` (source de vérité du contrat).*
+
+---
+
+## Mise à jour v1.7.0 (8 juillet) — à connaître absolument
+
+Le site est passé en **version finale v1.7.0** : **13 usages IA** (contre 8 avant) et **65 tests** au vert. Ce qui a changé :
+
+- **5 nouvelles fonctions IA** : le **Copilote RDUE** (bulle ✨ sur le tableau de bord et la FAQ — répond aux questions sur le règlement avec la source citée), la **Revue IA du registre** (repère les signaux faibles : superficies identiques, noms quasi-doublons), le **Dossier acheteur EUDR** (onglet exportateur — résumé exécutif IA + export), le **verdict traduit en dioula/baoulé** (l'explication seulement, jamais le statut), et le **diagnostic visuel de parcelle** par photo (observation, jamais un verdict).
+- **Rituel pré-vol AVANT toute démo** : se connecter en admin → « Préchauffer l'IA (démo) » → attendre le bandeau **« Démo prête : 6/6 en direct »**. C'est notre garantie anti-panne en salle.
+- **Site vitrine finalisé** : onglet « Accueil » (l'écran de bienvenue n'apparaît plus que sur rafraîchissement ou arrivée par URL), heros unifiés sur Méthodologie/À propos/Tarifs, tout le jargon technique retiré des pages publiques, section « L'enjeu, à l'échelle du pays » (1ᵉʳ producteur mondial · 6 M+ de personnes · 66 % vers l'UE — chiffres sourcés USDA/Trase).
+- **Le détail complet des 13 fonctions IA** (une par une, avec le bénéfice client) est dans le document **AGRIVO_Nouveautes_et_IA.pdf** — à lire en priorité.

@@ -6,7 +6,7 @@
 > le projet en lisant ce seul document. Pour MAÎTRISER le projet et répondre au jury, lire ensuite le
 > document de formation joint : **`AGRIVO_Formation_Equipe.pdf`**. Confidentiel équipe :
 > Anael · Christ · Gaddiel · Domy.
-> Jury : **samedi 11 juillet 2026, CSCTICAO** · Produit : **https://agrivo-io.vercel.app** (**v1.3.0, EN PRODUCTION**).
+> Jury : **samedi 11 juillet 2026, CSCTICAO** · Produit : **https://agrivo-io.vercel.app** (**v1.7.0, EN PRODUCTION**).
 
 ---
 
@@ -150,7 +150,7 @@ Sans clé (dev/offline), tout retombe automatiquement en mode démonstration : *
   « cockpit » retiré (charte), favicon (plus de 404).
 - **39/39 tests · build vert · tag v1.2.0 · déployée en prod dans la nuit** (l'alias a fini par passer).
 
-### v1.3.0 (7 juillet — mode terrain PWA + IA fiabilisée, session 24) — VERSION EN PROD
+### v1.7.0 (7 juillet — mode terrain PWA + IA fiabilisée, session 24) — VERSION EN PROD
 - **Mode terrain « Tour de champ GPS (réel) »** : sur mobile, l'étape Cartographie écoute la VRAIE
   géolocalisation de l'appareil (`watchPosition`) au lieu de la simuler — waypoints posés en marchant
   (~1 tous les 8 m), distance et précision live réelles, fermeture du polygone, emprise CI, standard
@@ -163,7 +163,7 @@ Sans clé (dev/offline), tout retombe automatiquement en mode démonstration : *
   bouton admin **« Préchauffer l'IA (démo) »** amorce ce cache en coulisses avant de monter sur scène.
 - **Répétition GO/NO-GO automatisée sur la prod** : 9 segments GO, 0 NO-GO, 0 erreur console ; plan
   d'action IA et argumentaire **confirmés LIVE** en production.
-- **47/47 tests · build vert · tag v1.3.0 · EN PROD sur https://agrivo-io.vercel.app.**
+- **47/65 tests · build vert · tag v1.7.0 · EN PROD sur https://agrivo-io.vercel.app.**
 
 ### v1.2.1 (7 juillet — vérification prod + résorption de l'ultra-review, session 22)
 - **Vérification en production des 5 points critiques** : plan d'action IA et argumentaire de prime
@@ -221,7 +221,7 @@ Sans clé (dev/offline), tout retombe automatiquement en mode démonstration : *
 - **Preuves de méthode** (le jury évalue le pipeline, pas juste la démo) : `SPECS.md` (user stories +
   critères d'acceptation), `ARCHITECTURE.md` (ADR + plan de rollback Vercel), `CHANGELOG.md`,
   `PLAN_V2.md` (chemin vers la production réelle), **CI GitHub Actions** (lint + types + tests +
-  build à chaque push), **47 tests Vitest**, tags `v1.0.0` → `v1.3.0`.
+  build à chaque push), **65 tests Vitest**, tags `v1.0.0` → `v1.7.0`.
 
 ---
 
@@ -299,7 +299,7 @@ Le pitch dure **5 minutes** + 2 minutes de questions.
 
 ## 12. Prochaines étapes immédiates (check-list)
 
-0. ☑ ~~Mettre en production~~ — **FAIT : la v1.3.0 est en prod sur https://agrivo-io.vercel.app**
+0. ☑ ~~Mettre en production~~ — **FAIT : la v1.7.0 est en prod sur https://agrivo-io.vercel.app**
    (mode terrain + IA fiabilisée, GO/NO-GO 9/9 le 7 juillet). Reste UNE commande Anael (1 min) :
    `git push origin main --tags` — pour que GitHub et la CI reflètent la prod.
 1. ☐ **Action Anael (5 min) : facturation Tier 1 sur la clé Gemini** (AI Studio → Billing) — supprime
@@ -339,3 +339,14 @@ Le pitch dure **5 minutes** + 2 minutes de questions.
   `AGRIVO_Ultra_Review_Rapport_Final.pdf` et `AGRIVO_Ultra_Review_Strategique.pdf` (audits, référence).
 
 *AGRIVO — document interne équipe · mis à jour le 7 juillet 2026 · rédigé par Anael (chef de projet).*
+
+---
+
+## Mise à jour v1.7.0 (8 juillet) — à connaître absolument
+
+Le site est passé en **version finale v1.7.0** : **13 usages IA** (contre 8 avant) et **65 tests** au vert. Ce qui a changé :
+
+- **5 nouvelles fonctions IA** : le **Copilote RDUE** (bulle ✨ sur le tableau de bord et la FAQ — répond aux questions sur le règlement avec la source citée), la **Revue IA du registre** (repère les signaux faibles : superficies identiques, noms quasi-doublons), le **Dossier acheteur EUDR** (onglet exportateur — résumé exécutif IA + export), le **verdict traduit en dioula/baoulé** (l'explication seulement, jamais le statut), et le **diagnostic visuel de parcelle** par photo (observation, jamais un verdict).
+- **Rituel pré-vol AVANT toute démo** : se connecter en admin → « Préchauffer l'IA (démo) » → attendre le bandeau **« Démo prête : 6/6 en direct »**. C'est notre garantie anti-panne en salle.
+- **Site vitrine finalisé** : onglet « Accueil » (l'écran de bienvenue n'apparaît plus que sur rafraîchissement ou arrivée par URL), heros unifiés sur Méthodologie/À propos/Tarifs, tout le jargon technique retiré des pages publiques, section « L'enjeu, à l'échelle du pays » (1ᵉʳ producteur mondial · 6 M+ de personnes · 66 % vers l'UE — chiffres sourcés USDA/Trase).
+- **Le détail complet des 13 fonctions IA** (une par une, avec le bénéfice client) est dans le document **AGRIVO_Nouveautes_et_IA.pdf** — à lire en priorité.
