@@ -13,6 +13,11 @@
 2. **Mobile (Christ) : golden path (3 min)** — consentement ARTCI → scan carte (QR + Gemini Vision) →
    cartographie GPS (point central < 4 ha / tour de champ ≥ 4 ha) + contrôles d'intégrité →
    verdict Whisp → certificat PDF → valorisation (dossier partagé avec l'exportateur).
+   **Depuis v1.3.0, ce parcours tourne aussi sur la PWA web installée sur un téléphone** : à l'étape
+   Cartographie, le mode **« Tour de champ GPS (réel) »** apparaît sur mobile et écoute la VRAIE
+   géolocalisation (waypoints qui se posent en marchant, distance et précision live, fermeture du
+   polygone). Argument à dire : « une seule application, du bureau du gérant au bord du champ, sans
+   passer par un store — sur les téléphones qu'ont déjà les agents. »
 3. **Web : dashboard coopérative (1 min 15)** — 4 KPI officiels (dont « Dossiers partagés »), alertes,
    dernière vérification remontée, puis **démo « Importer mon registre »** : clic sur « Auditer mon
    registre » (la carte se déplie) puis « Essayer avec le registre de démonstration » → « 63 % prêtes
@@ -126,3 +131,25 @@ Format : capture d'écran 1080p, 2 min 30, sans musique forte, voix off ou sous-
 
 Checklist tournage : mode avion OFF mais MOCK garanti · reduced-motion OFF · fenêtre 1440×900 ·
 compte démo déjà connecté · vider la recherche du dashboard · préparer la question du copilote.
+
+## Checklist tournage v1.3.0 (revalidée sur la prod le 7 juillet — prompt E)
+
+> Vérifié en direct sur https://agrivo-io.vercel.app : chaque plan est tournable tel quel. Deux
+> changements depuis les versions précédentes à ne PAS rater :
+- **Import du registre REPLIÉ par défaut** : sur le dashboard, cliquer d'abord **« Auditer mon
+  registre »** (la carte se déplie) AVANT « Essayer avec le registre de démonstration ». Sinon le
+  bouton du registre démo n'est pas visible.
+- **Mode terrain réel (nouveau)** : si Christ filme sur un téléphone, à l'étape Cartographie choisir
+  **« Tour de champ GPS (réel) »** et marcher un petit périmètre (cour, parking) — les waypoints se
+  posent en marchant, « Fermer le polygone » s'active à 3 sommets. À défaut de mobile, les modes
+  simulés du web font le plan de secours.
+- **Préchauffer l'IA avant de filmer/pitcher** : se connecter en admin (`admin@agrivo.com`) →
+  encart « Préparation démo (IA) » → **« Préchauffer l'IA (démo) »**. Si les deux chips passent
+  « IA en direct », le cache est amorcé : même si Gemini plafonne pendant la démo, la dernière
+  rédaction live se ré-affiche (étiquetée de son heure) au lieu du repli « Mode démonstration ».
+- Labels exacts à filmer, dans l'ordre : « Auditer mon registre » → « Essayer avec le registre de
+  démonstration » → « 63 % prêtes pour la RDUE » → « Générer le plan d'action IA » (badge « Rédigé
+  par Gemini · IA en direct ») ; puis parcours → « Valoriser la parcelle » → « Partager le dossier
+  avec l'exportateur » → « Générer l'argumentaire de prime (IA) » → « Copier ».
+- Effet final : sur `/verifier-certificat?ref=AGV-2026-0417`, le statut « Conforme » s'affiche —
+  bon plan de secours si le QR scanné en salle ne passe pas.

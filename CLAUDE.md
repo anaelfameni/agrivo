@@ -336,6 +336,55 @@ variables CSS dans `app/globals.css`.
 
 ## 📓 Journal de build (le plus récent en haut)
 
+### Session 24 — 2026-07-07 — v1.3.0 EN PROD : mode terrain PWA + filet anti-quota IA (prompts A/C) + GO-NO-GO (B) + audits deck/vidéo (D/E)
+- ✅ **Prompt A — Mode terrain PWA (tour de champ GPS RÉEL)** : sur mobile (pointer coarse +
+  geolocation), la cartographie propose « Tour de champ GPS (réel) » qui écoute `watchPosition`
+  (haute précision) au lieu de simuler. Waypoint tous les ~8 m (`estNouveauWaypoint` filtre le
+  bruit à l'arrêt), compteurs live RÉELS (waypoints, distance haversine, ±précision de l'appareil,
+  retour au départ), fermeture ≥ 3 sommets, emprise CI, anneau RFC 7946 (6 déc.). Modes simulés
+  conservés (desktop + secours GPS). Permission au moment de l'usage + mention ARTCI ; refus →
+  aucun blocage. Géométrie en module pur testé **`lib/geo/terrain.ts`** (6 tests).
+  **→ Argument « une seule application, du bureau au bord du champ, sans store » désormais RÉEL.**
+- ✅ **Prompt C — Filet anti-quota IA** : **`lib/ai/live-cache.ts`** (2 tests) mémorise dans le
+  navigateur la dernière réponse `live:true` par (route+payload) ; si un nouvel appel replie (429
+  free tier IP partagées), la dernière rédaction live se ré-affiche pour le MÊME contenu, étiquetée
+  « Rédigé par Gemini à HH:MM » (jamais inventé, jamais un autre payload) — sinon repli « Mode
+  démonstration ». Encart admin **« Préparation démo (IA) »** + bouton « Préchauffer l'IA (démo) »
+  (payloads exacts du déroulé : registre démo → plan ; p01 → argumentaire ; chips live/repli/erreur)
+  pour amorcer le cache EN COULISSES avant de monter sur scène.
+- ✅ **Gates** : `tsc` ✓ · **47/47 Vitest** (39 + 8) ✓ · `next build` 35 pages ✓.
+- ✅ **DÉPLOYÉ EN PROD (v1.3.0)** : `git commit a82f013` + `tag v1.3.0` + `vercel deploy --prod`
+  (`agrivo-kd0y11e6x…`) + `vercel alias set … agrivo-io.vercel.app` — cette fois deploy ET alias
+  sont passés. Smoke : `/api/admin/etat` → `{"mock":false}`.
+- ✅ **Vérif locale CDP (émulation mobile 390 + `Emulation.setGeolocationOverride`)** : tour de
+  champ réel de bout en bout — 5 waypoints, « polygone fermé, 5 sommets (WGS-84, RFC 7946), 3,2 ha »,
+  compteurs (Waypoints 5, Distance 84 m, ±6 m réel, retour 8 m), contrôles d'intégrité, Valider
+  actif. Non-régression desktop : mode terrain **absent** (pointer fin), modes simulés conservés.
+  Préchauffage admin : chips « IA en direct » (clé locale). ⚠️ **Piège CDP** : le headless ne
+  « pousse » pas les changements d'`setGeolocationOverride` à `watchPosition` (il ne les sert qu'à
+  `getCurrentPosition`) → j'ai injecté un `watchPosition` qui poll le vrai override toutes les 600 ms
+  (seul le « push vs poll » est simulé ; sur un vrai mobile watchPosition pousse).
+- ✅ **Prompt B — GO/NO-GO sur la prod** (`go-nogo.mjs`, 9 segments) : **9 GO, 0 NO-GO, 0 erreur
+  console**. Plan d'action IA **LIVE** + argumentaire de prime **LIVE** (badges « RÉDIGÉ PAR
+  GEMINI · IA EN DIRECT » confirmés par capture) ; verdict Conforme, certificat AGV, vérif publique,
+  copilote OK. ⚠️ **Re-piège majuscules** : mon regex `/Rédigé par Gemini/` (casse) ne matchait pas
+  le badge rendu MAJUSCULE par CSS → 2 faux « repli » corrigés à la lecture des captures (les 2
+  features étaient bien LIVE). Détecter en `toUpperCase()` ou insensible à la casse la prochaine fois.
+- ✅ **Prompt D — Audit du deck** (`AGRIVO_Pitch_Vibeathon2026.pptx`, 11 slides lues via unzip) :
+  charte propre (statuts verbatim, zéro crédit/garantie, primes bien cadrées, partenariats =
+  demandes). **À corriger (tableau remis à Anael)** : slides 9 & 11 « v1.0.0 · 32 tests » →
+  « v1.3.0 · 47 tests » (périmé, un juré voit une autre version en ligne) ; slide 5 « Trois usages »
+  IA vs discours « 5 usages en prod » + la démo montre 2 features IA de plus (sous-vend l'axe IA
+  20 %) ; slide 7 tarif « 1 500 FCFA/producteur/an » vs site /tarifs « 120 000 FCFA/mois » (≈ même
+  total annuel pour 1 000 prod. : 1,5 M vs 1,44 M, mais unité ≠ → aligner le cadrage) ; slide 2
+  vérifier « règlement (UE) 2025/2650 » (nos docs citent 2023/1115) et « 52 % non traçable (Trase) »
+  (source Domy). **PPTX non modifié** (décision Anael + risque mise en page).
+- ✅ **Prompt E — Checklist vidéo plan B** revalidée contre la prod v1.3.0 (ajoutée à
+  GUIDE_DEMO_JURY.md) : import désormais REPLIÉ (« Auditer mon registre » d'abord), + possibilité de
+  filmer le **mode terrain réel** sur un téléphone (nouveau).
+- 📌 Reste à Anael : `git push origin main --tags` (inclut v1.3.0) · **facturation Gemini Tier 1**
+  (supprime les replis quota vus au GO/NO-GO) · corrections deck (tableau) · rotation clé post-jury.
+
 ### Session 23 — 2026-07-07 — Mise à jour des 5 livrables .md/.pdf + NOUVEAU doc de formation équipe
 - ✅ **`AGRIVO_Formation_Equipe.md` + `.pdf` créés** (racine repo) : document de formation complet
   (~45 min de lecture) — pitch 30 s, RDUE expliquée simplement, produit pas à pas, les 5 usages IA,
