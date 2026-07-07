@@ -3,6 +3,30 @@
 Versioning sémantique (MAJOR.MINOR.PATCH). Chaque release liste ce qui est ajouté, corrigé et
 vérifié, conformément à l'étape 8 du pipeline « Du besoin à la Release ».
 
+## v1.5.0 — 2026-07-07 — Trois usages IA premium : revue registre, dossier acheteur, terrain multimodal
+
+### Ajouté
+- **Revue IA du registre** (dashboard coop) : couche de vigilance FINE au-delà de l'audit
+  géométrique. Module pur `lib/registre/revue.ts` détecte des signaux faibles (≥ 3 superficies
+  strictement identiques, noms quasi-dupliqués par distance d'édition, superficies atypiques,
+  matricules consécutifs géographiquement dispersés). 100 % déterministe côté client (les
+  géodonnées ne quittent pas le navigateur) ; `/api/gemini/registre-revue` ne fait que reformuler
+  les motifs (même nombre, même ordre, aucun chiffre changé). Charte : « points à vérifier »,
+  JAMAIS « Anomalie détectée ». 7 tests.
+- **Dossier acheteur EUDR** (onglet exportateur) : consolide les parcelles Conformes en un dossier
+  prêt pour l'acheteur européen — faits déterministes (nb Conformes, hectares vérifiés, coops,
+  filières), résumé exécutif rédigé par `/api/gemini/dossier-acheteur`, export GeoJSON joint
+  (RFC 7946). « Évaluation, non garantie » ; l'opérateur reste responsable ; zéro finance.
+- **Diagnostic visuel de parcelle** (Gemini Vision, étape d'analyse) : photo terrain →
+  `/api/gemini/parcelle-photo` décrit des observations qualitatives (culture, canopée, ombrage,
+  agroforesterie). Additif : n'établit PAS le verdict (exclusivité Whisp), étiqueté comme tel.
+- **Verdict expliqué en langue locale** (Dioula / Baoulé, étape d'analyse) :
+  `/api/gemini/traduire-verdict` traduit l'EXPLICATION (jamais le statut, qui reste figé en
+  français). Repli honnête : si l'IA est indisponible, on rend le texte original sans fabriquer
+  de fausse traduction.
+- Cinq routes IA de plus (8 → 13 usages IA au total), toutes avec repli déterministe : la démo
+  ne dépend jamais d'un appel live. 65 tests Vitest (58 + 7).
+
 ## v1.4.0 — 2026-07-07 — Copilote de conformité RDUE (8ᵉ usage IA) + honnêteté hébergement
 
 ### Ajouté

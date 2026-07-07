@@ -2,9 +2,10 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import { BarChart3, Bell, Command, MessageSquareText, Settings2 } from "lucide-react";
+import { BarChart3, Bell, Command, FileText, MessageSquareText, Settings2 } from "lucide-react";
 import { AnalyticsTab } from "@/components/exportateur/analytics-tab";
 import { AssistantTab } from "@/components/exportateur/assistant-tab";
+import { DossierAcheteur } from "@/components/exportateur/dossier-acheteur";
 import { ConfigTab } from "@/components/exportateur/config-tab";
 import { CommandPalette, type CommandAction } from "@/components/exportateur/command-palette";
 import { type ExpTab, type LogEntry } from "@/components/exportateur/types";
@@ -21,6 +22,7 @@ const EASE = [0.16, 1, 0.3, 1] as const;
 const TABS: { key: ExpTab; Icon: typeof BarChart3 }[] = [
   { key: "analytique", Icon: BarChart3 },
   { key: "assistant", Icon: MessageSquareText },
+  { key: "dossier", Icon: FileText },
   { key: "config", Icon: Settings2 },
 ];
 
@@ -29,6 +31,7 @@ const COPY = {
     tabs: {
       analytique: { label: "Analytique & cartographie", short: "Analytique" },
       assistant: { label: "Assistant IA", short: "Assistant" },
+      dossier: { label: "Dossier acheteur", short: "Dossier" },
       config: { label: "Configuration & alertes", short: "Config" },
     },
     fullPortfolio: "portefeuille complet",
@@ -45,6 +48,7 @@ const COPY = {
     tabs: {
       analytique: { label: "Analytics & mapping", short: "Analytics" },
       assistant: { label: "AI assistant", short: "Assistant" },
+      dossier: { label: "Buyer file", short: "File" },
       config: { label: "Settings & alerts", short: "Settings" },
     },
     fullPortfolio: "full portfolio",
@@ -221,6 +225,7 @@ export default function ExportateurPage() {
           />
         )}
         {tab === "assistant" && <AssistantTab onCiteSelect={selectFromAnywhere} pushLog={pushLog} />}
+        {tab === "dossier" && <DossierAcheteur />}
         {tab === "config" && <ConfigTab parcelles={PARCELLES} log={log} pushLog={pushLog} />}
         </motion.div>
       </AnimatePresence>

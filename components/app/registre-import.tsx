@@ -24,9 +24,14 @@ import {
   parserRegistre,
   type AuditRegistre,
   type CategorieAnomalie,
+  type RegistreParcelle,
 } from "@/lib/registre/audit";
 import { resumerAudit, type PlanAction } from "@/lib/registre/plan";
+import { revuerRegistre, type GravitePoint } from "@/lib/registre/revue";
 import { chargerLive, heureCache, sauverLive } from "@/lib/ai/live-cache";
+
+/** Point de revue tel qu'affiché (motif déjà résolu dans la langue courante). */
+type RevueAffiche = { id: string; texte: string; parcelles: string[]; gravite: GravitePoint };
 
 /** Plan affiché : celui de l'API, ou la dernière rédaction live re-servie (cachedAt renseigné). */
 type PlanAffiche = PlanAction & { cachedAt?: number };
@@ -62,6 +67,13 @@ const COPY = {
     planCache: (h: string) => `Rédigé par Gemini à ${h}`,
     planDemo: "Mode démonstration",
     planError: "Le plan n'a pas pu être généré. Réessayez.",
+    revueCta: "Lancer la revue IA du registre",
+    revueLoading: "Recherche des points à vérifier…",
+    revueTitle: "Points à vérifier (revue IA)",
+    revueEmpty: "Aucun point à vérifier : au-delà des règles de base, le registre est cohérent.",
+    revueLive: "Reformulé par Gemini · IA en direct",
+    revueBase: "Revue déterministe",
+    revueHint: "Signaux faibles au-delà de l'audit géométrique (superficies, noms, dispersion). Ce sont des points à vérifier, jamais des verdicts.",
     cat: {
       "geometrie-invalide": "Géométrie invalide",
       "polygone-manquant": "Polygone manquant (≥ 4 ha)",
@@ -98,6 +110,13 @@ const COPY = {
     planCache: (h: string) => `Written by Gemini at ${h}`,
     planDemo: "Demo mode",
     planError: "The plan could not be generated. Try again.",
+    revueCta: "Run the AI register review",
+    revueLoading: "Looking for points to check…",
+    revueTitle: "Points to check (AI review)",
+    revueEmpty: "Nothing to check: beyond the basic rules, the register is consistent.",
+    revueLive: "Reworded by Gemini · live AI",
+    revueBase: "Deterministic review",
+    revueHint: "Weak signals beyond the geometric audit (areas, names, dispersion). These are points to check, never verdicts.",
     cat: {
       "geometrie-invalide": "Invalid geometry",
       "polygone-manquant": "Missing polygon (≥ 4 ha)",
@@ -128,8 +147,12 @@ export function RegistreImport() {
   const inputRef = useRef<HTMLInputElement>(null);
   const [status, setStatus] = useState<"idle" | "loading" | "error" | "done">("idle");
   const [audit, setAudit] = useState<AuditRegistre | null>(null);
+  const [parcelles, setParcelles] = useState<RegistreParcelle[]>([]);
   const [plan, setPlan] = useState<PlanAffiche | null>(null);
   const [planStatus, setPlanStatus] = useState<"idle" | "loading" | "error" | "done">("idle");
+  const [revue, setRevue] = useState<RevueAffiche[] | null>(null);
+  const [revueStatus, setRevueStatus] = useState<"idle" | "loading" | "done">("idle");
+  const [revueLive, setRevueLive] = useState(false);
   // U-11 : démarre replié (une ligne) pour alléger la colonne ; s'étend au clic et le reste
   // dès qu'un import est en cours ou fait.
   const [ouvert, setOuvert] = useState(false);
@@ -167,6 +190,38 @@ export function RegistreImport() {
     }
   }
 
+  async function lancerRevue() {
+    setRevueStatus("loading");
+    // Détection 100 % déterministe côté client (les géodonnées ne quittent pas le navigateur).
+    const det = revuerRegistre(parcelles);
+    if (det.points.length === 0) {
+      setRevue([]);
+      setRevueLive(false);
+      setRevueStatus("done");
+      return;
+    }
+    const motifs = det.points.map((p) => p.motif[lang]);
+    const enAffiche = (textes: string[]): RevueAffiche[] =>
+      det.points.map((p, i) => ({ id: p.id, texte: textes[i] ?? p.motif[lang], parcelles: p.parcelles, gravite: p.gravite }));
+    try {
+      // Gemini ne fait que reformuler ces motifs ; les faits restent ceux du calcul déterministe.
+      const r = await fetch("/api/gemini/registre-revue", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ motifs, lang }),
+      });
+      const data = (await r.json()) as { motifs?: string[]; live?: boolean };
+      const reword = Array.isArray(data.motifs) && data.motifs.length === motifs.length ? data.motifs : motifs;
+      setRevue(enAffiche(reword));
+      setRevueLive(Boolean(data.live));
+    } catch {
+      setRevue(enAffiche(motifs));
+      setRevueLive(false);
+    } finally {
+      setRevueStatus("done");
+    }
+  }
+
   async function analyser(nom: string, texte: string) {
     setStatus("loading");
     // Petite latence perçue : l'audit est instantané mais un état de chargement rassure.
@@ -174,6 +229,7 @@ export function RegistreImport() {
     try {
       const parcelles = parserRegistre(nom, texte);
       if (parcelles.length === 0) throw new Error("vide");
+      setParcelles(parcelles);
       setAudit(auditerRegistre(parcelles));
       setStatus("done");
     } catch {
@@ -247,6 +303,8 @@ export function RegistreImport() {
               setStatus("idle");
               setPlan(null);
               setPlanStatus("idle");
+              setRevue(null);
+              setRevueStatus("idle");
               setOuvert(true);
             }}
             className="text-xs text-stone-400 outline-none transition-colors hover:text-forest-950 focus-visible:text-forest-950"
@@ -471,6 +529,75 @@ export function RegistreImport() {
                   </ol>
                   <p className="mt-2.5 border-t border-green-signal/15 pt-2.5 text-xs leading-relaxed text-stone-600">
                     {plan.conclusion}
+                  </p>
+                </motion.div>
+              )}
+            </div>
+
+            {/* Revue IA : signaux faibles au-delà de l'audit géométrique (superficies, noms, dispersion). */}
+            <div className="mt-4">
+              {revueStatus !== "done" && (
+                <button
+                  type="button"
+                  disabled={revueStatus === "loading"}
+                  onClick={lancerRevue}
+                  className="inline-flex w-fit items-center gap-2 rounded-full border border-amber-cacao/30 bg-amber-cacao/[0.06] px-4 py-2 text-xs font-semibold text-amber-cacao outline-none transition-colors hover:bg-amber-cacao/[0.12] focus-visible:ring-2 focus-visible:ring-amber-cacao disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  {revueStatus === "loading" ? (
+                    <Loader2 size={13} strokeWidth={2} className="animate-spin" aria-hidden />
+                  ) : (
+                    <Sparkles size={13} strokeWidth={2} aria-hidden />
+                  )}
+                  {revueStatus === "loading" ? t.revueLoading : t.revueCta}
+                </button>
+              )}
+              {revueStatus === "done" && revue && (
+                <motion.div
+                  initial={reduce ? { opacity: 1 } : { opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.35, ease: EASE }}
+                  className="rounded-xl border border-amber-cacao/20 bg-amber-cacao/[0.04] p-3.5"
+                >
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <h3 className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-forest-950">
+                      <Sparkles size={13} strokeWidth={2} aria-hidden className="text-amber-cacao" />
+                      {t.revueTitle}
+                    </h3>
+                    {revue.length > 0 && (
+                      <span className="rounded-full bg-white px-2 py-0.5 text-[0.62rem] font-semibold uppercase tracking-wider text-stone-500 ring-1 ring-black/[0.06]">
+                        {revueLive ? t.revueLive : t.revueBase}
+                      </span>
+                    )}
+                  </div>
+                  {revue.length === 0 ? (
+                    <p className="mt-2 flex items-start gap-1.5 text-xs leading-relaxed text-stone-600">
+                      <CheckCircle2 size={13} strokeWidth={2} aria-hidden className="mt-0.5 shrink-0 text-green-signal" />
+                      {t.revueEmpty}
+                    </p>
+                  ) : (
+                    <ul className="mt-2.5 flex flex-col gap-2">
+                      {revue.map((pt) => (
+                        <li key={pt.id} className="flex items-start gap-2.5">
+                          <span
+                            className={
+                              pt.gravite === "attention"
+                                ? "mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded-full bg-amber-cacao/12 text-amber-cacao"
+                                : "mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded-full bg-black/[0.06] text-stone-500"
+                            }
+                            aria-hidden
+                          >
+                            <AlertTriangle size={11} strokeWidth={2.5} />
+                          </span>
+                          <span className="text-xs leading-relaxed text-stone-600">
+                            {pt.texte}
+                            <span className="num ml-1 text-[0.7rem] text-stone-400">({pt.parcelles.join(", ")})</span>
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                  <p className="mt-2.5 border-t border-amber-cacao/15 pt-2.5 text-[0.7rem] leading-relaxed text-stone-500">
+                    {t.revueHint}
                   </p>
                 </motion.div>
               )}

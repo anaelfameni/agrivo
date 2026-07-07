@@ -1,6 +1,6 @@
 /** Types partagés du dashboard exportateur (module PUR). */
 
-export type ExpTab = "analytique" | "assistant" | "config";
+export type ExpTab = "analytique" | "assistant" | "dossier" | "config";
 
 /** Une ligne du journal réseau simulé (onglet Configuration, Prompt 5). */
 export interface LogEntry {
