@@ -153,3 +153,40 @@ compte démo déjà connecté · vider la recherche du dashboard · préparer la
   avec l'exportateur » → « Générer l'argumentaire de prime (IA) » → « Copier ».
 - Effet final : sur `/verifier-certificat?ref=AGV-2026-0417`, le statut « Conforme » s'affiche —
   bon plan de secours si le QR scanné en salle ne passe pas.
+
+## Mise à jour v1.7.0 (7 juillet, soir) — nouveaux moments IA + rituel pré-vol
+
+> Le site est passé en « version finale » : v1.7.0 en prod, 13 usages IA, 65 tests. Ce qui change
+> pour la démo et le tournage :
+
+### Le rituel pré-vol (à faire SYSTÉMATIQUEMENT avant de monter sur scène)
+1. Se connecter en admin (`admin@agrivo.com`) → « Préparation démo (IA) ».
+2. Cliquer **« Préchauffer l'IA (démo) »** : le bouton réchauffe désormais **les 6 features IA de
+   rédaction** (plan d'action, argumentaire, copilote RDUE, revue registre, dossier acheteur,
+   verdict langue locale) avec les payloads exacts du déroulé.
+3. Attendre le bandeau pré-vol : **« Démo prête : 6/6 en direct »** = feu vert. S'il indique
+   « N/6 en direct, le reste en repli », la démo reste sûre (repli étiqueté) mais relancer une fois.
+
+### Les 5 nouveaux moments IA montrables (v1.4 → v1.6)
+- **Copilote RDUE** (bulle ✨ en bas à droite du dashboard coop et de la FAQ) : poser « La Côte
+  d'Ivoire est-elle concernée ? » — réponse sourcée (« Benchmarking pays, 22 mai 2025 ») + badge
+  « IA en direct ». Le copilote propose ensuite des questions de suivi : effet conversationnel.
+- **Revue IA du registre** (dashboard coop, après l'audit) : bouton ambre « Lancer la revue IA du
+  registre » → « points à vérifier » (superficies identiques, noms quasi-doublons). Dire :
+  « au-delà des règles, l'IA repère les signaux faibles qu'un moteur strict laisse passer ».
+- **Dossier acheteur EUDR** (espace exportateur, onglet « Dossier ») : chiffres consolidés +
+  « Générer le résumé exécutif (IA) » + téléchargement du dossier. L'aboutissement du pilier
+  Valorisation.
+- **Verdict en langue locale** (étape d'analyse, après le verdict) : boutons « Dioula » / « Baoulé »
+  sous l'explication — le STATUT reste en français (charte), seule l'explication est traduite.
+  ⚠️ Faire relire la traduction par un locuteur avant de la lire à voix haute au jury.
+- **Diagnostic visuel de parcelle** (étape d'analyse) : « Ajouter une photo terrain » → Gemini
+  Vision décrit canopée/ombrage. Bien dire : « observation qualitative — le verdict de
+  déforestation reste exclusivement satellite ».
+
+### Navigation (v1.7.0)
+- Nouvel onglet **« Accueil »** dans l'en-tête (avant Méthodologie) : il revient à l'accueil SANS
+  l'écran de bienvenue. L'écran de bienvenue ne s'affiche plus que sur un rafraîchissement ou une
+  arrivée par l'URL — pour le rejouer devant le jury : F5 sur la page d'accueil.
+- Pages Méthodologie / À propos / Tarifs : heros sombres unifiés (même fond que l'accueil) — plans
+  d'écran plus cinématiques pour la vidéo.
