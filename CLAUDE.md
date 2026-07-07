@@ -336,6 +336,35 @@ variables CSS dans `app/globals.css`.
 
 ## 📓 Journal de build (le plus récent en haut)
 
+### Session 23 — 2026-07-07 — Mise à jour des 5 livrables .md/.pdf + NOUVEAU doc de formation équipe
+- ✅ **`AGRIVO_Formation_Equipe.md` + `.pdf` créés** (racine repo) : document de formation complet
+  (~45 min de lecture) — pitch 30 s, RDUE expliquée simplement, produit pas à pas, les 5 usages IA,
+  modèle éco, concurrence, interdits de langage, 17 flashcards chiffres, déroulé démo, **45 questions/
+  réponses jury en 7 thèmes**, lexique 27 termes, quiz 15 questions corrigé, fiche 1 page. Toutes les
+  données vérifiées dans le repo (tarifs 120k/1,5M lus dans `app/tarifs/page.tsx`, KPI 45·62 %·157·81,
+  contrats API relus). Frontière respectée : zéro mention de produit externe, crédit uniquement en Q41.
+- ✅ **Les 5 livrables existants mis à jour → v1.2.1** : `Presentation_Equipe_MAJ` (header v1.2.1 EN PROD,
+  §4 « cinq usages live + note 429/Tier 1 », §5 sous-section v1.2.1, checklist §12 refaite : reste push +
+  Tier 1 + domaine), `Prompts_A_Run_Fable5` (tableau de bord avec États ✅, résultat sous chaque prompt,
+  section « Et maintenant » : push, Tier 1, rotation clé post-jury, prompt 6 demo-guide optionnel,
+  prompt 7 v2), `Ultra_Review_Rapport_Final` (bandeau mise à jour, U-01→U-20 à l'état réel : 17 corrigés,
+  U-16 « constaté résolu par le pivot », restent U-12 checklist P9 + U-19 roadmap ; §6 « non vérifié
+  prod » levé ; §7 réécrit), `Ultra_Review_Strategique` (encart « appliquée ET en prod »),
+  `Guide_App_Mobile` (backend v1.2.1, §4.1 whisp renvoie AUSSI phraseEn/convergenceEn depuis v1.2.0,
+  nouveau §4.6 : valorisation-memo optionnel écran F, audit-plan web-only, GET /api/admin/etat,
+  /connexion sans identifiants).
+- ✅ **Bug pipeline PDF trouvé et corrigé** (`md2pdf.mjs` scratchpad) : le convertisseur traitait le
+  markdown LIGNE par ligne → un `**gras**` coupé par le wrap à ~100 col restait littéral (`**` visibles)
+  et les puces multi-lignes se fragmentaient en `<p>` orphelins. Fix : passe `joinWrapped()` qui fusionne
+  les lignes repliées en lignes logiques (paragraphes, puces, citations `>`) sans toucher code/tableaux.
+  **Preuve avant/après par capture Edge du HTML intermédiaire.** Les 6 PDF régénérés en bénéficient
+  (ceux d'hier avaient les mêmes artefacts).
+- ✅ **Dossier d'envoi équipe créé : `Desktop/AGRIVO_Envoi_Equipe/`** (3 PDF : Formation_Equipe,
+  Presentation_Equipe_MAJ, Guide_App_Mobile) + copie Desktop existante du guide mobile rafraîchie
+  (elle datait d'avant v1.2.1). Diffusion : Formation + Présentation aux 4 ; Guide mobile à Christ.
+- 📌 Reste inchangé pour Anael : `git push origin main --tags` · facturation Gemini Tier 1 · domaine
+  Vercel · rotation de la clé APRÈS le jury.
+
 ### Session 22 — 2026-07-07 — v1.2.1 : vérification prod v1.2.0 (5 points) + prompts 2-5 de la feuille de route
 - ✅ **Prompt 1 — vérification prod CDP** (script `verify-v120.mjs`, 25+ captures desktop/mobile FR/EN) :
   « cinq temps » ✓ · cockpit absent ✓ · devise non italique (fontStyle normal mesuré) ✓ · icon.svg 200 ✓

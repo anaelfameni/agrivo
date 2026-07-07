@@ -1,9 +1,11 @@
 # AGRIVO — Guide technique de l'app mobile (pour Christ)
 
-> **Spécification de référence** — version du 6 juillet 2026, rédigée par Anael (chef de projet).
+> **Spécification de référence** — version du 6 juillet 2026, mise à jour le 7 juillet (backend
+> v1.2.1 EN PROD), rédigée par Anael (chef de projet).
 > Objectif : permettre à un dev mobile expérimenté de **reprendre l'app mobile existante et l'aligner**
 > sur la vision AGRIVO sans avoir à poser de questions. L'app est déjà commencée : on ne repart pas de
-> zéro, on réadapte (voir §7). Backend de référence : **https://agrivo-io.vercel.app** (v1.1.0).
+> zéro, on réadapte (voir §7). Backend de référence : **https://agrivo-io.vercel.app** (**v1.2.1** —
+> les nouveautés backend qui te concernent sont dans l'encadré §4.6).
 > Jury : samedi 11 juillet 2026 — priorité absolue aux écrans du golden path.
 
 ---
@@ -284,7 +286,9 @@ Réponse `200` :
 }
 ```
 - `statut` ∈ `conforme | anomalie | insuffisant`. Afficher `phrase` telle quelle (jamais reformulée).
-- ⚠️ Les phrases sont renvoyées **en français** (les libellés EN existent côté client web).
+- **Depuis v1.2.0**, la réponse contient AUSSI `phraseEn` (phrase figée anglaise) et `convergenceEn`
+  (les 3 preuves en anglais) : si tu fais une interface EN, choisis le champ selon la langue —
+  ne traduis JAMAIS toi-même. Pour le TTS : `fr-FR` avec `phrase`, `en-GB` avec `phraseEn`.
 
 ### 4.2 `POST /api/gemini/scan` — OCR de la carte producteur
 Requête : `{ "imageBase64": "<JPEG base64 SANS préfixe data:>", "mimeType": "image/jpeg" }`
@@ -310,7 +314,24 @@ ou `{ "kind": "verdict", "statut": "conforme" }` → `{ "explication": "…" }` 
 Formulation imposée du score sols : « méthodologie inspirée de standards reconnus type Kubeko »
 (jamais « partenaire Lono »).
 
-### 4.6 Données de démo à connaître
+### 4.6 Quoi de neuf backend v1.2.0/v1.2.1 (7 juillet) — ce qui te concerne
+
+> Deux nouvelles routes IA existent en prod (vérifiées live). **Aucune des deux n'est requise pour
+> ta démo mobile** — elles vivent sur le web (dashboard + étape 6). À connaître pour le jury, et
+> utilisables si tu as fini en avance :
+- `POST /api/gemini/valorisation-memo` — **optionnel écran F (Valorisation)** : body
+  `{ "parcelleId": "p01", "lang": "fr" }` → `{ titre, paragraphes: [4 × string], live? }`.
+  Gemini rédige l'argumentaire de prime de la coopérative (aucun montant promis, zéro vocabulaire
+  de crédit). Si `live` est absent/false : afficher un badge « Mode démonstration » (honnêteté).
+- `POST /api/gemini/audit-plan` — web uniquement (plan d'action après l'audit du registre, qui
+  n'existe pas sur mobile) : body `{ resume: {...}, lang }` → `{ etapes, conclusion, live? }`.
+- `GET /api/admin/etat` → `{ "mock": false, "model": "gemini-2.5-flash" }` — pratique pour vérifier
+  depuis ton téléphone que le backend est en mode IA live avant une répétition.
+- ⚠️ La page **/connexion n'affiche plus les identifiants démo** (durcissement v1.2.1) : ils sont
+  dans ce document (§4.7) et le bouton 1-clic reste. Le discours jury passe à « **5 usages IA en
+  production** » (OCR, plan d'action d'audit, mémo DDS, argumentaire de prime, copilote).
+
+### 4.7 Données de démo à connaître
 - Parcelle fil rouge : `p01` = **Kouassi Yao · CI-CCC-024517 · cacao · Soubré** (conforme).
 - Zone de démo : Soubré rural `[lon -6.65, lat 5.83]` (le serveur court-circuite le réseau dans un
   rayon large autour de `[-6.6039, 5.7853]`).
@@ -394,6 +415,7 @@ Formulation imposée du score sols : « méthodologie inspirée de standards rec
 
 ---
 
-*AGRIVO — document technique interne · 6 juillet 2026 · rédigé par Anael pour Christ.
+*AGRIVO — document technique interne · 6 juillet 2026, mis à jour le 7 juillet (backend v1.2.1) ·
+rédigé par Anael pour Christ.
 Jumeau : `AGRIVO_Guide_App_Mobile.pdf`. Références : `CLAUDE.md`, `PLAN_REORIENTATION_AGRIVO.md`,
 `GUIDE_DEMO_JURY.md`, code web `components/verifier/*` et `app/api/*` (source de vérité du contrat).*

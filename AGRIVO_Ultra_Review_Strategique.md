@@ -18,6 +18,12 @@ produit : faire d'AGRIVO non plus « une plateforme de conformité qui a de l'IA
 « l'auditeur IA des géodonnées cacao », avec deux nouvelles preuves d'IA UTILE placées exactement
 sur les deux moments signatures de la démo.** Décision appliquée immédiatement (v1.2.0, voir §4).
 
+> **MISE À JOUR DU 7 JUILLET : décision appliquée ET en production.** La v1.2.1 est servie sur
+> https://agrivo-io.vercel.app ; les deux features IA ont été vérifiées **live en prod** (badge
+> « Rédigé par Gemini · IA en direct » capturé) et le reste de la feuille de route (légal, EN,
+> polish, durcissement) est exécuté. Le discours « 5 usages IA en production » est désormais
+> vérifiable en direct devant le jury.
+
 Nouvelle ligne de pitch : *« Vos données existent déjà. Notre IA les rend prouvables — et
 négociables. »* (aucun support à re-tourner : c'est un renforcement, pas un pivot).
 
@@ -115,6 +121,8 @@ portefeuille. Plus Whisp (FAO) comme détection de référence — toujours pré
 
 Gates avant push : `tsc --noEmit` ✓ · Vitest (tests existants + nouveaux tests des 2 features) ✓ ·
 `next build` ✓ · vérification CDP sur prod après déploiement. Tag `v1.2.0`.
+**→ Vérification prod effectuée le 7 juillet (session 22) : les 9 changements sont en ligne (v1.2.1),
+les 2 features IA répondent live.**
 
 ---
 
@@ -128,6 +136,7 @@ Gates avant push : `tsc --noEmit` ✓ · Vitest (tests existants + nouveaux test
 - **Rien qui touche à la frontière Nanti** : toujours aucun score financier, aucun plafond, aucune
   décision de crédit dans AGRIVO.
 
-*AGRIVO — ultra-review stratégique · 6 juillet 2026 · préparé pour Anael (chef de projet).
+*AGRIVO — ultra-review stratégique · 6 juillet 2026, mis à jour le 7 juillet (v1.2.1 en prod) ·
+préparé pour Anael (chef de projet).
 Jumeau PDF : `AGRIVO_Ultra_Review_Strategique.pdf`. Sources du pivot : `PLAN_REORIENTATION_AGRIVO.md`
 (§ recherche validée Session 18) ; grille jury : Pitch Masterclass AFRINOVATECH (`ressources/`).*

@@ -1,37 +1,41 @@
 # AGRIVO — Prompts à lancer (Fable 5 max, depuis le dossier Agrivo)
 
-> Feuille de route post-ultra-review, mise à jour APRÈS l'application de la v1.2.0 (les corrections
-> 🔴 de la revue ont déjà été codées ce soir — voir `AGRIVO_Ultra_Review_Rapport_Final.md` §5).
-> Chaque prompt est autonome, à coller tel quel dans une session Claude Code ouverte dans
-> `C:\Users\Anael FAMENI\.claude\projects\Agrivo`. Ordre = priorité.
+> Feuille de route post-ultra-review. **Mise à jour du 7 juillet 2026 : les prompts 1 à 5 ont TOUS
+> été exécutés (session 22) et la v1.2.1 est EN PRODUCTION sur https://agrivo-io.vercel.app.**
+> Les prompts sont conservés ci-dessous pour référence, chacun avec son résultat. La section
+> « Et maintenant » en fin de document liste ce qui reste (1 commande + préparation jury).
 
-## Tableau de bord
+## Tableau de bord (état au 7 juillet)
 
-| # | Objectif | Livrable attendu | Priorité | Effet estimé |
+| # | Objectif | Priorité | État | Résultat |
 |---|---|---|---|---|
-| 0 | (ACTION HUMAINE, pas un prompt) Mettre v1.2.0 en prod | v1.2.0 live sur agrivo-io.vercel.app | 🔴 | Débloque les 2 features IA + tous les correctifs devant le jury |
-| 1 | Vérification CDP complète de la prod v1.2.0 | Constat écrit + captures des 2 features IA live | 🔴 | Certitude démo |
-| 2 | Compléter les pages légales (infos réelles) | 0 « [À compléter] » visible | 🟠 | Crédibilité juré curieux |
-| 3 | Dernières traces de FR-glais (certificat EN, SLA) | EN 100 % propre | 🟡 | Finition internationale |
-| 4 | Polish visuel hérité (exportateur, tarifs, import replié, eyebrows) | UI resserrée | 🟡 | Perception premium |
-| 5 | Durcissement post-jury (identifiants démo, états vides, skeletons) | Prod « vraie » | 🔵 | Après le 11 juillet |
+| 0 | Mettre v1.2.x en prod (action humaine) | 🔴 | ✅ **FAIT** (déploiement + alias passés) | v1.2.1 live ; reste `git push origin main --tags` |
+| 1 | Vérification CDP complète de la prod | 🔴 | ✅ FAIT | 2 features IA **live confirmées** en prod ; 1 vrai bug admin trouvé et corrigé (`/api/admin/etat`) |
+| 2 | Pages légales sans placeholders | 🟠 | ✅ FAIT | 0 « [À compléter] » ; formulations honnêtes d'avant-immatriculation (infos RCCM non fournies) |
+| 3 | Dernières traces de FR-glais | 🟡 | ✅ FAIT | Aperçu certificat 100 % EN (le PDF reste FR, officiel) ; « SLA commitment » |
+| 4 | Polish visuel hérité (U-11/15/16/17) | 🟡 | ✅ FAIT | Import replié par défaut, carte exportateur, bouton Export, eyebrows ; U-16 déjà résolu par le pivot |
+| 5 | Durcissement (identifiants, skeletons, états vides, PLAN v2) | 🔵 | ✅ FAIT (avancé) | /connexion sans identifiants, skeletons, états vides contextuels, transitions onglets, `PLAN_V2.md` |
 
 ---
 
-## Action 0 — AVANT tout prompt (Anael, 5 min, terminal dans le dossier Agrivo)
+## Action 0 — ✅ FAIT sauf le push (Anael, 1 min, terminal dans le dossier Agrivo)
+
+Le déploiement et l'alias sont passés (v1.2.1 servie sur https://agrivo-io.vercel.app, badges
+« Rédigé par Gemini · IA en direct » vérifiés). Il reste UNE commande pour aligner GitHub/CI :
 
 ```
 git push origin main --tags
-npx vercel deploy --prod --yes
-npx vercel alias set <URL-du-déploiement-affichée-par-la-commande-précédente> agrivo-io.vercel.app
 ```
-Puis ouvrir https://agrivo-io.vercel.app/app/dashboard (compte démo) → « Essayer avec le registre de
-démonstration » → « Générer le plan d'action IA » : le badge doit dire **« Rédigé par Gemini · IA en
-direct »**. Même vérification à la fin du parcours de vérification (« Générer l'argumentaire de prime »).
 
 ---
 
-## Prompt 1 — Vérification CDP complète de la prod v1.2.0 (🔴, ~20 min)
+## Prompt 1 — Vérification CDP complète de la prod v1.2.0 (🔴) — ✅ EXÉCUTÉ le 7 juillet
+
+> **Résultat** : 4 points sur 5 OK du premier coup (plan d'action IA live avec comptes exacts —
+> le registre démo contient 1 doublon, pas 2 ; argumentaire live 4 §, zéro vocabulaire crédit ;
+> étape 4 EN complète ; « cinq temps »/favicon OK). Le point admin était un VRAI KO : le client
+> lisait une constante serveur (toujours « mock ») → corrigé par la route `/api/admin/etat`
+> (`export const dynamic = "force-dynamic"`) ; la prod répond `{"mock":false}`.
 
 ```
 Lis CLAUDE.md (session 21) puis vérifie EN PRODUCTION (https://agrivo-io.vercel.app) que la v1.2.0
@@ -51,7 +55,13 @@ redemande-moi le déploiement). Termine par un tableau point → OK/KO → preuv
 journal de CLAUDE.md.
 ```
 
-## Prompt 2 — Pages légales sans placeholders (🟠, ~30 min, infos à fournir)
+## Prompt 2 — Pages légales sans placeholders (🟠) — ✅ EXÉCUTÉ le 7 juillet (repli honnête)
+
+> **Résultat** : les infos réelles (RCCM, adresse…) n'ayant pas été fournies, la variante honnête
+> a été appliquée : « projet porté par l'équipe AGRIVO, société en cours de constitution »,
+> directeur de la publication **Anael Fameni**, DPO « désigné à l'immatriculation », juridictions
+> ivoiriennes. 0 « À compléter » dans app/ et components/ (grep + CDP). ⚠️ À la création de la
+> société : repasser mettre les mentions définitives (RCCM, siège, capital).
 
 ```
 Lis CLAUDE.md. Les pages /mentions-legales, /confidentialite et /cgu affichent des placeholders
@@ -68,7 +78,12 @@ porté par l'équipe AGRIVO » là où c'est honnête].
 4) Mets à jour le journal de CLAUDE.md et signale-le.
 ```
 
-## Prompt 3 — Dernières traces de FR-glais (🟡, ~30 min)
+## Prompt 3 — Dernières traces de FR-glais (🟡) — ✅ EXÉCUTÉ le 7 juillet
+
+> **Résultat** : `buildCertificat(p, verdict, lang)` — aperçu EN complet (date en-GB, filières
+> Cocoa/Coffee/…, coordonnées N/S/E/W) ; le TÉLÉCHARGEMENT PDF reste la version FR (document
+> officiel) via la prop `pdfData`. « Guaranteed SLA » → « SLA commitment » (landing + tarifs EN).
+> Vérifié en CDP : parcours EN jusqu'à l'étape 5 sans un mot de français.
 
 ```
 Lis CLAUDE.md. Résorbe les dernières traces de français sous interface anglaise, SANS toucher au
@@ -82,7 +97,12 @@ PDF de certificat (document officiel volontairement FR) :
 4) Gates tsc + vitest + build ; journal CLAUDE.md à jour.
 ```
 
-## Prompt 4 — Polish visuel hérité de l'audit P4 (🟡, 1-2 h, optionnel avant jury)
+## Prompt 4 — Polish visuel hérité de l'audit P4 (🟡) — ✅ EXÉCUTÉ le 7 juillet
+
+> **Résultat** : U-11 import replié par défaut (une ligne « Auditer mon registre », +1 clic dans le
+> guide démo) ; U-15 pastilles carte plus lisibles + cadrage resserré + scrollbar discrète + bouton
+> « Exporter GeoJSON » aligné secondaire ; U-16 constaté DÉJÀ résolu par le pivot (rien à changer) ;
+> U-17 eyebrows codifiés (page publique = ambre, section = vert).
 
 ```
 Lis CLAUDE.md et AGRIVO_Ultra_Review_Rapport_Final.md (constats U-11, U-15, U-16, U-17). Dans
@@ -99,7 +119,13 @@ Vérification CDP avant/après par zone (1440 + 390, FR + EN), gates tsc + vites
 journal CLAUDE.md à jour.
 ```
 
-## Prompt 5 — Durcissement POST-JURY (🔵, ne pas lancer avant le 12 juillet)
+## Prompt 5 — Durcissement (🔵) — ✅ EXÉCUTÉ le 7 juillet (avancé sur ordre d'Anael)
+
+> **Résultat** : identifiants démo retirés de /connexion (0 occurrence dans le HTML servi, bouton
+> 1-clic conservé) ; skeletons /app (silhouette du dashboard) ; états vides contextuels
+> (recherche vs filtres) avec bouton de réinitialisation sur Producteurs et Parcelles ;
+> transitions d'onglets exportateur 180 ms (reduced-motion respecté) ; **`PLAN_V2.md`** rédigé
+> (auth serveur, Postgres/PostGIS, Whisp live, registre de certificats).
 
 ```
 Lis CLAUDE.md. Le jury est passé : on durcit pour de vrais utilisateurs.
@@ -121,4 +147,33 @@ desktop 1440 + mobile 390, FR + EN sur les zones touchées · respect charte (st
 « évaluation » jamais « garantie », zéro % inventé, zéro crédit, pas d'italique display, pas de
 tiret cadratin) · mise à jour du journal `CLAUDE.md` signalée par « ✅ CLAUDE.md mis à jour ».
 
-*Généré le 6 juillet 2026 (session 21). Jumeau PDF : `AGRIVO_Prompts_A_Run_Fable5.pdf`.*
+---
+
+## Et maintenant (état au 7 juillet — ce qui reste avant samedi)
+
+**Actions humaines (Anael)** :
+1. `git push origin main --tags` (1 min) — GitHub/CI alignés sur la prod.
+2. **Facturation Tier 1 sur la clé Gemini** (5 min, AI Studio → Billing) — supprime les 429
+   intermittents du free tier depuis les IP partagées Vercel. À faire avant vendredi.
+3. Vercel → Settings → Domains → attacher `agrivo-io.vercel.app` au projet (2 min).
+4. Après le jury : **faire tourner la clé Gemini** (elle a transité en clair dans une conversation).
+
+**Prompt 6 (optionnel, ~10 min) — enrichir le guide présentateur intégré** :
+```
+Lis CLAUDE.md (session 22). Dans components/demo-guide.tsx (overlay Ctrl+Shift+D), le déroulé ne
+mentionne pas encore les 2 clics IA de v1.2.0 : ajoute au segment dashboard « puis Générer le plan
+d'action IA (badge Rédigé par Gemini) » et au segment parcours « étape Valorisation : Générer
+l'argumentaire de prime (IA) ». Aucun autre changement. Gates tsc + vitest + build, redéploiement
+demandé à Anael, journal CLAUDE.md.
+```
+
+**Prompt 7 (APRÈS le jury) — lancer la v2** :
+```
+Lis CLAUDE.md et PLAN_V2.md. Démarre le chantier 1 (socle données + auth serveur) : propose le
+schéma Postgres/PostGIS complet (coopératives, producteurs, parcelles, vérifications, certificats,
+dossiers partagés), le choix Supabase vs Neon argumenté, et la migration de l'auth localStorage
+vers des sessions httpOnly — en plan d'abord, sans coder, pour validation.
+```
+
+*Généré le 6 juillet 2026 (session 21), mis à jour le 7 juillet (session 23 — prompts 1-5 exécutés).
+Jumeau PDF : `AGRIVO_Prompts_A_Run_Fable5.pdf`.*

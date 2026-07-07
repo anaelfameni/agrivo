@@ -13,6 +13,12 @@
 > ont été **appliquées immédiatement** (v1.2.0, commits `51d0101` + `a3815a1`) au lieu d'être
 > seulement recommandées — y compris 2 nouvelles fonctionnalités IA issues de l'ultra-review
 > stratégique (`AGRIVO_Ultra_Review_Strategique.md`). Les constats concernés sont marqués **CORRIGÉ v1.2.0**.
+>
+> **MISE À JOUR DU 7 JUILLET (session 22 — v1.2.1 EN PROD)** : les prompts 1 à 5 de la feuille de
+> route ont été exécutés. Bilan sur les 20 constats : **17 corrigés et vérifiés** (dont TOUS les
+> 🔴 et 🟠), 1 constaté déjà résolu par le pivot (U-16), 2 restants assumés (U-12 = accepter les
+> cookies sur la machine de démo, checklist P9 ; U-19 = espace vide /connexion 1440, cosmétique
+> roadmap). La colonne « État » du §5 fait foi.
 
 ---
 
@@ -32,7 +38,8 @@ Les vraies faiblesses trouvées étaient de trois ordres, et les deux premières
    v1.2.0** : « Plan d'action IA » + « Argumentaire de prime IA », testés live (Gemini réel).
 3. **Signaux « inachevé » périphériques** : placeholders `[À compléter : …]` sur les 3 pages
    légales (6+ occurrences sur /mentions-legales), identifiants démo en clair sur /connexion,
-   date/libellé filière du certificat non traduits en EN. → Restent à traiter (prompts fournis).
+   date/libellé filière du certificat non traduits en EN. → **CORRIGÉS v1.2.1 (7 juillet)** :
+   0 placeholder en prod, identifiants retirés, aperçu du certificat 100 % EN (le PDF reste FR).
 
 **Notes globales : produit 8,4/10 · parcours client 8,5/10 · design system 8,5/10 · animations 8/10.**
 Le TOP 5 des actions restantes est au §7 ; la feuille de prompts prête à coller est dans
@@ -126,23 +133,23 @@ Constats design (tous niveaux) :
 | U-01 | 🔴 | /app/admin | « Forcé activé : aucun appel réseau live ne part de l'application » affiché alors que l'IA EST live en prod (contradiction visible avec `MOCK_MODE = false` affiché dessous) | app/app/admin/page.tsx:113-116 + capture app-admin--fr-desktop | **CORRIGÉ v1.2.0** |
 | U-02 | 🔴 | Étape 4 (EN) | Verdict, faisceau de preuves et lecture vocale en FRANÇAIS sous interface anglaise (l'API ne renvoyait que le FR ; TTS forcé fr-FR) | flow/verifier-en-desktop--step4-analyse-verdict.png + step-analysis.tsx:164 | **CORRIGÉ v1.2.0** |
 | U-03 | 🔴 | Grille jury | Axe « Usage IA » (20 %) : aucune IA visible sur les 2 moments signatures de la démo (audit 63 %, Valorisation) | AGRIVO_Ultra_Review_Strategique.md §2 | **CORRIGÉ v1.2.0** (2 features IA live) |
-| U-04 | 🟠 | Pages légales | 6+ placeholders « [À compléter : raison sociale…, RCCM, adresse, directeur de la publication, e-mail, DPO] » visibles en prod, FR et EN | mentions-legales--fr-desktop.txt, confidentialite/cgu--\*.txt | À faire (prompt 2 — nécessite les infos d'Anael) |
+| U-04 | 🟠 | Pages légales | 6+ placeholders « [À compléter : raison sociale…, RCCM, adresse, directeur de la publication, e-mail, DPO] » visibles en prod, FR et EN | mentions-legales--fr-desktop.txt, confidentialite/cgu--\*.txt | **CORRIGÉ v1.2.1** (formulations honnêtes d'avant-immatriculation ; RCCM à ajouter à la création de la société) |
 | U-05 | 🟠 | Étape 1 parcours | « La vérification se déroule en quatre temps » vs stepper à 6 étapes | app/app/verifier/page.tsx:40 + step1-confirmation | **CORRIGÉ v1.2.0** (« cinq temps ») |
 | U-06 | 🟠 | Étape 5 (EN) | Aperçu du certificat : statut et phrase en FR sous interface EN | flow/verifier-en-desktop--step5-certificat | **CORRIGÉ v1.2.0** (aperçu ; PDF volontairement FR) |
-| U-07 | 🟠 | /connexion | Identifiants démo affichés en clair (client@test.com / 123client123) — assumé pour le jury, dangereux au-delà | connexion--fr-desktop.png | Post-jury (prompt 5) |
+| U-07 | 🟠 | /connexion | Identifiants démo affichés en clair (client@test.com / 123client123) — assumé pour le jury, dangereux au-delà | connexion--fr-desktop.png | **CORRIGÉ v1.2.1** (0 identifiant dans le HTML servi ; bouton 1-clic conservé) |
 | U-08 | 🟡 | Vue exportateur | « cockpit » (terme banni charte) dans le sous-titre FR et EN | app/app/exportateur/page.tsx:38,54 | **CORRIGÉ v1.2.0** |
 | U-09 | 🟡 | Étape 6 | Devise « Le vert prouve… » en italique (charte : jamais d'italique) | step-valorisation.tsx:202 + step6-valorisation-partage | **CORRIGÉ v1.2.0** |
-| U-10 | 🟡 | Étape 5 (EN) | Date « émis le » (locale fr-FR) et libellé filière restent FR sur l'aperçu EN | lib/certificat-data.ts:49,53 | Prompt 3 |
-| U-11 | 🟡 | Dashboard coop | Import registre : l'état replié compact (D1, audit P4) jamais fait — colonne dense | app-dashboard--fr-desktop.p0 | Prompt 4 (optionnel avant jury) |
+| U-10 | 🟡 | Étape 5 (EN) | Date « émis le » (locale fr-FR) et libellé filière restent FR sur l'aperçu EN | lib/certificat-data.ts:49,53 | **CORRIGÉ v1.2.1** (aperçu en-GB + filières EN + N/S/E/W ; PDF téléchargé volontairement FR) |
+| U-11 | 🟡 | Dashboard coop | Import registre : l'état replié compact (D1, audit P4) jamais fait — colonne dense | app-dashboard--fr-desktop.p0 | **CORRIGÉ v1.2.1** (replié par défaut, « Auditer mon registre » ; guide démo +1 clic) |
 | U-12 | 🟡 | Landing | Bandeau cookies recouvre le bas de page au 1er passage — à accepter sur la machine de démo | landing-cookiebar--fr-desktop.png | Checklist P9 |
 | U-13 | 🟡 | Audit registre | Tirets cadratins dans les listes d'anomalies (charte) | registre-import.tsx:294 (avant fix) | **CORRIGÉ v1.2.0** |
 | U-14 | 🟡 | Global | favicon.ico 404 dans la console de chaque page | metrics.jsonl (splash--fr-desktop httpErrors) | **CORRIGÉ v1.2.0** (app/icon.svg) |
-| U-15 | 🟡 | Exportateur | Pastilles carte petites au zoom initial ; scrollbar overlay du tableau ; bouton Export seul outline (E3/E4/E5 hérités de P4, hors top 15) | AUDIT_INTERFACE_AGRIVO.md §5 + onglet1-analytique | Prompt 4 |
-| U-16 | 🟡 | /tarifs | Carte « Dossier exportateur / Inclus » plus courte que les 2 plans (PU2 hérité) | tarifs--fr-desktop.p0 | Prompt 4 |
-| U-17 | 🔵 | Pages publiques | Eyebrows : casse/couleur varient entre pages (PU3 hérité) | a-propos vs methodologie captures | Prompt 4 |
-| U-18 | 🔵 | /app | Skeletons de chargement absents (fondu simple) ; transitions d'onglets exportateur basiques | code exportateur/page.tsx | Roadmap post-jury |
-| U-19 | 🔵 | /connexion 1440 | ~40 % d'espace vide sous le formulaire (C1 hérité) | connexion--fr-desktop.png | Roadmap |
-| U-20 | 🔵 | EN global | « Guaranteed SLA » (toléré : engagement commercial, pas garantie de conformité) — à reformuler « SLA commitment » par purisme | tarifs--en-desktop.txt + app/page.tsx:255 | Roadmap |
+| U-15 | 🟡 | Exportateur | Pastilles carte petites au zoom initial ; scrollbar overlay du tableau ; bouton Export seul outline (E3/E4/E5 hérités de P4, hors top 15) | AUDIT_INTERFACE_AGRIVO.md §5 + onglet1-analytique | **CORRIGÉ v1.2.1** (pastilles + cadrage + scrollbar `scroll-slim` + bouton aligné secondaire) |
+| U-16 | 🟡 | /tarifs | Carte « Dossier exportateur / Inclus » plus courte que les 2 plans (PU2 hérité) | tarifs--fr-desktop.p0 | **Constaté résolu** (la carte a disparu avec le pivot — vérifié le 7 juillet, rien à changer) |
+| U-17 | 🔵 | Pages publiques | Eyebrows : casse/couleur varient entre pages (PU3 hérité) | a-propos vs methodologie captures | **CORRIGÉ v1.2.1** (règle codifiée : en-tête de page publique = ambre, section = vert) |
+| U-18 | 🔵 | /app | Skeletons de chargement absents (fondu simple) ; transitions d'onglets exportateur basiques | code exportateur/page.tsx | **CORRIGÉ v1.2.1** (skeleton silhouette du dashboard + transitions 180 ms reduced-motion) |
+| U-19 | 🔵 | /connexion 1440 | ~40 % d'espace vide sous le formulaire (C1 hérité) | connexion--fr-desktop.png | Roadmap (cosmétique, non bloquant) |
+| U-20 | 🔵 | EN global | « Guaranteed SLA » (toléré : engagement commercial, pas garantie de conformité) — à reformuler « SLA commitment » par purisme | tarifs--en-desktop.txt + app/page.tsx:255 | **CORRIGÉ v1.2.1** (EN « SLA commitment » ; le FR « SLA garanti » reste, toléré : engagement commercial) |
 
 **Charte — vérifications négatives (rien trouvé, c'est la bonne nouvelle)** : « micro-crédit / prêt /
 FCFA producteur / Mobile Money / IMF » : **0** occurrence UI · « valeur à risque » : **0** ·
@@ -157,24 +164,25 @@ FCFA producteur / Mobile Money / IMF » : **0** occurrence UI · « valeur à ri
   « jamais crédit ni financement ») — à retester à la main pendant P9.
 - Le téléchargement effectif du PDF de certificat en prod (généré côté client à la demande) — testé
   dans les sessions précédentes, pas re-testé ce soir.
-- Les nouvelles features IA en PROD : testées **live en local** (build + serveur + clé réelle,
-  `live:true` sur les 2 routes) ; la prod attend le déploiement d'Anael (déploiement/alias bloqués
-  par les permissions de l'outil).
+- ~~Les nouvelles features IA en PROD~~ → **LEVÉ le 7 juillet** : vérifiées EN PRODUCTION avec
+  badge « Rédigé par Gemini · IA en direct » (session 22). Nuance honnête : en free tier, le live
+  reste une loterie de créneaux depuis les IP partagées Vercel (429 intermittents) — le repli
+  « Mode démonstration » est le filet de sécurité ; la facturation Tier 1 est le fix définitif.
 - Lighthouse/perf chiffrée : non mesurée (hors périmètre outillé ce soir) ; la perf PERÇUE en
   captures est bonne (aucun état de chargement bloquant observé).
 
-## 7. TOP priorisé « meilleur effet / moindre effort » (état après v1.2.0)
+## 7. TOP priorisé « meilleur effet / moindre effort » — ÉTAT AU 7 JUILLET : tout est fait sauf la préparation humaine
 
-1. **Mettre v1.2.0 en prod** (5 min, Anael — push + deploy + alias, commandes §12 du doc équipe) :
-   débloque TOUT le travail de ce soir, dont les 2 features IA. 🔴
-2. **Compléter les mentions légales** (30 min, texte à fournir par Anael ; prompt 2) : dernier
-   signal « inachevé » visible par un juré curieux. 🟠
-3. **Répétition P9 avec les 2 nouveaux clics IA** dans le déroulé (guide démo déjà mis à jour) +
-   accepter les cookies sur la machine de démo. 🟠
-4. **Prompt 3 (30 min)** : date/filière EN du certificat + « SLA commitment » — la dernière trace
-   de FR-glais. 🟡
-5. **Prompt 4 (1-2 h, optionnel)** : polish exportateur (E3/E4/E5) + import replié (D1) + tarifs
-   (PU2) + eyebrows (PU3). À ne faire QUE si le pitch est déjà rodé. 🟡
+1. ~~Mettre v1.2.x en prod~~ ✅ **FAIT** — v1.2.1 servie sur https://agrivo-io.vercel.app, features
+   IA vérifiées live. Reste `git push origin main --tags` (1 min, Anael).
+2. ~~Compléter les mentions légales~~ ✅ **FAIT** (formulations honnêtes d'avant-immatriculation).
+3. **Répétition P9 avec les 2 clics IA** dans le déroulé (guide démo à jour) + accepter les
+   cookies sur la machine de démo + **facturation Tier 1 sur la clé Gemini** (5 min). 🟠 ← LE reste.
+4. ~~Prompt 3 FR-glais~~ ✅ **FAIT** (aperçu certificat EN, « SLA commitment »).
+5. ~~Prompt 4 polish~~ ✅ **FAIT** (import replié, exportateur, eyebrows ; U-16 déjà résolu).
+6. Bonus fait en avance : durcissement prompt 5 (identifiants masqués, skeletons, états vides,
+   transitions, `PLAN_V2.md`).
 
-*Rapport rédigé le 6 juillet 2026 au soir. Jumeau PDF : `AGRIVO_Ultra_Review_Rapport_Final.pdf`.
+*Rapport rédigé le 6 juillet 2026 au soir, mis à jour le 7 juillet après exécution des prompts 1-5
+(v1.2.1 en prod). Jumeau PDF : `AGRIVO_Ultra_Review_Rapport_Final.pdf`.
 Stratégie : `AGRIVO_Ultra_Review_Strategique.md`. Feuille de route : `AGRIVO_Prompts_A_Run_Fable5.md`.*
