@@ -4,11 +4,12 @@ import { ShieldCheck, Sprout, Coins, ArrowRight, Radar, Network } from "lucide-r
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { Reveal } from "@/components/landing/reveal";
+import { PageHero } from "@/components/landing/page-hero";
 import { useLanguage } from "@/components/language-provider";
 
 const ROADMAP = [
-  { step: "01", title: { fr: "Pilote", en: "Pilot" }, body: { fr: "Valider le parcours sur une coopérative de démonstration à Soubré, du scan à la valorisation.", en: "Validate the journey on a demo cooperative in Soubré, from scan to valorisation." } },
-  { step: "02", title: { fr: "Conformité", en: "Compliance" }, body: { fr: "Brancher l'API Whisp en production et générer des certificats prêts pour TRACES NT.", en: "Plug the Whisp API in production and generate certificates ready for TRACES NT." } },
+  { step: "01", title: { fr: "Pilote", en: "Pilot" }, body: { fr: "Déployer le parcours complet avec une première coopérative pilote à Soubré, du scan à la valorisation.", en: "Deploy the full journey with a first pilot cooperative in Soubré, from scan to valorisation." } },
+  { step: "02", title: { fr: "Conformité", en: "Compliance" }, body: { fr: "Certifier chaque parcelle vérifiée et produire des dossiers prêts pour la déclaration européenne.", en: "Certify every verified plot and produce files ready for the European declaration." } },
   { step: "03", title: { fr: "Lancement", en: "Launch" }, body: { fr: "Ouvrir aux coopératives et exportateurs cacao, avec le sélecteur de langue et le mode hors connexion.", en: "Open to cocoa cooperatives and exporters, with the language switcher and offline mode." } },
   { step: "04", title: { fr: "Expansion", en: "Expansion" }, body: { fr: "Étendre au café, à l'hévéa et au palmier à huile, puis aux autres pays de l'UMOA.", en: "Extend to coffee, rubber and oil palm, then to the other WAEMU countries." } },
 ];
@@ -19,7 +20,7 @@ const NEXT = [
 ];
 
 const TEAM = [
-  { name: "Anael", role: { fr: "Lead build, pitch & marque", en: "Lead build, pitch & brand" }, initials: "AN", grad: "linear-gradient(135deg,#16a34a,#0c2519)" },
+  { name: "Anael", role: { fr: "Direction produit & marque", en: "Product & brand lead" }, initials: "AN", grad: "linear-gradient(135deg,#16a34a,#0c2519)" },
   { name: "Christ", role: { fr: "Backend & données", en: "Backend & data" }, initials: "CH", grad: "linear-gradient(135deg,#1b4a39,#0a1f14)" },
   { name: "Gaddiel", role: { fr: "Intégration IA", en: "AI integration" }, initials: "GA", grad: "linear-gradient(135deg,#2D7A4B,#0c2519)" },
   { name: "Domy", role: { fr: "Conformité & réglementaire", en: "Compliance & regulatory" }, initials: "DO", grad: "linear-gradient(135deg,#c8861d,#5a3a0e)" },
@@ -31,23 +32,21 @@ export default function APropos() {
   const en = lang === "en";
   return (
     <div className="min-h-screen bg-ivory text-forest-950">
-      <SiteHeader variant="solid" />
+      <SiteHeader variant="overlay" />
       <main>
-        <section className="mx-auto max-w-3xl px-6 pb-16 pt-20 md:px-8">
-          <Reveal>
-            <span className="eyebrow text-amber-cacao">{en ? "About" : "À propos"}</span>
-            <h1 className="mt-4 font-display text-4xl leading-tight sm:text-5xl">
-              {en
-                ? "Turning a European constraint into an opportunity for the farmer."
-                : "Transformer une contrainte européenne en opportunité pour le producteur."}
-            </h1>
-            <p className="mt-5 text-lg leading-relaxed text-stone-600">
-              {en
-                ? "The new deforestation regulation is not only a threat. It is also the gateway to provable, better-paid agriculture. Agrivo aims to become the reference tool for compliance and its commercial valorisation across West African export commodities."
-                : "La nouvelle réglementation sur la déforestation n'est pas seulement une menace. C'est aussi la porte d'entrée vers une agriculture prouvable et mieux rémunérée. Agrivo veut devenir l'outil de référence de la conformité et de sa valorisation commerciale pour les filières d'exportation d'Afrique de l'Ouest."}
-            </p>
-          </Reveal>
-        </section>
+        <PageHero
+          eyebrow={en ? "About" : "À propos"}
+          title={
+            en
+              ? "Turning a European constraint into an opportunity for the farmer."
+              : "Transformer une contrainte européenne en opportunité pour le producteur."
+          }
+          sub={
+            en
+              ? "The new deforestation regulation is not only a threat. It is also the gateway to provable, better-paid agriculture. Agrivo aims to become the reference tool for compliance and its commercial valorisation across West African export commodities."
+              : "La nouvelle réglementation sur la déforestation n'est pas seulement une menace. C'est aussi la porte d'entrée vers une agriculture prouvable et mieux rémunérée. Agrivo veut devenir l'outil de référence de la conformité et de sa valorisation commerciale pour les filières d'exportation d'Afrique de l'Ouest."
+          }
+        />
 
         {/* Le moat */}
         <section className="divide-fluid bg-ivory">
@@ -102,8 +101,8 @@ export default function APropos() {
             <h2 className="font-display text-3xl">{en ? "What comes next" : "Ce qui arrive ensuite"}</h2>
             <p className="mt-3 max-w-2xl text-sm text-stone-500">
               {en
-                ? "A product vision beyond the MVP. These blocks are not built yet; they mark out what comes next."
-                : "Une vision produit au-delà du MVP. Ces briques ne sont pas encore construites, elles balisent la suite."}
+                ? "Our roadmap beyond launch: the services we are preparing for cooperatives and exporters."
+                : "Notre feuille de route au-delà du lancement : les services que nous préparons pour les coopératives et les exportateurs."}
             </p>
           </Reveal>
           <div className="mt-8 grid gap-5 md:grid-cols-2">
@@ -154,8 +153,8 @@ export default function APropos() {
               <h2 className="font-display text-3xl">{en ? "Time to execute." : "Le temps de l\u2019exécution."}</h2>
               <p className="mx-auto mt-3 max-w-lg text-white/70">
                 {en
-                  ? "A regulatory window of opportunity, a local team, a product ready to demonstrate."
-                  : "Une fenêtre d'opportunité réglementaire, une équipe locale, un produit prêt à démontrer."}
+                  ? "A regulatory calendar that will not wait, a local team, a product already up and running."
+                  : "Un calendrier réglementaire qui n'attend pas, une équipe locale, un produit déjà opérationnel."}
               </p>
               <Link href="/app/dashboard" className="mt-8 inline-flex items-center gap-3 rounded-full bg-green-signal px-7 py-4 text-sm font-semibold text-white transition-transform hover:scale-[1.03] active:scale-95">
                 {en ? "Go to the dashboard" : "Accéder au tableau de bord"} <ArrowRight size={16} />

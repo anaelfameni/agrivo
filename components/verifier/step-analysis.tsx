@@ -37,6 +37,7 @@ const COPY = {
     soilDialog: "Explication du score de résilience des sols",
     score: "Score",
     generating: "Explication en cours de génération…",
+    scoreError: "Explication momentanément indisponible. Le score reste calculé sur les données de la parcelle.",
     methodology: "Méthodologie inspirée de standards reconnus type Kubeko.",
     close: "Fermer",
     launch: "Lancer l'analyse",
@@ -65,6 +66,7 @@ const COPY = {
     soilDialog: "Soil resilience score explanation",
     score: "Score",
     generating: "Explanation being generated…",
+    scoreError: "Explanation temporarily unavailable. The score is still computed from the plot's data.",
     methodology: "Methodology inspired by recognised standards such as Kubeko.",
     close: "Close",
     launch: "Run the analysis",
@@ -107,6 +109,7 @@ export function StepAnalysis({
   const [whisp, setWhisp] = useState<WhispResult | null>(null);
   const [scoreOpen, setScoreOpen] = useState(false);
   const [score, setScore] = useState<ScoreSols | null>(null);
+  const [scoreErr, setScoreErr] = useState(false);
   const [speaking, setSpeaking] = useState(false);
   const [canSpeak, setCanSpeak] = useState(false);
   const [traduction, setTraduction] = useState<{ texte: string; langue: "dioula" | "baoule"; live: boolean } | null>(null);
@@ -158,15 +161,18 @@ export function StepAnalysis({
     }
     setScoreOpen(true);
     if (!score) {
+      setScoreErr(false);
       try {
         const r = await fetch("/api/gemini/explain", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ kind: "sols", producteurNom: parcelle.producteurNom }),
         });
+        if (!r.ok) throw new Error(String(r.status));
         setScore(await r.json());
       } catch {
-        /* garde le popover ouvert avec un état vide */
+        // Jamais un « génération… » éternel : on l'annonce honnêtement.
+        setScoreErr(true);
       }
     }
   }
@@ -348,7 +354,7 @@ export function StepAnalysis({
                         </button>
                       </div>
                       <p className="mt-1.5 text-xs leading-relaxed text-stone-500">
-                        {score ? score.explication : t.generating}
+                        {score ? score.explication : scoreErr ? t.scoreError : t.generating}
                       </p>
                       <p className="mt-2 border-t border-black/[0.05] pt-2 text-[0.68rem] text-stone-400">
                         {t.methodology}

@@ -18,7 +18,7 @@ export default function ConfidentialitePage() {
         <p>Dans le cadre de la vérification de conformité RDUE, nous traitons notamment :</p>
         <ul className="list-disc pl-5">
           <li>l&apos;identité du producteur (nom, numéro de carte professionnelle) ;</li>
-          <li>la géolocalisation et le contour de la parcelle (coordonnées GPS, GeoJSON) ;</li>
+          <li>la géolocalisation et le contour de la parcelle (coordonnées GPS) ;</li>
           <li>les informations de la coopérative et de son gérant (contact professionnel) ;</li>
           <li>les résultats d&apos;évaluation et les certificats générés.</li>
         </ul>
@@ -41,7 +41,7 @@ export default function ConfidentialitePage() {
       </LegalSection>
 
       <LegalSection title="6. Durée de conservation">
-        <p>Les données sont conservées le temps nécessaire à la conformité réglementaire (le RDUE impose une traçabilité pluriannuelle), puis archivées ou supprimées. Les données du pilote de démonstration sont purgées à la fin du pilote ; le détail des durées par catégorie est tenu dans notre registre des traitements, disponible sur demande.</p>
+        <p>Les données sont conservées le temps nécessaire à la conformité réglementaire (le RDUE impose une traçabilité pluriannuelle), puis archivées ou supprimées. Les données de la phase pilote sont purgées à la fin du pilote ; le détail des durées par catégorie est tenu dans notre registre des traitements, disponible sur demande.</p>
       </LegalSection>
 
       <LegalSection title="7. Vos droits">

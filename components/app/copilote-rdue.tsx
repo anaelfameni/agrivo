@@ -3,7 +3,7 @@ import * as React from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Sparkles, Send, X, ShieldCheck, Loader2 } from "lucide-react";
 import { useLanguage } from "@/components/language-provider";
-import { QUESTIONS_SUGGEREES } from "@/lib/ai/rdue-faits";
+import { FAITS_RDUE, QUESTIONS_SUGGEREES } from "@/lib/ai/rdue-faits";
 
 /**
  * Copilote de conformité RDUE — assistant conversationnel flottant.
@@ -63,6 +63,18 @@ export function CopiloteRdue() {
   React.useEffect(() => {
     listRef.current?.scrollTo({ top: listRef.current.scrollHeight, behavior: "smooth" });
   }, [messages, loading]);
+
+  // Questions de suivi : celles de la base de faits qui n'ont pas encore été posées (2 max).
+  // Déterministe et sans appel réseau — le copilote reste conversationnel même en repli.
+  const posees = React.useMemo(
+    () => new Set(messages.filter((m) => m.role === "user").map((m) => m.text)),
+    [messages],
+  );
+  const suivantes = React.useMemo(
+    () => FAITS_RDUE.map((f) => f.question[lang]).filter((q) => !posees.has(q)).slice(0, 2),
+    [posees, lang],
+  );
+  const dernierAssistant = messages.length > 0 && messages[messages.length - 1].role === "assistant";
 
   async function envoyer(question: string) {
     const q = question.trim();
@@ -176,6 +188,21 @@ export function CopiloteRdue() {
                   <div className="flex items-center gap-2 rounded-2xl rounded-bl-sm bg-white px-3.5 py-2.5 text-sm text-stone-500 shadow-sm ring-1 ring-black/[0.05]">
                     <Loader2 size={15} className="animate-spin" />
                   </div>
+                </div>
+              )}
+
+              {/* Suivi conversationnel : propose les questions non encore posées. */}
+              {dernierAssistant && !loading && suivantes.length > 0 && (
+                <div className="flex flex-wrap gap-2 pt-1">
+                  {suivantes.map((q) => (
+                    <button
+                      key={q}
+                      onClick={() => envoyer(q)}
+                      className="rounded-full border border-green-signal/30 bg-green-signal/[0.06] px-3 py-1.5 text-left text-xs font-medium text-forest-950 transition-colors hover:bg-green-signal/[0.12]"
+                    >
+                      {q}
+                    </button>
+                  ))}
                 </div>
               )}
             </div>

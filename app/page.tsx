@@ -28,6 +28,7 @@ import { FILIERES, STATUT_FILIERE_LABEL } from "@/config/filieres";
 import { SiteHeader } from "@/components/site-header";
 import { PageReveal } from "@/components/page-reveal";
 import { Hero } from "@/components/landing/hero";
+import { HeroBg } from "@/components/landing/hero-bg";
 import { Reveal } from "@/components/landing/reveal";
 import { StatNumber } from "@/components/ui/stat-number";
 import { Tilt, Magnetic, CursorGlow } from "@/components/ui/motion-primitives";
@@ -57,12 +58,12 @@ const COPY = {
     goldenPath: {
       eyebrow: "Comment ça marche",
       title: "Vos données existent déjà. AGRIVO les rend prouvables.",
-      sub: "De vos fichiers existants au dossier prêt pour l'export, en cinq temps.",
+      sub: "De vos fichiers existants au dossier prêt pour l'export, en 5 étapes.",
       steps: [
         { title: "Importez votre registre", body: "Fichiers de certification, cartographies financées par vos exportateurs : chargez ce que la coopérative détient déjà (.geojson, .kml, .csv)." },
         { title: "AGRIVO l'audite", body: "Chaque parcelle est passée au crible de la règle RDUE : polygones ouverts, doublons, chevauchements, points seuls au-delà de 4 ha." },
         { title: "Complétez les trous", body: "Seules les parcelles manquantes ou rejetées repassent par le terrain : scan de la carte, capture GPS guidée, contrôles d'intégrité." },
-        { title: "Le satellite juge", body: "Whisp vérifie ce qu'il y a dans chaque polygone déclaré : Conforme, Anomalie détectée ou Données insuffisantes, expliqué et certifié." },
+        { title: "Le satellite juge", body: "Chaque parcelle est comparée aux images satellites de référence : Conforme, Anomalie détectée ou Données insuffisantes. Chaque verdict est expliqué et certifié." },
         { title: "Valorisez", body: "Certificats vérifiables et dossier DDS prêt pour TRACES NT : la coopérative négocie primes de durabilité et acheteurs premium." },
       ],
     },
@@ -81,23 +82,23 @@ const COPY = {
       features: [
         { t: "Vérification satellite", d: "Le verdict Whisp (FAO) sur chaque parcelle, comparé à la date pivot du 31 décembre 2020." },
         { t: "Certificat prêt à l'export", d: "Un certificat PDF horodaté, aligné sur le format de déclaration TRACES NT." },
-        { t: "Export GeoJSON", d: "Vos parcelles au format RFC 7946, 6 décimales, prêtes pour vos systèmes d'export." },
+        { t: "Export des parcelles", d: "Vos parcelles au format géographique officiel, prêtes pour vos systèmes et la déclaration européenne." },
         { t: "Valorisation commerciale", d: "La conformité prouvée devient l'argument des primes de durabilité et des acheteurs premium." },
-        { t: "Français et Anglais", d: "Une interface bilingue ; l'assistant vocal parle aussi le dioula et le baoulé au producteur." },
+        { t: "Français et Anglais", d: "Une interface bilingue ; l'explication du verdict se traduit en dioula et en baoulé pour le producteur." },
         { t: "Mode hors connexion", d: "Le contrôle avance au bord du champ, même sans réseau ; la synchronisation suit." },
       ],
     },
     filieres: {
       eyebrow: "Pas seulement le cacao",
       title: "Un moteur multi-filières pour les 7 matières premières du RDUE.",
-      body: "La démonstration se concentre sur le cacao, la filière la plus documentée et la plus urgente. Le produit couvre l'ensemble des matières premières soumises au règlement européen.",
+      body: "Le déploiement commence par le cacao, la filière la plus urgente. Le produit couvre l'ensemble des matières premières soumises au règlement européen.",
       derives: { badge: "+ dérivés", title: "Produits dérivés", sub: "Chocolat, cuir, papier, pneus…" },
     },
     cartographie: {
       eyebrow: "Cartographie satellite",
       title: "Chaque parcelle, prouvée depuis le ciel.",
       body: "Le contour de la parcelle est comparé aux images satellites depuis la date pivot du 31 décembre 2020. Superficie calculée, verdict rendu, certificat prêt pour TRACES NT.",
-      bullets: ["Fond satellite haute résolution", "Polygone GeoJSON, 6 décimales (± 11 cm)", "Verdict Whisp (FAO) en quelques secondes"],
+      bullets: ["Fond satellite haute résolution", "Contour de parcelle précis (± 11 cm)", "Verdict satellite (méthode FAO) en quelques secondes"],
       badge: "Conforme",
     },
     enjeu: {
@@ -137,15 +138,15 @@ const COPY = {
       people: [
         { name: "Amadou", role: "Gérant de coopérative · Soubré", quote: "Je gère 600 producteurs avec un smartphone. Je veux valider un lot en quelques secondes, au bord du champ." },
         { name: "Marc", role: "Directeur durabilité · Abidjan", quote: "Chaque conteneur vers l'Europe doit être 100 % conforme. Je dois vérifier des milliers de parcelles." },
-        { name: "Yao", role: "Productrice de café · Man", quote: "Je cultive 2 hectares, sans compte bancaire. Je veux vendre ma récolte et emprunter 150 000 FCFA." },
+        { name: "Yao", role: "Productrice de café · Man", quote: "Je cultive 2 hectares. Je veux vendre ma récolte au juste prix et garder l'accès au marché européen." },
       ],
     },
     modele: {
       eyebrow: "Modèle économique",
-      title: "Deux abonnements et une commission. Rien de caché.",
+      title: "Deux abonnements, un modèle transparent.",
       revenues: [
         { name: "Abonnement coopérative", price: "125 000", unit: "FCFA / mois", desc: "Vérifications illimitées, certificats PDF, mode hors connexion, support." },
-        { name: "API exportateur", price: "1 500 000", unit: "FCFA / mois", desc: "API REST, export batch, déclarations TRACES NT intégrées, SLA garanti." },
+        { name: "API exportateur", price: "1 500 000", unit: "FCFA / mois", desc: "API REST, export en masse, déclarations TRACES NT intégrées, engagement de disponibilité (SLA)." },
         { name: "Dossier exportateur", price: "Inclus", unit: "dans l'abonnement coopérative", desc: "Le dossier de conformité se partage avec l'exportateur : la coopérative le fait valoir pour négocier." },
       ],
       note: "Le service AGRIVO est gratuit pour le producteur : il ne paie aucun frais pour être vérifié. Le modèle repose sur l'abonnement coopérative et l'API exportateur.",
@@ -153,7 +154,7 @@ const COPY = {
     verdicts: {
       eyebrow: "Jamais un simple oui / non",
       title: "Trois verdicts, toujours expliqués.",
-      sub: "Chaque parcelle reçoit l'un de ces trois verdicts. Changez la langue dans l'en-tête : les libellés suivent (Français, Anglais).",
+      sub: "Chaque parcelle reçoit l'un de ces trois verdicts, toujours accompagné d'une explication en langage clair.",
       phrases: [
         "Aucune déforestation détectée après le 31 décembre 2020.",
         "Une perte de couverture forestière a été identifiée sur cette zone.",
@@ -163,7 +164,7 @@ const COPY = {
     equipe: {
       eyebrow: "L'équipe",
       title: "Une équipe ivoirienne, ancrée dans le terrain.",
-      roles: ["Lead build, pitch & marque", "Backend & données", "Intégration IA", "Conformité & réglementaire", "Stratégie & design"],
+      roles: ["Direction produit & marque", "Backend & données", "Intégration IA", "Conformité & réglementaire", "Stratégie & design"],
     },
     cta: {
       title: "La conformité, prouvée en quelques secondes.",
@@ -186,12 +187,12 @@ const COPY = {
     goldenPath: {
       eyebrow: "How it works",
       title: "Your data already exists. AGRIVO makes it provable.",
-      sub: "From your existing files to an export-ready dossier, in five steps.",
+      sub: "From your existing files to an export-ready dossier, in 5 steps.",
       steps: [
         { title: "Import your register", body: "Certification files, exporter-funded mapping campaigns: load what the cooperative already owns (.geojson, .kml, .csv)." },
         { title: "AGRIVO audits it", body: "Every plot is checked against the EUDR rule: open polygons, duplicates, overlaps, lone points above 4 ha." },
         { title: "Fill the gaps", body: "Only missing or rejected plots go back to the field: card scan, guided GPS capture, integrity checks." },
-        { title: "The satellite judges", body: "Whisp verifies what is inside each declared polygon: Compliant, Anomaly detected or Insufficient data, explained and certified." },
+        { title: "The satellite judges", body: "Every plot is compared against reference satellite imagery: Compliant, Anomaly detected or Insufficient data. Every verdict is explained and certified." },
         { title: "Valorise", body: "Verifiable certificates and a DDS file ready for TRACES NT: the cooperative negotiates sustainability premiums and premium buyers." },
       ],
     },
@@ -210,23 +211,23 @@ const COPY = {
       features: [
         { t: "Satellite verification", d: "The Whisp (FAO) verdict on every plot, compared to the 31 December 2020 cut-off date." },
         { t: "Export-ready certificate", d: "A timestamped PDF certificate, aligned with the TRACES NT declaration format." },
-        { t: "GeoJSON export", d: "Your plots in RFC 7946 format, 6 decimals, ready for your export systems." },
+        { t: "Plot export", d: "Your plots in the official geographic format, ready for your systems and the European declaration." },
         { t: "Commercial valorisation", d: "Proven compliance becomes the argument for sustainability premiums and premium buyers." },
-        { t: "French and English", d: "A bilingual interface; the voice assistant also speaks Dioula and Baoulé to the farmer." },
+        { t: "French and English", d: "A bilingual interface; the verdict explanation translates into Dioula and Baoulé for the farmer." },
         { t: "Offline mode", d: "The check moves forward at the edge of the field, even without a network; syncing follows." },
       ],
     },
     filieres: {
       eyebrow: "Not just cocoa",
       title: "A multi-commodity engine for the 7 EUDR raw materials.",
-      body: "The demo focuses on cocoa, the most documented and most urgent commodity. The product covers all raw materials subject to the European regulation.",
+      body: "Deployment starts with cocoa, the most urgent commodity. The product covers all raw materials subject to the European regulation.",
       derives: { badge: "+ derivatives", title: "Derived products", sub: "Chocolate, leather, paper, tyres…" },
     },
     cartographie: {
       eyebrow: "Satellite mapping",
       title: "Every plot, proven from the sky.",
       body: "The plot outline is compared to satellite imagery from the 31 December 2020 cut-off date. Area computed, verdict issued, certificate ready for TRACES NT.",
-      bullets: ["High-resolution satellite base", "GeoJSON polygon, 6 decimals (± 11 cm)", "Whisp (FAO) verdict in seconds"],
+      bullets: ["High-resolution satellite base", "Plot outline accurate to ± 11 cm", "Satellite verdict (FAO method) in seconds"],
       badge: "Compliant",
     },
     enjeu: {
@@ -266,14 +267,14 @@ const COPY = {
       people: [
         { name: "Amadou", role: "Cooperative manager · Soubré", quote: "I manage 600 farmers with a smartphone. I want to validate a lot in seconds, at the edge of the field." },
         { name: "Marc", role: "Sustainability Director · Abidjan", quote: "Every container to Europe must be 100% compliant. I have to verify thousands of plots." },
-        { name: "Yao", role: "Coffee farmer · Man", quote: "I farm 2 hectares, with no bank account. I want to sell my harvest and borrow 150,000 FCFA." },
+        { name: "Yao", role: "Coffee farmer · Man", quote: "I farm 2 hectares. I want to sell my harvest at a fair price and keep access to the European market." },
       ],
     },
     modele: {
       eyebrow: "Business model",
-      title: "Two subscriptions and one commission. Nothing hidden.",
+      title: "Two subscriptions, one transparent model.",
       revenues: [
-        { name: "Cooperative subscription", price: "120,000", unit: "FCFA / month", desc: "Unlimited verifications, PDF certificates, offline mode, support." },
+        { name: "Cooperative subscription", price: "125,000", unit: "FCFA / month", desc: "Unlimited verifications, PDF certificates, offline mode, support." },
         { name: "Exporter API", price: "1,500,000", unit: "FCFA / month", desc: "REST API, batch export, integrated TRACES NT declarations, SLA commitment." },
         { name: "Exporter file", price: "Included", unit: "in the cooperative subscription", desc: "The compliance file is shared with the exporter: the cooperative leverages it to negotiate." },
       ],
@@ -282,7 +283,7 @@ const COPY = {
     verdicts: {
       eyebrow: "Never a plain yes / no",
       title: "Three verdicts, always explained.",
-      sub: "Every plot receives one of these three verdicts. Switch the language in the header: the labels follow (French, English).",
+      sub: "Every plot receives one of these three verdicts, always with a plain-language explanation.",
       phrases: [
         "No deforestation detected after 31 December 2020.",
         "A loss of forest cover was identified on this area.",
@@ -292,7 +293,7 @@ const COPY = {
     equipe: {
       eyebrow: "The team",
       title: "An Ivorian team, rooted in the field.",
-      roles: ["Lead build, pitch & brand", "Backend & data", "AI integration", "Compliance & regulatory", "Strategy & design"],
+      roles: ["Product & brand lead", "Backend & data", "AI integration", "Compliance & regulatory", "Strategy & design"],
     },
     cta: {
       title: "Compliance, proven in seconds.",
@@ -311,28 +312,6 @@ function useCopy() {
 
 function Eyebrow({ children, light = false }: { children: React.ReactNode; light?: boolean }) {
   return <span className={`eyebrow ${light ? "text-amber-soft" : "text-amber-cacao"}`}>{children}</span>;
-}
-
-/** Fond animé identique au HERO (mesh gradients + grille masquée + grain) pour les sections sombres. */
-function HeroBg() {
-  return (
-    <div className="pointer-events-none absolute inset-0 -z-10">
-      <div className="mesh-a absolute -left-[12%] top-[-18%] h-[620px] w-[620px] rounded-full bg-green-signal/20 blur-[120px]" />
-      <div className="mesh-b absolute right-[-10%] top-[8%] h-[500px] w-[500px] rounded-full bg-amber-cacao/15 blur-[120px]" />
-      <div className="mesh-c absolute bottom-[-22%] left-[28%] h-[540px] w-[540px] rounded-full bg-forest-700/45 blur-[120px]" />
-      <div
-        className="absolute inset-0 opacity-[0.04]"
-        style={{
-          backgroundImage:
-            "linear-gradient(to right,#fff 1px,transparent 1px),linear-gradient(to bottom,#fff 1px,transparent 1px)",
-          backgroundSize: "64px 64px",
-          maskImage: "radial-gradient(ellipse 75% 60% at 40% 35%, #000 20%, transparent 78%)",
-          WebkitMaskImage: "radial-gradient(ellipse 75% 60% at 40% 35%, #000 20%, transparent 78%)",
-        }}
-      />
-      <div className="grain absolute inset-0 opacity-[0.05]" />
-    </div>
-  );
 }
 
 export default function Landing() {
@@ -489,11 +468,17 @@ function FonctionnalitesSection() {
         <motion.div variants={container} initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.15 }} className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {c.features.map((f, i) => (
             <motion.div key={f.t} variants={rise} className="h-full">
-              <div className="group flex h-full flex-col rounded-2xl border border-black/[0.06] bg-white p-6 transition-shadow hover:shadow-[0_28px_60px_-34px_rgba(10,31,20,0.4)]">
-                <div className="grid h-11 w-11 place-items-center rounded-xl bg-green-signal/10 text-green-signal transition-transform duration-300 group-hover:scale-110">{icons[i]}</div>
-                <h3 className="mt-4 font-premium text-lg text-forest-950">{f.t}</h3>
-                <p className="mt-1.5 text-sm leading-relaxed text-stone-600">{f.d}</p>
-              </div>
+              <motion.div
+                whileHover={{ y: -6 }}
+                transition={{ type: "spring", stiffness: 300, damping: 22 }}
+                className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-black/[0.06] bg-white p-6 shadow-[0_1px_0_rgba(0,0,0,0.02)] transition-[border-color,box-shadow] duration-300 hover:border-green-signal/25 hover:shadow-[0_32px_64px_-36px_rgba(10,31,20,0.45)]"
+              >
+                <div aria-hidden className="pointer-events-none absolute -right-10 -top-10 h-28 w-28 rounded-full bg-green-signal/0 blur-2xl transition-colors duration-500 group-hover:bg-green-signal/15" />
+                <div aria-hidden className="absolute inset-x-0 top-0 h-[3px] origin-left scale-x-0 bg-gradient-to-r from-green-signal to-amber-cacao transition-transform duration-500 group-hover:scale-x-100" />
+                <div className="relative grid h-11 w-11 place-items-center rounded-xl bg-gradient-to-br from-green-signal/15 to-green-signal/5 text-green-signal ring-1 ring-green-signal/15 transition-transform duration-300 group-hover:scale-110">{icons[i]}</div>
+                <h3 className="relative mt-4 font-premium text-lg text-forest-950">{f.t}</h3>
+                <p className="relative mt-1.5 text-sm leading-relaxed text-stone-600">{f.d}</p>
+              </motion.div>
             </motion.div>
           ))}
         </motion.div>
@@ -778,15 +763,20 @@ function PersonasSection() {
         <motion.div variants={container} initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.2 }} className="mt-12 grid gap-5 md:grid-cols-3">
           {c.people.map((p, i) => (
             <motion.div key={p.name} variants={rise} className="h-full">
-              <motion.div whileHover={{ y: -6 }} transition={{ type: "spring", stiffness: 300, damping: 22 }} className="flex h-full flex-col rounded-2xl border border-black/[0.06] bg-white p-7">
-                <div className="flex items-center gap-3">
-                  <div className="grid h-12 w-12 place-items-center rounded-xl font-premium text-lg text-white" style={{ background: grads[i] }}>{initials[i]}</div>
+              <motion.div
+                whileHover={{ y: -6 }}
+                transition={{ type: "spring", stiffness: 300, damping: 22 }}
+                className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-black/[0.06] bg-white p-7 transition-[border-color,box-shadow] duration-300 hover:border-black/[0.12] hover:shadow-[0_32px_64px_-36px_rgba(10,31,20,0.4)]"
+              >
+                <span aria-hidden className="pointer-events-none absolute -top-3 right-5 select-none font-premium text-[92px] leading-none text-forest-950/[0.05] transition-colors duration-500 group-hover:text-green-signal/10">”</span>
+                <div className="relative flex items-center gap-3">
+                  <div className="grid h-12 w-12 place-items-center rounded-xl font-premium text-lg text-white shadow-[0_10px_24px_-10px_rgba(10,31,20,0.55)] ring-2 ring-white" style={{ background: grads[i] }}>{initials[i]}</div>
                   <div>
                     <div className="font-premium text-lg text-forest-950">{p.name}</div>
                     <div className="text-xs text-stone-500">{p.role}</div>
                   </div>
                 </div>
-                <p className="mt-5 font-premium text-lg italic leading-relaxed text-forest-950/80">« {p.quote} »</p>
+                <p className="relative mt-5 font-premium text-lg italic leading-relaxed text-forest-950/80">« {p.quote} »</p>
               </motion.div>
             </motion.div>
           ))}
@@ -810,15 +800,19 @@ function ModeleSection() {
       <motion.div variants={container} initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.2 }} className="mt-12 grid gap-5 md:grid-cols-3">
         {c.revenues.map((r, i) => (
           <motion.div key={r.name} variants={rise} className="h-full">
-            <div className={`flex h-full flex-col rounded-2xl border p-7 ${highlight[i] ? "border-green-signal/40 bg-forest-950 text-white shadow-[0_30px_70px_-30px_rgba(22,163,74,0.5)]" : "border-black/[0.06] bg-white"}`}>
-              <div className={`grid h-11 w-11 place-items-center rounded-xl ${highlight[i] ? "bg-white/10" : "bg-ivory-deep/60"}`}>{icons[i]}</div>
+            <motion.div
+              whileHover={{ y: -6 }}
+              transition={{ type: "spring", stiffness: 300, damping: 22 }}
+              className={`flex h-full flex-col rounded-2xl border p-7 transition-[border-color,box-shadow] duration-300 ${highlight[i] ? "border-green-signal/40 bg-forest-950 text-white shadow-[0_30px_70px_-30px_rgba(22,163,74,0.5)]" : "border-black/[0.06] bg-white hover:border-green-signal/25 hover:shadow-[0_32px_64px_-36px_rgba(10,31,20,0.4)]"}`}
+            >
+              <div className={`grid h-11 w-11 place-items-center rounded-xl ${highlight[i] ? "bg-white/10" : "bg-ivory-deep/60 ring-1 ring-black/[0.05]"}`}>{icons[i]}</div>
               <div className={`mt-5 font-premium text-xl ${highlight[i] ? "text-white" : "text-forest-950"}`}>{r.name}</div>
               <div className="mt-3 flex items-end gap-1.5">
                 <span className="num text-2xl font-semibold" style={{ color: highlight[i] ? "var(--color-amber-soft)" : "var(--color-forest-950)" }}>{r.price}</span>
                 <span className={`mb-1 text-xs ${highlight[i] ? "text-white/60" : "text-stone-500"}`}>{r.unit}</span>
               </div>
               <p className={`mt-4 text-sm leading-relaxed ${highlight[i] ? "text-white/70" : "text-stone-600"}`}>{r.desc}</p>
-            </div>
+            </motion.div>
           </motion.div>
         ))}
       </motion.div>
@@ -849,13 +843,19 @@ function VerdictsSection() {
         <motion.div variants={container} initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.2 }} className="mt-10 grid gap-5 md:grid-cols-3">
           {verdicts.map((v, i) => (
             <motion.div key={v.key} variants={rise} className="h-full">
-              <div className="h-full rounded-2xl border border-black/[0.06] bg-white p-6" style={{ borderTop: `3px solid ${v.color}` }}>
-                <span className="inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-xs font-semibold uppercase tracking-wide" style={{ background: v.bg, color: v.text }}>
+              <motion.div
+                whileHover={{ y: -5 }}
+                transition={{ type: "spring", stiffness: 300, damping: 22 }}
+                className="group relative h-full overflow-hidden rounded-2xl border border-black/[0.06] bg-white p-6 transition-shadow duration-300 hover:shadow-[0_28px_56px_-32px_rgba(10,31,20,0.4)]"
+                style={{ borderTop: `3px solid ${v.color}` }}
+              >
+                <div aria-hidden className="pointer-events-none absolute -right-12 -top-12 h-32 w-32 rounded-full opacity-0 blur-2xl transition-opacity duration-500 group-hover:opacity-100" style={{ background: v.bg }} />
+                <span className="relative inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-xs font-semibold uppercase tracking-wide" style={{ background: v.bg, color: v.text }}>
                   <Logo size={15} showWord={false} />
                   {t(v.key)}
                 </span>
-                <p className="mt-4 text-sm leading-relaxed text-stone-600">{c.phrases[i]}</p>
-              </div>
+                <p className="relative mt-4 text-sm leading-relaxed text-stone-600">{c.phrases[i]}</p>
+              </motion.div>
             </motion.div>
           ))}
         </motion.div>
@@ -884,8 +884,8 @@ function EquipeSection() {
         <motion.div variants={container} initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.2 }} className="mt-12 grid grid-cols-2 gap-5 sm:grid-cols-3 lg:grid-cols-5">
           {team.map((m, i) => (
             <motion.div key={m.name} variants={rise} className="h-full">
-              <motion.div whileHover={{ y: -5 }} transition={{ type: "spring", stiffness: 300, damping: 22 }} className="flex h-full flex-col items-center gap-3 rounded-2xl border border-black/[0.06] bg-white px-4 py-6 text-center">
-                <div className="grid h-16 w-16 place-items-center rounded-2xl font-premium text-xl text-white" style={{ background: m.grad }}>{m.initials}</div>
+              <motion.div whileHover={{ y: -5 }} transition={{ type: "spring", stiffness: 300, damping: 22 }} className="flex h-full flex-col items-center gap-3 rounded-2xl border border-black/[0.06] bg-white px-4 py-6 text-center transition-[border-color,box-shadow] duration-300 hover:border-green-signal/25 hover:shadow-[0_24px_48px_-28px_rgba(10,31,20,0.35)]">
+                <div className="grid h-16 w-16 place-items-center rounded-2xl font-premium text-xl text-white shadow-[0_12px_28px_-12px_rgba(10,31,20,0.55)] ring-2 ring-white" style={{ background: m.grad }}>{m.initials}</div>
                 <div>
                   <div className="font-premium text-lg text-forest-950">{m.name}</div>
                   <div className="mt-0.5 text-xs text-stone-500">{c.roles[i]}</div>

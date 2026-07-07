@@ -102,7 +102,7 @@ export default function ContactPage() {
               <div className="flex items-center gap-2 font-medium text-forest-950">
                 <Mail size={16} className="text-green-signal" /> {en ? "Reply within 48 business hours" : "Réponse sous 48 h ouvrées"}
               </div>
-              <p className="mt-2">{en ? "The addresses above are demo examples, to be replaced by your real contact details." : "Les adresses ci-dessus sont des exemples de démonstration, à remplacer par vos coordonnées réelles."}</p>
+              <p className="mt-2">{en ? "For any request, the form opposite remains the fastest channel: it reaches the team directly." : "Pour toute demande, le formulaire ci-contre reste le canal le plus rapide : il arrive directement à l'équipe."}</p>
             </div>
           </div>
         </div>

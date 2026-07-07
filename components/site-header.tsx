@@ -10,11 +10,24 @@ import { LanguageSwitcher } from "@/components/ui/language-switcher";
 import { useAuth } from "@/components/auth-provider";
 import { useLanguage } from "@/components/language-provider";
 
-const NAV_HREFS = ["/methodologie", "/a-propos", "/tarifs", "/faq"] as const;
+const NAV_HREFS = ["/", "/methodologie", "/a-propos", "/tarifs", "/faq"] as const;
 const NAV_LABELS = {
-  fr: ["Méthodologie", "À propos", "Tarifs", "FAQ"],
-  en: ["Method", "About", "Pricing", "FAQ"],
+  fr: ["Accueil", "Méthodologie", "À propos", "Tarifs", "FAQ"],
+  en: ["Home", "Method", "About", "Pricing", "FAQ"],
 } as const;
+
+/**
+ * Navigation interne vers l'accueil : on saute l'écran de bienvenue (drapeau lu puis effacé
+ * par SplashScreen). L'écran ne s'affiche donc que sur un rafraîchissement ou une arrivée
+ * directe par l'URL — jamais lors d'un clic dans le site.
+ */
+function skipSplash() {
+  try {
+    sessionStorage.setItem("agrivo_skip_splash", "1");
+  } catch {
+    /* ignore */
+  }
+}
 const HEADER_TR = {
   fr: { dashboard: "Tableau de bord", login: "Connexion", signup: "Créer un compte", home: "Agrivo — accueil", nav: "Navigation principale", navMobile: "Navigation principale (mobile)", openMenu: "Ouvrir le menu", closeMenu: "Fermer le menu" },
   en: { dashboard: "Dashboard", login: "Log in", signup: "Create account", home: "Agrivo — home", nav: "Main navigation", navMobile: "Main navigation (mobile)", openMenu: "Open menu", closeMenu: "Close menu" },
@@ -49,6 +62,7 @@ export function SiteHeader({ variant = "solid" }: { variant?: "overlay" | "solid
         <Link
           href="/"
           aria-label={t.home}
+          onClick={skipSplash}
           className={`rounded-full outline-none focus-visible:ring-2 focus-visible:ring-offset-2 ${overlay ? "text-white focus-visible:ring-white/70 focus-visible:ring-offset-forest-950" : "text-forest-950 focus-visible:ring-green-signal focus-visible:ring-offset-ivory"}`}
         >
           <Logo />
@@ -59,6 +73,7 @@ export function SiteHeader({ variant = "solid" }: { variant?: "overlay" | "solid
             <Link
               key={item.href}
               href={item.href}
+              onClick={item.href === "/" ? skipSplash : undefined}
               aria-current={isActive(item.href) ? "page" : undefined}
               className={
                 overlay
@@ -123,7 +138,10 @@ export function SiteHeader({ variant = "solid" }: { variant?: "overlay" | "solid
                 <Link
                   key={item.href}
                   href={item.href}
-                  onClick={() => setMobileOpen(false)}
+                  onClick={() => {
+                    if (item.href === "/") skipSplash();
+                    setMobileOpen(false);
+                  }}
                   className="rounded-lg px-3 py-2.5 text-sm font-medium text-stone-600 transition-colors hover:bg-ivory-deep/60 hover:text-forest-950"
                 >
                   {item.label}

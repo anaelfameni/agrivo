@@ -55,8 +55,8 @@ const QA: { q: { fr: string; en: string }; a: { fr: string; en: string } }[] = [
   {
     q: { fr: "Agrivo couvre-t-il d'autres filières que le cacao ?", en: "Does Agrivo cover commodities other than cocoa?" },
     a: {
-      fr: "Oui. Le moteur est multi-filières : cacao, café, hévéa et palmier à huile. La démonstration se concentre sur le cacao, la filière la plus documentée et la plus urgente.",
-      en: "Yes. The engine is multi-commodity: cocoa, coffee, rubber and oil palm. The demo focuses on cocoa, the most documented and most urgent commodity.",
+      fr: "Oui. Le moteur est multi-filières : cacao, café, hévéa et palmier à huile. Le déploiement commence par le cacao, la filière la plus urgente.",
+      en: "Yes. The engine is multi-commodity: cocoa, coffee, rubber and oil palm. Deployment starts with cocoa, the most urgent commodity.",
     },
   },
   {
@@ -118,8 +118,8 @@ export default function Faq() {
             <span className="eyebrow text-amber-cacao">{en ? "Frequently asked questions" : "Questions fréquentes"}</span>
             <h1 className="mt-4 font-display text-4xl leading-tight sm:text-5xl">
               {en
-                ? "Everything a jury, an exporter or a cooperative wants to know."
-                : "Tout ce qu'un jury, un exportateur ou une coopérative se demande."}
+                ? "Everything an exporter or a cooperative wants to know."
+                : "Tout ce qu'un exportateur ou une coopérative se demande."}
             </h1>
           </Reveal>
         </section>

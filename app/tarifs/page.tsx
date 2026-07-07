@@ -5,6 +5,7 @@ import { Check, Minus, X, ArrowRight } from "lucide-react";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { Reveal } from "@/components/landing/reveal";
+import { PageHero } from "@/components/landing/page-hero";
 import { useLanguage } from "@/components/language-provider";
 
 type Billing = "monthly" | "annual";
@@ -34,8 +35,8 @@ const PLANS = [
       en: "For exporters managing thousands of plots and filing due diligence statements.",
     },
     features: {
-      fr: ["Tout Coopérative, plus :", "API REST & export batch", "Déclarations TRACES NT intégrées", "Assistant conversationnel", "SLA garanti"],
-      en: ["Everything in Cooperative, plus:", "REST API & batch export", "Built-in TRACES NT declarations", "Conversational assistant", "SLA commitment"],
+      fr: ["Tout Coopérative, plus :", "API REST & export en masse", "Déclarations TRACES NT intégrées", "Assistant conversationnel", "Engagement de disponibilité (SLA)"],
+      en: ["Everything in Cooperative, plus:", "REST API & batch export", "Built-in TRACES NT declarations", "Conversational assistant", "Availability commitment (SLA)"],
     },
     highlight: true,
     cta: { fr: "Nous contacter", en: "Contact us" },
@@ -67,33 +68,31 @@ export default function Tarifs() {
 
   return (
     <div className="min-h-screen bg-ivory text-forest-950">
-      <SiteHeader variant="solid" />
+      <SiteHeader variant="overlay" />
       <main>
-        <section className="mx-auto max-w-3xl px-6 pb-10 pt-20 text-center md:px-8">
-          <Reveal>
-            <span className="eyebrow text-amber-cacao">{en ? "Pricing" : "Tarifs"}</span>
-            <h1 className="mt-4 font-display text-4xl leading-tight sm:text-5xl">
-              {en ? "A subscription, not a container stuck at the port." : "Un abonnement, pas un conteneur bloqué au port."}
-            </h1>
-            <p className="mx-auto mt-5 max-w-xl text-lg leading-relaxed text-stone-600">
-              {en
-                ? "Manual certification costs 20 to 40 million FCFA per year. Agrivo replaces that process with a clear subscription."
-                : "La certification manuelle coûte 20 à 40 millions FCFA par an. Agrivo remplace ce processus par un abonnement clair."}
-            </p>
-            <div className="mt-8 inline-flex items-center gap-1 rounded-full border border-black/[0.08] bg-white p-1">
-              {(["monthly", "annual"] as Billing[]).map((b) => (
-                <button
-                  key={b}
-                  onClick={() => setBilling(b)}
-                  className={`rounded-full px-5 py-2 text-sm font-medium transition-colors ${billing === b ? "bg-forest-950 text-white" : "text-stone-500 hover:text-forest-950"}`}
-                >
-                  {b === "monthly" ? (en ? "Monthly" : "Mensuel") : en ? "Annual" : "Annuel"}
-                  {b === "annual" && <span className="ml-1.5 text-xs text-green-signal">-20%</span>}
-                </button>
-              ))}
-            </div>
-          </Reveal>
-        </section>
+        <PageHero
+          center
+          eyebrow={en ? "Pricing" : "Tarifs"}
+          title={en ? "A subscription, not a container stuck at the port." : "Un abonnement, pas un conteneur bloqué au port."}
+          sub={
+            en
+              ? "Manual certification costs 20 to 40 million FCFA per year. Agrivo replaces that process with a clear subscription."
+              : "La certification manuelle coûte 20 à 40 millions FCFA par an. Agrivo remplace ce processus par un abonnement clair."
+          }
+        >
+          <div className="mt-8 inline-flex items-center gap-1 rounded-full border border-white/15 bg-white/10 p-1 backdrop-blur-sm">
+            {(["monthly", "annual"] as Billing[]).map((b) => (
+              <button
+                key={b}
+                onClick={() => setBilling(b)}
+                className={`rounded-full px-5 py-2 text-sm font-medium transition-colors ${billing === b ? "bg-white text-forest-950" : "text-white/70 hover:text-white"}`}
+              >
+                {b === "monthly" ? (en ? "Monthly" : "Mensuel") : en ? "Annual" : "Annuel"}
+                {b === "annual" && <span className="ml-1.5 text-xs text-green-signal">-20%</span>}
+              </button>
+            ))}
+          </div>
+        </PageHero>
 
         <section className="mx-auto max-w-5xl px-6 py-10 md:px-8">
           <div className="grid gap-5 md:grid-cols-2">

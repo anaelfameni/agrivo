@@ -3,6 +3,32 @@
 Versioning sémantique (MAJOR.MINOR.PATCH). Chaque release liste ce qui est ajouté, corrigé et
 vérifié, conformément à l'étape 8 du pipeline « Du besoin à la Release ».
 
+## v1.7.0 — 2026-07-07 — Version finale du site vitrine (pro, client-facing)
+
+### Changé
+- **Navigation** : nouvel onglet « Accueil » avant « Méthodologie » (desktop + mobile). Toute
+  navigation interne vers l'accueil (onglet, logo) saute l'écran de bienvenue : il ne s'affiche
+  plus que sur un rafraîchissement ou une arrivée directe par l'URL.
+- **Heros unifiés** : Méthodologie, À propos et Tarifs reprennent le fond signature du hero de
+  l'accueil (mesh gradients + grille + grain, composants `hero-bg.tsx` / `page-hero.tsx`).
+- **Dé-technicisation client** de toutes les pages publiques : plus de GeoJSON/WGS-84/RFC 7946/
+  « API Whisp »/« MVP »/« démo » dans le texte vitrine — reformulés en langage client
+  (« contour précis de la parcelle », « format géographique officiel », « déclaration
+  européenne »). Le schéma « Donnée, IA, Résultat » de la méthodologie est réécrit.
+- **Corrections wording** : « en cinq temps » → « en 5 étapes » ; l'étape « Le satellite juge »
+  accorde correctement « expliqué et certifié » ; « Trois états de résultat… une force, pas une
+  faiblesse » (ton interne) → « Trois verdicts possibles, toujours expliqués » ; FAQ sans le mot
+  « jury » ; contact sans note interne « à remplacer » ; « SLA garanti » → « engagement de
+  disponibilité (SLA) ».
+- **Charte** : la persona Yao ne parle plus d'emprunt (« emprunter 150 000 FCFA » retiré) ;
+  prix EN corrigé 120 000 → 125 000 (résidu) ; badge hero « SNT » explicité.
+- **Design des cartes de l'accueil** : traitement premium unifié (lift au survol, halo, barre
+  d'accent en dégradé, icônes sur fond dégradé annelé, guillemet décoratif sur les personas,
+  avatars annelés) sur Fonctionnalités, Personas, Modèle, Verdicts, Équipe.
+- **IA** : le Copilote RDUE propose des questions de suivi (déterministes, jamais déjà posées) ;
+  le popover « Score des sols » affiche un message honnête en cas d'erreur réseau au lieu d'un
+  « génération… » éternel.
+
 ## v1.6.0 — 2026-07-07 — Enjeu national sourcé + préchauffe TOTALE (démo increvable)
 
 ### Ajouté

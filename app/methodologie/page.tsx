@@ -4,6 +4,7 @@ import { Satellite, Sparkles, Layers, CloudOff, CheckCircle2, AlertTriangle, Arr
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { Reveal } from "@/components/landing/reveal";
+import { PageHero } from "@/components/landing/page-hero";
 import { Term } from "@/components/ui/term";
 import { useLanguage } from "@/components/language-provider";
 
@@ -42,24 +43,20 @@ export default function Methodologie() {
   const en = lang === "en";
   return (
     <div className="min-h-screen bg-ivory text-forest-950">
-      <SiteHeader variant="solid" />
+      <SiteHeader variant="overlay" />
       <main>
-        <section className="mx-auto max-w-3xl px-6 pb-16 pt-20 md:px-8">
-          <Reveal>
-            <span className="eyebrow text-amber-cacao">{en ? "Methodology" : "Méthodologie"}</span>
-            <h1 className="mt-4 font-display text-4xl leading-tight sm:text-5xl">
-              {en ? "How Agrivo assesses a plot, with no black box." : "Comment Agrivo évalue une parcelle, sans boîte noire."}
-            </h1>
-            <p className="mt-5 text-lg leading-relaxed text-stone-600">
-              {en
-                ? "Agrivo does not invent deforestation detection. It orchestrates public reference satellite data and a generative AI to make the result understandable and actionable. Here is exactly how."
-                : "Agrivo n'invente pas la détection de déforestation. Il orchestre des données satellites publiques de référence et une IA générative pour rendre le résultat compréhensible et actionnable. Voici exactement comment."}
-            </p>
-          </Reveal>
-        </section>
+        <PageHero
+          eyebrow={en ? "Methodology" : "Méthodologie"}
+          title={en ? "How Agrivo assesses a plot, with no black box." : "Comment Agrivo évalue une parcelle, sans boîte noire."}
+          sub={
+            en
+              ? "Agrivo relies on internationally recognised satellite references and artificial intelligence to deliver a clear, explained and verifiable result. Here is exactly how."
+              : "Agrivo s'appuie sur des références satellites reconnues internationalement et sur l'intelligence artificielle pour livrer un résultat clair, expliqué et vérifiable. Voici exactement comment."
+          }
+        />
 
         {/* Le flux en un schéma : Donnée, IA, Résultat */}
-        <section className="mx-auto max-w-6xl px-6 pb-4 md:px-8">
+        <section className="mx-auto max-w-6xl px-6 pb-4 pt-16 md:px-8">
           <Reveal>
             <div className="rounded-2xl border border-black/[0.06] bg-white p-8 md:p-10">
               <span className="eyebrow text-green-signal">{en ? "The flow, in one diagram" : "Le flux, en un schéma"}</span>
@@ -71,11 +68,11 @@ export default function Methodologie() {
                   <div className="grid h-10 w-10 place-items-center rounded-lg bg-forest-950/[0.06] text-forest-950">
                     <Database size={20} />
                   </div>
-                  <h3 className="mt-3 font-display text-lg text-forest-950">{en ? "1. The data" : "1. La donnée"}</h3>
+                  <h3 className="mt-3 font-display text-lg text-forest-950">{en ? "1. Your information" : "1. Vos informations"}</h3>
                   <p className="mt-2 text-sm leading-relaxed text-stone-600">
                     {en
-                      ? "The photo of the farmer's card and the GeoJSON polygon of their plot (WGS-84, six decimals), captured at the edge of the field with their consent."
-                      : "La photo de la carte du producteur et le polygone GeoJSON de sa parcelle (WGS-84, six décimales), relevés au bord du champ avec son consentement."}
+                      ? "The farmer's card and the precise outline of their plot, captured at the edge of the field with their consent."
+                      : "La carte du producteur et le contour précis de sa parcelle, relevés au bord du champ avec son consentement."}
                   </p>
                 </div>
                 <div className="hidden items-center md:flex" aria-hidden>
@@ -88,11 +85,11 @@ export default function Methodologie() {
                   <div className="grid h-10 w-10 place-items-center rounded-lg bg-green-signal/12 text-green-signal">
                     <Satellite size={20} />
                   </div>
-                  <h3 className="mt-3 font-display text-lg text-forest-950">{en ? "2. The AI" : "2. L\u2019IA"}</h3>
+                  <h3 className="mt-3 font-display text-lg text-forest-950">{en ? "2. The analysis" : "2. L\u2019analyse"}</h3>
                   <p className="mt-2 text-sm leading-relaxed text-stone-600">
                     {en
-                      ? "Whisp (FAO) compares the plot against satellite archives since 31 December 2020. Gemini reads the card and puts the result into words. Each has its role, never confused."
-                      : "Whisp (FAO) compare la parcelle aux archives satellites depuis le 31 décembre 2020. Gemini lit la carte et met le résultat en mots. Chacune son rôle, jamais confondus."}
+                      ? "The plot is compared against reference satellite imagery since 31 December 2020. Artificial intelligence reads the card and explains the result in plain language."
+                      : "La parcelle est comparée aux images satellites de référence depuis le 31 décembre 2020. L'intelligence artificielle lit la carte et explique le résultat en langage clair."}
                   </p>
                 </div>
                 <div className="hidden items-center md:flex" aria-hidden>
@@ -108,8 +105,8 @@ export default function Methodologie() {
                   <h3 className="mt-3 font-display text-lg text-forest-950">{en ? "3. The result" : "3. Le résultat"}</h3>
                   <p className="mt-2 text-sm leading-relaxed text-stone-600">
                     {en
-                      ? "A verdict among three states, a PDF certificate verifiable by QR code, a file ready for TRACES NT, and a valorisation file if the plot is compliant."
-                      : "Un verdict parmi trois états, un certificat PDF vérifiable par QR code, un dossier prêt pour TRACES NT, et un dossier de valorisation si la parcelle est conforme."}
+                      ? "A clear verdict, a certificate verifiable by QR code, a file ready for the European declaration, and a valorisation file if the plot is compliant."
+                      : "Un verdict clair, un certificat vérifiable par QR code, un dossier prêt pour la déclaration européenne, et un dossier de valorisation si la parcelle est conforme."}
                   </p>
                 </div>
               </div>
@@ -133,10 +130,10 @@ export default function Methodologie() {
                   </div>
                   <h3 className="mt-4 font-display text-2xl">{en ? "Whisp, the detection" : "Whisp, la détection"}</h3>
                   <p className="mt-3 text-sm leading-relaxed text-stone-600">
-                    <Term def={en ? '"What is in that plot?", FAO open-source tool designed specifically for the EUDR, crossing several reference satellite datasets.' : "« What is in that plot ? », outil open-source de la FAO conçu spécifiquement pour le RDUE, qui croise plusieurs jeux de données satellites de référence."}>Whisp</Term>{" "}
+                    <Term def={en ? "FAO tool designed specifically for the EUDR, crossing several reference satellite datasets." : "Outil de la FAO conçu spécifiquement pour le RDUE, qui croise plusieurs jeux de données satellites de référence."}>Whisp</Term>{" "}
                     {en
-                      ? "is FAO's reference tool for the EUDR. It is not a home-made model: it is already used in production, notably on a pilot of over 6,000 plots in Kenya. It, and it alone, renders the compliance verdict."
-                      : "est l'outil de référence de la FAO pour le RDUE. Ce n'est pas un modèle maison : il est déjà utilisé en production, notamment sur un pilote de plus de 6 000 parcelles au Kenya. C'est lui, et lui seul, qui rend le verdict de conformité."}
+                      ? "is the reference tool of the FAO (United Nations) for the EUDR, already used in the field on thousands of plots. It, and it alone, renders the compliance verdict."
+                      : "est l'outil de référence de la FAO (Nations unies) pour le RDUE, déjà utilisé sur le terrain sur des milliers de parcelles. C'est lui, et lui seul, qui rend le verdict de conformité."}
                   </p>
                 </div>
               </Reveal>
@@ -165,9 +162,8 @@ export default function Methodologie() {
               <p className="mt-5 leading-relaxed text-stone-600">
                 {en ? "Rather than relying on a single source, Whisp applies a " : "Plutôt que de se fier à une seule source, Whisp applique une "}
                 <Term def={en ? "Crossing several independent satellite datasets rather than a single source, for a robust verdict that is hard to contest." : "Croiser plusieurs jeux de données satellites indépendants plutôt qu'une seule source, pour un verdict robuste, difficile à contester."}>{en ? "convergence of evidence" : "convergence de preuves"}</Term>
-                {en ? ": it crosses several independent geospatial datasets (including Copernicus) and compares them against the " : " : il croise plusieurs jeux de données géospatiales indépendants (dont Copernicus) et les compare à la date pivot du "}
-                <span className="num">{en ? "31 December 2020" : "31 décembre 2020"}</span>{en ? " cut-off date. The plot is described in the " : ". La parcelle est décrite au format "}
-                <Term def={en ? "Standardized format (RFC 7946) describing geographic shapes. The only format accepted by TRACES NT, with 6-decimal precision." : "Format standardisé (RFC 7946) décrivant des formes géographiques. Seul format accepté par TRACES NT, avec 6 décimales de précision."}>GeoJSON</Term>{en ? " format, with six-decimal coordinates." : ", avec ses coordonnées à six décimales."}
+                {en ? ": it crosses several independent satellite sources (including Copernicus, the European Earth-observation programme) and compares them against the " : " : il croise plusieurs sources satellites indépendantes (dont Copernicus, le programme européen d'observation de la Terre) et les compare à la date pivot du "}
+                <span className="num">{en ? "31 December 2020" : "31 décembre 2020"}</span>{en ? " cut-off date. The plot is described in the official geographic format accepted by the European Union, with centimetre-level precision." : ". La parcelle est décrite dans le format géographique officiel accepté par l'Union européenne, avec une précision de l'ordre du centimètre."}
               </p>
               <p className="mt-4 leading-relaxed text-stone-600">
                 {en ? "The verdict then feeds the " : "Le verdict alimente ensuite la "}
@@ -183,12 +179,12 @@ export default function Methodologie() {
         <section className="mx-auto max-w-6xl px-6 py-20 md:px-8">
           <Reveal>
             <h2 className="max-w-2xl font-display text-3xl text-forest-950">
-              {en ? 'Three result states, and why "insufficient data" exists.' : "Trois états de résultat, et pourquoi « données insuffisantes » existe."}
+              {en ? "Three possible verdicts, always explained." : "Trois verdicts possibles, toujours expliqués."}
             </h2>
             <p className="mt-4 max-w-2xl text-stone-600">
               {en
-                ? 'A binary verdict would lie. When cloud cover prevents a conclusion, Agrivo says so frankly rather than guessing. The honesty of "I do not know yet" is a strength, not a weakness.'
-                : "Un verdict binaire mentirait. Quand la couverture nuageuse empêche de conclure, Agrivo le dit franchement plutôt que de deviner. L'honnêteté du « je ne sais pas encore » est une force, pas une faiblesse."}
+                ? "When cloud cover prevents a conclusion, Agrivo tells you clearly rather than guessing. You always know where you stand, and what to do next."
+                : "Quand la couverture nuageuse empêche de conclure, Agrivo vous l'indique clairement plutôt que de deviner. Vous savez toujours où vous en êtes, et quoi faire ensuite."}
             </p>
           </Reveal>
           <div className="mt-10 grid gap-5 md:grid-cols-3">
@@ -216,14 +212,14 @@ export default function Methodologie() {
               <h2 className="font-display text-3xl">{en ? "See the method at work" : "Voir la méthode à l\u2019œuvre"}</h2>
               <p className="mx-auto mt-3 max-w-lg text-white/70">
                 {en
-                  ? "The demo runs the full journey: card scan, plot mapping, satellite verdict, certificate, valorisation."
-                  : "La démo déroule le parcours complet : scan de la carte, cartographie de la parcelle, verdict satellite, certificat, valorisation."}
+                  ? "The application runs the full journey: card scan, plot mapping, satellite verdict, certificate, valorisation."
+                  : "L'application déroule le parcours complet : scan de la carte, cartographie de la parcelle, verdict satellite, certificat, valorisation."}
               </p>
               <Link
                 href="/app/dashboard"
                 className="mt-8 inline-flex items-center gap-3 rounded-full bg-green-signal px-7 py-4 text-sm font-semibold text-white transition-transform hover:scale-[1.03] active:scale-95"
               >
-                {en ? "Open the demo" : "Ouvrir la démo"} <ArrowRight size={16} />
+                {en ? "Open the application" : "Ouvrir l'application"} <ArrowRight size={16} />
               </Link>
             </Reveal>
           </div>
