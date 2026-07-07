@@ -252,7 +252,7 @@ const COPY = {
       title: "Two subscriptions and one commission. Nothing hidden.",
       revenues: [
         { name: "Cooperative subscription", price: "120,000", unit: "FCFA / month", desc: "Unlimited verifications, PDF certificates, offline mode, support." },
-        { name: "Exporter API", price: "1,500,000", unit: "FCFA / month", desc: "REST API, batch export, integrated TRACES NT declarations, guaranteed SLA." },
+        { name: "Exporter API", price: "1,500,000", unit: "FCFA / month", desc: "REST API, batch export, integrated TRACES NT declarations, SLA commitment." },
         { name: "Exporter file", price: "Included", unit: "in the cooperative subscription", desc: "The compliance file is shared with the exporter: the cooperative leverages it to negotiate." },
       ],
       note: "The AGRIVO service is free for the farmer: they pay no fee to be verified. The model relies on the cooperative subscription and the exporter API.",

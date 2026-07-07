@@ -37,10 +37,3 @@ export function LegalSection({ title, children }: { title: string; children: Rea
     </section>
   );
 }
-
-/** Marque un élément d'entreprise réel à renseigner avant mise en production. */
-export function Todo({ children }: { children: ReactNode }) {
-  return (
-    <span className="rounded bg-amber-cacao/12 px-1.5 py-0.5 text-[0.9em] text-amber-cacao">[À compléter : {children}]</span>
-  );
-}

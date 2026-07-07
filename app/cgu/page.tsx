@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { LegalShell, LegalSection, Todo } from "@/components/legal/legal-shell";
+import { LegalShell, LegalSection } from "@/components/legal/legal-shell";
 import { BRAND_NAME } from "@/config/brand";
 
 export const metadata: Metadata = {
@@ -47,7 +47,7 @@ export default function CguPage() {
       </LegalSection>
 
       <LegalSection title="9. Droit applicable">
-        <p>Les présentes conditions sont régies par le droit ivoirien. Tout litige relève des juridictions compétentes de <Todo>ville du siège</Todo>, après recherche d&apos;une solution amiable.</p>
+        <p>Les présentes conditions sont régies par le droit ivoirien. Tout litige relève des juridictions ivoiriennes compétentes, après recherche d&apos;une solution amiable.</p>
       </LegalSection>
     </LegalShell>
   );

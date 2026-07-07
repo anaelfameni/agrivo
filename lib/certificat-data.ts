@@ -31,13 +31,26 @@ export interface CertificatData {
   centroid: string;
 }
 
-function fmtCoord(lon: number, lat: number): string {
-  return `${Math.abs(lat).toFixed(6)}° ${lat >= 0 ? "N" : "S"} · ${Math.abs(lon).toFixed(6)}° ${lon >= 0 ? "E" : "O"}`;
+function fmtCoord(lon: number, lat: number, lang: "fr" | "en" = "fr"): string {
+  const ouest = lang === "en" ? "W" : "O";
+  return `${Math.abs(lat).toFixed(6)}° ${lat >= 0 ? "N" : "S"} · ${Math.abs(lon).toFixed(6)}° ${lon >= 0 ? "E" : ouest}`;
 }
+
+/** Libellés EN des filières — pour l'APERÇU à l'écran uniquement (le PDF officiel reste FR). */
+const FILIERE_LABEL_EN: Record<Parcelle["filiere"], string> = {
+  cacao: "Cocoa",
+  cafe: "Coffee",
+  hevea: "Rubber",
+  palmier: "Oil palm",
+  bovins: "Cattle",
+  soja: "Soy",
+  bois: "Wood",
+};
 
 export function buildCertificat(
   p: Parcelle,
   verdict?: { statut: Statut; phrase: string; sources: string[] },
+  lang: "fr" | "en" = "fr",
 ): CertificatData {
   const verts =
     p.geojson.type === "Polygon" ? p.geojson.coordinates[0].slice(0, -1) : [p.geojson.coordinates];
@@ -46,11 +59,11 @@ export function buildCertificat(
   const statut = verdict?.statut ?? p.statut;
   return {
     numeroCertificat: p.numeroCertificat,
-    emisLe: new Date().toLocaleString("fr-FR", { dateStyle: "long", timeStyle: "short" }),
+    emisLe: new Date().toLocaleString(lang === "en" ? "en-GB" : "fr-FR", { dateStyle: "long", timeStyle: "short" }),
     producteurNom: p.producteurNom,
     numeroCartePro: p.numeroCartePro,
     cooperative: p.cooperative,
-    filiereLabel: FILIERE_LABEL[p.filiere],
+    filiereLabel: lang === "en" ? FILIERE_LABEL_EN[p.filiere] : FILIERE_LABEL[p.filiere],
     region: p.region,
     superficie: fmtHa(p.superficieHa),
     statut,
@@ -58,7 +71,7 @@ export function buildCertificat(
     phrase: verdict?.phrase ?? STATUT_PHRASE[statut],
     datePivot: formatDateFr(p.datePivotAnalyse),
     sources: verdict?.sources ?? p.sourcesDonnees,
-    vertices: verts.map(([lon, lat]) => fmtCoord(lon, lat)),
-    centroid: fmtCoord(cLon, cLat),
+    vertices: verts.map(([lon, lat]) => fmtCoord(lon, lat, lang)),
+    centroid: fmtCoord(cLon, cLat, lang),
   };
 }

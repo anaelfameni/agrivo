@@ -35,7 +35,7 @@ const PLANS = [
     },
     features: {
       fr: ["Tout Coopérative, plus :", "API REST & export batch", "Déclarations TRACES NT intégrées", "Assistant conversationnel", "SLA garanti"],
-      en: ["Everything in Cooperative, plus:", "REST API & batch export", "Built-in TRACES NT declarations", "Conversational assistant", "Guaranteed SLA"],
+      en: ["Everything in Cooperative, plus:", "REST API & batch export", "Built-in TRACES NT declarations", "Conversational assistant", "SLA commitment"],
     },
     highlight: true,
     cta: { fr: "Nous contacter", en: "Contact us" },

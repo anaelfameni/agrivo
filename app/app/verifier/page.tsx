@@ -85,15 +85,28 @@ export default function VerifierPage() {
   const [parcelle, setParcelle] = useState<Parcelle | null>(null);
   const [whisp, setWhisp] = useState<WhispResult | null>(null);
 
+  // Aperçu localisé ; le PDF téléchargé (document officiel) reste construit en français.
   const certData = useMemo(
     () =>
       parcelle
         ? buildCertificat(
             parcelle,
             whisp ? { statut: whisp.statut, phrase: whisp.phrase, sources: whisp.sources } : undefined,
+            lang,
           )
         : null,
-    [parcelle, whisp],
+    [parcelle, whisp, lang],
+  );
+  const certDataFr = useMemo(
+    () =>
+      parcelle && lang === "en"
+        ? buildCertificat(
+            parcelle,
+            whisp ? { statut: whisp.statut, phrase: whisp.phrase, sources: whisp.sources } : undefined,
+            "fr",
+          )
+        : null,
+    [parcelle, whisp, lang],
   );
 
   function onScanConfirm(scan: ScanResult) {
@@ -186,6 +199,7 @@ export default function VerifierPage() {
           {step === 5 && certData && whisp && (
             <StepCertificate
               data={certData}
+              pdfData={certDataFr ?? certData}
               nextLabel={whisp.statut === "conforme" ? t.nextCredit : t.finish}
               onNext={afterCertificate}
               onBack={() => setStep(4)}

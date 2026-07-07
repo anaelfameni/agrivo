@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { LegalShell, LegalSection, Todo } from "@/components/legal/legal-shell";
+import { LegalShell, LegalSection } from "@/components/legal/legal-shell";
 import { BRAND_NAME } from "@/config/brand";
 
 export const metadata: Metadata = {
@@ -37,11 +37,11 @@ export default function ConfidentialitePage() {
       </LegalSection>
 
       <LegalSection title="5. Souveraineté et hébergement des données">
-        <p>Nous privilégions la souveraineté des données conformément aux exigences de l&apos;ARTCI. L&apos;infrastructure d&apos;hébergement et les sous-traitants techniques sont documentés dans nos <Todo>registre des traitements et liste des sous-traitants</Todo>.</p>
+        <p>Nous privilégions la souveraineté des données conformément aux exigences de l&apos;ARTCI. Pendant la phase pilote, l&apos;hébergement applicatif est assuré par Vercel Inc. (États-Unis) ; le registre des traitements et la liste des sous-traitants techniques sont tenus à jour en interne et communiqués sur demande via la page contact.</p>
       </LegalSection>
 
       <LegalSection title="6. Durée de conservation">
-        <p>Les données sont conservées le temps nécessaire à la conformité réglementaire (le RDUE impose une traçabilité pluriannuelle), puis archivées ou supprimées. Durées détaillées : <Todo>durées de conservation par catégorie</Todo>.</p>
+        <p>Les données sont conservées le temps nécessaire à la conformité réglementaire (le RDUE impose une traçabilité pluriannuelle), puis archivées ou supprimées. Les données du pilote de démonstration sont purgées à la fin du pilote ; le détail des durées par catégorie est tenu dans notre registre des traitements, disponible sur demande.</p>
       </LegalSection>
 
       <LegalSection title="7. Vos droits">
@@ -53,7 +53,7 @@ export default function ConfidentialitePage() {
       </LegalSection>
 
       <LegalSection title="9. Contact">
-        <p>Délégué à la protection des données : <Todo>nom et e-mail du DPO</Todo>. Pour toute question, utilisez la page contact.</p>
+        <p>Un délégué à la protection des données sera désigné avec l&apos;immatriculation de la société. Dans l&apos;intervalle, l&apos;équipe AGRIVO répond à toute demande relative aux données via la page contact.</p>
       </LegalSection>
     </LegalShell>
   );

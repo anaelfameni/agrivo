@@ -73,11 +73,14 @@ const TINT: Record<Statut, { bg: string; text: string; border: string }> = {
  */
 export function StepCertificate({
   data,
+  pdfData,
   nextLabel,
   onNext,
   onBack,
 }: {
   data: CertificatData;
+  /** Données du PDF téléchargé (document officiel, toujours FR) ; l'aperçu utilise `data`. */
+  pdfData?: CertificatData;
   nextLabel: string;
   onNext: () => void;
   onBack: () => void;
@@ -98,7 +101,7 @@ export function StepCertificate({
     setDownloading(true);
     try {
       const mod = await import("@/components/verifier/certificat-pdf");
-      await mod.telechargerCertificat(data);
+      await mod.telechargerCertificat(pdfData ?? data);
     } catch {
       /* échec silencieux : l'aperçu reste disponible */
     } finally {

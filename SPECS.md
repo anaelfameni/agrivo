@@ -39,14 +39,19 @@ Critères d'acceptation :
 2. Les 4 KPI officiels s'affichent : producteurs audités, taux de conformité, superficie cartographiée, volume validé. ✅ (testé)
 3. Le certificat PDF porte un QR code de vérification publique. ✅
 
-### US3 — Accéder au crédit (Yao, productrice de café)
-« En tant que productrice sans compte bancaire, je veux que ma parcelle conforme me donne accès
-à un micro-crédit versé par Mobile Money, afin de financer ma prochaine campagne. »
+### US3 — Valoriser la conformité (Amadou, gérant de coopérative)
+« En tant que gérant de coopérative, je veux que chaque parcelle conforme rejoigne le dossier de
+valorisation de la coopérative, afin de négocier les primes de durabilité au-dessus du prix
+garanti et d'accéder aux acheteurs premium. »
+
+> Réorientation du 6 juillet 2026 (PLAN_REORIENTATION_AGRIVO.md) : le micro-crédit producteur est
+> retiré du produit — AGRIVO ne fait aucun score de crédit, plafond ni décision de financement.
 
 Critères d'acceptation :
-1. La proposition de crédit n'apparaît QUE si la parcelle est conforme. ✅ (testé)
-2. Le montant recommandé est borné entre 50 000 et 250 000 FCFA. ✅ (testé)
-3. Le crédit est toujours présenté comme un prêt remboursable, jamais comme gratuit. ✅ (testé)
+1. L'étape Valorisation n'apparaît QUE si la parcelle est conforme. ✅ (testé)
+2. Aucun montant, plafond ou vocabulaire de financement n'est affiché. ✅ (testé : tests/ia.test.ts)
+3. Le dossier partagé alimente le KPI « Dossiers partagés » du dashboard. ✅
+4. L'argumentaire de prime (IA) ne cite que des faits calculés ou sourcés, sans promesse de montant. ✅ (testé : tests/ia-nouvelles.test.ts)
 
 ### US4 — Vérifier un certificat (un acheteur européen)
 « En tant qu'acheteur, je veux vérifier l'authenticité d'un certificat Agrivo à partir de son
@@ -58,15 +63,15 @@ Critères d'acceptation :
 
 ## 3. Périmètre du MVP
 
-**Dans le périmètre (IN)** : parcours de vérification 5 étapes · dashboards coopérative et
+**Dans le périmètre (IN)** : parcours de vérification 6 étapes (dont Cartographie GPS et
+Valorisation) · import & audit RDUE du registre de la coopérative · dashboards coopérative et
 exportateur · export GeoJSON TRACES NT · certificat PDF avec QR · vérification publique ·
-scoring de crédit explicable · mémo de diligence (DDS) généré par IA · copilote portefeuille ·
-authentification à session locale · PWA installable · interface FR/EN.
+mémo de diligence (DDS), plan d'action d'audit et argumentaire de prime générés par IA ·
+copilote portefeuille · authentification à session locale · PWA installable · interface FR/EN.
 
 **Hors périmètre (v2)** : backend persistant multi-utilisateurs · appel Whisp live (inscription
-API en cours, mock fidèle en attendant) · versement Mobile Money réel (simulation) · assistant
-vocal dioula/baoulé (pas de TTS fiable pour ces langues : non simulé, par honnêteté) ·
-notifications push.
+API en cours, mock fidèle en attendant) · assistant vocal dioula/baoulé (pas de TTS fiable pour
+ces langues : non simulé, par honnêteté) · notifications push.
 
 ## 4. Stack retenue et justification
 

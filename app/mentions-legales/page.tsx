@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { LegalShell, LegalSection, Todo } from "@/components/legal/legal-shell";
+import { LegalShell, LegalSection } from "@/components/legal/legal-shell";
 import { BRAND_NAME } from "@/config/brand";
 
 export const metadata: Metadata = {
@@ -9,21 +9,22 @@ export const metadata: Metadata = {
 
 export default function MentionsLegalesPage() {
   return (
-    <LegalShell title="Mentions légales" updated="4 juillet 2026">
+    <LegalShell title="Mentions légales" updated="7 juillet 2026">
       <LegalSection title="Éditeur">
         <p>
-          Le site AGRIVO est édité par <Todo>raison sociale et forme juridique</Todo>, au capital de{" "}
-          <Todo>montant</Todo>, immatriculée au RCCM sous le numéro <Todo>RCCM</Todo>, dont le siège social est
-          situé <Todo>adresse du siège</Todo>.
+          Le site AGRIVO est édité par l&apos;équipe du projet AGRIVO. La société est en cours de
+          constitution : la raison sociale, la forme juridique, le capital et le numéro
+          d&apos;immatriculation au RCCM (Registre du Commerce et du Crédit Mobilier de Côte
+          d&apos;Ivoire) seront publiés sur cette page à l&apos;issue de l&apos;immatriculation.
         </p>
       </LegalSection>
 
       <LegalSection title="Directeur de la publication">
-        <p><Todo>nom du directeur de la publication</Todo>.</p>
+        <p>Anael Fameni, chef de projet AGRIVO.</p>
       </LegalSection>
 
       <LegalSection title="Contact">
-        <p>Par e-mail : <Todo>adresse e-mail de contact</Todo>. Par la page contact du site.</p>
+        <p>Par la page contact du site. Une adresse e-mail dédiée sera publiée avec les coordonnées définitives de la société.</p>
       </LegalSection>
 
       <LegalSection title="Hébergement">
