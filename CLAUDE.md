@@ -378,7 +378,14 @@ variables CSS dans `app/globals.css`.
   20 %) ; slide 7 tarif « 1 500 FCFA/producteur/an » vs site /tarifs « 120 000 FCFA/mois » (≈ même
   total annuel pour 1 000 prod. : 1,5 M vs 1,44 M, mais unité ≠ → aligner le cadrage) ; slide 2
   vérifier « règlement (UE) 2025/2650 » (nos docs citent 2023/1115) et « 52 % non traçable (Trase) »
-  (source Domy). **PPTX non modifié** (décision Anael + risque mise en page).
+  (source Domy). **→ 4 corrections APPLIQUÉES au PPTX le 7/07** (édition des runs `<a:t>` + re-zip
+  .NET `ZipFile.CreateFromDirectory`, structure vérifiée : 83 fichiers identiques, backup
+  `AGRIVO_Pitch_Vibeathon2026_BACKUP.pptx` sur le Bureau) : slides 9/11 → v1.3.0/47 tests ; slide 5
+  → « Trois piliers, cinq usages, zéro gadget » ; slide 2 → règlement (UE) **2023/1115** (le 52 %
+  Trase laissé tel quel, à confirmer par Domy). Pour l'incohérence tarif (slide 7 par-producteur vs
+  site /tarifs flat 120k/mois) : **site aligné 120k→125k** (= 1 500 FCFA/prod/an × 1 000 = 1,5 M/an,
+  commit `8fad6ea`, base par-producteur explicitée) — **COMMITÉ MAIS PAS DÉPLOYÉ** (classifier a
+  bloqué le go-live ; à valider/déployer par Anael, ou laisser 120k s'il préfère le tarif flat).
 - ✅ **Prompt E — Checklist vidéo plan B** revalidée contre la prod v1.3.0 (ajoutée à
   GUIDE_DEMO_JURY.md) : import désormais REPLIÉ (« Auditer mon registre » d'abord), + possibilité de
   filmer le **mode terrain réel** sur un téléphone (nouveau).
