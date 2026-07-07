@@ -1,12 +1,30 @@
 # AGRIVO — Guide technique de l'app mobile (pour Christ)
 
 > **Spécification de référence** — version du 6 juillet 2026, mise à jour le 7 juillet (backend
-> v1.2.1 EN PROD), rédigée par Anael (chef de projet).
+> v1.3.0 EN PROD), rédigée par Anael (chef de projet).
 > Objectif : permettre à un dev mobile expérimenté de **reprendre l'app mobile existante et l'aligner**
 > sur la vision AGRIVO sans avoir à poser de questions. L'app est déjà commencée : on ne repart pas de
-> zéro, on réadapte (voir §7). Backend de référence : **https://agrivo-io.vercel.app** (**v1.2.1** —
+> zéro, on réadapte (voir §7). Backend de référence : **https://agrivo-io.vercel.app** (**v1.3.0** —
 > les nouveautés backend qui te concernent sont dans l'encadré §4.6).
 > Jury : samedi 11 juillet 2026 — priorité absolue aux écrans du golden path.
+
+> ⚠️ **MISE À JOUR STRATÉGIQUE IMPORTANTE (7 juillet, v1.3.0) — à lire avant tout.**
+> **La PWA web fait désormais la capture GPS RÉELLE au bord du champ** (mode « Tour de champ GPS
+> réel » : `navigator.geolocation.watchPosition`, waypoints en marchant, fermeture de polygone,
+> RFC 7946). Autrement dit : **une seule application (la PWA), installable depuis le navigateur, du
+> bureau au champ, sans passer par un store** — ce que faisait ta valeur unique mobile est
+> maintenant couvert par la PWA sur un téléphone.
+>
+> Ce que ça change pour toi :
+> - **Décision à trancher avec Anael AVANT de coder** (réponds aux 10 questions du §7.1) : si ton app
+>   native existante fait DÉJÀ tourner caméra + GPS + carte, on la garde (le GPS natif en arrière-plan
+>   et l'anti-mock sont un vrai plus). **Sinon, on démontre le terrain sur la PWA** (installée sur un
+>   téléphone) et ton rôle bascule vers : filmer/roder la démo terrain sur la PWA + la vidéo plan B.
+> - Ce guide reste la référence des **écrans, des règles métier et du contrat d'API** — que la démo
+>   terrain finale tourne en natif OU sur la PWA, la logique (règle 4 ha, contrôles d'intégrité,
+>   statuts verbatim, routes `/api/*`) est identique.
+> - L'app native reste au **plan v2 post-jury** pour ce que le navigateur ne fait pas (GPS en tâche
+>   de fond, détection de position simulée native, synchro offline lourde).
 
 ---
 

@@ -7,6 +7,7 @@
 > d'entre nous, pas seulement celui qui pitche.
 > Ce document se suffit à lui-même : aucune connaissance préalable n'est nécessaire.
 > **Temps de lecture : ~45 minutes. À lire AVANT la répétition générale de vendredi 10.**
+> Version du produit à jour : **v1.3.0 en production** (mode terrain PWA + IA fiabilisée — voir §4.6).
 
 ---
 
@@ -135,7 +136,7 @@ autorisée à rouler — et qui vous aide à réparer ce qui ne passe pas.*
 |---|---|---|---|
 | 1 | Sélection & consentement | Contexte coopérative + rappel du consentement éclairé du producteur (ARTCI) | Un cadre légal propre |
 | 2 | **Scan de la carte producteur** | QR code d'abord (lecture locale instantanée) ; sinon photo → OCR **Gemini Vision** pré-remplit le formulaire ; anti-doublon sur le matricule ; la photo est conservée comme preuve | L'identité vérifiée du producteur |
-| 3 | **Cartographie GPS** | 3 modes : point central (< 4 ha) · tour de champ marché au GPS (≥ 4 ha, règle RDUE) · « J'ai déjà les coordonnées » (données existantes) ; puis 4 contrôles d'intégrité anti-fraude | La géométrie légale de la parcelle (WGS-84, 6 décimales) |
+| 3 | **Cartographie GPS** | Sur mobile : **« Tour de champ GPS (réel) »** = la vraie géolocalisation de l'appareil pose les waypoints en marchant (v1.3.0). Sinon/desktop : point central (< 4 ha) · tour de champ simulé · « J'ai déjà les coordonnées » ; puis 4 contrôles d'intégrité anti-fraude | La géométrie légale de la parcelle (WGS-84, 6 décimales) |
 | 4 | **Analyse satellite** | Whisp (FAO) compare la parcelle aux images satellite depuis le 31/12/2020 → un des **3 statuts figés** + faisceau de preuves + lecture vocale | Le verdict déforestation |
 | 5 | **Certificat** | PDF officiel n° AGV-2026-XXXX avec toutes les coordonnées, les sources, l'avertissement légal et un **QR code de vérification publique** | La preuve tangible et vérifiable |
 | 6 | **Valorisation** | La parcelle conforme rejoint le dossier de conformité ; 3 débouchés (primes, acheteurs premium, dossier TRACES NT) ; **« Générer l'argumentaire de prime (IA) »** ; partage avec l'exportateur | L'argument commercial |
@@ -170,6 +171,28 @@ les missions terrain, puis la réimportation et la vérification satellite. Badg
 Le certificat PDF contient un QR code. **Le jury le scanne avec SON propre téléphone** →
 la page /verifier-certificat confirme le statut de la parcelle. Phrase à dire à ce moment :
 « N'importe quel acheteur, n'importe où dans le monde, peut vérifier nos certificats. »
+
+### 4.6 Une seule application, du bureau au champ (mode terrain, v1.3.0)
+
+**AGRIVO est une PWA** (Progressive Web App) : une **seule application** qui s'adapte au PC, à la
+tablette et au mobile, et qui **s'installe directement depuis le navigateur** (« Ajouter à l'écran
+d'accueil ») — **pas besoin de Google Play, pas d'APK de 50 Mo, pas de mise à jour à télécharger**.
+En Côte d'Ivoire (Android d'entrée de gamme, data limitée), c'est un vrai avantage.
+
+Depuis la **v1.3.0**, cette même application couvre les deux bouts de la chaîne :
+- **Au bureau**, le gérant importe son registre, lance l'audit, consulte le tableau de bord et la
+  vue exportateur.
+- **Au bord du champ**, sur un téléphone, à l'étape Cartographie apparaît le mode
+  **« Tour de champ GPS (réel) »** : il écoute la **vraie géolocalisation** de l'appareil — on
+  marche le périmètre, les waypoints se posent tout seuls (un tous les ~8 m), avec distance et
+  précision en direct, puis fermeture du polygone. Avant la v1.3.0, le web *simulait* cette marche ;
+  maintenant c'est du **vrai GPS**.
+
+Phrase à dire au jury : **« Une seule application, du bureau du gérant au bord du champ, sans passer
+par un store — sur les téléphones qu'ont déjà les agents de la coopérative. »** À quoi ça sert
+concrètement : la même app qui, au bureau, dit « il te manque le contour de 3 parcelles » te laisse,
+au champ, marcher ces 3 parcelles pour les capturer. On ne cartographie QUE les trous laissés par
+l'audit, jamais tout le registre.
 
 ---
 
@@ -230,10 +253,14 @@ repli disparaît. »
 ## 6. Le modèle économique (simple et honnête)
 
 - **Gratuit pour le producteur.** Toujours commencer par ça.
-- **Abonnement coopérative : 120 000 FCFA/mois** (vérifications illimitées, certificats, hors
-  connexion, support) — **hypothèse tarifaire à valider au pilote** (le dire ainsi).
-- **API exportateur : 1 500 000 FCFA/mois** (API REST, exports en masse, déclarations TRACES NT,
-  copilote) ; −20 % en facturation annuelle.
+- **Modèle par producteur vérifié : ≈ 1 500 FCFA / producteur / an (≈ 2,3 €)**, facturé à la
+  coopérative ou à l'exportateur — c'est le modèle du deck (slide 7), aligné sur le benchmark du
+  secteur (2 à 5 $ chez Koltiva, Meridia). **Hypothèse à valider au pilote** (le dire ainsi).
+- **Ce que ça donne pour une coopérative** : ~1 000 producteurs → **~1,5 M FCFA / an**
+  (soit ~125 000 FCFA/mois), certificats compris — moins qu'UNE seule campagne d'audit terrain
+  manuelle. C'est aussi le tarif « Coopérative » affiché sur la page /tarifs.
+- **API exportateur** (gros volumes, API REST, exports en masse, déclarations TRACES NT, copilote) ;
+  −20 % en facturation annuelle.
 - Le point de référence qui rend le prix crédible : **la certification manuelle coûte aujourd'hui
   20 à 40 millions de FCFA par an** à une organisation — AGRIVO remplace ce processus par un
   abonnement clair.
@@ -294,7 +321,7 @@ repli disparaît. »
 | Reformuler un statut (« validé », « OK », « rejeté ») | Les statuts verbatim : « **Conforme** », « **Anomalie détectée** », « **Données insuffisantes** » |
 | « Notre partenaire [grand nom] » | « **Contact identifié** », « demande de partenariat » (rien n'est signé) |
 | « Le SNT/Meridia sont dépassés » | « **Complémentaires** » (jamais dénigrer) |
-| « C'est fini/parfait » | « v1.2.1 en production, 39 tests automatisés, et un plan v2 écrit » |
+| « C'est fini/parfait » | « v1.3.0 en production, 47 tests automatisés, et un plan v2 écrit » |
 
 ---
 
@@ -315,9 +342,9 @@ repli disparaît. »
 | **2 800 / 1 200 FCFA** | Prix bord champ FIXÉ par l'État, campagne 2025-26 (principale / intermédiaire) |
 | **6 / 5 / 3** | 6 étapes du parcours · 5 usages IA en production · 3 statuts verbatim |
 | **45 · 62 % · 157 ha · 81 t** | Les 4 KPI de la vue exportateur |
-| **120 000 / 1 500 000 FCFA·mois** | Tarifs coopérative / API exportateur (hypothèses pilote ; −20 % annuel) |
+| **≈ 1 500 FCFA / producteur / an** | Tarif de base (≈ 2,3 € ; benchmark secteur 2-5 $). Coop de ~1 000 producteurs ≈ 1,5 M FCFA/an (~125 000 FCFA/mois). Hypothèse pilote |
 | **20-40 M FCFA/an** | Coût de la certification manuelle (le point de comparaison) |
-| **v1.2.1 · 39 tests** | Version en production · tests automatisés (CI GitHub Actions) |
+| **v1.3.0 · 47 tests** | Version en production · tests automatisés (CI GitHub Actions) |
 | **5 min + 2 min** | Durée du pitch + questions ; grille : Impact 30 · Faisabilité 20 · IA 20 · Innovation 15 · Pitch 15 |
 
 Accès (à connaître, ils ne sont plus affichés sur la page de connexion) :
@@ -494,7 +521,7 @@ dans un modèle de plus.
 
 **25. « C'est construit avec quoi ? »**
 Une PWA Next.js 16 / React 19 / TypeScript strict, cartes satellite Esri via Leaflet, certificats
-PDF générés côté client, déployée sur Vercel. Version v1.2.1 en production, 39 tests automatisés,
+PDF générés côté client, déployée sur Vercel. Version v1.3.0 en production, 47 tests automatisés,
 intégration continue GitHub Actions à chaque push.
 
 **26. « Ça marche sans réseau ? Sur le terrain il n'y a pas de 4G. »**
@@ -512,30 +539,39 @@ C'est le standard GeoJSON RFC 7946 attendu par TRACES NT : WGS-84, ordre longitu
 6 décimales (± 11 cm), anneaux de polygones fermés. Notre export est testé unitairement sur ces
 règles précises.
 
-**29. « Qu'est-ce qui est réel et qu'est-ce qui est simulé ? » (répondre AVANT qu'ils creusent)**
+**29. « Vous avez une application web ET une application mobile ? »**
+Non : **une seule application**. AGRIVO est une PWA — une app web qui s'installe depuis le
+navigateur (sans Google Play, sans APK) et qui s'adapte au PC, à la tablette et au mobile. La MÊME
+app sert le gérant au bureau (import, audit, dashboard) et l'agent au bord du champ, où elle capture
+le **vrai GPS** en marchant la parcelle (mode « Tour de champ GPS réel », depuis la v1.3.0). Un seul
+code, un seul login, une seule donnée — du bureau au champ, sans store. En Côte d'Ivoire, sur les
+téléphones qu'ont déjà les agents, c'est un avantage concret.
+
+**30bis. « Qu'est-ce qui est réel et qu'est-ce qui est simulé ? » (répondre AVANT qu'ils creusent)**
 Réel : les 5 usages Gemini en production, l'audit de registre (parsing et règles RDUE exécutés en
-direct), la génération PDF + QR, la vérification publique, la capture GPS mobile. Simulé et
-assumé : les verdicts Whisp (pré-enregistrés — l'API FAO est sur inscription, prévue au pilote),
-les données de démonstration (30 parcelles), l'authentification (locale cette édition). Le plan
-v2 écrit détaille le passage au serveur.
+direct), la **capture GPS réelle sur mobile** (mode terrain v1.3.0), la génération PDF + QR, la
+vérification publique. Simulé et assumé : les verdicts Whisp (pré-enregistrés — l'API FAO est sur
+inscription, prévue au pilote), les données de démonstration (30 parcelles), l'authentification
+(locale cette édition). Le plan v2 écrit détaille le passage au serveur.
 
 **30. « Comment assurez-vous la qualité ? »**
-39 tests automatisés sur les fonctions critiques (règles d'audit, export GeoJSON, statuts figés,
+47 tests automatisés sur les fonctions critiques (règles d'audit, export GeoJSON, statuts figés,
 comportement sans clé), TypeScript strict, CI à chaque push, tags de version — et une charte
 éditoriale appliquée par tests : les trois statuts n'existent qu'au mot près.
 
 ### E. Le business
 
 **31. « Comment gagnez-vous de l'argent ? »**
-Abonnement coopérative (120 000 FCFA/mois) et API exportateur (1 500 000 FCFA/mois), gratuits pour
-le producteur. Hypothèses tarifaires à valider au pilote — le point d'ancrage : la certification
-manuelle coûte 20 à 40 millions FCFA par an.
+Un abonnement de **~1 500 FCFA par producteur vérifié et par an** (le modèle éprouvé du secteur :
+Koltiva, Meridia facturent 2 à 5 $), facturé à la coopérative ou à l'exportateur, gratuit pour le
+producteur. Hypothèse à valider au pilote — le point d'ancrage : la certification manuelle coûte
+20 à 40 millions FCFA par an.
 
-**32. « 120 000 FCFA/mois, une coopérative peut payer ça ? »**
-C'est ~1,4 M FCFA/an contre 20 à 40 M pour un processus manuel de certification — et contre la
-perte d'accès au marché européen. La prime Fairtrade seule (250 €/t dont 40 % cash) représente,
-pour quelques dizaines de tonnes, bien plus que l'abonnement. Et nous validerons ce chiffre au
-pilote, honnêtement.
+**32. « ~1,5 M FCFA/an pour une coopérative, elle peut payer ça ? »**
+C'est ~1,5 M FCFA/an (pour ~1 000 producteurs) contre 20 à 40 M pour un processus manuel de
+certification — et contre la perte d'accès au marché européen. La prime Fairtrade seule (250 €/t
+dont 40 % cash) représente, pour quelques dizaines de tonnes, bien plus que l'abonnement. Et nous
+validerons ce chiffre au pilote, honnêtement.
 
 **33. « Qui sont vos concurrents ? »**
 Meridia Verify et Koltiva sur l'audit de données — la preuve que le besoin est réel. Nos
@@ -608,7 +644,7 @@ pages légales détaillent durées et droits. Un DPO sera désigné à l'immatri
 structure ; le plan v2 prévoit l'hébergement conforme aux exigences de souveraineté.
 
 **45. « Votre application est-elle finie ? »**
-Elle est en **production**, version 1.2.1, 39 tests, et vous pouvez la vérifier en direct — c'est
+Elle est en **production**, version 1.3.0, 47 tests, et vous pouvez la vérifier en direct — c'est
 plus qu'une maquette. Et non, un produit n'est jamais « fini » : le plan v2 est écrit et priorisé.
 Nous préférons un périmètre honnête qui marche à une promesse qui casse.
 
@@ -679,7 +715,7 @@ différences : self-service coopérative, boucle complète jusqu'au certificat p
 matricule unique · capture horodatée par utilisateur identifié · contrôles automatiques (GPS
 simulé, chevauchement, superficie) · vérité satellite · réconciliation économique. 14. Elle ne
 vaut que pour les pays « risque faible » ; la CI est « risque standard » depuis le 22 mai 2025.
-15. 120 000 FCFA/mois (hypothèse pilote) vs 20 à 40 M FCFA/an pour la certification manuelle.
+15. ≈ 1 500 FCFA/producteur/an (~1,5 M FCFA/an pour une coop de 1 000 producteurs) vs 20 à 40 M FCFA/an pour la certification manuelle.
 
 ---
 
@@ -702,8 +738,15 @@ affirmé (dire « contact identifié », « demande de partenariat »).
 **L'IA en 1 phrase** : « Cinq usages Gemini en production, faits calculés, mise en mots par l'IA,
 repli honnête étiqueté — et Whisp/FAO pour le satellite. »
 
-**La démo** : mobile (Christ, golden path GPS réel) → web 63 % + plan d'action IA → vue
-exportateur + copilote → **le jury scanne le QR**. Plan B : vidéo. URL : agrivo-io.vercel.app.
+**L'app en 1 phrase** : « Une seule application (PWA), du bureau du gérant au bord du champ, sans
+store — avec la capture GPS réelle sur le téléphone depuis la v1.3.0. »
+
+**Le tarif** : ≈ 1 500 FCFA/producteur/an (benchmark 2-5 $) → ~1,5 M/an pour 1 000 producteurs,
+vs 20-40 M pour un audit manuel. Hypothèse à valider au pilote.
+
+**La démo** : mobile (Christ, golden path GPS réel) → web « Auditer mon registre » 63 % + plan
+d'action IA → vue exportateur + copilote → **le jury scanne le QR**. Plan B : vidéo.
+URL : agrivo-io.vercel.app.
 
 *AGRIVO — document de formation interne · 7 juillet 2026 · rédigé par Anael (chef de projet).
 Jumeau PDF : `AGRIVO_Formation_Equipe.pdf`. Compléments : `AGRIVO_Presentation_Equipe_MAJ.pdf`

@@ -6,7 +6,7 @@
 > le projet en lisant ce seul document. Pour MAÎTRISER le projet et répondre au jury, lire ensuite le
 > document de formation joint : **`AGRIVO_Formation_Equipe.pdf`**. Confidentiel équipe :
 > Anael · Christ · Gaddiel · Domy.
-> Jury : **samedi 11 juillet 2026, CSCTICAO** · Produit : **https://agrivo-io.vercel.app** (**v1.2.1, EN PRODUCTION**).
+> Jury : **samedi 11 juillet 2026, CSCTICAO** · Produit : **https://agrivo-io.vercel.app** (**v1.3.0, EN PRODUCTION**).
 
 ---
 
@@ -150,7 +150,22 @@ Sans clé (dev/offline), tout retombe automatiquement en mode démonstration : *
   « cockpit » retiré (charte), favicon (plus de 404).
 - **39/39 tests · build vert · tag v1.2.0 · déployée en prod dans la nuit** (l'alias a fini par passer).
 
-### v1.2.1 (7 juillet — vérification prod + résorption de l'ultra-review, session 22) — VERSION EN PROD
+### v1.3.0 (7 juillet — mode terrain PWA + IA fiabilisée, session 24) — VERSION EN PROD
+- **Mode terrain « Tour de champ GPS (réel) »** : sur mobile, l'étape Cartographie écoute la VRAIE
+  géolocalisation de l'appareil (`watchPosition`) au lieu de la simuler — waypoints posés en marchant
+  (~1 tous les 8 m), distance et précision live réelles, fermeture du polygone, emprise CI, standard
+  RFC 7946. Les modes simulés restent sur desktop et en secours. **Conséquence pour le pitch : « une
+  seule application, du bureau du gérant au bord du champ, sans store » est désormais RÉEL et
+  démontrable sur un téléphone** (voir la nouvelle §4.6 du document de formation).
+- **Filet anti-quota IA** : les 2 features signatures mémorisent dans le navigateur leur dernière
+  réponse générée en direct ; si Gemini plafonne (429 free tier) pendant la démo, la dernière
+  rédaction live se ré-affiche, étiquetée de son heure — sinon repli « Mode démonstration ». Un
+  bouton admin **« Préchauffer l'IA (démo) »** amorce ce cache en coulisses avant de monter sur scène.
+- **Répétition GO/NO-GO automatisée sur la prod** : 9 segments GO, 0 NO-GO, 0 erreur console ; plan
+  d'action IA et argumentaire **confirmés LIVE** en production.
+- **47/47 tests · build vert · tag v1.3.0 · EN PROD sur https://agrivo-io.vercel.app.**
+
+### v1.2.1 (7 juillet — vérification prod + résorption de l'ultra-review, session 22)
 - **Vérification en production des 5 points critiques** : plan d'action IA et argumentaire de prime
   **confirmés LIVE** (badge « Rédigé par Gemini · IA en direct »), étape 4 anglaise complète, plus
   de « quatre temps », favicon propre.
@@ -206,7 +221,7 @@ Sans clé (dev/offline), tout retombe automatiquement en mode démonstration : *
 - **Preuves de méthode** (le jury évalue le pipeline, pas juste la démo) : `SPECS.md` (user stories +
   critères d'acceptation), `ARCHITECTURE.md` (ADR + plan de rollback Vercel), `CHANGELOG.md`,
   `PLAN_V2.md` (chemin vers la production réelle), **CI GitHub Actions** (lint + types + tests +
-  build à chaque push), **39 tests Vitest**, tags `v1.0.0` → `v1.2.1`.
+  build à chaque push), **47 tests Vitest**, tags `v1.0.0` → `v1.3.0`.
 
 ---
 
@@ -284,11 +299,15 @@ Le pitch dure **5 minutes** + 2 minutes de questions.
 
 ## 12. Prochaines étapes immédiates (check-list)
 
-0. ☑ ~~Mettre v1.2.x en production~~ — **FAIT : la v1.2.1 est en prod sur https://agrivo-io.vercel.app**
-   (déploiement + alias passés, features IA vérifiées live le 7 juillet). Reste UNE commande Anael
-   (1 min) : `git push origin main --tags` — pour que GitHub et la CI reflètent la prod.
+0. ☑ ~~Mettre en production~~ — **FAIT : la v1.3.0 est en prod sur https://agrivo-io.vercel.app**
+   (mode terrain + IA fiabilisée, GO/NO-GO 9/9 le 7 juillet). Reste UNE commande Anael (1 min) :
+   `git push origin main --tags` — pour que GitHub et la CI reflètent la prod.
 1. ☐ **Action Anael (5 min) : facturation Tier 1 sur la clé Gemini** (AI Studio → Billing) — supprime
    la loterie 429 du free tier depuis les IP partagées Vercel. À faire AVANT la répétition de vendredi.
+   (En attendant : bouton admin **« Préchauffer l'IA (démo) »** à cliquer avant la démo.)
+1bis. ☐ Décision Anael : le tarif coopérative est passé à **125 000 FCFA/mois** (= modèle
+   par-producteur du deck) dans le code — **committé mais pas encore déployé** ; déployer ou garder
+   120 000 (la version en ligne montre encore 120 000 tant que non déployé).
 2. ☐ Action Anael (2 min) : domaine `agrivo-io.vercel.app` attaché au projet Vercel (sinon réassigner l'alias à chaque déploiement).
 3. ☐ Domy : test OCR avec une vraie carte producteur (mar–mer).
 4. ☐ Christ : alignement app mobile (guide joint) puis vidéo plan B (jeudi soir max).
