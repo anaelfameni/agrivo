@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { motion, useReducedMotion } from "framer-motion";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { BarChart3, Bell, Command, MessageSquareText, Settings2 } from "lucide-react";
 import { AnalyticsTab } from "@/components/exportateur/analytics-tab";
 import { AssistantTab } from "@/components/exportateur/assistant-tab";
@@ -201,8 +201,15 @@ export default function ExportateurPage() {
         })}
       </div>
 
-      {/* Panneau actif */}
-      <div>
+      {/* Panneau actif — transition d'onglet sobre (180 ms, fondu + léger slide ; reduce = fondu seul) */}
+      <AnimatePresence mode="wait" initial={false}>
+        <motion.div
+          key={tab}
+          initial={reduce ? { opacity: 0 } : { opacity: 0, x: 8 }}
+          animate={{ opacity: 1, x: 0 }}
+          exit={reduce ? { opacity: 0 } : { opacity: 0, x: -8 }}
+          transition={{ duration: 0.18, ease: EASE }}
+        >
         {tab === "analytique" && (
           <AnalyticsTab
             parcelles={PARCELLES}
@@ -215,7 +222,8 @@ export default function ExportateurPage() {
         )}
         {tab === "assistant" && <AssistantTab onCiteSelect={selectFromAnywhere} pushLog={pushLog} />}
         {tab === "config" && <ConfigTab parcelles={PARCELLES} log={log} pushLog={pushLog} />}
-      </div>
+        </motion.div>
+      </AnimatePresence>
 
       <CommandPalette
         open={cmdOpen}

@@ -26,6 +26,10 @@ const TR = {
     listTitle: "Liste des producteurs",
     emptyTitle: "Aucun producteur trouvé",
     emptyDesc: "Ajustez la recherche ou les filtres pour élargir les résultats.",
+    emptyDescSearch: (q: string) => `Aucun producteur ne correspond à « ${q} ». Vérifiez l'orthographe ou le n° de carte.`,
+    emptyDescFilters: "Aucun producteur ne correspond aux filtres actifs.",
+    emptyDescBoth: (q: string) => `Aucun producteur pour « ${q} » avec ces filtres.`,
+    emptyReset: "Effacer la recherche et les filtres",
     form: {
       title: "Nouveau producteur",
       nom: "Nom du producteur", nomPh: "Ex. Kouassi Yao",
@@ -52,6 +56,10 @@ const TR = {
     listTitle: "Farmer list",
     emptyTitle: "No farmer found",
     emptyDesc: "Adjust the search or the filters to widen the results.",
+    emptyDescSearch: (q: string) => `No farmer matches "${q}". Check the spelling or the card number.`,
+    emptyDescFilters: "No farmer matches the active filters.",
+    emptyDescBoth: (q: string) => `No farmer for "${q}" with these filters.`,
+    emptyReset: "Clear search and filters",
     form: {
       title: "New farmer",
       nom: "Farmer name", nomPh: "E.g. Kouassi Yao",
@@ -182,7 +190,31 @@ export default function ProducteursPage() {
           <span className="num text-xs text-stone-400">{filtered.length} / {all.length}</span>
         </div>
         {filtered.length === 0 ? (
-          <div className="p-2"><EmptyState title={t.emptyTitle} description={t.emptyDesc} /></div>
+          <div className="p-2">
+            <EmptyState
+              title={t.emptyTitle}
+              description={
+                query.trim() && (filiere !== "all" || statut !== "all")
+                  ? t.emptyDescBoth(query.trim())
+                  : query.trim()
+                    ? t.emptyDescSearch(query.trim())
+                    : filiere !== "all" || statut !== "all"
+                      ? t.emptyDescFilters
+                      : t.emptyDesc
+              }
+              action={
+                (query.trim() || filiere !== "all" || statut !== "all") && (
+                  <button
+                    type="button"
+                    onClick={() => { setQuery(""); setFiliere("all"); setStatut("all"); }}
+                    className="inline-flex items-center gap-1.5 rounded-full border border-black/10 bg-white px-4 py-2 text-xs font-medium text-stone-600 outline-none transition-colors hover:border-green-signal/40 hover:text-forest-950 focus-visible:ring-2 focus-visible:ring-green-signal"
+                  >
+                    {t.emptyReset}
+                  </button>
+                )
+              }
+            />
+          </div>
         ) : (
           <ul className="flex flex-col">
             {filtered.map((p) => <li key={p.id}><ProducteurRow p={p} lang={lang} /></li>)}

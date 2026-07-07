@@ -14,6 +14,7 @@ const COPY = {
     title: "Connexion",
     subtitle: "Accédez à votre espace de conformité RDUE.",
     demoTitle: "Compte de démonstration",
+    demoHint: "Explorez l'espace coopérative avec des données fictives (Amadou, Coopérative de Soubré), en un clic.",
     demoCta: "Entrer avec le compte de démonstration",
     or: "ou avec vos identifiants",
     email: "E-mail",
@@ -28,6 +29,7 @@ const COPY = {
     title: "Sign in",
     subtitle: "Access your EUDR compliance workspace.",
     demoTitle: "Demo account",
+    demoHint: "Explore the cooperative workspace with fictional data (Amadou, Soubré cooperative), in one click.",
     demoCta: "Enter with the demo account",
     or: "or with your credentials",
     email: "Email",
@@ -106,15 +108,14 @@ export default function ConnexionPage() {
           <h1 className="font-display text-3xl text-forest-950">{t.title}</h1>
           <p className="mt-2 text-sm text-stone-500">{t.subtitle}</p>
 
-          {/* Encart compte de démonstration */}
+          {/* Encart compte de démonstration — identifiants jamais affichés en clair (U-07) :
+              le bouton connecte directement, sans exposer le mot de passe. */}
           <div className="mt-7 rounded-2xl border border-green-signal/25 bg-green-signal/[0.06] p-4">
             <div className="flex items-center gap-2 text-sm font-semibold text-forest-950">
               <Sparkles size={16} className="text-green-signal" aria-hidden />
               {t.demoTitle}
             </div>
-            <p className="num mt-2 text-xs text-stone-600">
-              {DEMO_ACCOUNT.email} · {DEMO_ACCOUNT.password}
-            </p>
+            <p className="mt-2 text-xs text-stone-600">{t.demoHint}</p>
             <button
               type="button"
               onClick={onDemo}

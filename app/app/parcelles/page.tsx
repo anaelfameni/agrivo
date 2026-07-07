@@ -36,6 +36,10 @@ const TR = {
     mapTitle: "Carte du portefeuille",
     emptyTitle: "Aucune parcelle trouvée",
     emptyDesc: "Ajustez la recherche ou les filtres pour élargir les résultats.",
+    emptyDescSearch: (q: string) => `Aucune parcelle ne correspond à « ${q} ». Vérifiez l'orthographe ou le n° de certificat.`,
+    emptyDescFilters: "Aucune parcelle ne correspond aux filtres actifs.",
+    emptyDescBoth: (q: string) => `Aucune parcelle pour « ${q} » avec ces filtres.`,
+    emptyReset: "Effacer la recherche et les filtres",
   },
   en: {
     eyebrow: "Plots",
@@ -51,6 +55,10 @@ const TR = {
     mapTitle: "Portfolio map",
     emptyTitle: "No plot found",
     emptyDesc: "Adjust the search or the filters to widen the results.",
+    emptyDescSearch: (q: string) => `No plot matches "${q}". Check the spelling or the certificate number.`,
+    emptyDescFilters: "No plot matches the active filters.",
+    emptyDescBoth: (q: string) => `No plot for "${q}" with these filters.`,
+    emptyReset: "Clear search and filters",
   },
 };
 
@@ -132,13 +140,37 @@ export default function ParcellesPage() {
             <span className="num text-xs text-stone-400">{filtered.length} / {PARCELLES.length}</span>
           </div>
           {filtered.length === 0 ? (
-            <div className="p-2"><EmptyState title={t.emptyTitle} description={t.emptyDesc} /></div>
+            <div className="p-2">
+              <EmptyState
+                title={t.emptyTitle}
+                description={
+                  query.trim() && (filiere !== "all" || statut !== "all")
+                    ? t.emptyDescBoth(query.trim())
+                    : query.trim()
+                      ? t.emptyDescSearch(query.trim())
+                      : filiere !== "all" || statut !== "all"
+                        ? t.emptyDescFilters
+                        : t.emptyDesc
+                }
+                action={
+                  (query.trim() || filiere !== "all" || statut !== "all") && (
+                    <button
+                      type="button"
+                      onClick={() => { setQuery(""); setFiliere("all"); setStatut("all"); }}
+                      className="inline-flex items-center gap-1.5 rounded-full border border-black/10 bg-white px-4 py-2 text-xs font-medium text-stone-600 outline-none transition-colors hover:border-green-signal/40 hover:text-forest-950 focus-visible:ring-2 focus-visible:ring-green-signal"
+                    >
+                      {t.emptyReset}
+                    </button>
+                  )
+                }
+              />
+            </div>
           ) : (
             <motion.ul
               initial="hidden"
               animate="show"
               variants={{ show: { transition: { staggerChildren: reduce ? 0 : 0.03 } } }}
-              className="flex max-h-[560px] flex-col overflow-y-auto xl:max-h-[600px]"
+              className="scroll-slim flex max-h-[560px] flex-col overflow-y-auto xl:max-h-[600px]"
             >
               {filtered.map((p) => (
                 <motion.li
