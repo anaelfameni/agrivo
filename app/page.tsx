@@ -133,7 +133,7 @@ const COPY = {
       eyebrow: "Modèle économique",
       title: "Deux abonnements et une commission. Rien de caché.",
       revenues: [
-        { name: "Abonnement coopérative", price: "120 000", unit: "FCFA / mois", desc: "Vérifications illimitées, certificats PDF, mode hors connexion, support." },
+        { name: "Abonnement coopérative", price: "125 000", unit: "FCFA / mois", desc: "Vérifications illimitées, certificats PDF, mode hors connexion, support." },
         { name: "API exportateur", price: "1 500 000", unit: "FCFA / mois", desc: "API REST, export batch, déclarations TRACES NT intégrées, SLA garanti." },
         { name: "Dossier exportateur", price: "Inclus", unit: "dans l'abonnement coopérative", desc: "Le dossier de conformité se partage avec l'exportateur : la coopérative le fait valoir pour négocier." },
       ],

@@ -12,11 +12,11 @@ type Billing = "monthly" | "annual";
 const PLANS = [
   {
     name: { fr: "Coopérative", en: "Cooperative" },
-    monthly: 120_000,
+    monthly: 125_000,
     unit: { fr: "FCFA / mois", en: "FCFA / month" },
     desc: {
-      fr: "Pour les gérants de coopérative qui valident les lots au bord du champ.",
-      en: "For cooperative managers who validate lots at the edge of the field.",
+      fr: "Pour les gérants de coopérative qui valident les lots au bord du champ. Base ≈ 1 500 FCFA par producteur vérifié et par an (coopérative d'environ 1 000 producteurs).",
+      en: "For cooperative managers who validate lots at the edge of the field. Basis ≈ 1,500 FCFA per verified producer per year (cooperative of about 1,000 producers).",
     },
     features: {
       fr: ["Vérifications illimitées", "Certificats PDF", "Mode hors connexion", "Sélecteur de langue", "Support"],
