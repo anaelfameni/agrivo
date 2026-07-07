@@ -285,7 +285,7 @@ export function AnalyticsTab({
         <button
           type="button"
           onClick={() => onExport(sorted, t.filteredView)}
-          className="inline-flex h-10 shrink-0 items-center justify-center gap-2 rounded-full border border-green-signal/30 bg-green-signal/[0.06] px-4 text-sm font-semibold text-forest-950 outline-none transition-colors hover:bg-green-signal/[0.12] focus-visible:ring-2 focus-visible:ring-green-signal"
+          className="inline-flex h-10 shrink-0 items-center justify-center gap-2 rounded-full border border-black/10 bg-white px-4 text-sm font-semibold text-forest-950 outline-none transition-colors hover:border-green-signal/40 focus-visible:ring-2 focus-visible:ring-green-signal"
         >
           <Download size={16} strokeWidth={2} aria-hidden />
           {t.export}
@@ -315,7 +315,7 @@ export function AnalyticsTab({
                 />
               </div>
             ) : (
-              <div ref={bodyRef} className="max-h-[600px] overflow-auto">
+              <div ref={bodyRef} className="scroll-slim max-h-[600px] overflow-auto">
                 <table className="w-full border-collapse text-sm">
                   <thead className="sticky top-0 z-10 bg-ivory-deep/80 backdrop-blur-sm">
                     <tr className="text-left">

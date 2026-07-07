@@ -384,6 +384,29 @@ body {
   animation: sweepX 2.6s ease-in-out infinite;
 }
 
+/* Barre de défilement discrète (tableaux denses, listes internes) */
+.scroll-slim {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(20, 32, 25, 0.22) transparent;
+}
+.scroll-slim::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+.scroll-slim::-webkit-scrollbar-track {
+  background: transparent;
+}
+.scroll-slim::-webkit-scrollbar-thumb {
+  border-radius: 9999px;
+  background: rgba(20, 32, 25, 0.22);
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+.scroll-slim::-webkit-scrollbar-thumb:hover {
+  background: rgba(20, 32, 25, 0.35);
+  background-clip: content-box;
+}
+
 /* ----------------------------- Accessibilité : reduced motion ----------------------------- */
 @media (prefers-reduced-motion: reduce) {
   *,

@@ -48,6 +48,9 @@ const COPY = {
     actionBureau: "À corriger au bureau",
     goMapping: "Ouvrir l'étape Cartographie",
     privacy: "Vos données restent la propriété de la coopérative (conformité ARTCI).",
+    compactHint: "Auditez vos fichiers existants selon la règle RDUE.",
+    open: "Auditer mon registre",
+    collapse: "Réduire",
     planCta: "Générer le plan d'action IA",
     planLoading: "Rédaction du plan d'action…",
     planTitle: "Plan d'action de mise en conformité",
@@ -80,6 +83,9 @@ const COPY = {
     actionBureau: "To fix at the office",
     goMapping: "Open the Mapping step",
     privacy: "Your data remains the property of the cooperative (ARTCI compliance).",
+    compactHint: "Audit your existing files against the EUDR rule.",
+    open: "Audit my register",
+    collapse: "Collapse",
     planCta: "Generate the AI action plan",
     planLoading: "Writing the action plan…",
     planTitle: "Compliance action plan",
@@ -118,6 +124,10 @@ export function RegistreImport() {
   const [audit, setAudit] = useState<AuditRegistre | null>(null);
   const [plan, setPlan] = useState<PlanAction | null>(null);
   const [planStatus, setPlanStatus] = useState<"idle" | "loading" | "error" | "done">("idle");
+  // U-11 : démarre replié (une ligne) pour alléger la colonne ; s'étend au clic et le reste
+  // dès qu'un import est en cours ou fait.
+  const [ouvert, setOuvert] = useState(false);
+  const deplie = ouvert || status !== "idle";
 
   async function genererPlan() {
     if (!audit) return;
@@ -171,6 +181,34 @@ export function RegistreImport() {
       }, {})
     : {};
 
+  // État replié (U-11) : une seule ligne — icône + titre + CTA — qui s'étend au clic.
+  if (!deplie) {
+    return (
+      <div className="card-premium p-4 sm:p-5">
+        <button
+          type="button"
+          onClick={() => setOuvert(true)}
+          aria-expanded={false}
+          className="flex w-full items-center justify-between gap-3 text-left outline-none focus-visible:ring-2 focus-visible:ring-green-signal focus-visible:ring-offset-2 focus-visible:ring-offset-white"
+        >
+          <span className="flex min-w-0 items-center gap-2">
+            <span className="chip-green grid h-8 w-8 shrink-0 place-items-center rounded-xl" aria-hidden>
+              <FileUp size={16} strokeWidth={2} className="text-green-signal" />
+            </span>
+            <span className="min-w-0">
+              <span className="block truncate text-sm font-semibold text-forest-950">{t.title}</span>
+              <span className="hidden truncate text-xs text-stone-400 sm:block">{t.compactHint}</span>
+            </span>
+          </span>
+          <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-green-signal/30 bg-green-signal/[0.06] px-3.5 py-1.5 text-xs font-semibold text-green-signal transition-colors hover:bg-green-signal/[0.12]">
+            {t.open}
+            <ChevronRight size={13} strokeWidth={2.5} aria-hidden />
+          </span>
+        </button>
+      </div>
+    );
+  }
+
   return (
     <div className="card-premium p-4 sm:p-5">
       <div className="flex flex-wrap items-center justify-between gap-3">
@@ -180,7 +218,7 @@ export function RegistreImport() {
           </span>
           {t.title}
         </h2>
-        {status === "done" && audit && (
+        {status === "done" && audit ? (
           <button
             type="button"
             onClick={() => {
@@ -188,11 +226,23 @@ export function RegistreImport() {
               setStatus("idle");
               setPlan(null);
               setPlanStatus("idle");
+              setOuvert(true);
             }}
             className="text-xs text-stone-400 outline-none transition-colors hover:text-forest-950 focus-visible:text-forest-950"
           >
             {t.close}
           </button>
+        ) : (
+          status === "idle" && (
+            <button
+              type="button"
+              onClick={() => setOuvert(false)}
+              aria-expanded
+              className="text-xs text-stone-400 outline-none transition-colors hover:text-forest-950 focus-visible:text-forest-950"
+            >
+              {t.collapse}
+            </button>
+          )
         )}
       </div>
 

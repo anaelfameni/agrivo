@@ -39,14 +39,15 @@ function toShape(p: Parcelle): Shape {
   return { p, ring: null, center: [lat, lon] };
 }
 
-/** Recadre la carte sur l'ensemble du portefeuille (au montage) + corrige la taille. */
+/** Recadre la carte sur l'ensemble du portefeuille (au montage) + corrige la taille.
+ *  Padding réduit : un cadrage un peu plus serré rend les pastilles lisibles dès l'ouverture. */
 function FitBounds({ bounds }: { bounds: L.LatLngBounds }) {
   const map = useMap();
   useEffect(() => {
     const fit = () => {
       try {
         map.invalidateSize();
-        map.fitBounds(bounds, { padding: [28, 28] });
+        map.fitBounds(bounds, { padding: [16, 16] });
       } catch {
         /* carte non prête : ignoré */
       }
@@ -122,8 +123,8 @@ function ParcelleShape({
       <CircleMarker
         ref={dotRef}
         center={center}
-        radius={active ? 8 : 5}
-        pathOptions={{ color: "#ffffff", weight: active ? 2 : 1.25, fillColor: color, fillOpacity: 0.95 }}
+        radius={active ? 9 : 6.5}
+        pathOptions={{ color: "#ffffff", weight: active ? 2.25 : 1.5, fillColor: color, fillOpacity: 0.95 }}
         eventHandlers={handlers}
       >
         <Tooltip direction="top" offset={[0, -6]} opacity={1}>

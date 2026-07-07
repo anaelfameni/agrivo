@@ -79,7 +79,7 @@ export default function APropos() {
         <section className="bg-ivory-deep/40">
           <div className="mx-auto max-w-6xl px-6 py-20 md:px-8">
             <Reveal>
-              <span className="eyebrow text-amber-cacao">{en ? "Roadmap" : "Feuille de route"}</span>
+              <span className="eyebrow text-green-signal">{en ? "Roadmap" : "Feuille de route"}</span>
               <h2 className="mt-3 font-display text-3xl">{en ? "From pilot to regional expansion." : "Du pilote à l\u2019expansion régionale."}</h2>
             </Reveal>
             <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">

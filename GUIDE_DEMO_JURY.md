@@ -14,8 +14,9 @@
    cartographie GPS (point central < 4 ha / tour de champ ≥ 4 ha) + contrôles d'intégrité →
    verdict Whisp → certificat PDF → valorisation (dossier partagé avec l'exportateur).
 3. **Web : dashboard coopérative (1 min 15)** — 4 KPI officiels (dont « Dossiers partagés »), alertes,
-   dernière vérification remontée, puis **démo « Importer mon registre »** : clic sur « Essayer avec le
-   registre de démonstration » → « 63 % prêtes pour la RDUE, 19 parcelles sur 30 » + anomalies par
+   dernière vérification remontée, puis **démo « Importer mon registre »** : clic sur « Auditer mon
+   registre » (la carte se déplie) puis « Essayer avec le registre de démonstration » → « 63 % prêtes
+   pour la RDUE, 19 parcelles sur 30 » + anomalies par
    catégorie (à compléter sur le terrain / à corriger au bureau). Phrase clé : « Les coopératives ont
    déjà des fichiers ; environ 30 % de ces données ne sont pas fiables pour la RDUE. AGRIVO les
    transforme en conformité prouvable. » **Puis clic « Générer le plan d'action IA » (v1.2.0, Gemini
