@@ -100,6 +100,17 @@ const COPY = {
       bullets: ["Fond satellite haute résolution", "Polygone GeoJSON, 6 décimales (± 11 cm)", "Verdict Whisp (FAO) en quelques secondes"],
       badge: "Conforme",
     },
+    enjeu: {
+      eyebrow: "L'enjeu, à l'échelle du pays",
+      title: "Le premier producteur mondial de cacao joue son premier débouché.",
+      stats: [
+        { value: "1ᵉʳ", label: "producteur mondial de cacao (~45 % de l'offre)" },
+        { value: "6 M+", label: "de personnes vivent du cacao en Côte d'Ivoire" },
+        { value: "66 %", label: "du cacao ivoirien exporté vers l'Union européenne" },
+      ],
+      body: "Dès le 30 décembre 2026, ce débouché exigera une preuve de zéro déforestation, parcelle par parcelle. Sans elle, l'accès au marché européen se referme. AGRIVO outille les coopératives pour garder cette porte ouverte.",
+      source: "Sources : USDA FAS 2025 ; Trase ; production de cacao en Côte d'Ivoire.",
+    },
     chiffres: {
       eyebrow: "La fenêtre d'opportunité",
       title: "Un marché immense, déjà en mouvement.",
@@ -218,6 +229,17 @@ const COPY = {
       bullets: ["High-resolution satellite base", "GeoJSON polygon, 6 decimals (± 11 cm)", "Whisp (FAO) verdict in seconds"],
       badge: "Compliant",
     },
+    enjeu: {
+      eyebrow: "The stakes, at national scale",
+      title: "The world's top cocoa producer is risking its first market.",
+      stats: [
+        { value: "#1", label: "cocoa producer worldwide (~45% of global supply)" },
+        { value: "6M+", label: "people depend on cocoa in Côte d'Ivoire" },
+        { value: "66%", label: "of Ivorian cocoa is exported to the European Union" },
+      ],
+      body: "From 30 December 2026, this market will require proof of zero deforestation, plot by plot. Without it, access to the European market closes. AGRIVO equips cooperatives to keep that door open.",
+      source: "Sources: USDA FAS 2025; Trase; cocoa production in Côte d'Ivoire.",
+    },
     chiffres: {
       eyebrow: "The window of opportunity",
       title: "A vast market, already in motion.",
@@ -327,6 +349,7 @@ export default function Landing() {
         <FilieresSection />
         <CartographieSection />
         <ChiffresSection />
+        <EnjeuSection />
         <CalendrierSection />
         <PersonasSection />
         <ModeleSection />
@@ -668,6 +691,35 @@ function ChiffresSection() {
         </div>
         <Reveal delay={0.2}>
           <p className="num mt-8 text-xs text-white/40">{c.source}</p>
+        </Reveal>
+      </div>
+    </section>
+  );
+}
+
+/* ------------------------------------------------------------------ Enjeu national (sourcé) */
+function EnjeuSection() {
+  const e = useCopy().enjeu;
+  return (
+    <section className="relative overflow-hidden border-y border-amber-cacao/15 bg-amber-cacao/[0.06]">
+      <div className="relative mx-auto max-w-7xl px-6 py-24 md:px-8 lg:px-12">
+        <Reveal>
+          <Eyebrow>{e.eyebrow}</Eyebrow>
+          <h2 className="mt-3 max-w-3xl font-premium text-3xl leading-tight text-forest-950">{e.title}</h2>
+        </Reveal>
+        <div className="mt-12 grid gap-5 sm:grid-cols-3">
+          {e.stats.map((s, i) => (
+            <Reveal key={s.label} delay={i * 0.08}>
+              <div className="h-full rounded-2xl border border-amber-cacao/20 bg-white/70 p-6">
+                <div className="font-premium text-5xl font-semibold text-amber-cacao">{s.value}</div>
+                <p className="mt-2 text-sm leading-relaxed text-stone-600">{s.label}</p>
+              </div>
+            </Reveal>
+          ))}
+        </div>
+        <Reveal delay={0.2}>
+          <p className="mt-10 max-w-2xl text-base leading-relaxed text-forest-950">{e.body}</p>
+          <p className="num mt-3 text-xs text-stone-400">{e.source}</p>
         </Reveal>
       </div>
     </section>

@@ -8,6 +8,7 @@ import { useAuth } from "@/components/auth-provider";
 import { useLanguage } from "@/components/language-provider";
 import { auditerRegistre, parserRegistre } from "@/lib/registre/audit";
 import { resumerAudit } from "@/lib/registre/plan";
+import { revuerRegistre } from "@/lib/registre/revue";
 import { sauverLive } from "@/lib/ai/live-cache";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
@@ -22,10 +23,18 @@ const SERVICES = [
 const API_KEYS = ["WHISP_API_KEY", "GEMINI_API_KEY", "GOOGLE_EARTH_ENGINE_KEY"];
 
 type EtatChauffe = "live" | "repli" | "erreur";
-interface ResultatChauffe {
-  plan: EtatChauffe;
-  memo: EtatChauffe;
-}
+type ResultatChauffe = Record<string, EtatChauffe>;
+
+/** Les 6 routes IA de rédaction à préchauffer, dans l'ordre du panneau (les routes Vision —
+ *  OCR carte, photo terrain — ne se préchauffent pas sans image et sont exclues). */
+const CHAUFFE_LABELS: { cle: string; fr: string; en: string }[] = [
+  { cle: "plan", fr: "Plan d'action", en: "Action plan" },
+  { cle: "memo", fr: "Argumentaire de prime", en: "Premium brief" },
+  { cle: "copilote", fr: "Copilote RDUE", en: "EUDR copilot" },
+  { cle: "revue", fr: "Revue registre", en: "Register review" },
+  { cle: "dossier", fr: "Dossier acheteur", en: "Buyer file" },
+  { cle: "traduction", fr: "Verdict langue locale", en: "Local-language verdict" },
+];
 
 export default function AdminPage() {
   const { user, loading } = useAuth();
@@ -65,41 +74,54 @@ export default function AdminPage() {
 
   async function prechauffer() {
     setChauffe("running");
-    const res: ResultatChauffe = { plan: "erreur", memo: "erreur" };
+    const res: ResultatChauffe = {};
+    // Appelle une route et enregistre son état ; met en cache anti-quota les 2 features à repli caché.
+    const warm = async (cle: string, url: string, body: unknown, cacheKey?: string) => {
+      try {
+        const r = await fetch(url, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(body),
+        });
+        const d = (await r.json()) as { live?: boolean };
+        if (r.ok && d.live) {
+          if (cacheKey) sauverLive(cacheKey, body, d);
+          res[cle] = "live";
+        } else if (r.ok) res[cle] = "repli";
+        else res[cle] = "erreur";
+      } catch {
+        res[cle] = "erreur";
+      }
+    };
+
+    // Registre de démonstration : sert au plan d'action ET à la revue IA.
+    let planPayload: { resume: ReturnType<typeof resumerAudit>; lang: "fr" } | null = null;
+    let revueMotifs: string[] = [];
     try {
       const texte = await (await fetch("/registre-demo.geojson")).text();
-      const payload = {
-        resume: resumerAudit(auditerRegistre(parserRegistre("registre-demo.geojson", texte))),
-        lang: "fr" as const,
-      };
-      const r = await fetch("/api/gemini/audit-plan", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-      const d = (await r.json()) as { live?: boolean };
-      if (r.ok && d.live) {
-        sauverLive("audit-plan", payload, d);
-        res.plan = "live";
-      } else if (r.ok) res.plan = "repli";
+      const parcelles = parserRegistre("registre-demo.geojson", texte);
+      planPayload = { resume: resumerAudit(auditerRegistre(parcelles)), lang: "fr" };
+      revueMotifs = revuerRegistre(parcelles).points.map((p) => p.motif.fr);
     } catch {
-      /* res.plan reste « erreur » */
+      /* ignore : chaque route repliera individuellement */
     }
-    try {
-      const payload = { parcelleId: "p01", lang: "fr" as const };
-      const r = await fetch("/api/gemini/valorisation-memo", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-      const d = (await r.json()) as { live?: boolean };
-      if (r.ok && d.live) {
-        sauverLive("valorisation-memo", payload, d);
-        res.memo = "live";
-      } else if (r.ok) res.memo = "repli";
-    } catch {
-      /* res.memo reste « erreur » */
-    }
+
+    // Séquentiel (pas en rafale) : ménage le quota free tier et amorce chaque fonction serveur.
+    if (planPayload) await warm("plan", "/api/gemini/audit-plan", planPayload, "audit-plan");
+    else res.plan = "erreur";
+    await warm("memo", "/api/gemini/valorisation-memo", { parcelleId: "p01", lang: "fr" }, "valorisation-memo");
+    await warm("copilote", "/api/gemini/rdue-qa", { question: "La Côte d'Ivoire est-elle concernée ?", lang: "fr" });
+    if (revueMotifs.length) await warm("revue", "/api/gemini/registre-revue", { motifs: revueMotifs, lang: "fr" });
+    else res.revue = "repli";
+    await warm("dossier", "/api/gemini/dossier-acheteur", {
+      faits: { nbConformes: 5, total: 8, haConformes: 12.3, coops: 2, filieres: ["Cacao"], regions: ["Nawa"] },
+      lang: "fr",
+    });
+    await warm("traduction", "/api/gemini/traduire-verdict", {
+      texte: "Aucune déforestation détectée après le 31 décembre 2020.",
+      langue: "dioula",
+    });
+
     setChauffe(res);
   }
 
@@ -228,8 +250,8 @@ export default function AdminPage() {
           </div>
           <p className="mt-2 max-w-2xl text-xs leading-relaxed text-stone-500">
             {en
-              ? "Calls the two signature AI features with the exact payloads of the demo run-through. A response generated live is kept in THIS browser: if Gemini hits its free-tier cap during the demo, the latest live wording is shown again, labelled with its generation time. Click backstage before going on stage."
-              : "Appelle les deux features IA signatures avec les payloads exacts du déroulé de démonstration. Une réponse générée en direct est mémorisée dans CE navigateur : si Gemini plafonne (free tier) pendant la démo, la dernière rédaction live se ré-affiche, étiquetée de son heure. À cliquer en coulisses, avant de monter sur scène."}
+              ? "Warms up ALL six AI writing features (action plan, premium brief, EUDR copilot, register review, buyer file, local-language verdict) with the demo payloads, and confirms each responds live. The two signature responses are also cached in THIS browser as an anti-quota net. Click backstage before going on stage: the pre-flight banner tells you the demo is ready."
+              : "Préchauffe LES SIX features IA de rédaction (plan d'action, argumentaire, copilote RDUE, revue registre, dossier acheteur, verdict langue locale) avec les payloads du déroulé, et confirme que chacune répond en direct. Les deux réponses signatures sont aussi mises en cache dans CE navigateur comme filet anti-quota. À cliquer en coulisses avant de monter sur scène : le bandeau pré-vol confirme que la démo est prête."}
           </p>
           <div className="mt-4 flex flex-wrap items-center gap-3">
             <button
@@ -252,9 +274,13 @@ export default function AdminPage() {
                   : "Préchauffer l'IA (démo)"}
             </button>
             {typeof chauffe === "object" && (
-              <div className="flex flex-wrap gap-2" aria-live="polite">
-                <ChipChauffe label={en ? "Action plan" : "Plan d'action"} etat={chauffe.plan} en={en} />
-                <ChipChauffe label={en ? "Premium brief" : "Argumentaire de prime"} etat={chauffe.memo} en={en} />
+              <div className="flex w-full flex-col gap-3" aria-live="polite">
+                <div className="flex flex-wrap gap-2">
+                  {CHAUFFE_LABELS.map((c) => (
+                    <ChipChauffe key={c.cle} label={en ? c.en : c.fr} etat={chauffe[c.cle] ?? "erreur"} en={en} />
+                  ))}
+                </div>
+                <PreVol res={chauffe} mock={mock} en={en} />
               </div>
             )}
           </div>
@@ -324,5 +350,39 @@ function ChipChauffe({ label, etat, en }: { label: string; etat: EtatChauffe; en
       <span className="h-1.5 w-1.5 rounded-full bg-current" aria-hidden />
       {label} · {txt}
     </span>
+  );
+}
+
+/** Verdict pré-vol : synthèse « démo prête » d'après l'état des routes + le mode réel. */
+function PreVol({ res, mock, en }: { res: ResultatChauffe; mock: boolean | null; en: boolean }) {
+  const etats = Object.values(res);
+  if (etats.length === 0) return null;
+  const erreur = etats.some((e) => e === "erreur");
+  const tousLive = etats.every((e) => e === "live");
+  const nbLive = etats.filter((e) => e === "live").length;
+  const style = erreur
+    ? "border-red-block/30 bg-red-block/[0.06] text-red-block"
+    : tousLive
+      ? "border-green-signal/30 bg-green-signal/[0.08] text-green-signal"
+      : "border-amber-cacao/30 bg-amber-cacao/[0.08] text-amber-cacao";
+  const Icon = erreur ? ShieldAlert : ShieldCheck;
+  const msg = erreur
+    ? en
+      ? "Some routes returned a network error — check the connection and retry."
+      : "Certaines routes ont renvoyé une erreur réseau — vérifiez la connexion et relancez."
+    : tousLive
+      ? en
+        ? `Demo ready: all ${etats.length} AI features respond live.`
+        : `Démo prête : les ${etats.length} features IA répondent en direct.`
+      : en
+        ? `Ready: ${nbLive}/${etats.length} live, the rest on labelled demo fallback.`
+        : `Prête : ${nbLive}/${etats.length} en direct, le reste en repli démonstration étiqueté.`;
+  const mockNote = mock === true ? (en ? " (MOCK_MODE on — no key set)" : " (MOCK_MODE actif — aucune clé posée)") : "";
+  return (
+    <div className={`inline-flex w-fit items-center gap-2 rounded-xl border px-3.5 py-2 text-xs font-semibold ${style}`}>
+      <Icon size={14} strokeWidth={2} aria-hidden />
+      {msg}
+      {mockNote}
+    </div>
   );
 }

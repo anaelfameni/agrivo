@@ -3,6 +3,21 @@
 Versioning sémantique (MAJOR.MINOR.PATCH). Chaque release liste ce qui est ajouté, corrigé et
 vérifié, conformément à l'étape 8 du pipeline « Du besoin à la Release ».
 
+## v1.6.0 — 2026-07-07 — Enjeu national sourcé + préchauffe TOTALE (démo increvable)
+
+### Ajouté
+- **Section « Enjeu national » (landing)** : au-delà des chiffres marché du Conseil Café-Cacao,
+  une bande d'impact SOURCÉE frappe à l'échelle du pays — 1ᵉʳ producteur mondial (~45 % de
+  l'offre), plus de 6 M de personnes vivant du cacao, 66 % du cacao ivoirien exporté vers l'UE
+  (le débouché n°1, directement visé par le RDUE). Chiffres cités (USDA FAS 2025, Trase) :
+  renforce l'axe Impact ET respecte la charte « aucun % inventé ».
+- **Préchauffe démo TOTALE + verdict pré-vol (admin)** : le bouton de préparation réchauffe
+  désormais LES SIX routes IA de rédaction (plan d'action, argumentaire, copilote RDUE, revue
+  registre, dossier acheteur, verdict langue locale) — plus seulement 2 — avec les payloads du
+  déroulé, et confirme que chacune répond en direct. Un bandeau pré-vol synthétise « Démo prête :
+  N/6 en direct » (ou signale une erreur réseau), en tenant compte du MOCK_MODE réel. Attaque
+  frontalement le risque n°1 du jour J : l'incident IA en plein pitch.
+
 ## v1.5.0 — 2026-07-07 — Trois usages IA premium : revue registre, dossier acheteur, terrain multimodal
 
 ### Ajouté
