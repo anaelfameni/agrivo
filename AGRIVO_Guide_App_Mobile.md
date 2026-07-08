@@ -1,10 +1,10 @@
 # AGRIVO — Guide technique de l'app mobile (pour Christ)
 
 > **Spécification de référence** — version du 6 juillet 2026, mise à jour le 7 juillet (backend
-> v1.7.0 EN PROD), rédigée par Anael (chef de projet).
+> v1.7.1 EN PROD), rédigée par Anael (chef de projet).
 > Objectif : permettre à un dev mobile expérimenté de **reprendre l'app mobile existante et l'aligner**
 > sur la vision AGRIVO sans avoir à poser de questions. L'app est déjà commencée : on ne repart pas de
-> zéro, on réadapte (voir §7). Backend de référence : **https://agrivo-io.vercel.app** (**v1.7.0** —
+> zéro, on réadapte (voir §7). Backend de référence : **https://agrivo-io.vercel.app** (**v1.7.1** —
 > les nouveautés backend qui te concernent sont dans l'encadré §4.6).
 > Jury : samedi 11 juillet 2026 — priorité absolue aux écrans du golden path.
 
@@ -169,8 +169,10 @@
   n° de certificat (`AGV-2026-XXXX`), date/heure, statut teinté (vert/rouge/ambre) + phrase figée,
   producteur, n° de carte, coopérative, filière, région, superficie, **coordonnées WGS-84 (6 décimales,
   RFC 7946)** listées sommet par sommet, sources de données, mention TRACES NT + consentement ARTCI,
-  avertissement légal (« Évaluation technique… ne se substitue pas à la responsabilité légale de
-  l'opérateur »). Boutons « Télécharger le PDF » / « Continuer ».
+  avertissement légal — **NOUVEAU libellé exact (v1.7.1), à reprendre MOT POUR MOT** : « Ce
+  certificat atteste l'évaluation réalisée par Agrivo à partir de données satellites publiques.
+  Il ne remplace pas la déclaration de diligence raisonnée (DDS) de l'exportateur, seul responsable
+  de la conformité au sens du règlement (UE) 2023/1115. » Boutons « Télécharger le PDF » / « Continuer ».
 - **Logique** : le PDF contient un **QR code** qui pointe vers
   `https://agrivo-io.vercel.app/verifier-certificat?ref=<n°>` — c'est l'« effet final » du jury
   (ils scannent avec LEUR téléphone). Sur mobile : générer le PDF localement (lib PDF RN) OU partager
@@ -448,3 +450,17 @@ Le site est passé en **version finale v1.7.0** : **13 usages IA** (contre 8 ava
 - **Rituel pré-vol AVANT toute démo** : se connecter en admin → « Préchauffer l'IA (démo) » → attendre le bandeau **« Démo prête : 6/6 en direct »**. C'est notre garantie anti-panne en salle.
 - **Site vitrine finalisé** : onglet « Accueil » (l'écran de bienvenue n'apparaît plus que sur rafraîchissement ou arrivée par URL), heros unifiés sur Méthodologie/À propos/Tarifs, tout le jargon technique retiré des pages publiques, section « L'enjeu, à l'échelle du pays » (1ᵉʳ producteur mondial · 6 M+ de personnes · 66 % vers l'UE — chiffres sourcés USDA/Trase).
 - **Le détail complet des 13 fonctions IA** (une par une, avec le bénéfice client) est dans le document **AGRIVO_Nouveautes_et_IA.pdf** — à lire en priorité.
+
+## Mise à jour v1.7.1 (mercredi 8 juillet, soir) — 3 points pour l'app mobile
+
+1. **Avertissement du certificat (écran E) — libellé CHANGÉ** : reprendre **mot pour mot** la
+   nouvelle mention donnée à l'écran E ci-dessus (« Ce certificat atteste l'évaluation réalisée par
+   Agrivo… règlement (UE) 2023/1115 »). Raison : aucun organisme n'est agréé pour « certifier » la
+   conformité RDUE — c'est l'exportateur qui déclare (DDS) ; notre certificat atteste une
+   **évaluation**. Même exigence sur mobile que sur le web.
+2. **Équipe affichée** : si un écran « équipe / à propos » existe dans l'app, Fatim n'en fait plus
+   partie ; rôles : Anael (chef de projet), Christ (app mobile), Gaddiel (backend & API), Domy
+   (conformité & réglementaire).
+3. **Rappel charte inchangé** : grep `crédit|credit|prêt|loan|garantie|guarantee` → **zéro** dans
+   l'UI ; statuts VERBATIM (Conforme · Anomalie détectée · Données insuffisantes) ; toujours
+   « évaluation », jamais « garantie ».

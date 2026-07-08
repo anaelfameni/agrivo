@@ -135,8 +135,8 @@ export function VerifierCertificatClient() {
               </dl>
               <p className="mt-5 rounded-lg bg-ivory px-3.5 py-2.5 text-xs leading-relaxed text-stone-500">
                 {en
-                  ? "This result reflects the assessment at the time the certificate was issued. It is not a guarantee and does not replace the operator's due diligence statement."
-                  : "Ce résultat reflète l'évaluation au moment de l'émission du certificat. Il ne constitue pas une garantie et ne se substitue pas à la déclaration de diligence de l'opérateur."}
+                  ? "This result reflects the assessment carried out by Agrivo when the certificate was issued. It is not a guarantee and does not replace the exporter's due diligence statement (DDS): the operator remains solely responsible for compliance under Regulation (EU) 2023/1115."
+                  : "Ce résultat reflète l'évaluation réalisée par Agrivo au moment de l'émission du certificat. Il ne constitue pas une garantie et ne remplace pas la déclaration de diligence raisonnée (DDS) de l'exportateur, seul responsable de la conformité au sens du règlement (UE) 2023/1115."}
               </p>
             </motion.div>
           )}

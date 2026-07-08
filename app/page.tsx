@@ -164,7 +164,7 @@ const COPY = {
     equipe: {
       eyebrow: "L'équipe",
       title: "Une équipe ivoirienne, ancrée dans le terrain.",
-      roles: ["Direction produit & marque", "Backend & données", "Intégration IA", "Conformité & réglementaire", "Stratégie & design"],
+      roles: ["Direction produit & marque", "Application mobile", "Backend & API", "Conformité & réglementaire"],
     },
     cta: {
       title: "La conformité, prouvée en quelques secondes.",
@@ -293,7 +293,7 @@ const COPY = {
     equipe: {
       eyebrow: "The team",
       title: "An Ivorian team, rooted in the field.",
-      roles: ["Product & brand lead", "Backend & data", "AI integration", "Compliance & regulatory", "Strategy & design"],
+      roles: ["Product & brand lead", "Mobile app", "Backend & API", "Compliance & regulatory"],
     },
     cta: {
       title: "Compliance, proven in seconds.",
@@ -872,7 +872,6 @@ function EquipeSection() {
     { name: "Christ", initials: "CH", grad: "linear-gradient(135deg,#1b4a39,#0a1f14)" },
     { name: "Gaddiel", initials: "GA", grad: "linear-gradient(135deg,#2D7A4B,#0c2519)" },
     { name: "Domy", initials: "DO", grad: "linear-gradient(135deg,#c8861d,#5a3a0e)" },
-    { name: "Fatim", initials: "FA", grad: "linear-gradient(135deg,#4A6b1f,#0c2519)" },
   ];
   return (
     <section className="bg-ivory">
@@ -881,7 +880,7 @@ function EquipeSection() {
           <Eyebrow>{c.eyebrow}</Eyebrow>
           <h2 className="mt-3 font-premium text-4xl text-forest-950">{c.title}</h2>
         </Reveal>
-        <motion.div variants={container} initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.2 }} className="mt-12 grid grid-cols-2 gap-5 sm:grid-cols-3 lg:grid-cols-5">
+        <motion.div variants={container} initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.2 }} className="mt-12 grid grid-cols-2 gap-5 sm:grid-cols-4">
           {team.map((m, i) => (
             <motion.div key={m.name} variants={rise} className="h-full">
               <motion.div whileHover={{ y: -5 }} transition={{ type: "spring", stiffness: 300, damping: 22 }} className="flex h-full flex-col items-center gap-3 rounded-2xl border border-black/[0.06] bg-white px-4 py-6 text-center transition-[border-color,box-shadow] duration-300 hover:border-green-signal/25 hover:shadow-[0_24px_48px_-28px_rgba(10,31,20,0.35)]">

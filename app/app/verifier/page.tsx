@@ -32,7 +32,7 @@ const TR = {
     back: "Tableau de bord",
     eyebrow: "Parcours de vérification",
     title: "Nouvelle vérification",
-    nextCredit: "Valoriser la parcelle",
+    nextValorisation: "Valoriser la parcelle",
     finish: "Terminer",
     confirm: {
       title: "Consentement enregistré",
@@ -54,7 +54,7 @@ const TR = {
     back: "Dashboard",
     eyebrow: "Verification flow",
     title: "New verification",
-    nextCredit: "Valorise the plot",
+    nextValorisation: "Valorise the plot",
     finish: "Finish",
     confirm: {
       title: "Consent recorded",
@@ -200,7 +200,7 @@ export default function VerifierPage() {
             <StepCertificate
               data={certData}
               pdfData={certDataFr ?? certData}
-              nextLabel={whisp.statut === "conforme" ? t.nextCredit : t.finish}
+              nextLabel={whisp.statut === "conforme" ? t.nextValorisation : t.finish}
               onNext={afterCertificate}
               onBack={() => setStep(4)}
             />

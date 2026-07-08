@@ -38,7 +38,7 @@ const COPY = {
     kpi: {
       verifiees: { label: "Parcelles vérifiées", sub: "ce mois-ci" },
       taux: { label: "Taux de conformité", sub: "sur les parcelles vérifiées" },
-      credits: { label: "Dossiers partagés", sub: "avec l'exportateur" },
+      dossiers: { label: "Dossiers partagés", sub: "avec l'exportateur" },
       alertes: { label: "Alertes actives", sub: "à examiner" },
     },
     searchLabel: "Rechercher un producteur ou un numéro de carte",
@@ -64,7 +64,7 @@ const COPY = {
     kpi: {
       verifiees: { label: "Plots verified", sub: "this month" },
       taux: { label: "Compliance rate", sub: "across verified plots" },
-      credits: { label: "Shared files", sub: "with the exporter" },
+      dossiers: { label: "Shared files", sub: "with the exporter" },
       alertes: { label: "Active alerts", sub: "to review" },
     },
     searchLabel: "Search for a farmer or a card number",
@@ -135,7 +135,7 @@ export default function DashboardPage() {
   const kpis = [
     { ...t.kpi.verifiees, value: stats.verifiees, suffix: "", Icon: MapPin, tint: "rgba(22,163,74,0.12)", color: "var(--color-green-signal)", glow: "rgba(22,163,74,0.5)", pct: null as number | null },
     { ...t.kpi.taux, value: stats.tauxConformite, suffix: " %", Icon: ShieldCheck, tint: "rgba(22,163,74,0.12)", color: "var(--color-green-signal)", glow: "rgba(22,163,74,0.5)", pct: stats.tauxConformite },
-    { ...t.kpi.credits, value: stats.dossiersPartages, suffix: "", Icon: FileCheck2, tint: "rgba(22,163,74,0.12)", color: "var(--color-green-signal)", glow: "rgba(22,163,74,0.5)", pct: null },
+    { ...t.kpi.dossiers, value: stats.dossiersPartages, suffix: "", Icon: FileCheck2, tint: "rgba(22,163,74,0.12)", color: "var(--color-green-signal)", glow: "rgba(22,163,74,0.5)", pct: null },
     { ...t.kpi.alertes, value: stats.alertes, suffix: "", Icon: Bell, tint: "rgba(180,35,30,0.10)", color: "var(--color-red-block)", glow: "rgba(180,35,30,0.4)", pct: null },
   ];
 

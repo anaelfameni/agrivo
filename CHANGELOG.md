@@ -3,6 +3,29 @@
 Versioning sémantique (MAJOR.MINOR.PATCH). Chaque release liste ce qui est ajouté, corrigé et
 vérifié, conformément à l'étape 8 du pipeline « Du besoin à la Release ».
 
+## v1.7.1 — 2026-07-08 — Positionnement certificat (DDS) + équipe à jour
+
+### Changé
+- **Avertissement du certificat renforcé** (aperçu à l'écran, PDF téléchargé et page publique
+  `/verifier-certificat`) : le certificat « atteste l'évaluation réalisée par Agrivo » et « ne
+  remplace pas la déclaration de diligence raisonnée (DDS) de l'exportateur, seul responsable de
+  la conformité au sens du règlement (UE) 2023/1115 ». Motif : aucun organisme n'est agréé pour
+  « certifier » la conformité RDUE — positionnement d'évaluation assumé et juridiquement exact.
+- **Équipe** : Fatim retirée du site (accueil + À propos) ; rôles affichés alignés sur l'équipe
+  réelle (Christ = application mobile, Gaddiel = backend & API) ; grilles équipe en 4 colonnes.
+
+### Retiré
+- Entrée FAQ « Pourquoi pas de crédit aux producteurs ? » (le site public n'introduit plus le
+  sujet du crédit) ; « micro-loan eligibility » purgé du message d'accueil EN de l'assistant
+  exportateur (résidu d'avant le pivot Valorisation).
+
+### Interne
+- Clés de copy renommées (`kpi.credits` → `kpi.dossiers`, `nextCredit` → `nextValorisation`) :
+  grep « credit/crédit » sans occurrence UI dans `app/` + `components/`.
+
+### Vérifié
+- `tsc` ✓ · 65/65 tests Vitest ✓ · `next build` ✓.
+
 ## v1.7.0 — 2026-07-07 — Version finale du site vitrine (pro, client-facing)
 
 ### Changé

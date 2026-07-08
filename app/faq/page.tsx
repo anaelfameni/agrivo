@@ -46,13 +46,6 @@ const QA: { q: { fr: string; en: string }; a: { fr: string; en: string } }[] = [
     },
   },
   {
-    q: { fr: "Pourquoi pas de crédit aux producteurs ?", en: "Why no credit for farmers?" },
-    a: {
-      fr: "Par choix assumé, partagé par les coopératives : elles visent l'autonomie des producteurs, et le préfinancement individuel a historiquement produit impayés et fraudes. AGRIVO valorise la conformité par les primes de durabilité et l'accès aux acheteurs premium, pas par la dette.",
-      en: "A deliberate choice, shared by cooperatives: they aim for farmer autonomy, and individual pre-financing has historically produced defaults and fraud. AGRIVO valorises compliance through sustainability premiums and access to premium buyers, not through debt.",
-    },
-  },
-  {
     q: { fr: "Agrivo couvre-t-il d'autres filières que le cacao ?", en: "Does Agrivo cover commodities other than cocoa?" },
     a: {
       fr: "Oui. Le moteur est multi-filières : cacao, café, hévéa et palmier à huile. Le déploiement commence par le cacao, la filière la plus urgente.",

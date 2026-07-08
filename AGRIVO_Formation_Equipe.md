@@ -7,7 +7,7 @@
 > d'entre nous, pas seulement celui qui pitche.
 > Ce document se suffit à lui-même : aucune connaissance préalable n'est nécessaire.
 > **Temps de lecture : ~45 minutes. À lire AVANT la répétition générale de vendredi 10.**
-> Version du produit à jour : **v1.7.0 en production** (mode terrain PWA + IA fiabilisée — voir §4.6).
+> Version du produit à jour : **v1.7.1 en production** (mode terrain PWA + IA fiabilisée — voir §4.6).
 
 ---
 
@@ -321,7 +321,7 @@ repli disparaît. »
 | Reformuler un statut (« validé », « OK », « rejeté ») | Les statuts verbatim : « **Conforme** », « **Anomalie détectée** », « **Données insuffisantes** » |
 | « Notre partenaire [grand nom] » | « **Contact identifié** », « demande de partenariat » (rien n'est signé) |
 | « Le SNT/Meridia sont dépassés » | « **Complémentaires** » (jamais dénigrer) |
-| « C'est fini/parfait » | « v1.7.0 en production, 65 tests automatisés, et un plan v2 écrit » |
+| « C'est fini/parfait » | « v1.7.1 en production, 65 tests automatisés, et un plan v2 écrit » |
 
 ---
 
@@ -344,7 +344,7 @@ repli disparaît. »
 | **45 · 62 % · 157 ha · 81 t** | Les 4 KPI de la vue exportateur |
 | **≈ 1 500 FCFA / producteur / an** | Tarif de base (≈ 2,3 € ; benchmark secteur 2-5 $). Coop de ~1 000 producteurs ≈ 1,5 M FCFA/an (~125 000 FCFA/mois). Hypothèse pilote |
 | **20-40 M FCFA/an** | Coût de la certification manuelle (le point de comparaison) |
-| **v1.7.0 · 65 tests** | Version en production · tests automatisés (CI GitHub Actions) |
+| **v1.7.1 · 65 tests** | Version en production · tests automatisés (CI GitHub Actions) |
 | **5 min + 2 min** | Durée du pitch + questions ; grille : Impact 30 · Faisabilité 20 · IA 20 · Innovation 15 · Pitch 15 |
 
 Accès (à connaître, ils ne sont plus affichés sur la page de connexion) :
@@ -521,7 +521,7 @@ dans un modèle de plus.
 
 **25. « C'est construit avec quoi ? »**
 Une PWA Next.js 16 / React 19 / TypeScript strict, cartes satellite Esri via Leaflet, certificats
-PDF générés côté client, déployée sur Vercel. Version v1.7.0 en production, 65 tests automatisés,
+PDF générés côté client, déployée sur Vercel. Version v1.7.1 en production, 65 tests automatisés,
 intégration continue GitHub Actions à chaque push.
 
 **26. « Ça marche sans réseau ? Sur le terrain il n'y a pas de 4G. »**
@@ -644,9 +644,25 @@ pages légales détaillent durées et droits. Un DPO sera désigné à l'immatri
 structure ; le plan v2 prévoit l'hébergement conforme aux exigences de souveraineté.
 
 **45. « Votre application est-elle finie ? »**
-Elle est en **production**, version 1.7.0, 65 tests, et vous pouvez la vérifier en direct — c'est
+Elle est en **production**, version 1.7.1, 65 tests, et vous pouvez la vérifier en direct — c'est
 plus qu'une maquette. Et non, un produit n'est jamais « fini » : le plan v2 est écrit et priorisé.
 Nous préférons un périmètre honnête qui marche à une promesse qui casse.
+
+**46. « Quel organisme est agréé pour certifier qu'une parcelle respecte la RDUE ? »**
+Aucun — et ce n'est pas un vide, c'est la conception même du règlement : il n'existe **aucune
+certification ni agrément RDUE**, pour personne. SGS, géant mondial de l'audit, l'écrit sur son
+propre site : « aucun rôle de certification ou d'accréditation n'est prévu par le cadre RDUE ».
+C'est l'**opérateur** qui déclare (DDS sur TRACES NT) et qui reste **seul responsable**. AGRIVO
+est exactement dans les clous : nous parlons d'**évaluation**, jamais de certification de
+conformité — et c'est désormais écrit mot pour mot sur chaque certificat.
+
+**47. « Mais Bureau Veritas, lui, certifie la RDUE, non ? »**
+Bureau Veritas est un acteur sérieux — mais il fait de l'**audit** et de la **vérification** en
+appui de la diligence de l'opérateur, pas une « certification de conformité RDUE » : ça n'existe
+pas (même une certification Rainforest Alliance ne vaut pas conformité, la Commission le dit).
+Et il sert les gros importateurs, à des coûts hors de portée d'une coopérative. AGRIVO produit
+la preuve **au niveau du champ**, en langue locale, à un prix de coopérative : nous sommes **en
+amont** d'un Bureau Veritas, pas en face — sa vérification peut même s'appuyer sur notre dossier.
 
 ---
 
@@ -762,3 +778,19 @@ Le site est passé en **version finale v1.7.0** : **13 usages IA** (contre 8 ava
 - **Rituel pré-vol AVANT toute démo** : se connecter en admin → « Préchauffer l'IA (démo) » → attendre le bandeau **« Démo prête : 6/6 en direct »**. C'est notre garantie anti-panne en salle.
 - **Site vitrine finalisé** : onglet « Accueil » (l'écran de bienvenue n'apparaît plus que sur rafraîchissement ou arrivée par URL), heros unifiés sur Méthodologie/À propos/Tarifs, tout le jargon technique retiré des pages publiques, section « L'enjeu, à l'échelle du pays » (1ᵉʳ producteur mondial · 6 M+ de personnes · 66 % vers l'UE — chiffres sourcés USDA/Trase).
 - **Le détail complet des 13 fonctions IA** (une par une, avec le bénéfice client) est dans le document **AGRIVO_Nouveautes_et_IA.pdf** — à lire en priorité.
+
+## Mise à jour v1.7.1 (mercredi 8 juillet, soir)
+
+- **Positionnement blindé « personne ne certifie la RDUE »** : il n'existe **aucun organisme agréé**
+  pour certifier la conformité RDUE d'une parcelle — ni en Côte d'Ivoire, ni ailleurs (SGS l'écrit
+  lui-même ; Bureau Veritas fait de l'audit d'appui, pas de la certification de conformité).
+  C'est l'exportateur qui déclare et qui reste seul responsable. Le certificat AGRIVO (aperçu, PDF)
+  et la page publique de vérification portent désormais la mention exacte : *« Il ne remplace pas
+  la déclaration de diligence raisonnée (DDS) de l'exportateur, seul responsable de la conformité
+  au sens du règlement (UE) 2023/1115. »* → Réponses jury prêtes : **questions 46 et 47** (section G).
+- **Équipe à l'écran** : Fatim retirée du site (accueil + À propos). Rôles affichés alignés :
+  Anael (direction produit), Christ (**application mobile**), Gaddiel (**backend & API**), Domy
+  (conformité & réglementaire).
+- **Purge crédit finale** : l'entrée FAQ « Pourquoi pas de crédit aux producteurs ? » est retirée du
+  site public (le site n'introduit plus le sujet) — la réponse orale reste au répertoire (question 41).
+  Dernier résidu anglais corrigé (« micro-loan eligibility » dans l'assistant exportateur EN).

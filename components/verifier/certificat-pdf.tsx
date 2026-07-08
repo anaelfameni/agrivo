@@ -159,9 +159,9 @@ export function CertificatDocument({ data, qrDataUrl }: { data: CertificatData; 
 
         <View style={styles.footer} fixed>
           <Text style={styles.footerText}>
-            Ce document est une évaluation technique produite par Agrivo à partir de données satellites
-            publiques. Il ne se substitue pas à la responsabilité légale de l&apos;opérateur qui dépose la
-            déclaration de diligence raisonnée. Agrivo · {data.numeroCertificat}
+            Ce document atteste l&apos;évaluation technique produite par Agrivo à partir de données satellites
+            publiques. Il ne remplace pas la déclaration de diligence raisonnée (DDS) de l&apos;exportateur,
+            seul responsable de la conformité au sens du règlement (UE) 2023/1115. Agrivo · {data.numeroCertificat}
           </Text>
         </View>
       </Page>

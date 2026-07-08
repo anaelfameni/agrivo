@@ -21,10 +21,9 @@ const NEXT = [
 
 const TEAM = [
   { name: "Anael", role: { fr: "Direction produit & marque", en: "Product & brand lead" }, initials: "AN", grad: "linear-gradient(135deg,#16a34a,#0c2519)" },
-  { name: "Christ", role: { fr: "Backend & données", en: "Backend & data" }, initials: "CH", grad: "linear-gradient(135deg,#1b4a39,#0a1f14)" },
-  { name: "Gaddiel", role: { fr: "Intégration IA", en: "AI integration" }, initials: "GA", grad: "linear-gradient(135deg,#2D7A4B,#0c2519)" },
+  { name: "Christ", role: { fr: "Application mobile", en: "Mobile app" }, initials: "CH", grad: "linear-gradient(135deg,#1b4a39,#0a1f14)" },
+  { name: "Gaddiel", role: { fr: "Backend & API", en: "Backend & API" }, initials: "GA", grad: "linear-gradient(135deg,#2D7A4B,#0c2519)" },
   { name: "Domy", role: { fr: "Conformité & réglementaire", en: "Compliance & regulatory" }, initials: "DO", grad: "linear-gradient(135deg,#c8861d,#5a3a0e)" },
-  { name: "Fatim", role: { fr: "Stratégie & design", en: "Strategy & design" }, initials: "FA", grad: "linear-gradient(135deg,#4A6b1f,#0c2519)" },
 ];
 
 export default function APropos() {
@@ -129,7 +128,7 @@ export default function APropos() {
             <Reveal>
               <h2 className="font-display text-3xl">{en ? "An Ivorian team, rooted in the field." : "Une équipe ivoirienne, ancrée dans le terrain."}</h2>
             </Reveal>
-            <div className="mt-10 grid grid-cols-2 gap-5 sm:grid-cols-3 lg:grid-cols-5">
+            <div className="mt-10 grid grid-cols-2 gap-5 sm:grid-cols-4">
               {TEAM.map((m, i) => (
                 <Reveal key={m.name} delay={i * 0.06}>
                   <div className="flex flex-col items-center gap-3 rounded-2xl border border-black/[0.06] bg-white px-4 py-6 text-center">

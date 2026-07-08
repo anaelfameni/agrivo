@@ -34,7 +34,7 @@ const COPY = {
     traces:
       "Dossier prêt pour soumission sur TRACES NT. Traitement réalisé avec le consentement éclairé du producteur (loi n°2013-450, ARTCI).",
     disclaimer:
-      "Évaluation technique produite à partir de données satellites publiques. Ne se substitue pas à la responsabilité légale de l'opérateur qui dépose la déclaration de diligence raisonnée.",
+      "Ce certificat atteste l'évaluation réalisée par Agrivo à partir de données satellites publiques. Il ne remplace pas la déclaration de diligence raisonnée (DDS) de l'exportateur, seul responsable de la conformité au sens du règlement (UE) 2023/1115.",
     preparing: "Préparation…",
     download: "Télécharger le PDF",
     back: "Retour",
@@ -55,7 +55,7 @@ const COPY = {
     traces:
       "File ready for submission on TRACES NT. Processing carried out with the farmer's informed consent (law no. 2013-450, ARTCI).",
     disclaimer:
-      "Technical assessment produced from public satellite data. It does not replace the legal responsibility of the operator filing the due diligence statement.",
+      "This certificate attests the assessment carried out by Agrivo from public satellite data. It does not replace the exporter's due diligence statement (DDS): the operator remains solely responsible for compliance under Regulation (EU) 2023/1115.",
     preparing: "Preparing…",
     download: "Download the PDF",
     back: "Back",

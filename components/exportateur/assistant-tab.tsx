@@ -28,7 +28,7 @@ const COPY = {
   },
   en: {
     greeting:
-      "Hello Marc. I reason over your portfolio of verified plots: compliance, anomalies, areas, micro-loan eligibility. Ask your question, or pick one below.",
+      "Hello Marc. I reason over your portfolio of verified plots: compliance, anomalies, areas, plots ready for the exporter file. Ask your question, or pick one below.",
     error: "I could not query the portfolio just now. Please try again in a moment.",
     title: "AGRIVO Assistant",
     subtitle: "Agentic copilot · runs tools on your verified data",
