@@ -128,7 +128,8 @@ aucun logo fabriqué, formulations Lono/Finafrica).
 ## 🌿 IDENTITÉ & PROMESSE
 
 - **Promesse :** AGRIVO rend la conformité agricole **simple, prouvable et abordable** — et transforme
-  une contrainte européenne en **opportunité de crédit** pour les producteurs.
+  une contrainte européenne en **opportunité commerciale** pour les coopératives (primes de durabilité,
+  acheteurs premium — **jamais de crédit**, pivot Session 17).
 - **3 verbes qui justifient tout :** simplifier (le producteur comprend) · prouver (l'exportateur a
   confiance) · inclure (le petit exploitant gagne).
 - **Personnalité :** *Ancré · Clair · Crédible.* Un partenaire qui a « les pieds dans la boue du champ
@@ -242,7 +243,7 @@ honnête (ce que le produit fait aujourd'hui ≠ demain, jamais confondu) · sta
 ### Personas (parler d'eux, jamais d'« utilisateurs »)
 - **Amadou** — gérant de coopérative, Soubré. 600 producteurs, smartphone d'entrée de gamme, veut aller vite au bord du champ.
 - **Marc** — Directeur Durabilité, Abidjan. Doit garantir chaque conteneur 100 % conforme, vérifier des milliers de parcelles.
-- **Yao** — productrice de café, Man. 2 ha, pas de compte bancaire, Mobile Money, veut emprunter 150 000 FCFA.
+- **Yao** — productrice de café, Man. 2 ha, pas de compte bancaire, Mobile Money. (Ne parle plus d'emprunt — pivot Valorisation.)
 - **Kouassi** — producteur de cacao, Soubré, 15 ans sur sa parcelle (exemple fil rouge du résumé exécutif).
 
 ### Deux IA (jamais confondues dans le discours)
@@ -335,6 +336,50 @@ variables CSS dans `app/globals.css`.
 ---
 
 ## 📓 Journal de build (le plus récent en haut)
+
+### Session 25 — 2026-07-08 — v1.7.1 EN PROD : mention DDS sur le certificat + Fatim retirée + purge crédit UI + docs v5
+*(Les versions v1.4→v1.7.0 — 13 usages IA, 65 tests, site vitrine final — sont détaillées dans CHANGELOG.md ; ce CLAUDE.md n'avait pas été journalisé entre-temps.)*
+- 🧭 **Recherche décisive (question d'Anael, déclenchée par sa collègue export citant Bureau Veritas)** :
+  il n'existe **AUCUN organisme agréé pour certifier la conformité RDUE** — la « certification RDUE »
+  n'existe pas, par conception du règlement. SGS l'écrit verbatim (« There are no specific roles for
+  certification/accreditation foreseen under the EUDR framework ») ; la Commission : une certification
+  privée aide l'analyse de risque mais **ne vaut jamais conformité** ; **l'opérateur** qui dépose la DDS
+  reste **seul responsable**. Bureau Veritas/SGS = audit/vérification d'APPUI des gros importateurs.
+  → **Force pour AGRIVO** : « évaluation » est le seul vocabulaire exact ; positionnement « en amont de
+  Bureau Veritas, au niveau du champ, au prix d'une coopérative ». Réponses jury 46-47 (Formation).
+- ✅ **v1.7.1 déployée** (commits `539e847` + `bd92e2b`, tag v1.7.1, deploy `agrivo-y2sjkgqzd…` aliasé
+  `agrivo-io.vercel.app`) :
+  1) **Mention DDS exacte** sur le certificat, aux 3 endroits : aperçu (`step-certificate.tsx`,
+  COPY.disclaimer FR/EN), PDF officiel (`certificat-pdf.tsx`, footer) et page publique
+  (`verifier-certificat-client.tsx`) — « Ce certificat atteste l'évaluation réalisée par Agrivo…
+  Il ne remplace pas la déclaration de diligence raisonnée (DDS) de l'exportateur, seul responsable
+  de la conformité au sens du règlement (UE) 2023/1115. »
+  2) **Fatim RETIRÉE du site** (ordre d'Anael) : `app/page.tsx` (EquipeSection + roles FR/EN) et
+  `app/a-propos/page.tsx` (TEAM) ; grilles équipe passées en `sm:grid-cols-4` ; **rôles alignés au
+  réel** : Christ = « Application mobile », Gaddiel = « Backend & API ».
+  3) **Purge crédit UI finale** (ordre d'Anael : zéro référence au crédit producteur) : entrée FAQ
+  « Pourquoi pas de crédit aux producteurs ? » SUPPRIMÉE ; « micro-loan eligibility » corrigé dans le
+  greeting EN de `assistant-tab.tsx` ; clés internes renommées (`kpi.credits`→`kpi.dossiers`,
+  `nextCredit`→`nextValorisation`). ⚠️ CONSERVÉS volontairement : gardes-fous `lib/` (interception
+  crédit du copilote), mentions légales « n'est pas un établissement de crédit » (protection), RCCM.
+- ✅ **Gates** : tsc ✓ · **65/65 tests** ✓ · build ✓. **Vérification prod complète** (`verif-v171.mjs`,
+  scratchpad) : **29/29 routes 200**, Fatim absente, rôles OK, FAQ purgée, prix 125 000 partout,
+  `/api/admin/etat` `{"mock":false}`, copilote `live:true` source citée. Mention DDS vérifiée au
+  **DOM rendu** (`msedge --dump-dom`) : la page `/verifier-certificat?ref=` est CSR (useSearchParams),
+  le HTML brut ne la contient pas — ne pas conclure à un bug. Idem : les réponses de la FAQ (accordéon)
+  n'existent dans le DOM qu'après expansion ; seules les questions sont dans le HTML servi.
+- 📄 **Docs équipe v1.7.1** (PDF régénérés via md2pdf.mjs scratchpad, distribués racine repo + Desktop +
+  `AGRIVO_Envoi_Equipe/`) : **Formation** (16 p. — questions jury 46-47 + section v1.7.1),
+  **Guide mobile** (11 p. — écran E : nouveau libellé DDS à reprendre MOT POUR MOT + 3 points v1.7.1),
+  **Document_reference_v5** (NOUVEAU, 5 p. — remplace la v4 de 34 pages dont le résumé exécutif parlait
+  ENCORE de crédit ; nouveau §3 « personne ne certifie la RDUE »), **Plan_Fonctionnement_et_Equipe**
+  (réécrit, 2 p. — workflow sprint final : Christ pousse le code + envoie les captures de chaque écran →
+  revue par Anael → corrections ; jalons gel mer/jeu, répétition vendredi).
+- ⏭️ **EN ATTENTE : repo git de l'app mobile de Christ** (`Desktop/Agrivo-GitHub` créé mais encore vide)
+  → à analyser écran par écran dès réception (charte, statuts verbatim, mention DDS, frontière crédit).
+- 📌 Reste à Anael : facturation **Gemini Tier 1** · Domy tranche le « 52 % » (Trase) du deck ·
+  relecture dioula/baoulé · test GPS réel sur le téléphone de démo · répétition générale vendredi ·
+  rotation de la clé Gemini APRÈS le jury.
 
 ### Session 24 — 2026-07-07 — v1.3.0 EN PROD : mode terrain PWA + filet anti-quota IA (prompts A/C) + GO-NO-GO (B) + audits deck/vidéo (D/E)
 - ✅ **Prompt A — Mode terrain PWA (tour de champ GPS RÉEL)** : sur mobile (pointer coarse +
