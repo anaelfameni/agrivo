@@ -94,8 +94,9 @@ export function DemoGuide() {
 
             <div className="mt-6 rounded-xl border border-amber-soft/30 bg-amber-soft/10 p-3.5 text-sm leading-relaxed text-amber-soft">
               Plan B : si le live plante, basculer sur la vidéo de secours (voir GUIDE_DEMO_JURY.md).
-              Le MOCK_MODE garantit qu&apos;aucune étape ne dépend du réseau. Compte admin :
-              admin@agrivo.com / 123admin123. Vérification publique : /verifier-certificat.
+              Chaque fonction IA a un repli automatique : aucune étape ne dépend du réseau.
+              Le guide interactif s&apos;ouvre à la 1re connexion démo (le dérouler 20 s ou « Passer »).
+              Compte admin : admin@agrivo.com / 123admin123. Vérification publique : /verifier-certificat.
             </div>
           </motion.div>
         </motion.div>

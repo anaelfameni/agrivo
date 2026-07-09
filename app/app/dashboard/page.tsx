@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { motion, useReducedMotion } from "framer-motion";
-import { Bell, CheckCircle2, ChevronRight, FileCheck2, MapPin, Plus, Search, ShieldCheck, X } from "lucide-react";
+import { Bell, CheckCircle2, ChevronRight, CloudOff, Download, FileCheck2, MapPin, Plus, Search, ShieldCheck, X } from "lucide-react";
 import { useAuth } from "@/components/auth-provider";
 import { StatNumber } from "@/components/ui/stat-number";
 import { StatusBadge } from "@/components/ui/status-badge";
@@ -18,6 +18,7 @@ import {
   MANAGER_DEMO,
   FILIERE_LABEL,
   coopStats,
+  exporterFeatureCollection,
   fmtHa,
   formatDateFr,
   parcellesForCoop,
@@ -56,6 +57,10 @@ const COPY = {
     noAlerts: "Aucune alerte active. Les nouvelles anomalies détectées apparaîtront ici.",
     newAnomaly: "Nouvelle anomalie détectée",
     onPlot: (nom: string, region: string) => `Sur la parcelle de ${nom} · ${region}`,
+    exportRegistre: "Exporter (GeoJSON)",
+    reverifTitle: "À re-vérifier",
+    reverifSub: "Nouveau passage satellite requis (Données insuffisantes).",
+    reverifNone: "Aucune parcelle en attente : toutes ont pu être statuées.",
     dateLocale: "fr-FR",
   },
   en: {
@@ -86,6 +91,10 @@ const COPY = {
     noAlerts: "No active alert. Newly detected anomalies will appear here.",
     newAnomaly: "New anomaly detected",
     onPlot: (nom: string, region: string) => `On ${nom}'s plot · ${region}`,
+    exportRegistre: "Export (GeoJSON)",
+    reverifTitle: "To re-verify",
+    reverifSub: "New satellite pass required (Insufficient data).",
+    reverifNone: "No plot pending: all could be decided.",
     dateLocale: "en-GB",
   },
 };
@@ -130,6 +139,19 @@ export default function DashboardPage() {
   const parcelles = useMemo(() => parcellesForCoop(), []);
   const stats = useMemo(() => coopStats(parcelles), [parcelles]);
   const alertes = useMemo(() => parcelles.filter((p) => p.alerteActive), [parcelles]);
+  const aReverifier = useMemo(() => parcelles.filter((p) => p.statut === "insuffisant"), [parcelles]);
+
+  /** Télécharge le registre de la coopérative au format GeoJSON (RFC 7946), prêt pour TRACES NT. */
+  function exporterRegistre() {
+    const fc = exporterFeatureCollection(parcelles);
+    const blob = new Blob([JSON.stringify(fc, null, 2)], { type: "application/geo+json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `agrivo-registre-${parcelles.length}-parcelles.geojson`;
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  }
   const recentes = useMemo(
     () => [...parcelles].sort((a, b) => b.dateVerification.localeCompare(a.dateVerification)),
     [parcelles],
@@ -344,9 +366,19 @@ export default function DashboardPage() {
                 <span className="h-4 w-1 rounded-full bg-green-signal" aria-hidden />
                 {t.latest}
               </h2>
-              <span className="num text-xs text-stone-400">
-                {filtered.length} / {recentes.length}
-              </span>
+              <div className="flex items-center gap-3">
+                <button
+                  type="button"
+                  onClick={exporterRegistre}
+                  className="inline-flex items-center gap-1.5 rounded-full border border-black/10 px-3 py-1.5 text-xs font-medium text-stone-600 outline-none transition-colors hover:border-green-signal/40 hover:text-forest-950 focus-visible:ring-2 focus-visible:ring-green-signal"
+                >
+                  <Download size={13} strokeWidth={2} aria-hidden />
+                  {t.exportRegistre}
+                </button>
+                <span className="num text-xs text-stone-400">
+                  {filtered.length} / {recentes.length}
+                </span>
+              </div>
             </div>
 
             {filtered.length === 0 ? (
@@ -388,8 +420,8 @@ export default function DashboardPage() {
           </div>
         </section>
 
-        {/* Rail : centre d'alertes */}
-        <aside className="order-1 lg:order-none lg:col-span-1">
+        {/* Rail : centre d'alertes + parcelles à re-vérifier */}
+        <aside className="order-1 flex flex-col gap-6 lg:order-none lg:col-span-1">
           <div className="card-premium p-4 sm:p-5">
             <div className="flex items-center justify-between">
               <h2 className="flex items-center gap-2 text-sm font-semibold text-forest-950">
@@ -428,6 +460,44 @@ export default function DashboardPage() {
                         aria-hidden
                         className="mt-0.5 shrink-0 text-red-block/50 transition-transform group-hover:translate-x-0.5"
                       />
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+
+          {/* Parcelles en « Données insuffisantes » : à reprogrammer (nouveau passage satellite) */}
+          <div className="card-premium p-4 sm:p-5">
+            <div className="flex items-center justify-between">
+              <h2 className="flex items-center gap-2 text-sm font-semibold text-forest-950">
+                <span className="grid h-8 w-8 place-items-center rounded-xl" style={{ background: "rgba(200,134,29,0.12)" }} aria-hidden>
+                  <CloudOff size={16} strokeWidth={2} className="text-amber-cacao" />
+                </span>
+                {t.reverifTitle}
+              </h2>
+              {aReverifier.length > 0 && (
+                <span className="num inline-flex h-6 min-w-6 items-center justify-center rounded-full bg-amber-cacao px-1.5 text-xs font-semibold text-white">
+                  {aReverifier.length}
+                </span>
+              )}
+            </div>
+            <p className="mt-1 text-xs text-stone-500">{t.reverifSub}</p>
+            {aReverifier.length === 0 ? (
+              <p className="mt-4 text-sm text-stone-500">{t.reverifNone}</p>
+            ) : (
+              <ul className="mt-3 flex flex-col gap-2">
+                {aReverifier.map((p) => (
+                  <li key={p.id}>
+                    <Link
+                      href={`/app/parcelle/${p.id}`}
+                      className="group flex items-center gap-3 rounded-xl border border-amber-cacao/20 bg-amber-cacao/[0.05] px-3 py-2.5 outline-none transition-colors hover:bg-amber-cacao/[0.09] focus-visible:ring-2 focus-visible:ring-amber-cacao/40"
+                    >
+                      <span className="min-w-0 flex-1">
+                        <span className="block truncate text-sm font-medium text-forest-950">{p.producteurNom}</span>
+                        <span className="num mt-0.5 block text-xs text-stone-500">{p.numeroCartePro} · {fmtHa(p.superficieHa)}</span>
+                      </span>
+                      <ChevronRight size={15} strokeWidth={2} aria-hidden className="shrink-0 text-amber-cacao/60 transition-transform group-hover:translate-x-0.5" />
                     </Link>
                   </li>
                 ))}

@@ -3,6 +3,37 @@
 Versioning sémantique (MAJOR.MINOR.PATCH). Chaque release liste ce qui est ajouté, corrigé et
 vérifié, conformément à l'étape 8 du pipeline « Du besoin à la Release ».
 
+## v1.14.0 — 2026-07-09 — Guide interactif d'accueil, Assistant AGRIVO complet, dashboards enrichis
+
+### Ajouté
+- **Guide interactif d'accueil** : pop-up animé (icônes en ressort, étapes glissées, points de
+  progression, clavier, reduced-motion) qui s'ouvre à la **première connexion** sur le tableau de bord —
+  **7 étapes coopérative** (dashboard, vérification min. 4 sommets, 3 verdicts, certificat QR, import de
+  registre, assistant) et **6 étapes exportateur** (portefeuille lié table↔carte, masque zones sensibles,
+  assistant portefeuille, dossier acheteur, alertes). Relançable à tout moment via le **bouton « ? »**
+  de la topbar. Drapeau localStorage par rôle.
+- **Assistant AGRIVO complet (29 faits)** : sait **se présenter**, guider dans le site, et couvre aussi
+  méthodologie, propriété des données/ARTCI, mode hors connexion, langues, vérification publique QR ;
+  les demandes complexes ou hors base sont **orientées vers support@agrivo.ci** (règle ajoutée au prompt
+  système + repli). Suggestions et accueil du widget mis à jour (auto-présentation).
+- **Dashboard coopérative** : bouton **« Exporter (GeoJSON) »** du registre (RFC 7946, prêt TRACES NT)
+  + carte **« À re-vérifier »** (parcelles en Données insuffisantes → nouveau passage satellite).
+- **Dashboard exportateur** : bandeau **« Répartition des statuts »** (3 statuts verbatim) dans l'analytique.
+
+### Corrigé / cohérence
+- Emails placeholder de la page Contact (`@agrivo.example`) → **commercial@agrivo.ci / support@agrivo.ci** ;
+  support@agrivo.ci ajouté au pied de page du site.
+- Guide présentateur (Ctrl+Shift+D) : mention MOCK_MODE retirée + note « le guide interactif s'ouvre à la
+  1re connexion démo ».
+- Appariement de l'assistant affiné (« sans internet » → fait hors-connexion).
+
+### Vérifié
+- `tsc` ✓ · **76/76 tests** ✓ · `next build` ✓ · ESLint 0.
+- **Assistant : 10/10 questions** (présentation, prix, compte, verdicts, CI, masque, support, hors
+  connexion, garde-fou crédit, hors-sujet) — dont **6 en IA live**.
+- **Parcours UI (Edge/CDP, logué coop démo) : 8/8** — guide interactif (ouverture auto → Suivant →
+  Passer → fermé) + 3 exemples + 2 saisies manuelles + garde min. 4 + polygone fermé.
+
 ## v1.13.0 — 2026-07-09 — Assistant AGRIVO intelligent, IA « live » assumée, polygone fermé, retrait dioula/baoulé
 
 ### Corrigé

@@ -37,5 +37,18 @@ describe("Assistant AGRIVO — base de connaissances & appariement", () => {
     const meteo = repondreDeterministe("Quelle est la météo à Paris ?", "fr");
     expect(meteo.finance).toBe(false);
     expect(meteo.horsPerimetre).toBe(true);
+    expect(meteo.reponse).toContain("support@agrivo.ci");
+  });
+
+  it("sait se présenter (« Qui es-tu ? », « Bonjour »)", () => {
+    const qui = repondreDeterministe("Bonjour, qui es-tu ?", "fr");
+    expect(qui.faitId).toBe("assistant-presentation");
+    expect(qui.reponse).toContain("Assistant AGRIVO");
+  });
+
+  it("oriente vers le support pour une prise de contact", () => {
+    const sup = repondreDeterministe("Comment contacter le support ?", "fr");
+    expect(sup.faitId).toBe("agrivo-support");
+    expect(sup.reponse).toContain("support@agrivo.ci");
   });
 });

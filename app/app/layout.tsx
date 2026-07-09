@@ -5,6 +5,8 @@ import { LanguageSwitcher } from "@/components/ui/language-switcher";
 import { AppSidebar, AppMobileNav } from "@/components/app/app-sidebar";
 import { RouteGuard } from "@/components/app/route-guard";
 import { UserMenu } from "@/components/app/user-menu";
+import { TourButton } from "@/components/app/tour-button";
+import { OnboardingTour } from "@/components/app/onboarding-tour";
 import { BackToSiteLink } from "@/components/app/back-to-site-link";
 import { AppEyebrow } from "@/components/app/app-eyebrow";
 import { BRAND_NAME } from "@/config/brand";
@@ -42,6 +44,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
           </div>
 
           <div className="flex items-center gap-2 md:gap-3">
+            <TourButton />
             <LanguageSwitcher tone="dark" />
             <UserMenu />
             <BackToSiteLink label="Retour à la page d'accueil" />
@@ -56,6 +59,9 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
           <main className="min-w-0 flex-1">{children}</main>
         </div>
       </div>
+
+      {/* Guide interactif d'accueil (1re visite + bouton « ? ») */}
+      <OnboardingTour />
     </div>
     </RouteGuard>
   );

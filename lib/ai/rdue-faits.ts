@@ -155,7 +155,7 @@ export const FAITS_RDUE: FaitRDUE[] = [
   },
   {
     id: "agrivo-produit",
-    motsCles: ["agrivo", "quoi", "sert", "plateforme", "outil", "comment", "marche", "fonctionne", "parcours", "etapes", "does", "what", "how", "works", "flow", "platform", "utiliser", "use"],
+    motsCles: ["agrivo", "quoi", "sert", "plateforme", "outil", "comment marche", "fonctionne", "parcours", "etapes", "does", "what", "how", "works", "flow", "platform", "utiliser", "use"],
     question: { fr: "Comment fonctionne AGRIVO ?", en: "How does AGRIVO work?" },
     reponse: {
       fr: "AGRIVO déroule un parcours en plusieurs temps : import ou saisie des parcelles, cartographie, analyse satellite, verdict expliqué, certificat d'évaluation de conformité, puis valorisation. Le tout au format accepté par l'Union européenne et directement exploitable pour la déclaration sur TRACES NT.",
@@ -234,6 +234,76 @@ export const FAITS_RDUE: FaitRDUE[] = [
     source: { fr: "Certificat AGRIVO", en: "AGRIVO certificate" },
   },
   {
+    id: "assistant-presentation",
+    motsCles: ["bonjour", "salut", "hello", "qui es", "presente", "presenter", "ton nom", "tu fais quoi", "who are", "your name", "introduce", "greet"],
+    question: { fr: "Qui es-tu ?", en: "Who are you?" },
+    reponse: {
+      fr: "Bonjour ! Je suis l'Assistant AGRIVO. Je connais toute la plateforme — prix, parcours de vérification, verdicts, certificats, espaces coopérative et exportateur — et le règlement européen contre la déforestation. Posez-moi votre question, je vous guide pas à pas ; et pour une demande complexe, notre équipe répond à support@agrivo.ci.",
+      en: "Hello! I am the AGRIVO Assistant. I know the whole platform — pricing, verification journey, verdicts, certificates, cooperative and exporter workspaces — and the EU Deforestation Regulation. Ask me your question and I will guide you step by step; for complex requests, our team answers at support@agrivo.ci.",
+    },
+    source: { fr: "Assistant AGRIVO", en: "AGRIVO Assistant" },
+  },
+  {
+    id: "agrivo-support",
+    motsCles: ["support", "contacter", "email", "mail", "joindre", "ecrire", "probleme", "bug", "erreur", "assistance", "reclamation", "humain", "equipe", "help", "issue", "team"],
+    question: { fr: "Comment contacter le support ?", en: "How do I contact support?" },
+    reponse: {
+      fr: "Pour toute demande complexe ou spécifique à votre dossier, écrivez à support@agrivo.ci : l'équipe répond sous 48 h ouvrées. Vous pouvez aussi passer par le formulaire de la page Contact ou consulter le Centre d'aide et la FAQ du site.",
+      en: "For any complex or account-specific request, write to support@agrivo.ci: the team replies within 48 business hours. You can also use the Contact page form or browse the site's Help centre and FAQ.",
+    },
+    source: { fr: "Support AGRIVO", en: "AGRIVO support" },
+  },
+  {
+    id: "agrivo-methodologie",
+    motsCles: ["methodologie", "methode", "satellite", "satellites", "copernicus", "sentinel", "convergence", "preuve", "preuves", "fiable", "fiabilite", "precision", "boite noire", "fonctionne comment", "analyse comment", "method", "reliable", "accuracy", "evidence"],
+    question: { fr: "Sur quoi repose l'analyse d'AGRIVO ?", en: "What is AGRIVO's analysis based on?" },
+    reponse: {
+      fr: "L'analyse croise plusieurs sources satellites publiques indépendantes — dont Copernicus, le programme européen d'observation de la Terre — autour de la date pivot du 31 décembre 2020 : c'est la convergence de preuves, la méthode de référence de la FAO. Aucune boîte noire : chaque verdict est expliqué en langage clair, avec ses sources.",
+      en: "The analysis crosses several independent public satellite sources — including Copernicus, the European Earth-observation programme — around the 31 December 2020 cut-off date: convergence of evidence, the FAO reference method. No black box: every verdict is explained in plain language, with its sources.",
+    },
+    source: { fr: "Méthodologie AGRIVO (page Méthodologie)", en: "AGRIVO methodology (Methodology page)" },
+  },
+  {
+    id: "agrivo-donnees",
+    motsCles: ["donnees", "consentement", "artci", "propriete", "confidentialite", "rgpd", "protection", "vie privee", "securite", "cle", "data", "privacy", "consent", "ownership"],
+    question: { fr: "À qui appartiennent les données ?", en: "Who owns the data?" },
+    reponse: {
+      fr: "Les données restent la propriété de la coopérative. Chaque vérification commence par le recueil du consentement éclairé du producteur (loi n°2013-450, ARTCI), et les clés d'accès aux services restent côté serveur : elles ne transitent jamais par le navigateur. Le détail est dans la page Confidentialité.",
+      en: "The data remains the cooperative's property. Every verification starts with the farmer's informed consent (law no. 2013-450, ARTCI), and service access keys stay server-side: they never pass through the browser. Details are on the Privacy page.",
+    },
+    source: { fr: "Confidentialité AGRIVO · ARTCI", en: "AGRIVO privacy · ARTCI" },
+  },
+  {
+    id: "agrivo-horsconnexion",
+    motsCles: ["hors connexion", "hors-connexion", "offline", "reseau", "internet", "sans internet", "sans reseau", "marche sans", "coupure", "connexion", "brousse", "synchronisation", "sync", "network"],
+    question: { fr: "AGRIVO marche-t-il sans réseau ?", en: "Does AGRIVO work without a network?" },
+    reponse: {
+      fr: "Oui. AGRIVO est une application installable qui garde un mode hors connexion : le contrôle avance au bord du champ même sans réseau, et la synchronisation suit dès que la connexion revient. Aucune étape de la vérification n'est bloquée par une coupure.",
+      en: "Yes. AGRIVO is an installable app with an offline mode: the check moves forward at the edge of the field even without a network, and syncing follows as soon as the connection returns. No verification step is blocked by an outage.",
+    },
+    source: { fr: "Mode hors connexion AGRIVO", en: "AGRIVO offline mode" },
+  },
+  {
+    id: "agrivo-langues",
+    motsCles: ["langue", "langues", "anglais", "francais", "english", "voix", "vocal", "vocale", "lire", "ecouter", "language", "voice", "aloud"],
+    question: { fr: "Quelles langues parle AGRIVO ?", en: "Which languages does AGRIVO speak?" },
+    reponse: {
+      fr: "L'interface est bilingue : français et anglais, avec un sélecteur en haut de page. Au moment du verdict, une lecture à voix haute permet d'expliquer simplement le résultat au producteur, au bord du champ.",
+      en: "The interface is bilingual: French and English, with a switcher at the top of the page. At verdict time, a read-aloud feature helps explain the result plainly to the farmer, at the edge of the field.",
+    },
+    source: { fr: "Interface AGRIVO", en: "AGRIVO interface" },
+  },
+  {
+    id: "agrivo-verifpublique",
+    motsCles: ["qr", "scanner le", "verifier un certificat", "verification publique", "acheteur verifie", "authentique", "authenticite", "public", "verify a certificate", "authenticity", "buyer"],
+    question: { fr: "Comment un acheteur vérifie-t-il un certificat ?", en: "How does a buyer verify a certificate?" },
+    reponse: {
+      fr: "Chaque certificat AGRIVO porte un QR code : en le scannant, n'importe quel acheteur ouvre la page publique « Vérifier un certificat » et confirme en direct le verdict, le producteur et la date d'évaluation. Aucun compte n'est nécessaire pour vérifier.",
+      en: "Every AGRIVO certificate carries a QR code: by scanning it, any buyer opens the public \"Verify a certificate\" page and confirms the verdict, farmer and assessment date live. No account is needed to verify.",
+    },
+    source: { fr: "Vérification publique AGRIVO", en: "AGRIVO public verification" },
+  },
+  {
     id: "agrivo-alertes",
     motsCles: ["alerte", "alertes", "notification", "surveiller", "signale", "alert", "alerts", "watch", "centre"],
     question: { fr: "Où voir les alertes de la coopérative ?", en: "Where can I see the cooperative's alerts?" },
@@ -261,8 +331,8 @@ export const HORS_PERIMETRE_FINANCE = {
 
 /** Réponse de repli quand aucune correspondance nette n'est trouvée (et l'IA n'a rien renvoyé). */
 export const HORS_SUJET = {
-  fr: "Je réponds à vos questions sur AGRIVO (prix, parcours de vérification, verdicts, comptes, valorisation) et sur le règlement européen contre la déforestation (RDUE). Reformulez votre question et j'y réponds précisément.",
-  en: "I answer your questions about AGRIVO (pricing, verification journey, verdicts, accounts, valorisation) and about the EU Deforestation Regulation (EUDR). Rephrase your question and I will answer precisely.",
+  fr: "Je réponds à vos questions sur AGRIVO (prix, parcours de vérification, verdicts, comptes, valorisation) et sur le règlement européen contre la déforestation (RDUE). Reformulez votre question et j'y réponds précisément — et pour une demande complexe, notre équipe répond à support@agrivo.ci.",
+  en: "I answer your questions about AGRIVO (pricing, verification journey, verdicts, accounts, valorisation) and about the EU Deforestation Regulation (EUDR). Rephrase your question and I will answer precisely — and for complex requests, our team answers at support@agrivo.ci.",
 };
 
 const MOTS_FINANCE = ["credit", "pret", "prete", "financement", "financer", "emprunt", "microcredit", "prefinancement", "dette", "avance", "tresorerie", "plafond", "solvabilite"];

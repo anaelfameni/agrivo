@@ -43,6 +43,7 @@ const COPY = {
       superficie: "Superficie cartographiée",
       volume: "Volume validé",
     },
+    repartition: "Répartition des statuts",
     searchAria: "Rechercher une parcelle, un producteur, une coopérative",
     searchPlaceholder: "Rechercher…",
     clear: "Effacer",
@@ -66,6 +67,7 @@ const COPY = {
       superficie: "Area mapped",
       volume: "Validated volume",
     },
+    repartition: "Status breakdown",
     searchAria: "Search a plot, a farmer, a cooperative",
     searchPlaceholder: "Search…",
     clear: "Clear",
@@ -228,6 +230,37 @@ export function AnalyticsTab({
           </motion.div>
         ))}
       </motion.div>
+
+      {/* Répartition des 3 statuts (verbatim charte) sur tout le portefeuille */}
+      {(() => {
+        const rep = (["conforme", "anomalie", "insuffisant"] as Statut[]).map((s) => ({
+          key: s,
+          label: t.statutFilters[s],
+          count: parcelles.filter((p) => p.statut === s).length,
+          color: STATUT_RANK[s] === 0 ? "#16a34a" : STATUT_RANK[s] === 1 ? "#b4231e" : "#c8861d",
+        }));
+        const total = parcelles.length || 1;
+        return (
+          <div className="rounded-2xl border border-black/[0.05] bg-white p-4 shadow-[0_1px_2px_rgba(10,31,20,0.04)]">
+            <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
+              <h3 className="text-sm font-semibold text-forest-950">{t.repartition}</h3>
+              <ul className="flex flex-wrap items-center gap-x-4 gap-y-1">
+                {rep.map((r) => (
+                  <li key={r.key} className="flex items-center gap-1.5 text-xs text-stone-600">
+                    <span className="h-2 w-2 rounded-full" style={{ background: r.color }} aria-hidden />
+                    {r.label} <span className="num font-semibold text-forest-950">{r.count}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div className="mt-2.5 flex h-2 overflow-hidden rounded-full bg-black/[0.06]" aria-hidden>
+              {rep.map((r) =>
+                r.count > 0 ? <div key={r.key} style={{ width: `${(r.count / total) * 100}%`, background: r.color }} /> : null,
+              )}
+            </div>
+          </div>
+        );
+      })()}
 
       {/* Barre d'outils : recherche · filtres · export */}
       <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">

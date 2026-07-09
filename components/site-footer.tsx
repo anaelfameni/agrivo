@@ -42,6 +42,9 @@ export function SiteFooter() {
           <div className="max-w-xs">
             <Logo />
             <p className="mt-3 text-sm text-white/55">{t.tagline}</p>
+            <a href="mailto:support@agrivo.ci" className="num mt-3 inline-block text-sm text-white/65 transition-colors hover:text-white">
+              support@agrivo.ci
+            </a>
           </div>
           {cols.map((col) => (
             <div key={col.title}>

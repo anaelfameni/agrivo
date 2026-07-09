@@ -96,8 +96,8 @@ export default function ContactPage() {
           </div>
 
           <div className="flex flex-col gap-4">
-            <ContactCard Icon={Building2} title={en ? "Sales" : "Commercial"} desc={en ? "Demo, pricing, deployment for your cooperative or as an exporter." : "Démonstration, tarifs, déploiement pour votre coopérative ou en tant qu'exportateur."} email="commercial@agrivo.example" />
-            <ContactCard Icon={MessageSquare} title="Support" desc={en ? "Usage help, technical questions, account access." : "Aide à l'utilisation, questions techniques, accès à votre compte."} email="support@agrivo.example" />
+            <ContactCard Icon={Building2} title={en ? "Sales" : "Commercial"} desc={en ? "Demo, pricing, deployment for your cooperative or as an exporter." : "Démonstration, tarifs, déploiement pour votre coopérative ou en tant qu'exportateur."} email="commercial@agrivo.ci" />
+            <ContactCard Icon={MessageSquare} title="Support" desc={en ? "Usage help, technical questions, account access." : "Aide à l'utilisation, questions techniques, accès à votre compte."} email="support@agrivo.ci" />
             <div className="rounded-2xl border border-black/[0.06] bg-white p-5 text-sm text-stone-600">
               <div className="flex items-center gap-2 font-medium text-forest-950">
                 <Mail size={16} className="text-green-signal" /> {en ? "Reply within 48 business hours" : "Réponse sous 48 h ouvrées"}
