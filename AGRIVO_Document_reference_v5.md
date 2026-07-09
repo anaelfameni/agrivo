@@ -20,7 +20,7 @@
 | IA | 1 fonctionnalité bonus | **13 usages IA en production** + rituel pré-vol « Démo prête : 6/6 » |
 | Équipe | Fatim « contribution stratégique » | **Fatim hors projet.** Rôles réels : voir §7 |
 | Positionnement réglementaire | Non traité | **NOUVEAU §3 : personne ne certifie la RDUE** + mention DDS sur le certificat |
-| Prix coopérative | 120 000 FCFA/mois | **125 000 FCFA/mois** (≈ 1 500 FCFA/producteur/an pour 1 000 producteurs) |
+| Prix coopérative | 120 000 FCFA/mois | **100 000 FCFA/mois** (≈ 1 200 FCFA/producteur/an pour 1 000 producteurs) |
 
 ---
 
@@ -120,7 +120,7 @@ la RDUE ? » Réponse : AUCUN. Cette certification n'existe pas — par concepti
 - **Vérification publique** : n'importe qui (un acheteur, le jury) scanne le QR d'un certificat
   et voit le statut réel — l'« effet final » de la démo.
 - **PWA** : la même application du bureau au bord du champ, sans app store.
-- **Comptes démo** : coop `client@test.com / 123client123` · admin `admin@agrivo.com / 123admin123`.
+- **Comptes démo** : coopérative `client@test.com / 123client123` (Amadou · Soubré) · exportateur `export@agrivo.com / 123export123` (Marc · Cacao Export CI) · admin `admin@agrivo.com / 123admin123`.
 
 ---
 
@@ -150,8 +150,8 @@ attendre le bandeau **« Démo prête : 6/6 en direct »**.
 
 | Offre | Prix | Contenu |
 |---|---|---|
-| **Abonnement coopérative** | **125 000 FCFA/mois** | Vérifications illimitées, certificats, audit de registre, hors connexion, support. ≈ **1 500 FCFA par producteur et par an** (coopérative de 1 000 producteurs) — hypothèse à valider au pilote (benchmark marché 2–5 $) |
-| **API exportateur** | **1 500 000 FCFA/mois** | Portefeuille multi-coopératives, exports TRACES NT, engagement de disponibilité |
+| **Abonnement coopérative** | **100 000 FCFA/mois** | Vérifications illimitées, certificats, audit de registre, hors connexion, support. ≈ **1 200 FCFA par producteur et par an** (coopérative de 1 000 producteurs) — hypothèse à valider au pilote (benchmark marché 2–5 $) |
+| **API exportateur** | **à partir de 1 000 000 FCFA/mois** | Portefeuille multi-coopératives, exports TRACES NT, engagement de disponibilité |
 
 - **Gratuit pour le producteur** : la vérification est prise en charge par l'abonnement de sa coopérative.
 - **Aucune commission de crédit** (retirée avec le pivot Valorisation — le modèle est volontairement simple).

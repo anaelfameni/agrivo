@@ -53,8 +53,8 @@
   responsable de la conformité au sens du règlement (UE) 2023/1115. »* C'est une **force** : nous
   sommes en amont des Bureau Veritas, au niveau du champ, au prix d'une coopérative.
 - **Aucun crédit, jamais** : la conformité se valorise par les **primes** et les **acheteurs premium**.
-- Prix : **125 000 FCFA/mois** par coopérative (≈ 1 500 FCFA/producteur/an) · API exportateur
-  **1 500 000 FCFA/mois**.
+- Prix : **100 000 FCFA/mois** par coopérative (≈ 1 200 FCFA/producteur/an) · API exportateur
+  **à partir de 1 000 000 FCFA/mois**.
 - On ne « négocie pas le prix » (fixé par l'État) : on négocie **les primes** au-dessus.
 
 ---
@@ -69,7 +69,10 @@
 - **L'effet final** : le jury scanne le QR du certificat avec SON téléphone →
   la page publique de vérification s'affiche.
 - **Plan B** : chaque fonction IA a un repli automatique honnête ; vidéo de secours disponible.
-- **Comptes démo** : coop `client@test.com / 123client123` · admin `admin@agrivo.com / 123admin123`.
+- **Deux espaces distincts** (deux comptes démo « 1 clic » sur /connexion) : **coopérative**
+  `client@test.com / 123client123` (Amadou · Soubré → vérifie SES parcelles) · **exportateur**
+  `export@agrivo.com / 123export123` (Marc · Cacao Export CI → portefeuille multi-coopératives) ·
+  admin `admin@agrivo.com / 123admin123`.
 
 ---
 
