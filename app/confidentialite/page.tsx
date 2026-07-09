@@ -49,7 +49,7 @@ export default function ConfidentialitePage() {
       </LegalSection>
 
       <LegalSection title="8. Sécurité">
-        <p>Les accès sont protégés (authentification, journalisation), les clés d&apos;API sont injectées côté serveur et ne transitent jamais par le navigateur, et les échanges satellites reposent sur des sources reconnues (Whisp/FAO, Copernicus).</p>
+        <p>Les accès sont protégés (authentification, journalisation), les clés d&apos;API sont injectées côté serveur et ne transitent jamais par le navigateur, et les échanges satellites reposent sur des sources reconnues (FAO, Copernicus).</p>
       </LegalSection>
 
       <LegalSection title="9. Contact">

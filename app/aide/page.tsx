@@ -20,7 +20,7 @@ const ARTICLES: Article[] = [
   { cat: "demarrer", Icon: Sparkles, title: { fr: "Comprendre le parcours en 5 étapes", en: "Understand the 5-step journey" }, href: "/methodologie" },
   { cat: "verifier", Icon: Satellite, title: { fr: "Scanner la carte d'un producteur", en: "Scan a farmer's card" }, href: "/app/verifier" },
   { cat: "verifier", Icon: Satellite, title: { fr: "Cartographier et valider une parcelle", en: "Map and validate a plot" }, href: "/app/verifier" },
-  { cat: "verifier", Icon: Satellite, title: { fr: "Lire un verdict Whisp (Conforme, Anomalie, Données insuffisantes)", en: "Read a Whisp verdict (Compliant, Anomaly, Insufficient data)" }, href: "/methodologie" },
+  { cat: "verifier", Icon: Satellite, title: { fr: "Lire un verdict de conformité (Conforme, Anomalie, Données insuffisantes)", en: "Read a compliance verdict (Compliant, Anomaly, Insufficient data)" }, href: "/methodologie" },
   { cat: "certificats", Icon: ScrollText, title: { fr: "Générer un certificat PDF", en: "Generate a PDF certificate" }, href: "/app/verifier" },
   { cat: "certificats", Icon: ScrollText, title: { fr: "Exporter au format GeoJSON pour TRACES NT", en: "Export GeoJSON for TRACES NT" }, href: "/app/exportateur" },
   { cat: "valorisation", Icon: HandCoins, title: { fr: "Valoriser une parcelle conforme (primes, dossier exportateur)", en: "Valorise a compliant plot (premiums, exporter file)" }, href: "/app/verifier" },

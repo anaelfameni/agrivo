@@ -78,7 +78,7 @@ export function CertificatDocument({ data, qrDataUrl }: { data: CertificatData; 
           </View>
         </View>
 
-        <Text style={styles.title}>Certificat de vérification de parcelle</Text>
+        <Text style={styles.title}>Certificat d&apos;évaluation de conformité</Text>
 
         <View style={[styles.verdictBox, { borderColor: col, backgroundColor: statutBg(data.statut) }]}>
           <Text style={[styles.verdictLabel, { color: col }]}>{data.statutLabel}</Text>

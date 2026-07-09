@@ -41,8 +41,8 @@ const QA: { q: { fr: string; en: string }; a: { fr: string; en: string } }[] = [
   {
     q: { fr: "Quelle est la fiabilité de la détection ?", en: "How reliable is the detection?" },
     a: {
-      fr: "La détection repose sur Whisp, l'outil open-source de référence de la FAO pour le RDUE, déjà utilisé en production. Sa méthode de convergence de preuves croise plusieurs jeux de données satellites indépendants. Quand les données ne permettent pas de conclure, Agrivo affiche « Données insuffisantes » plutôt que de deviner.",
-      en: "Detection relies on Whisp, FAO's open-source reference tool for the EUDR, already used in production. Its convergence-of-evidence method crosses several independent satellite datasets. When the data does not allow a conclusion, Agrivo displays \"Insufficient data\" rather than guessing.",
+      fr: "La détection repose sur la méthode de référence de la FAO pour le RDUE (analyse satellite), déjà utilisée en production. Sa convergence de preuves croise plusieurs jeux de données satellites indépendants. Quand les données ne permettent pas de conclure, Agrivo affiche « Données insuffisantes » plutôt que de deviner.",
+      en: "Detection relies on the FAO's reference method for the EUDR (satellite analysis), already used in production. Its convergence of evidence crosses several independent satellite datasets. When the data does not allow a conclusion, Agrivo displays \"Insufficient data\" rather than guessing.",
     },
   },
   {

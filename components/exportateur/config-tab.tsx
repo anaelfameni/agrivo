@@ -11,14 +11,14 @@ import { type LogEntry } from "@/components/exportateur/types";
 
 const PINGS = {
   fr: [
-    { service: "Whisp API", label: "Convergence de preuves vérifiée", range: [700, 1200] as const },
-    { service: "Gemini API", label: "Explication de verdict générée", range: [400, 900] as const },
+    { service: "Moteur satellite", label: "Convergence de preuves vérifiée", range: [700, 1200] as const },
+    { service: "IA Agrivo", label: "Explication de verdict générée", range: [400, 900] as const },
     { service: "Copernicus", label: "Tuile Sentinel-2 récupérée", range: [900, 1600] as const },
     { service: "TRACES NT", label: "État de dépôt interrogé", range: [300, 700] as const },
   ],
   en: [
-    { service: "Whisp API", label: "Convergence of evidence verified", range: [700, 1200] as const },
-    { service: "Gemini API", label: "Verdict explanation generated", range: [400, 900] as const },
+    { service: "Moteur satellite", label: "Convergence of evidence verified", range: [700, 1200] as const },
+    { service: "IA Agrivo", label: "Verdict explanation generated", range: [400, 900] as const },
     { service: "Copernicus", label: "Sentinel-2 tile fetched", range: [900, 1600] as const },
     { service: "TRACES NT", label: "Submission status queried", range: [300, 700] as const },
   ],
@@ -66,7 +66,7 @@ export function ConfigTab({
   useEffect(() => {
     if (!seeded.current) {
       seeded.current = true;
-      pushLog({ service: "Whisp API", label: t.seedLog, ms: 214, status: "ok" });
+      pushLog({ service: "Moteur satellite", label: t.seedLog, ms: 214, status: "ok" });
     }
     const timer = setInterval(() => {
       const pings = PINGS[lang];

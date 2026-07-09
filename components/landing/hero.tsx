@@ -50,13 +50,13 @@ const HERO_TR = {
     badgeReq: "Conformité RDUE requise",
     badgeCountdown: (j: number) => `J-${j} · Conformité RDUE requise`,
     live: "EN DIRECT",
-    portfolio: "Portefeuille",
-    kConforme: "Conformes",
-    kAnomalie: "Anomalies",
-    kSuperficie: "Superficie",
+    portfolio: "Portefeuille exportateur",
+    kConforme: "Coops à jour",
+    kAnomalie: "À traiter",
+    kSuperficie: "Superficie suivie",
     deadline: "Échéance RDUE",
     deadlineDate: "30 décembre 2026",
-    tags: { Conforme: "Conforme", Insuffisant: "Insuffisant", Anomalie: "Anomalie" } as Record<string, string>,
+    tags: { ok: "À jour", watch: "À surveiller", action: "Action requise" } as Record<string, string>,
   },
   en: {
     verbs: ["verifies", "proves", "certifies", "simplifies"],
@@ -68,25 +68,29 @@ const HERO_TR = {
     badgeReq: "EUDR compliance required",
     badgeCountdown: (j: number) => `D-${j} · EUDR compliance required`,
     live: "LIVE",
-    portfolio: "Portfolio",
-    kConforme: "Compliant",
-    kAnomalie: "Anomalies",
-    kSuperficie: "Area",
+    portfolio: "Exporter portfolio",
+    kConforme: "Coops on track",
+    kAnomalie: "To handle",
+    kSuperficie: "Area tracked",
     deadline: "EUDR deadline",
     deadlineDate: "30 December 2026",
-    tags: { Conforme: "Compliant", Insuffisant: "Insufficient", Anomalie: "Anomaly" } as Record<string, string>,
+    tags: { ok: "On track", watch: "Watch", action: "Action needed" } as Record<string, string>,
   },
 };
 type HeroTr = (typeof HERO_TR)["fr"];
 
-/* --------------------------- Données de démonstration (mock) --------------------------- */
-const STATS = { conforme: 32, anomalie: 5, total: 45, superficieHa: 1240 };
+/* --------------------------- Données de démonstration (mock) ---------------------------
+ * Portefeuille d'un EXPORTATEUR : il suit plusieurs coopératives. Le chiffre par ligne est le
+ * TAUX DE CONFORMITÉ de la coop ; la pastille est un indicateur de santé (À jour / À surveiller /
+ * Action requise), volontairement DISTINCT des trois verdicts de parcelle (Conforme / Anomalie
+ * détectée / Données insuffisantes), qui, eux, ne s'appliquent qu'à une parcelle. */
+const STATS = { conforme: 38, anomalie: 5, total: 45, superficieHa: 12400 };
 
 const ROWS = [
-  { name: "COOP-SOU · Soubré", dep: "Cacao · Nawa", comp: 96, color: "var(--color-green-signal)", tag: "Conforme" },
-  { name: "UCACO · Man", dep: "Café · Tonkpi", comp: 63, color: "var(--color-amber-cacao)", tag: "Insuffisant" },
-  { name: "COOP-HEV · Aboisso", dep: "Hévéa · Sud-Comoé", comp: 28, color: "var(--color-red-block)", tag: "Anomalie" },
-  { name: "COOP-PALM · Dabou", dep: "Palmier · Grands-Ponts", comp: 89, color: "var(--color-green-signal)", tag: "Conforme" },
+  { name: "COOP-SOU · Soubré", dep: "Cacao · Nawa", comp: 96, color: "var(--color-green-signal)", tag: "ok" },
+  { name: "UCACO · Man", dep: "Café · Tonkpi", comp: 63, color: "var(--color-amber-cacao)", tag: "watch" },
+  { name: "COOP-HEV · Aboisso", dep: "Hévéa · Sud-Comoé", comp: 28, color: "var(--color-red-block)", tag: "action" },
+  { name: "COOP-PALM · Dabou", dep: "Palmier · Grands-Ponts", comp: 89, color: "var(--color-green-signal)", tag: "ok" },
 ];
 
 function joursAvantRDUE(now: Date): number {

@@ -13,22 +13,24 @@ type Billing = "monthly" | "annual";
 const PLANS = [
   {
     name: { fr: "Coopérative", en: "Cooperative" },
-    monthly: 125_000,
+    monthly: 100_000,
+    from: false,
     unit: { fr: "FCFA / mois", en: "FCFA / month" },
     desc: {
-      fr: "Pour les gérants de coopérative qui valident les lots au bord du champ. Base ≈ 1 500 FCFA par producteur vérifié et par an (coopérative d'environ 1 000 producteurs).",
-      en: "For cooperative managers who validate lots at the edge of the field. Basis ≈ 1,500 FCFA per verified producer per year (cooperative of about 1,000 producers).",
+      fr: "Pour les gérants de coopérative qui valident les lots au bord du champ. Base ≈ 1 200 FCFA par producteur vérifié et par an (coopérative d'environ 1 000 producteurs).",
+      en: "For cooperative managers who validate lots at the edge of the field. Basis ≈ 1,200 FCFA per verified producer per year (cooperative of about 1,000 producers).",
     },
     features: {
-      fr: ["Vérifications illimitées", "Certificats PDF", "Mode hors connexion", "Sélecteur de langue", "Support"],
-      en: ["Unlimited verifications", "PDF certificates", "Offline mode", "Language switcher", "Support"],
+      fr: ["Vérifications illimitées", "Certificats d'évaluation de conformité (PDF)", "Mode hors connexion", "Sélecteur de langue", "Support"],
+      en: ["Unlimited verifications", "Compliance-assessment certificates (PDF)", "Offline mode", "Language switcher", "Support"],
     },
     highlight: false,
     cta: { fr: "Commencer", en: "Get started" },
   },
   {
     name: { fr: "API exportateur", en: "Exporter API" },
-    monthly: 1_500_000,
+    monthly: 1_000_000,
+    from: true,
     unit: { fr: "FCFA / mois", en: "FCFA / month" },
     desc: {
       fr: "Pour les exportateurs qui gèrent des milliers de parcelles et déposent des DDR.",
@@ -107,6 +109,9 @@ export default function Tarifs() {
                   <div className={`font-display text-2xl ${p.highlight ? "text-white" : "text-forest-950"}`}>{en ? p.name.en : p.name.fr}</div>
                   <p className={`mt-2 text-sm ${p.highlight ? "text-white/65" : "text-stone-500"}`}>{en ? p.desc.en : p.desc.fr}</p>
                   <div className="mt-6 flex items-end gap-2">
+                    {p.from && (
+                      <span className={`mb-1.5 text-xs font-medium ${p.highlight ? "text-white/60" : "text-stone-500"}`}>{en ? "from" : "dès"}</span>
+                    )}
                     <span className="num text-4xl font-semibold" style={{ color: p.highlight ? "var(--color-amber-soft)" : "var(--color-forest-950)" }}>
                       {fmt(p.monthly * factor)}
                     </span>

@@ -19,7 +19,7 @@ const EASE = [0.16, 1, 0.3, 1] as const;
 
 const COPY = {
   fr: {
-    eyebrow: "Certificat de conformité RDUE",
+    eyebrow: "Certificat d'évaluation de conformité",
     generating: "Génération du certificat…",
     subtitle: "Évaluation de conformité RDUE",
     certNo: "N° de certificat",
@@ -40,7 +40,7 @@ const COPY = {
     back: "Retour",
   },
   en: {
-    eyebrow: "EUDR compliance certificate",
+    eyebrow: "Compliance assessment certificate",
     generating: "Generating the certificate…",
     subtitle: "EUDR compliance assessment",
     certNo: "Certificate no.",

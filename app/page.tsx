@@ -71,7 +71,7 @@ const COPY = {
       eyebrow: "Le différenciateur",
       title: "La seule solution qui combine conformité, santé des sols et valorisation commerciale.",
       pillars: [
-        { t: "Conformité RDUE", d: "La vérification satellite de chaque parcelle et le certificat prêt pour TRACES NT." },
+        { t: "Conformité RDUE", d: "La vérification satellite de chaque parcelle et le certificat d'évaluation de conformité, prêt pour TRACES NT." },
         { t: "Santé des sols", d: "Un score de résilience des sols, méthodologie inspirée de standards reconnus type Kubeko." },
         { t: "Valorisation commerciale", d: "La conformité prouvée devient l'argument des primes de durabilité et des acheteurs premium." },
       ],
@@ -80,8 +80,8 @@ const COPY = {
       eyebrow: "La plateforme",
       title: "Tout ce qu'il faut pour exporter conforme, réuni.",
       features: [
-        { t: "Vérification satellite", d: "Le verdict Whisp (FAO) sur chaque parcelle, comparé à la date pivot du 31 décembre 2020." },
-        { t: "Certificat prêt à l'export", d: "Un certificat PDF horodaté, aligné sur le format de déclaration TRACES NT." },
+        { t: "Vérification satellite", d: "La vérification satellite (méthode FAO) de chaque parcelle, comparée à la date pivot du 31 décembre 2020." },
+        { t: "Certificat d'évaluation de conformité", d: "Un certificat d'évaluation de conformité (PDF horodaté), aligné sur le format de déclaration TRACES NT." },
         { t: "Export des parcelles", d: "Vos parcelles au format géographique officiel, prêtes pour vos systèmes et la déclaration européenne." },
         { t: "Valorisation commerciale", d: "La conformité prouvée devient l'argument des primes de durabilité et des acheteurs premium." },
         { t: "Français et Anglais", d: "Une interface bilingue ; l'explication du verdict se traduit en dioula et en baoulé pour le producteur." },
@@ -145,8 +145,8 @@ const COPY = {
       eyebrow: "Modèle économique",
       title: "Deux abonnements, un modèle transparent.",
       revenues: [
-        { name: "Abonnement coopérative", price: "125 000", unit: "FCFA / mois", desc: "Vérifications illimitées, certificats PDF, mode hors connexion, support." },
-        { name: "API exportateur", price: "1 500 000", unit: "FCFA / mois", desc: "API REST, export en masse, déclarations TRACES NT intégrées, engagement de disponibilité (SLA)." },
+        { name: "Abonnement coopérative", price: "100 000", unit: "FCFA / mois", desc: "Vérifications illimitées, certificats d'évaluation de conformité (PDF), mode hors connexion, support." },
+        { name: "API exportateur", price: "1 000 000", unit: "FCFA / mois · à partir de", desc: "API REST, export en masse, déclarations TRACES NT intégrées, engagement de disponibilité (SLA)." },
         { name: "Dossier exportateur", price: "Inclus", unit: "dans l'abonnement coopérative", desc: "Le dossier de conformité se partage avec l'exportateur : la coopérative le fait valoir pour négocier." },
       ],
       note: "Le service AGRIVO est gratuit pour le producteur : il ne paie aucun frais pour être vérifié. Le modèle repose sur l'abonnement coopérative et l'API exportateur.",
@@ -164,7 +164,7 @@ const COPY = {
     equipe: {
       eyebrow: "L'équipe",
       title: "Une équipe ivoirienne, ancrée dans le terrain.",
-      roles: ["Direction produit & marque", "Application mobile", "Backend & API", "Conformité & réglementaire"],
+      roles: ["Fondateur & chef de projet · Produit & plateforme web", "Ingénieur application mobile", "Ingénieur backend & API", "Responsable conformité & réglementaire"],
     },
     cta: {
       title: "La conformité, prouvée en quelques secondes.",
@@ -200,7 +200,7 @@ const COPY = {
       eyebrow: "The differentiator",
       title: "The only solution that combines compliance, soil health and commercial valorisation.",
       pillars: [
-        { t: "EUDR compliance", d: "Satellite verification of every plot and a certificate ready for TRACES NT." },
+        { t: "EUDR compliance", d: "Satellite verification of every plot and a compliance-assessment certificate ready for TRACES NT." },
         { t: "Soil health", d: "A soil resilience score, methodology inspired by recognised standards such as Kubeko." },
         { t: "Commercial valorisation", d: "Proven compliance becomes the argument for sustainability premiums and premium buyers." },
       ],
@@ -209,8 +209,8 @@ const COPY = {
       eyebrow: "The platform",
       title: "Everything you need to export compliant, in one place.",
       features: [
-        { t: "Satellite verification", d: "The Whisp (FAO) verdict on every plot, compared to the 31 December 2020 cut-off date." },
-        { t: "Export-ready certificate", d: "A timestamped PDF certificate, aligned with the TRACES NT declaration format." },
+        { t: "Satellite verification", d: "Satellite verification (FAO method) on every plot, compared to the 31 December 2020 cut-off date." },
+        { t: "Compliance-assessment certificate", d: "A timestamped compliance-assessment certificate (PDF), aligned with the TRACES NT declaration format." },
         { t: "Plot export", d: "Your plots in the official geographic format, ready for your systems and the European declaration." },
         { t: "Commercial valorisation", d: "Proven compliance becomes the argument for sustainability premiums and premium buyers." },
         { t: "French and English", d: "A bilingual interface; the verdict explanation translates into Dioula and Baoulé for the farmer." },
@@ -274,8 +274,8 @@ const COPY = {
       eyebrow: "Business model",
       title: "Two subscriptions, one transparent model.",
       revenues: [
-        { name: "Cooperative subscription", price: "125,000", unit: "FCFA / month", desc: "Unlimited verifications, PDF certificates, offline mode, support." },
-        { name: "Exporter API", price: "1,500,000", unit: "FCFA / month", desc: "REST API, batch export, integrated TRACES NT declarations, SLA commitment." },
+        { name: "Cooperative subscription", price: "100,000", unit: "FCFA / month", desc: "Unlimited verifications, compliance-assessment certificates (PDF), offline mode, support." },
+        { name: "Exporter API", price: "1,000,000", unit: "FCFA / month · from", desc: "REST API, batch export, integrated TRACES NT declarations, SLA commitment." },
         { name: "Exporter file", price: "Included", unit: "in the cooperative subscription", desc: "The compliance file is shared with the exporter: the cooperative leverages it to negotiate." },
       ],
       note: "The AGRIVO service is free for the farmer: they pay no fee to be verified. The model relies on the cooperative subscription and the exporter API.",
@@ -293,7 +293,7 @@ const COPY = {
     equipe: {
       eyebrow: "The team",
       title: "An Ivorian team, rooted in the field.",
-      roles: ["Product & brand lead", "Mobile app", "Backend & API", "Compliance & regulatory"],
+      roles: ["Founder & project lead · Product & web platform", "Mobile app engineer", "Backend & API engineer", "Compliance & regulatory lead"],
     },
     cta: {
       title: "Compliance, proven in seconds.",

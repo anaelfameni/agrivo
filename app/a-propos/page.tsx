@@ -5,11 +5,12 @@ import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { Reveal } from "@/components/landing/reveal";
 import { PageHero } from "@/components/landing/page-hero";
+import { HeroBg } from "@/components/landing/hero-bg";
 import { useLanguage } from "@/components/language-provider";
 
 const ROADMAP = [
   { step: "01", title: { fr: "Pilote", en: "Pilot" }, body: { fr: "Déployer le parcours complet avec une première coopérative pilote à Soubré, du scan à la valorisation.", en: "Deploy the full journey with a first pilot cooperative in Soubré, from scan to valorisation." } },
-  { step: "02", title: { fr: "Conformité", en: "Compliance" }, body: { fr: "Certifier chaque parcelle vérifiée et produire des dossiers prêts pour la déclaration européenne.", en: "Certify every verified plot and produce files ready for the European declaration." } },
+  { step: "02", title: { fr: "Conformité", en: "Compliance" }, body: { fr: "Produire un certificat d'évaluation de conformité pour chaque parcelle vérifiée et des dossiers prêts pour la déclaration européenne.", en: "Produce a compliance-assessment certificate for every verified plot and files ready for the European declaration." } },
   { step: "03", title: { fr: "Lancement", en: "Launch" }, body: { fr: "Ouvrir aux coopératives et exportateurs cacao, avec le sélecteur de langue et le mode hors connexion.", en: "Open to cocoa cooperatives and exporters, with the language switcher and offline mode." } },
   { step: "04", title: { fr: "Expansion", en: "Expansion" }, body: { fr: "Étendre au café, à l'hévéa et au palmier à huile, puis aux autres pays de l'UMOA.", en: "Extend to coffee, rubber and oil palm, then to the other WAEMU countries." } },
 ];
@@ -20,10 +21,10 @@ const NEXT = [
 ];
 
 const TEAM = [
-  { name: "Anael", role: { fr: "Direction produit & marque", en: "Product & brand lead" }, initials: "AN", grad: "linear-gradient(135deg,#16a34a,#0c2519)" },
-  { name: "Christ", role: { fr: "Application mobile", en: "Mobile app" }, initials: "CH", grad: "linear-gradient(135deg,#1b4a39,#0a1f14)" },
-  { name: "Gaddiel", role: { fr: "Backend & API", en: "Backend & API" }, initials: "GA", grad: "linear-gradient(135deg,#2D7A4B,#0c2519)" },
-  { name: "Domy", role: { fr: "Conformité & réglementaire", en: "Compliance & regulatory" }, initials: "DO", grad: "linear-gradient(135deg,#c8861d,#5a3a0e)" },
+  { name: "Anael", role: { fr: "Fondateur & chef de projet · Produit & plateforme web", en: "Founder & project lead · Product & web platform" }, initials: "AN", grad: "linear-gradient(135deg,#16a34a,#0c2519)" },
+  { name: "Christ", role: { fr: "Ingénieur application mobile", en: "Mobile app engineer" }, initials: "CH", grad: "linear-gradient(135deg,#1b4a39,#0a1f14)" },
+  { name: "Gaddiel", role: { fr: "Ingénieur backend & API", en: "Backend & API engineer" }, initials: "GA", grad: "linear-gradient(135deg,#2D7A4B,#0c2519)" },
+  { name: "Domy", role: { fr: "Responsable conformité & réglementaire", en: "Compliance & regulatory lead" }, initials: "DO", grad: "linear-gradient(135deg,#c8861d,#5a3a0e)" },
 ];
 
 export default function APropos() {
@@ -57,7 +58,7 @@ export default function APropos() {
             </Reveal>
             <div className="mt-10 grid gap-5 md:grid-cols-3">
               {[
-                { icon: <ShieldCheck size={22} className="text-green-signal" />, t: en ? "Compliance" : "Conformité", d: en ? "The satellite verdict and the certificate, ready for Europe." : "Le verdict satellite et le certificat, prêts pour l'Europe." },
+                { icon: <ShieldCheck size={22} className="text-green-signal" />, t: en ? "Compliance" : "Conformité", d: en ? "The satellite verdict and the compliance-assessment certificate, ready for Europe." : "Le verdict satellite et le certificat d'évaluation de conformité, prêts pour l'Europe." },
                 { icon: <Sprout size={22} className="text-forest-700" />, t: en ? "Soil health" : "Santé des sols", d: en ? "A resilience score, methodology inspired by recognized standards such as Kubeko." : "Un score de résilience, méthodologie inspirée de standards reconnus type Kubeko." },
                 { icon: <Coins size={22} className="text-amber-cacao" />, t: en ? "Valorisation" : "Valorisation", d: en ? "Proven compliance turned into premiums and market access." : "La conformité prouvée transformée en primes et en accès aux marchés." },
               ].map((p, i) => (
@@ -94,31 +95,34 @@ export default function APropos() {
           </div>
         </section>
 
-        {/* Ce qui arrive ensuite */}
-        <section className="mx-auto max-w-6xl px-6 py-20 md:px-8">
-          <Reveal>
-            <h2 className="font-display text-3xl">{en ? "What comes next" : "Ce qui arrive ensuite"}</h2>
-            <p className="mt-3 max-w-2xl text-sm text-stone-500">
-              {en
-                ? "Our roadmap beyond launch: the services we are preparing for cooperatives and exporters."
-                : "Notre feuille de route au-delà du lancement : les services que nous préparons pour les coopératives et les exportateurs."}
-            </p>
-          </Reveal>
-          <div className="mt-8 grid gap-5 md:grid-cols-2">
-            {NEXT.map((n, i) => (
-              <Reveal key={n.title.fr} delay={i * 0.08}>
-                <div className="h-full rounded-2xl border border-dashed border-black/[0.12] bg-white/60 p-7 opacity-90">
-                  <div className="flex items-center justify-between">
-                    <div className="grid h-11 w-11 place-items-center rounded-xl bg-ivory-deep/60">{n.icon}</div>
-                    <span className="rounded-full bg-ivory-deep px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-stone-500">
-                      Roadmap
-                    </span>
+        {/* Ce qui arrive ensuite — fond animé signature du hero */}
+        <section className="relative isolate overflow-hidden bg-forest-950 text-white">
+          <HeroBg />
+          <div className="relative mx-auto max-w-6xl px-6 py-20 md:px-8">
+            <Reveal>
+              <h2 className="font-display text-3xl">{en ? "What comes next" : "Ce qui arrive ensuite"}</h2>
+              <p className="mt-3 max-w-2xl text-sm text-white/60">
+                {en
+                  ? "Our roadmap beyond launch: the services we are preparing for cooperatives and exporters."
+                  : "Notre feuille de route au-delà du lancement : les services que nous préparons pour les coopératives et les exportateurs."}
+              </p>
+            </Reveal>
+            <div className="mt-8 grid gap-5 md:grid-cols-2">
+              {NEXT.map((n, i) => (
+                <Reveal key={n.title.fr} delay={i * 0.08}>
+                  <div className="h-full rounded-2xl border border-white/12 bg-white/[0.04] p-7 backdrop-blur-sm">
+                    <div className="flex items-center justify-between">
+                      <div className="grid h-11 w-11 place-items-center rounded-xl bg-white/10">{n.icon}</div>
+                      <span className="rounded-full bg-white/10 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-white/60">
+                        Roadmap
+                      </span>
+                    </div>
+                    <h3 className="mt-4 font-display text-xl text-white">{en ? n.title.en : n.title.fr}</h3>
+                    <p className="mt-2 text-sm leading-relaxed text-white/65">{en ? n.body.en : n.body.fr}</p>
                   </div>
-                  <h3 className="mt-4 font-display text-xl">{en ? n.title.en : n.title.fr}</h3>
-                  <p className="mt-2 text-sm leading-relaxed text-stone-600">{en ? n.body.en : n.body.fr}</p>
-                </div>
-              </Reveal>
-            ))}
+                </Reveal>
+              ))}
+            </div>
           </div>
         </section>
 

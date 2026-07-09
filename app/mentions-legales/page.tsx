@@ -32,7 +32,7 @@ export default function MentionsLegalesPage() {
       </LegalSection>
 
       <LegalSection title="Propriété intellectuelle">
-        <p>La marque « Agrivo », le logo et l&apos;ensemble des contenus du site sont protégés. Toute reproduction sans autorisation est interdite. Les données satellites proviennent de sources tierces reconnues (Whisp/FAO, Copernicus), citées à titre informatif.</p>
+        <p>La marque « Agrivo », le logo et l&apos;ensemble des contenus du site sont protégés. Toute reproduction sans autorisation est interdite. Les données satellites proviennent de sources tierces reconnues (FAO, Copernicus), citées à titre informatif.</p>
       </LegalSection>
 
       <LegalSection title="Statut réglementaire">

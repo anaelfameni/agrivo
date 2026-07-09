@@ -125,7 +125,7 @@ export function AssistantTab({
         tools?: { name: string; detail: string }[];
         analyseMs: number;
       };
-      pushLog({ service: "Gemini API", label: `Requête assistant · réponse en ${data.analyseMs} ms`, ms: data.analyseMs, status: "ok" });
+      pushLog({ service: "IA Agrivo", label: `Requête assistant · réponse en ${data.analyseMs} ms`, ms: data.analyseMs, status: "ok" });
       setMessages((m) => [
         ...m,
         { id: nid(), role: "assistant", text: data.texte, animate: true, parcelles: data.parcelles, metric: data.metric, tools: data.tools },
@@ -135,7 +135,7 @@ export function AssistantTab({
         ...m,
         { id: nid(), role: "assistant", text: t.error },
       ]);
-      pushLog({ service: "Gemini API", label: "Requête assistant · échec", status: "warn" });
+      pushLog({ service: "IA Agrivo", label: "Requête assistant · échec", status: "warn" });
     } finally {
       setLoading(false);
     }

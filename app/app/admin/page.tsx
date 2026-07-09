@@ -14,8 +14,8 @@ import { sauverLive } from "@/lib/ai/live-cache";
 const EASE = [0.16, 1, 0.3, 1] as const;
 
 const SERVICES = [
-  { name: "Whisp API (FAO)", desc: { fr: "Détection satellite de déforestation", en: "Satellite deforestation detection" }, status: "ok" as const },
-  { name: "Gemini API (Google)", desc: { fr: "Vision, langage, copilote", en: "Vision, language, copilot" }, status: "ok" as const },
+  { name: "Moteur satellite (FAO)", desc: { fr: "Détection satellite de déforestation", en: "Satellite deforestation detection" }, status: "ok" as const },
+  { name: "IA générative", desc: { fr: "Lecture, langage, copilote", en: "Reading, language, copilot" }, status: "ok" as const },
   { name: "Copernicus / Sentinel-2", desc: { fr: "Imagerie satellite", en: "Satellite imagery" }, status: "ok" as const },
   { name: "TRACES NT", desc: { fr: "Dépôt des déclarations (DDS)", en: "Declaration filing (DDS)" }, status: "ok" as const },
 ];
@@ -212,8 +212,8 @@ export default function AdminPage() {
                       ? "Active (no API key): no live network call leaves the application. Results are pre-recorded with simulated latency. The demo depends on no external service."
                       : "Actif (aucune clé posée) : aucun appel réseau live ne part de l'application. Les résultats sont pré-enregistrés avec une latence simulée. La démo ne dépend d'aucun service externe."
                     : en
-                      ? "Off: the Gemini key is set. Card OCR, the audit action plan, the DDS memo, the premium brief and the copilot call Gemini live, with an automatic demo fallback if a call fails. Whisp detection remains pre-recorded (FAO API on registration)."
-                      : "Désactivé : la clé Gemini est posée. L'OCR de carte, le plan d'action d'audit, le mémo DDS, l'argumentaire de prime et le copilote appellent réellement Gemini, avec repli démonstration automatique si un appel échoue. La détection Whisp reste pré-enregistrée (API FAO sur inscription)."}
+                      ? "Off: the AI key is set. Card reading, the audit action plan, the DDS memo, the premium brief and the copilot call the AI live, with an automatic demo fallback if a call fails. Satellite detection remains pre-recorded (FAO API on registration)."
+                      : "Désactivé : la clé IA est posée. La lecture de carte, le plan d'action d'audit, le mémo DDS, l'argumentaire de prime et le copilote appellent réellement l'IA, avec repli démonstration automatique si un appel échoue. La détection satellite reste pré-enregistrée (API FAO sur inscription)."}
               </p>
               <p className="num mt-2 text-[0.7rem] text-stone-400">
                 MOCK_MODE = {mock === null ? "…" : String(mock)}

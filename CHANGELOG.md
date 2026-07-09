@@ -3,6 +3,36 @@
 Versioning sémantique (MAJOR.MINOR.PATCH). Chaque release liste ce qui est ajouté, corrigé et
 vérifié, conformément à l'étape 8 du pipeline « Du besoin à la Release ».
 
+## v1.8.0 — 2026-07-09 — Cible B2B (coop + exportateur), prix ajustés, méthodologie discrète
+
+### Changé
+- **Prix** : abonnement coopérative **125 000 → 100 000 FCFA/mois** (plus abordable, base ≈ 1 200
+  FCFA/producteur/an) ; API exportateur **1 500 000 → « à partir de 1 000 000 FCFA/mois »** (ratio
+  1:10 lisible, prix d'entrée pilote, sans se brader). Répercuté accueil + `/tarifs`.
+- **Tableau de bord coopérative** : salutation personnalisée **« Bonjour <prénom du compte connecté> »**
+  (le compte de démo reste « Amadou ») ; chip abonnement 100 000 FCFA/mois ; **bouton Déconnexion** visible.
+- **Vue exportateur** : chip « API exportateur · à partir de 1 000 000 FCFA/mois » + **bouton Déconnexion**.
+- **Aperçu du portefeuille (hero d'accueil)** : recadré en **portefeuille exportateur** (santé des coops :
+  « À jour / À surveiller / Action requise ») — distinct des 3 verdicts de parcelle ; chiffres cohérents.
+- **Méthodologie** : page réécrite côté client, orientée « aligné sur le règlement (UE) 2023/1115 »
+  (bonne date pivot, bon format, bon livrable), sans exposer le « comment » technique.
+- **Certificat** : intitulé unifié **« Certificat d'évaluation de conformité »** (aperçu, PDF, accueil, À propos).
+- **Fond animé du hero** ajouté aux sections « Convergence de preuves » (méthodologie) et « Ce qui arrive
+  ensuite » (À propos).
+- **Équipe valorisée** : Anael = **Fondateur & chef de projet · Produit & plateforme web** ; titres
+  d'ingénierie pour Christ (mobile), Gaddiel (backend & API), Domy (conformité & réglementaire).
+
+### Retiré
+- Mentions techniques **« Gemini Vision » / « Gemini » / « Whisp »** de tout le **texte visible**
+  (scan, analyse, logs exportateur, FAQ, aide, admin, pages légales) → « lecture automatique », « IA »,
+  « moteur satellite (FAO) ». Le code interne (routes `/api/gemini`, types `WhispResult`) est inchangé.
+- Étape cartographie : options **« Tour de champ GPS » / « Point central »** supprimées — Agrivo ne
+  collecte pas la donnée terrain ; la **coopérative fournit ses coordonnées** (pré-remplies en démo,
+  zone de Soubré). Bouton **« Remplir un exemple (démo) »** ajouté au scan et à la cartographie.
+
+### Vérifié
+- `tsc` ✓ · 65/65 tests Vitest ✓ · `next build` ✓ · ESLint (0 erreur).
+
 ## v1.7.1 — 2026-07-08 — Positionnement certificat (DDS) + équipe à jour
 
 ### Changé

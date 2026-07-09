@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
-import { ArrowRight, Camera, RotateCcw, ScanLine } from "lucide-react";
+import { ArrowRight, Camera, RotateCcw, ScanLine, Wand2 } from "lucide-react";
 import { PinMark } from "@/components/ui/pin-mark";
 import { useLanguage } from "@/components/language-provider";
 import { FILIERE_LABEL, PARCELLES, type Filiere } from "@/data/mock-parcelles";
@@ -18,15 +18,16 @@ const COPY = {
     cameraActive: "Caméra active",
     demoMode: "Mode démonstration",
     mobileOnly: "Scan sur mobile uniquement",
-    eyebrow: "Scan · Gemini Vision",
+    eyebrow: "Scan",
     title: "Carte producteur",
     aimHelp:
       "Positionnez la carte du producteur dans le cadre. La lecture tente d'abord le QR code, puis l'OCR des champs imprimés : toutes les générations de cartes sont couvertes, avec ou sans QR. La photo est conservée comme pièce justificative.",
     scanBtn: "Scanner la carte",
     enableCamera: "Activer la caméra",
     webHelp:
-      "Le scan de la carte producteur (caméra + OCR Gemini Vision) est réservé à l'application mobile Agrivo, au bord du champ. Sur le web, saisissez les informations de la carte manuellement.",
+      "Le scan de la carte producteur (caméra + lecture automatique) est réservé à l'application mobile Agrivo, au bord du champ. Sur le web, saisissez les informations de la carte manuellement.",
     manualEntry: "Saisir manuellement",
+    demoFill: "Remplir un exemple (démo)",
     extracted: "Informations extraites · vérifiez et corrigez si besoin.",
     viaQr: "Lues depuis le QR code de la carte",
     knownProducer: (nom: string) => `Producteur reconnu : dossier de ${nom} rattaché, aucun doublon créé.`,
@@ -45,15 +46,16 @@ const COPY = {
     cameraActive: "Camera active",
     demoMode: "Demo mode",
     mobileOnly: "Scanning on mobile only",
-    eyebrow: "Scan · Gemini Vision",
+    eyebrow: "Scan",
     title: "Farmer card",
     aimHelp:
       "Position the farmer's card inside the frame. The reading tries the QR code first, then OCR of the printed fields: every card generation is covered, with or without QR. The photo is kept as supporting evidence.",
     scanBtn: "Scan the card",
     enableCamera: "Enable camera",
     webHelp:
-      "Scanning the farmer card (camera + Gemini Vision OCR) is reserved for the Agrivo mobile app, at the edge of the field. On the web, enter the card details manually.",
+      "Scanning the farmer card (camera + automatic reading) is reserved for the Agrivo mobile app, at the edge of the field. On the web, enter the card details manually.",
     manualEntry: "Enter manually",
+    demoFill: "Fill a sample (demo)",
     extracted: "Extracted information · review and correct if needed.",
     viaQr: "Read from the card's QR code",
     knownProducer: (nom: string) => `Known farmer: ${nom}'s file attached, no duplicate created.`,
@@ -111,6 +113,13 @@ export function StepScan({
 
   function saisirManuellement() {
     setForm({ producteurNom: "", numeroCartePro: "", localite: "", filiere: "cacao" });
+    setPhase("review");
+  }
+
+  /** Démo : pré-remplit le formulaire avec un producteur fictif réaliste (zone de Soubré). */
+  function remplirDemo() {
+    setViaQr(false);
+    setForm({ producteurNom: "Tanoh Michel", numeroCartePro: "CI-CCC-024600", localite: "Soubré", filiere: "cacao" });
     setPhase("review");
   }
 
@@ -325,6 +334,14 @@ export function StepScan({
                   >
                     <ArrowRight size={16} strokeWidth={2.25} aria-hidden />
                     {t.manualEntry}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={remplirDemo}
+                    className="inline-flex items-center justify-center gap-2 rounded-full border border-black/10 px-5 py-3 text-sm font-medium text-stone-600 outline-none transition-colors hover:border-green-signal/40 hover:text-forest-950 focus-visible:ring-2 focus-visible:ring-green-signal"
+                  >
+                    <Wand2 size={15} strokeWidth={2} aria-hidden />
+                    {t.demoFill}
                   </button>
                 </div>
               </>

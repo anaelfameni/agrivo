@@ -1,8 +1,10 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import { BarChart3, Bell, Command, FileText, MessageSquareText, Settings2 } from "lucide-react";
+import { BarChart3, Bell, Command, FileText, LogOut, MessageSquareText, Settings2 } from "lucide-react";
+import { useAuth } from "@/components/auth-provider";
 import { AnalyticsTab } from "@/components/exportateur/analytics-tab";
 import { AssistantTab } from "@/components/exportateur/assistant-tab";
 import { DossierAcheteur } from "@/components/exportateur/dossier-acheteur";
@@ -36,6 +38,8 @@ const COPY = {
     },
     fullPortfolio: "portefeuille complet",
     eyebrow: "Espace exportateur",
+    plan: "API exportateur · à partir de 1 000 000 FCFA/mois",
+    logout: "Déconnexion",
     subtitle: (coops: number, parcelles: number) =>
       `Directeur durabilité · ${coops} coopératives · ${parcelles} parcelles suivies`,
     designed: "Vue de démonstration : le tableau de bord que votre exportateur consulte. Son portefeuille couvre plusieurs coopératives, dont la vôtre.",
@@ -53,6 +57,8 @@ const COPY = {
     },
     fullPortfolio: "full portfolio",
     eyebrow: "Exporter workspace",
+    plan: "Exporter API · from 1,000,000 FCFA/month",
+    logout: "Sign out",
     subtitle: (coops: number, parcelles: number) =>
       `Sustainability director · ${coops} cooperatives · ${parcelles} plots tracked`,
     designed: "Demo view: the dashboard your exporter uses. Their portfolio spans several cooperatives, including yours.",
@@ -67,6 +73,8 @@ export default function ExportateurPage() {
   const reduce = useReducedMotion();
   const { lang } = useLanguage();
   const t = COPY[lang];
+  const { logout } = useAuth();
+  const router = useRouter();
   const [tab, setTab] = useState<ExpTab>("analytique");
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [hoveredId, setHoveredId] = useState<string | null>(null);
@@ -144,9 +152,21 @@ export default function ExportateurPage() {
           <h1 className="mt-1.5 font-display text-3xl leading-tight text-forest-950 sm:text-4xl">Marc</h1>
           <p className="mt-1 text-sm text-stone-500">{t.subtitle(nbCoops, PARCELLES.length)}</p>
           <p className="mt-0.5 text-xs text-stone-400">{t.designed}</p>
+          <span className="mt-2 inline-flex items-center gap-1.5 rounded-full border border-green-signal/25 bg-green-signal/[0.07] px-3 py-1 text-xs font-medium text-green-signal">
+            <BarChart3 size={13} strokeWidth={2} aria-hidden />
+            {t.plan}
+          </span>
         </div>
 
         <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={() => { logout(); router.push("/"); }}
+            className="inline-flex h-10 items-center gap-2 rounded-full border border-black/[0.08] bg-white px-3.5 text-sm text-stone-500 outline-none transition-colors hover:border-red-block/40 hover:text-red-block focus-visible:ring-2 focus-visible:ring-red-block/40"
+          >
+            <LogOut size={15} strokeWidth={2} aria-hidden />
+            <span className="hidden sm:inline">{t.logout}</span>
+          </button>
           <button
             type="button"
             onClick={() => setCmdOpen(true)}

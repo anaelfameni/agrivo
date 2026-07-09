@@ -18,7 +18,7 @@ const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 const COPY = {
   fr: {
-    eyebrow: "Détection Whisp · FAO",
+    eyebrow: "Analyse satellite · FAO",
     intro:
       "L'analyse combine plusieurs sources satellites publiques (convergence de preuves, méthode FAO) autour de la date pivot du 31 décembre 2020.",
     drawing: "Cartographie de la parcelle…",
@@ -31,7 +31,7 @@ const COPY = {
     dioula: "Dioula",
     baoule: "Baoulé",
     translating: "Traduction…",
-    translatedLive: "Traduit par Gemini · IA en direct",
+    translatedLive: "Traduit par l'IA · en direct",
     translatedOff: "Traduction en direct indisponible — texte original.",
     soilScore: "Score de résilience des sols",
     soilDialog: "Explication du score de résilience des sols",
@@ -47,7 +47,7 @@ const COPY = {
     back: "Retour",
   },
   en: {
-    eyebrow: "Whisp detection · FAO",
+    eyebrow: "Satellite analysis · FAO",
     intro:
       "The analysis combines several public satellite sources (convergence of evidence, FAO method) around the cut-off date of 31 December 2020.",
     drawing: "Mapping the plot…",
@@ -60,7 +60,7 @@ const COPY = {
     dioula: "Dioula",
     baoule: "Baoulé",
     translating: "Translating…",
-    translatedLive: "Translated by Gemini · live AI",
+    translatedLive: "Translated by AI · live",
     translatedOff: "Live translation unavailable — original text.",
     soilScore: "Soil resilience score",
     soilDialog: "Soil resilience score explanation",
@@ -364,7 +364,7 @@ export function StepAnalysis({
                 </AnimatePresence>
               </div>
 
-              {/* Diagnostic visuel de la parcelle (Gemini Vision) — additif, n'affecte pas le verdict Whisp. */}
+              {/* Diagnostic visuel de la parcelle (IA) — additif, n'affecte pas le verdict satellite. */}
               <PhotoTerrain />
             </motion.div>
           )}

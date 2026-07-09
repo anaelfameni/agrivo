@@ -2,8 +2,10 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { motion, useReducedMotion } from "framer-motion";
-import { Bell, CheckCircle2, ChevronRight, FileCheck2, MapPin, Plus, Search, ShieldCheck, X } from "lucide-react";
+import { Bell, CheckCircle2, ChevronRight, FileCheck2, LogOut, MapPin, Plus, Search, ShieldCheck, X } from "lucide-react";
+import { useAuth } from "@/components/auth-provider";
 import { StatNumber } from "@/components/ui/stat-number";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { PinMark } from "@/components/ui/pin-mark";
@@ -35,6 +37,8 @@ const COPY = {
     eyebrow: "Espace coopérative",
     hello: "Bonjour",
     newVerif: "Nouvelle vérification",
+    plan: "Abonnement coopérative · 100 000 FCFA/mois",
+    logout: "Déconnexion",
     kpi: {
       verifiees: { label: "Parcelles vérifiées", sub: "ce mois-ci" },
       taux: { label: "Taux de conformité", sub: "sur les parcelles vérifiées" },
@@ -61,6 +65,8 @@ const COPY = {
     eyebrow: "Cooperative workspace",
     hello: "Hello",
     newVerif: "New verification",
+    plan: "Cooperative plan · 100,000 FCFA/month",
+    logout: "Sign out",
     kpi: {
       verifiees: { label: "Plots verified", sub: "this month" },
       taux: { label: "Compliance rate", sub: "across verified plots" },
@@ -85,6 +91,10 @@ export default function DashboardPage() {
   const reduce = useReducedMotion();
   const { lang } = useLanguage();
   const t = COPY[lang];
+  const { user, logout } = useAuth();
+  const router = useRouter();
+  const firstName = user?.nom?.trim().split(/\s+/)[0] || MANAGER_DEMO;
+  const organisation = user?.organisation || COOP_DEMO;
   const [query, setQuery] = useState("");
   const [today, setToday] = useState("");
   const [justVerified, setJustVerified] = useState<{ nom: string; statut: Statut } | null>(null);
@@ -180,10 +190,10 @@ export default function DashboardPage() {
               {t.eyebrow}
             </p>
             <h1 className="mt-2.5 font-display text-3xl leading-tight text-white sm:text-[2.6rem]">
-              {t.hello} {MANAGER_DEMO}
+              {t.hello} {firstName}
             </h1>
             <p className="mt-1.5 text-sm text-white/55">
-              {COOP_DEMO}
+              {organisation}
               {today && (
                 <>
                   {" · "}
@@ -191,17 +201,31 @@ export default function DashboardPage() {
                 </>
               )}
             </p>
+            <span className="mt-3 inline-flex items-center gap-1.5 rounded-full border border-green-signal/30 bg-green-signal/10 px-3 py-1 text-xs font-medium text-green-signal">
+              <ShieldCheck size={13} strokeWidth={2} aria-hidden />
+              {t.plan}
+            </span>
           </div>
 
-          <Magnetic strength={0.25} className="w-full sm:w-auto">
-            <Link
-              href="/app/consentement"
-              className="btn-green inline-flex w-full items-center justify-center gap-2 rounded-full px-6 py-3.5 text-sm font-semibold outline-none focus-visible:ring-2 focus-visible:ring-white/70 focus-visible:ring-offset-2 focus-visible:ring-offset-forest-950 sm:w-auto"
+          <div className="flex w-full flex-col gap-2 sm:w-auto sm:items-end">
+            <Magnetic strength={0.25} className="w-full sm:w-auto">
+              <Link
+                href="/app/consentement"
+                className="btn-green inline-flex w-full items-center justify-center gap-2 rounded-full px-6 py-3.5 text-sm font-semibold outline-none focus-visible:ring-2 focus-visible:ring-white/70 focus-visible:ring-offset-2 focus-visible:ring-offset-forest-950 sm:w-auto"
+              >
+                <Plus size={18} strokeWidth={2.25} aria-hidden />
+                {t.newVerif}
+              </Link>
+            </Magnetic>
+            <button
+              type="button"
+              onClick={() => { logout(); router.push("/"); }}
+              className="inline-flex w-full items-center justify-center gap-2 rounded-full border border-white/20 px-4 py-2 text-xs font-medium text-white/80 outline-none transition-colors hover:border-white/40 hover:text-white focus-visible:ring-2 focus-visible:ring-white/70 focus-visible:ring-offset-2 focus-visible:ring-offset-forest-950 sm:w-auto"
             >
-              <Plus size={18} strokeWidth={2.25} aria-hidden />
-              {t.newVerif}
-            </Link>
-          </Magnetic>
+              <LogOut size={14} strokeWidth={2} aria-hidden />
+              {t.logout}
+            </button>
+          </div>
         </div>
       </motion.div>
 

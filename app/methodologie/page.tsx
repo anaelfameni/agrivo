@@ -1,11 +1,11 @@
 "use client";
 import Link from "next/link";
-import { Satellite, Sparkles, Layers, CloudOff, CheckCircle2, AlertTriangle, ArrowRight, ArrowDown, Database, BadgeCheck } from "lucide-react";
+import { Satellite, Layers, CloudOff, CheckCircle2, AlertTriangle, ArrowRight, ArrowDown, Database, BadgeCheck, CalendarClock, Ruler, FileCheck2 } from "lucide-react";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { Reveal } from "@/components/landing/reveal";
 import { PageHero } from "@/components/landing/page-hero";
-import { Term } from "@/components/ui/term";
+import { HeroBg } from "@/components/landing/hero-bg";
 import { useLanguage } from "@/components/language-provider";
 
 const STATES = [
@@ -38,6 +38,33 @@ const STATES = [
   },
 ];
 
+const ALIGN = [
+  {
+    icon: <CalendarClock size={20} className="text-green-signal" />,
+    title: { fr: "La bonne date de référence", en: "The right reference date" },
+    body: {
+      fr: "Chaque parcelle est comparée à la date pivot du 31 décembre 2020 — celle fixée par le règlement européen. Pas une autre.",
+      en: "Every plot is compared against the 31 December 2020 cut-off date — the one set by the European regulation. No other.",
+    },
+  },
+  {
+    icon: <Ruler size={20} className="text-amber-cacao" />,
+    title: { fr: "Le bon format", en: "The right format" },
+    body: {
+      fr: "La parcelle est décrite dans le format géographique officiel accepté par l'Union européenne, avec une précision de l'ordre du centimètre.",
+      en: "The plot is described in the official geographic format accepted by the European Union, with centimetre-level precision.",
+    },
+  },
+  {
+    icon: <FileCheck2 size={20} className="text-forest-700" />,
+    title: { fr: "Le bon livrable", en: "The right deliverable" },
+    body: {
+      fr: "Un certificat d'évaluation de conformité et un dossier directement exploitables pour la déclaration déposée sur TRACES NT.",
+      en: "A compliance-assessment certificate and a file that plug straight into the declaration filed on TRACES NT.",
+    },
+  },
+];
+
 export default function Methodologie() {
   const { lang } = useLanguage();
   const en = lang === "en";
@@ -50,18 +77,18 @@ export default function Methodologie() {
           title={en ? "How Agrivo assesses a plot, with no black box." : "Comment Agrivo évalue une parcelle, sans boîte noire."}
           sub={
             en
-              ? "Agrivo relies on internationally recognised satellite references and artificial intelligence to deliver a clear, explained and verifiable result. Here is exactly how."
-              : "Agrivo s'appuie sur des références satellites reconnues internationalement et sur l'intelligence artificielle pour livrer un résultat clair, expliqué et vérifiable. Voici exactement comment."
+              ? "Agrivo assesses every plot from recognised satellite references and delivers a clear, explained and verifiable result — aligned directly with the requirements of European Regulation (EU) 2023/1115. Here, simply, is how."
+              : "Agrivo évalue chaque parcelle à partir de références satellites reconnues et livre un résultat clair, expliqué et vérifiable — aligné directement sur les exigences du règlement européen (UE) 2023/1115. Voici, simplement, comment."
           }
         />
 
-        {/* Le flux en un schéma : Donnée, IA, Résultat */}
+        {/* Le flux en un schéma : Donnée, Évaluation, Résultat */}
         <section className="mx-auto max-w-6xl px-6 pb-4 pt-16 md:px-8">
           <Reveal>
             <div className="rounded-2xl border border-black/[0.06] bg-white p-8 md:p-10">
               <span className="eyebrow text-green-signal">{en ? "The flow, in one diagram" : "Le flux, en un schéma"}</span>
               <h2 className="mt-3 font-display text-2xl text-forest-950 sm:text-3xl">
-                {en ? "Data, artificial intelligence, result." : "Donnée, intelligence artificielle, résultat."}
+                {en ? "Data, assessment, result." : "Donnée, évaluation, résultat."}
               </h2>
               <div className="mt-8 grid items-stretch gap-4 md:grid-cols-[1fr_auto_1fr_auto_1fr]">
                 <div className="rounded-xl bg-ivory p-6">
@@ -71,8 +98,8 @@ export default function Methodologie() {
                   <h3 className="mt-3 font-display text-lg text-forest-950">{en ? "1. Your information" : "1. Vos informations"}</h3>
                   <p className="mt-2 text-sm leading-relaxed text-stone-600">
                     {en
-                      ? "The farmer's card and the precise outline of their plot, captured at the edge of the field with their consent."
-                      : "La carte du producteur et le contour précis de sa parcelle, relevés au bord du champ avec son consentement."}
+                      ? "The farmer's card and the outline of their plot, provided by the cooperative with the farmer's consent."
+                      : "La carte du producteur et le contour de sa parcelle, fournis par la coopérative avec le consentement du producteur."}
                   </p>
                 </div>
                 <div className="hidden items-center md:flex" aria-hidden>
@@ -85,11 +112,11 @@ export default function Methodologie() {
                   <div className="grid h-10 w-10 place-items-center rounded-lg bg-green-signal/12 text-green-signal">
                     <Satellite size={20} />
                   </div>
-                  <h3 className="mt-3 font-display text-lg text-forest-950">{en ? "2. The analysis" : "2. L\u2019analyse"}</h3>
+                  <h3 className="mt-3 font-display text-lg text-forest-950">{en ? "2. The assessment" : "2. L’évaluation"}</h3>
                   <p className="mt-2 text-sm leading-relaxed text-stone-600">
                     {en
-                      ? "The plot is compared against reference satellite imagery since 31 December 2020. Artificial intelligence reads the card and explains the result in plain language."
-                      : "La parcelle est comparée aux images satellites de référence depuis le 31 décembre 2020. L'intelligence artificielle lit la carte et explique le résultat en langage clair."}
+                      ? "The plot is compared against reference satellite imagery since 31 December 2020, following the method recognised by the European authorities. Every result is explained in plain language."
+                      : "La parcelle est comparée aux images satellites de référence depuis le 31 décembre 2020, selon la méthode reconnue par les autorités européennes. Chaque résultat est expliqué en langage clair."}
                   </p>
                 </div>
                 <div className="hidden items-center md:flex" aria-hidden>
@@ -105,8 +132,8 @@ export default function Methodologie() {
                   <h3 className="mt-3 font-display text-lg text-forest-950">{en ? "3. The result" : "3. Le résultat"}</h3>
                   <p className="mt-2 text-sm leading-relaxed text-stone-600">
                     {en
-                      ? "A clear verdict, a certificate verifiable by QR code, a file ready for the European declaration, and a valorisation file if the plot is compliant."
-                      : "Un verdict clair, un certificat vérifiable par QR code, un dossier prêt pour la déclaration européenne, et un dossier de valorisation si la parcelle est conforme."}
+                      ? "A clear verdict, a compliance-assessment certificate verifiable by QR code, a file ready for the European declaration, and a valorisation file if the plot is compliant."
+                      : "Un verdict clair, un certificat d'évaluation de conformité vérifiable par QR code, un dossier prêt pour la déclaration européenne, et un dossier de valorisation si la parcelle est conforme."}
                   </p>
                 </div>
               </div>
@@ -114,62 +141,56 @@ export default function Methodologie() {
           </Reveal>
         </section>
 
-        {/* Deux IA */}
+        {/* Directement aligné sur les normes européennes */}
         <section className="divide-fluid bg-ivory">
           <div className="mx-auto max-w-6xl px-6 py-20 md:px-8">
             <Reveal>
-              <h2 className="max-w-2xl font-display text-3xl text-forest-950">
-                {en ? "Two intelligences, never confused." : "Deux intelligences, jamais confondues."}
+              <span className="eyebrow text-green-signal">{en ? "Aligned with Europe" : "Aligné sur l’Europe"}</span>
+              <h2 className="mt-3 max-w-2xl font-display text-3xl text-forest-950">
+                {en ? "We don't reinvent the rule. We follow it, exactly." : "Nous ne réinventons pas la règle. Nous la suivons, exactement."}
               </h2>
+              <p className="mt-4 max-w-2xl text-stone-600">
+                {en
+                  ? "Our compliance assessment follows directly the requirements of Regulation (EU) 2023/1115. The technical “how” is our know-how; the “what” is 100% aligned with Europe."
+                  : "Notre évaluation de conformité suit directement les exigences du règlement (UE) 2023/1115. Le « comment » technique est notre savoir-faire ; le « quoi » est 100 % aligné sur l'Europe."}
+              </p>
             </Reveal>
-            <div className="mt-10 grid gap-5 md:grid-cols-2">
-              <Reveal>
-                <div className="h-full rounded-2xl border border-black/[0.06] bg-white p-8">
-                  <div className="grid h-11 w-11 place-items-center rounded-xl bg-green-signal/12 text-green-signal">
-                    <Satellite size={22} />
+            <div className="mt-10 grid gap-5 md:grid-cols-3">
+              {ALIGN.map((a, i) => (
+                <Reveal key={a.title.fr} delay={i * 0.08}>
+                  <div className="h-full rounded-2xl border border-black/[0.06] bg-white p-7">
+                    <div className="grid h-11 w-11 place-items-center rounded-xl bg-ivory-deep/60">{a.icon}</div>
+                    <h3 className="mt-4 font-display text-xl">{en ? a.title.en : a.title.fr}</h3>
+                    <p className="mt-2 text-sm leading-relaxed text-stone-600">{en ? a.body.en : a.body.fr}</p>
                   </div>
-                  <h3 className="mt-4 font-display text-2xl">{en ? "Whisp, the detection" : "Whisp, la détection"}</h3>
-                  <p className="mt-3 text-sm leading-relaxed text-stone-600">
-                    <Term def={en ? "FAO tool designed specifically for the EUDR, crossing several reference satellite datasets." : "Outil de la FAO conçu spécifiquement pour le RDUE, qui croise plusieurs jeux de données satellites de référence."}>Whisp</Term>{" "}
-                    {en
-                      ? "is the reference tool of the FAO (United Nations) for the EUDR, already used in the field on thousands of plots. It, and it alone, renders the compliance verdict."
-                      : "est l'outil de référence de la FAO (Nations unies) pour le RDUE, déjà utilisé sur le terrain sur des milliers de parcelles. C'est lui, et lui seul, qui rend le verdict de conformité."}
-                  </p>
-                </div>
-              </Reveal>
-              <Reveal delay={0.1}>
-                <div className="h-full rounded-2xl border border-black/[0.06] bg-white p-8">
-                  <div className="grid h-11 w-11 place-items-center rounded-xl bg-amber-cacao/12 text-amber-cacao">
-                    <Sparkles size={22} />
-                  </div>
-                  <h3 className="mt-4 font-display text-2xl">{en ? "Gemini, the language" : "Gemini, le langage"}</h3>
-                  <p className="mt-3 text-sm leading-relaxed text-stone-600">
-                    {en
-                      ? "Google's generative AI reads the farmer's card, explains the verdict in plain language, and answers the exporter's questions. It assists reading and action, never detection. It never decides whether a plot is compliant."
-                      : "L'IA générative de Google lit la carte du producteur, explique le verdict en langage clair, et répond aux questions de l'exportateur. Elle assiste la lecture et l'action, jamais la détection. Elle ne décide jamais si une parcelle est conforme."}
-                  </p>
-                </div>
-              </Reveal>
+                </Reveal>
+              ))}
             </div>
           </div>
         </section>
 
-        {/* Convergence de preuves */}
-        <section className="bg-ivory-deep/40">
-          <div className="mx-auto max-w-3xl px-6 py-20 md:px-8">
+        {/* Convergence de preuves — fond animé signature du hero */}
+        <section className="relative isolate overflow-hidden bg-forest-950 text-white">
+          <HeroBg />
+          <div className="relative mx-auto max-w-3xl px-6 py-20 md:px-8">
             <Reveal>
-              <h2 className="font-display text-3xl text-forest-950">{en ? "Convergence of evidence" : "La convergence de preuves"}</h2>
-              <p className="mt-5 leading-relaxed text-stone-600">
-                {en ? "Rather than relying on a single source, Whisp applies a " : "Plutôt que de se fier à une seule source, Whisp applique une "}
-                <Term def={en ? "Crossing several independent satellite datasets rather than a single source, for a robust verdict that is hard to contest." : "Croiser plusieurs jeux de données satellites indépendants plutôt qu'une seule source, pour un verdict robuste, difficile à contester."}>{en ? "convergence of evidence" : "convergence de preuves"}</Term>
-                {en ? ": it crosses several independent satellite sources (including Copernicus, the European Earth-observation programme) and compares them against the " : " : il croise plusieurs sources satellites indépendantes (dont Copernicus, le programme européen d'observation de la Terre) et les compare à la date pivot du "}
-                <span className="num">{en ? "31 December 2020" : "31 décembre 2020"}</span>{en ? " cut-off date. The plot is described in the official geographic format accepted by the European Union, with centimetre-level precision." : ". La parcelle est décrite dans le format géographique officiel accepté par l'Union européenne, avec une précision de l'ordre du centimètre."}
+              <span className="eyebrow text-amber-soft">{en ? "Convergence of evidence" : "La convergence de preuves"}</span>
+              <h2 className="mt-4 font-display text-3xl sm:text-4xl">
+                {en ? "Never a single source." : "Jamais une seule source."}
+              </h2>
+              <p className="mt-5 leading-relaxed text-white/75">
+                {en
+                  ? "Rather than relying on a single source, Agrivo applies a convergence of evidence: it crosses several independent satellite sources (including Copernicus, the European Earth-observation programme) and compares them against the "
+                  : "Plutôt que de se fier à une seule source, Agrivo applique une convergence de preuves : il croise plusieurs sources satellites indépendantes (dont Copernicus, le programme européen d'observation de la Terre) et les compare à la date pivot du "}
+                <span className="num">{en ? "31 December 2020" : "31 décembre 2020"}</span>
+                {en
+                  ? " cut-off date. The plot is described in the official geographic format accepted by the European Union, with centimetre-level precision."
+                  : ". La parcelle est décrite dans le format géographique officiel accepté par l'Union européenne, avec une précision de l'ordre du centimètre."}
               </p>
-              <p className="mt-4 leading-relaxed text-stone-600">
-                {en ? "The verdict then feeds the " : "Le verdict alimente ensuite la "}
-                <Term def={en ? "Due Diligence Statement, filed by the European importer on the TRACES NT portal." : "Déclaration de Diligence Raisonnée, déposée par l'importateur européen sur le portail TRACES NT."}>{en ? "DDS" : "DDR"}</Term>
-                {en ? " that the importer files on " : " que l'importateur dépose sur "}
-                <Term def={en ? "European Commission digital portal where due diligence statements are filed." : "Portail numérique de la Commission européenne où sont déposées les déclarations de diligence raisonnée."}>TRACES NT</Term>.
+              <p className="mt-4 leading-relaxed text-white/75">
+                {en
+                  ? "The verdict then feeds the due diligence statement filed on TRACES NT, the European Commission's portal."
+                  : "Le verdict alimente ensuite la déclaration de diligence raisonnée déposée sur TRACES NT, le portail de la Commission européenne."}
               </p>
             </Reveal>
           </div>
@@ -209,7 +230,7 @@ export default function Methodologie() {
               <div className="mb-3 grid place-items-center">
                 <Layers size={28} className="text-green-signal" />
               </div>
-              <h2 className="font-display text-3xl">{en ? "See the method at work" : "Voir la méthode à l\u2019œuvre"}</h2>
+              <h2 className="font-display text-3xl">{en ? "See the method at work" : "Voir la méthode à l’œuvre"}</h2>
               <p className="mx-auto mt-3 max-w-lg text-white/70">
                 {en
                   ? "The application runs the full journey: card scan, plot mapping, satellite verdict, certificate, valorisation."
