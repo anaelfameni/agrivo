@@ -12,13 +12,20 @@ import {
   PARCELLES,
   RENDEMENT_T_HA,
   SCENARIOS_DEMO,
-  STATUT_COLOR,
   type Parcelle,
   type Statut,
 } from "@/data/mock-parcelles";
+import { aireHa } from "@/lib/geo/terrain";
+import { evaluerParcelle, type EvaluationParcelle } from "@/lib/geo/evaluation";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 const CHECK_TICK_MS = 420; // révélation d'un contrôle d'intégrité
+const MIN_SOMMETS = 4;
+
+const HEX: Record<Statut, string> = { conforme: "#16a34a", anomalie: "#b4231e", insuffisant: "#c8861d" };
+
+/** Verdict transmis au parent quand la saisie est manuelle (croisement géométrique réel). */
+export type ForcedVerdict = { statut: Statut; phrase: string; phraseEn: string };
 
 type Row = { lat: string; lon: string };
 
@@ -27,14 +34,14 @@ const COPY = {
     eyebrow: "Cartographie · Coordonnées",
     title: "Capture de la parcelle",
     intro:
-      "La coopérative renseigne les coordonnées GPS qu'elle détient déjà pour cette parcelle (registre, certification, cartographie exportateur), sommet par sommet. Agrivo ne collecte pas la donnée sur le terrain.",
+      "La coopérative renseigne les coordonnées GPS qu'elle détient déjà pour cette parcelle, sommet par sommet — au minimum 4 points qui forment le contour. Agrivo ne collecte pas la donnée sur le terrain.",
     scenariosTitle: "Exemples analysés (démo)",
     scenariosHint: "Chargez une parcelle de démonstration, puis lancez l'analyse pour voir le verdict.",
     scLabel: { conforme: "① Parcelle conforme", insuffisant: "② Données insuffisantes", anomalie: "③ Parcelle non conforme" } as Record<Statut, string>,
     scDesc: {
       conforme: "Zone stable, aucune déforestation après 2020.",
       insuffisant: "Couverture nuageuse : impossible de statuer.",
-      anomalie: "Perte de couvert forestier détectée.",
+      anomalie: "Recouvre une aire protégée.",
     } as Record<Statut, string>,
     thSommet: "Sommet",
     thLat: "Latitude (Y)",
@@ -42,13 +49,13 @@ const COPY = {
     point: (i: number) => `Point ${String.fromCharCode(65 + i)}`,
     addVertex: "Ajouter un sommet",
     removeVertex: "Retirer ce sommet",
-    manualHint: "1 sommet = point unique (parcelle de moins de 4 ha) · 3 sommets ou plus = polygone (fermé automatiquement).",
+    manualHint: "Minimum 4 sommets pour former une parcelle. Ajoutez-en autant que nécessaire.",
     manualSubmit: "Valider les coordonnées",
     manualErrParse: "Format invalide : chaque sommet doit avoir une latitude et une longitude numériques (ex. 5.362140).",
     manualErrZone: "Ces coordonnées sortent de l'emprise de la Côte d'Ivoire (lat 4–11, lon −9–−2). Vérifiez l'ordre latitude, longitude.",
-    manualErrCount: "Saisissez 1 sommet (point unique) ou au moins 3 sommets (polygone).",
-    captured: (n: number) => n > 1 ? `Coordonnées validées : polygone de ${n} sommets (WGS-84, GeoJSON RFC 7946).` : "Coordonnées validées : point unique (WGS-84, GeoJSON RFC 7946).",
-    superficie: "Superficie",
+    manualErrCount: "Saisissez au moins 4 sommets pour former une parcelle.",
+    captured: (n: number) => `Coordonnées validées : polygone de ${n} sommets (WGS-84, GeoJSON RFC 7946).`,
+    superficie: "Superficie calculée",
     checksTitle: "Contrôles d'intégrité",
     next: "Valider la cartographie",
     redo: "Modifier les coordonnées",
@@ -58,14 +65,14 @@ const COPY = {
     eyebrow: "Mapping · Coordinates",
     title: "Plot capture",
     intro:
-      "The cooperative enters the GPS coordinates it already holds for this plot (register, certification, exporter mapping), vertex by vertex. Agrivo does not collect field data itself.",
+      "The cooperative enters the GPS coordinates it already holds for this plot, vertex by vertex — at least 4 points forming the outline. Agrivo does not collect field data itself.",
     scenariosTitle: "Analysed examples (demo)",
     scenariosHint: "Load a demonstration plot, then run the analysis to see the verdict.",
     scLabel: { conforme: "① Compliant plot", insuffisant: "② Insufficient data", anomalie: "③ Non-compliant plot" } as Record<Statut, string>,
     scDesc: {
       conforme: "Stable area, no deforestation after 2020.",
       insuffisant: "Cloud cover: unable to decide.",
-      anomalie: "Forest cover loss detected.",
+      anomalie: "Overlaps a protected area.",
     } as Record<Statut, string>,
     thSommet: "Vertex",
     thLat: "Latitude (Y)",
@@ -73,13 +80,13 @@ const COPY = {
     point: (i: number) => `Point ${String.fromCharCode(65 + i)}`,
     addVertex: "Add a vertex",
     removeVertex: "Remove this vertex",
-    manualHint: "1 vertex = single point (plot under 4 ha) · 3+ vertices = polygon (closed automatically).",
+    manualHint: "At least 4 vertices to form a plot. Add as many as needed.",
     manualSubmit: "Validate the coordinates",
     manualErrParse: "Invalid format: each vertex needs a numeric latitude and longitude (e.g. 5.362140).",
     manualErrZone: "These coordinates fall outside Côte d'Ivoire (lat 4–11, lon −9–−2). Check the latitude, longitude order.",
-    manualErrCount: "Enter 1 vertex (single point) or at least 3 vertices (polygon).",
-    captured: (n: number) => n > 1 ? `Coordinates validated: ${n}-vertex polygon (WGS-84, GeoJSON RFC 7946).` : "Coordinates validated: single point (WGS-84, GeoJSON RFC 7946).",
-    superficie: "Area",
+    manualErrCount: "Enter at least 4 vertices to form a plot.",
+    captured: (n: number) => `Coordinates validated: ${n}-vertex polygon (WGS-84, GeoJSON RFC 7946).`,
+    superficie: "Computed area",
     checksTitle: "Integrity checks",
     next: "Validate the mapping",
     redo: "Edit the coordinates",
@@ -106,14 +113,18 @@ function ringOf(parcelle: Parcelle): number[][] {
     : ring;
 }
 function rowsOf(parcelle: Parcelle): Row[] {
-  return ringOf(parcelle).map(([lon, lat]) => ({ lat: lat.toFixed(6), lon: lon.toFixed(6) }));
+  const rows = ringOf(parcelle).map(([lon, lat]) => ({ lat: lat.toFixed(6), lon: lon.toFixed(6) }));
+  while (rows.length < MIN_SOMMETS) rows.push({ lat: "", lon: "" });
+  return rows;
 }
 const num = (s: string) => parseFloat(s.replace(",", ".").replace(/°/g, "").trim());
 
 /**
  * Étape 3 — cartographie de la parcelle. Saisie sommet par sommet (Sommet / Latitude (Y) /
- * Longitude (X)), au format officiel accepté par l'UE. Trois exemples analysés en un clic chargent
- * une parcelle de démonstration (verdict Conforme / Données insuffisantes / Anomalie détectée).
+ * Longitude (X)), minimum 4 points. La superficie est CALCULÉE depuis les sommets. Pour une
+ * saisie manuelle, le verdict est déterminé par croisement géométrique avec les aires protégées
+ * (recouvre → Anomalie ; hors zone → Conforme ; polygone dégénéré → Données insuffisantes).
+ * Les 3 exemples analysés chargent une parcelle de démonstration et son verdict pré-défini.
  */
 export function StepMapping({
   parcelle,
@@ -123,7 +134,7 @@ export function StepMapping({
 }: {
   parcelle: Parcelle;
   onScenario?: (p: Parcelle) => void;
-  onNext: () => void;
+  onNext: (forced?: ForcedVerdict) => void;
   onBack: () => void;
 }) {
   const reduce = useReducedMotion();
@@ -133,7 +144,10 @@ export function StepMapping({
   const [rows, setRows] = useState<Row[]>(() => rowsOf(parcelle));
   const [phase, setPhase] = useState<Phase>("choose");
   const [manualErr, setManualErr] = useState<string | null>(null);
-  const [validCount, setValidCount] = useState(1);
+  const [validCount, setValidCount] = useState(MIN_SOMMETS);
+  const [capturedAire, setCapturedAire] = useState(0);
+  const [evaluation, setEvaluation] = useState<EvaluationParcelle | null>(null);
+  const [edited, setEdited] = useState(false);
   const [checksShown, setChecksShown] = useState(0);
 
   // Re-synchronise le tableau quand la parcelle change (choix d'un scénario de démo).
@@ -141,11 +155,13 @@ export function StepMapping({
     setRows(rowsOf(parcelle));
     setPhase("choose");
     setManualErr(null);
+    setEvaluation(null);
+    setEdited(false);
     setChecksShown(0);
   }, [parcelle]);
 
-  const plafondT = Math.round(parcelle.superficieHa * RENDEMENT_T_HA[parcelle.filiere] * 10) / 10;
-  const haStr = parcelle.superficieHa.toLocaleString(lang === "fr" ? "fr-FR" : "en-GB");
+  const aireStr = capturedAire.toLocaleString(lang === "fr" ? "fr-FR" : "en-GB", { maximumFractionDigits: 1 });
+  const plafondT = Math.round(capturedAire * RENDEMENT_T_HA[parcelle.filiere] * 10) / 10;
   const checks =
     lang === "fr"
       ? [
@@ -177,14 +193,17 @@ export function StepMapping({
   function setCell(i: number, key: keyof Row, value: string) {
     setRows((rs) => rs.map((r, idx) => (idx === i ? { ...r, [key]: value } : r)));
     setManualErr(null);
+    setEdited(true);
   }
   function addRow() {
     setRows((rs) => [...rs, { lat: "", lon: "" }]);
     setManualErr(null);
+    setEdited(true);
   }
   function removeRow(i: number) {
-    setRows((rs) => (rs.length > 1 ? rs.filter((_, idx) => idx !== i) : rs));
+    setRows((rs) => (rs.length > MIN_SOMMETS ? rs.filter((_, idx) => idx !== i) : rs));
     setManualErr(null);
+    setEdited(true);
   }
 
   function valider() {
@@ -195,10 +214,14 @@ export function StepMapping({
       if (!Number.isFinite(lat) || !Number.isFinite(lon)) { setManualErr(t.manualErrParse); return; }
       coords.push([lon, lat]);
     }
-    if (coords.length !== 1 && coords.length < 3) { setManualErr(t.manualErrCount); return; }
+    if (coords.length < MIN_SOMMETS) { setManualErr(t.manualErrCount); return; }
     if (coords.some(([lon, lat]) => lon < -9 || lon > -2 || lat < 4 || lat > 11)) { setManualErr(t.manualErrZone); return; }
     setManualErr(null);
     setValidCount(coords.length);
+    setCapturedAire(aireHa(coords));
+    // Scénario de démo non modifié → verdict pré-défini (evaluation = null) ; sinon croisement géométrique réel.
+    const scenarioIntact = parcelle.id.startsWith("sc-") && !edited;
+    setEvaluation(scenarioIntact ? null : evaluerParcelle(coords));
     setChecksShown(0);
     setPhase("captured");
   }
@@ -207,6 +230,10 @@ export function StepMapping({
     setManualErr(null);
     setChecksShown(0);
     setPhase("choose");
+  }
+
+  function continuer() {
+    onNext(evaluation ? { statut: evaluation.statut, phrase: evaluation.phrase, phraseEn: evaluation.phraseEn } : undefined);
   }
 
   // Révélation séquentielle des contrôles d'intégrité une fois les coordonnées validées.
@@ -261,7 +288,7 @@ export function StepMapping({
                           }`}
                         >
                           <span className="flex items-center gap-1.5 text-xs font-semibold text-forest-950">
-                            <span className="h-2 w-2 shrink-0 rounded-full" style={{ background: STATUT_COLOR[sc.statut] }} aria-hidden />
+                            <span className="h-2 w-2 shrink-0 rounded-full" style={{ background: HEX[sc.statut] }} aria-hidden />
                             {t.scLabel[sc.statut]}
                           </span>
                           <span className="text-[0.68rem] leading-snug text-stone-500">{t.scDesc[sc.statut]}</span>
@@ -310,7 +337,7 @@ export function StepMapping({
                           />
                         </td>
                         <td className="px-1 py-1.5 text-center">
-                          {rows.length > 1 && (
+                          {rows.length > MIN_SOMMETS && (
                             <button
                               type="button"
                               onClick={() => removeRow(i)}
@@ -357,10 +384,21 @@ export function StepMapping({
                 <p className="text-sm leading-relaxed text-forest-950">
                   {t.captured(validCount)}{" "}
                   <span className="font-semibold">
-                    {t.superficie} : <span className="num">{haStr} ha</span>
+                    {t.superficie} : <span className="num">{aireStr} ha</span>
                   </span>
                 </p>
               </div>
+
+              {/* Croisement géométrique (saisie manuelle) : aire protégée recoupée ou non */}
+              {evaluation && (
+                <div
+                  className="flex items-start gap-2.5 rounded-xl px-4 py-3"
+                  style={{ background: `${HEX[evaluation.statut]}12`, border: `1px solid ${HEX[evaluation.statut]}33` }}
+                >
+                  <span className="mt-1 h-2.5 w-2.5 shrink-0 rounded-full" style={{ background: HEX[evaluation.statut] }} aria-hidden />
+                  <p className="text-sm leading-relaxed text-forest-950">{lang === "fr" ? evaluation.motif : evaluation.motifEn}</p>
+                </div>
+              )}
 
               <div>
                 <div className="flex items-center gap-2">
@@ -408,7 +446,7 @@ export function StepMapping({
               <button
                 type="button"
                 disabled={!allChecked}
-                onClick={onNext}
+                onClick={continuer}
                 className="group inline-flex flex-1 items-center justify-center gap-2 rounded-full bg-green-signal px-6 py-3.5 text-sm font-semibold text-white shadow-[0_14px_34px_-12px_rgba(22,163,74,0.75)] outline-none transition-[filter,transform,opacity] hover:brightness-105 active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-green-signal focus-visible:ring-offset-2 focus-visible:ring-offset-white disabled:cursor-not-allowed disabled:opacity-50"
               >
                 {t.next}

@@ -60,3 +60,74 @@ export function dansEmpriseCI(pts: number[][]): boolean {
       lon >= EMPRISE_CI.lonMin && lon <= EMPRISE_CI.lonMax && lat >= EMPRISE_CI.latMin && lat <= EMPRISE_CI.latMax,
   );
 }
+
+/* --------------------------- Aire & croisement de polygones --------------------------- */
+
+/** Anneau ouvert : retire le point de fermeture dupliqué s'il est présent. */
+function anneauOuvert(ring: number[][]): number[][] {
+  return ring.length > 1 && ring[0][0] === ring[ring.length - 1][0] && ring[0][1] === ring[ring.length - 1][1]
+    ? ring.slice(0, -1)
+    : ring;
+}
+
+/**
+ * Superficie (hectares) d'un polygone [lon, lat] par la formule du lacet (shoelace), en projection
+ * équirectangulaire locale (cos(latitude moyenne)) — précision suffisante pour une parcelle agricole.
+ */
+export function aireHa(ring: number[][]): number {
+  const r = anneauOuvert(ring);
+  if (r.length < 3) return 0;
+  const R = 6378137; // rayon terrestre (m)
+  const latAvg = (r.reduce((s, c) => s + c[1], 0) / r.length) * (Math.PI / 180);
+  const xy = r.map(([lon, lat]) => [((lon * Math.PI) / 180) * R * Math.cos(latAvg), ((lat * Math.PI) / 180) * R]);
+  let a = 0;
+  for (let i = 0; i < xy.length; i++) {
+    const [x1, y1] = xy[i];
+    const [x2, y2] = xy[(i + 1) % xy.length];
+    a += x1 * y2 - x2 * y1;
+  }
+  return Math.abs(a) / 2 / 10000; // m² → ha
+}
+
+/** Le point [lon, lat] est-il dans le polygone (ray casting) ? */
+export function pointInPolygon(pt: number[], ring: number[][]): boolean {
+  const r = anneauOuvert(ring);
+  const [x, y] = pt;
+  let inside = false;
+  for (let i = 0, j = r.length - 1; i < r.length; j = i++) {
+    const [xi, yi] = r[i];
+    const [xj, yj] = r[j];
+    const intersecte = yi > y !== yj > y && x < ((xj - xi) * (y - yi)) / (yj - yi) + xi;
+    if (intersecte) inside = !inside;
+  }
+  return inside;
+}
+
+const orient = (a: number[], b: number[], c: number[]): number =>
+  (b[0] - a[0]) * (c[1] - a[1]) - (b[1] - a[1]) * (c[0] - a[0]);
+
+/** Les segments [a,b] et [c,d] se croisent-ils (cas propre, colinéaires ignorés) ? */
+export function segmentsCroisent(a: number[], b: number[], c: number[], d: number[]): boolean {
+  const d1 = orient(c, d, a);
+  const d2 = orient(c, d, b);
+  const d3 = orient(a, b, c);
+  const d4 = orient(a, b, d);
+  return ((d1 > 0 && d2 < 0) || (d1 < 0 && d2 > 0)) && ((d3 > 0 && d4 < 0) || (d3 < 0 && d4 > 0));
+}
+
+/** Deux polygones [lon, lat] se chevauchent-ils (sommet contenu, ou arêtes qui se croisent) ? */
+export function polygonesSeChevauchent(a: number[][], b: number[][]): boolean {
+  const ra = anneauOuvert(a);
+  const rb = anneauOuvert(b);
+  if (ra.length < 3 || rb.length < 3) return false;
+  if (ra.some((p) => pointInPolygon(p, rb))) return true;
+  if (rb.some((p) => pointInPolygon(p, ra))) return true;
+  for (let i = 0; i < ra.length; i++) {
+    const a1 = ra[i];
+    const a2 = ra[(i + 1) % ra.length];
+    for (let j = 0; j < rb.length; j++) {
+      if (segmentsCroisent(a1, a2, rb[j], rb[(j + 1) % rb.length])) return true;
+    }
+  }
+  return false;
+}

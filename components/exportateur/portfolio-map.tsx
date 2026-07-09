@@ -1,11 +1,12 @@
 "use client";
 
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { CircleMarker, MapContainer, Polygon, TileLayer, Tooltip, useMap } from "react-leaflet";
 import L from "leaflet";
 import { useReducedMotion } from "framer-motion";
 import "leaflet/dist/leaflet.css";
 import { useLanguage } from "@/components/language-provider";
+import { ZonesSensiblesLayer } from "@/components/map/zones-sensibles-layer";
 import { FILIERE_LABEL, STATUT_LABEL, fmtHa, type Parcelle, type Statut } from "@/data/mock-parcelles";
 
 /** Statuts figés en anglais (mêmes termes que StatusBadge et lib/i18n.ts). */
@@ -159,6 +160,7 @@ export default function PortfolioMap({
 }) {
   const reduce = useReducedMotion() ?? false;
   const { lang } = useLanguage();
+  const [showZones, setShowZones] = useState(false);
   const shapes = useMemo(() => parcelles.map(toShape), [parcelles]);
 
   const bounds = useMemo(() => {
@@ -184,6 +186,7 @@ export default function PortfolioMap({
         />
         <FitBounds bounds={bounds} />
         <PanToSelected center={selectedCenter} reduce={reduce} />
+        <ZonesSensiblesLayer show={showZones} />
         {shapes.map((s) => (
           <ParcelleShape
             key={s.p.id}
@@ -195,6 +198,17 @@ export default function PortfolioMap({
         ))}
       </MapContainer>
 
+      {/* Bascule du masque « zones sensibles » (aires protégées / forêts classées, tracé indicatif) */}
+      <button
+        type="button"
+        onClick={() => setShowZones((v) => !v)}
+        aria-pressed={showZones}
+        className={`pointer-events-auto absolute left-3 top-3 z-[500] inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-[0.62rem] font-semibold backdrop-blur-sm outline-none transition-colors focus-visible:ring-2 focus-visible:ring-white/60 ${showZones ? "border-red-block/60 bg-red-block/80 text-white" : "border-white/20 bg-forest-950/70 text-white/90 hover:border-white/45"}`}
+      >
+        <span className="h-2.5 w-2.5 rounded-[3px] border border-white/60" style={{ background: showZones ? "#b4231e" : "transparent" }} aria-hidden />
+        {lang === "en" ? "Sensitive areas" : "Zones sensibles"}
+      </button>
+
       {/* Légende (le sens n'est jamais porté par la seule couleur : texte + le tableau reste la source accessible) */}
       <div className="pointer-events-none absolute bottom-3 left-3 z-[500] flex flex-col gap-1 rounded-xl bg-forest-950/70 px-3 py-2 backdrop-blur-sm">
         {legende.map((statut) => (
@@ -203,6 +217,12 @@ export default function PortfolioMap({
             {(lang === "en" ? STATUT_LABEL_EN : STATUT_LABEL)[statut]}
           </span>
         ))}
+        {showZones && (
+          <span className="flex items-center gap-2 text-[0.65rem] font-medium text-white/90">
+            <span className="h-2.5 w-2.5 rounded-[3px]" style={{ background: "#b4231e", opacity: 0.65 }} aria-hidden />
+            {lang === "en" ? "Protected area (indicative)" : "Aire protégée (indicatif)"}
+          </span>
+        )}
       </div>
 
       <div className="pointer-events-none absolute right-3 top-3 z-[500]">

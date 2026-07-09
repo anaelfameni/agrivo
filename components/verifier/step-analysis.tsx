@@ -11,7 +11,8 @@ import { useLanguage } from "@/components/language-provider";
 import type { AnalysisPhase } from "@/components/verifier/analysis-map";
 import type { WhispResult } from "@/lib/ai/whisp";
 import type { ScoreSols } from "@/lib/ai/gemini";
-import { STATUT_COLOR, type Parcelle } from "@/data/mock-parcelles";
+import { STATUT_COLOR, type Parcelle, type Statut } from "@/data/mock-parcelles";
+import type { ForcedVerdict } from "@/components/verifier/step-mapping";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
@@ -86,18 +87,50 @@ const AnalysisMap = dynamic(() => import("@/components/verifier/analysis-map"), 
   ),
 });
 
+/** Faisceau de preuves du croisement géométrique (saisie manuelle : parcelle × aires protégées). */
+const CONV_FORCE: Record<"fr" | "en", Record<Statut, string[]>> = {
+  fr: {
+    conforme: ["Croisement avec les aires protégées : aucun recouvrement.", "Superficie et géométrie de la parcelle valides (≥ 4 sommets)."],
+    anomalie: ["Croisement géométrique : recouvrement d'une aire protégée détecté.", "Zone exclue au sens du règlement (UE) 2023/1115."],
+    insuffisant: ["Polygone incomplet ou superficie non calculable.", "Coordonnées à compléter pour statuer."],
+  },
+  en: {
+    conforme: ["Cross-check with protected areas: no overlap.", "Valid plot area and geometry (≥ 4 vertices)."],
+    anomalie: ["Geometric cross-check: overlap with a protected area detected.", "Zone excluded under Regulation (EU) 2023/1115."],
+    insuffisant: ["Incomplete polygon or non-computable area.", "Coordinates to be completed to decide."],
+  },
+};
+
+/** Construit le WhispResult à partir d'un verdict imposé (saisie manuelle), sans appel réseau. */
+function forcedWhisp(forced: ForcedVerdict): WhispResult {
+  return {
+    statut: forced.statut,
+    phrase: forced.phrase,
+    phraseEn: forced.phraseEn,
+    datePivot: "2020-12-31",
+    sources: ["Copernicus Sentinel-2", "Aires protégées · WDPA / Ministère des Eaux et Forêts", "JRC Global Forest Cover"],
+    convergence: CONV_FORCE.fr[forced.statut],
+    convergenceEn: CONV_FORCE.en[forced.statut],
+    analyseMs: 0,
+    demo: true,
+  };
+}
+
 /**
  * Étape 3 — cartographie & analyse : LE moment signature. La séquence (contour dessiné →
  * balayage satellite → remplissage du verdict) concentre le budget créatif. Explicabilité
  * (score de sols) + lecture vocale native (Web Speech) : crédibilité algorithmique + inclusion.
+ * `forced` (saisie manuelle) impose le verdict issu du croisement géométrique, sans appel serveur.
  */
 export function StepAnalysis({
   parcelle,
+  forced,
   onVerdict,
   onNext,
   onBack,
 }: {
   parcelle: Parcelle;
+  forced?: ForcedVerdict | null;
   onVerdict: (w: WhispResult) => void;
   onNext: () => void;
   onBack: () => void;
@@ -140,11 +173,13 @@ export function StepAnalysis({
     const fetchP: Promise<WhispResult> =
       replay && whisp
         ? Promise.resolve(whisp)
-        : fetch("/api/whisp/verify", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ parcelleId: parcelle.id }),
-          }).then((r) => r.json());
+        : forced
+          ? Promise.resolve(forcedWhisp(forced))
+          : fetch("/api/whisp/verify", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ parcelleId: parcelle.id }),
+            }).then((r) => r.json());
     await sleep(reduce ? 0 : 620);
     setPhase("scanning");
     const [result] = await Promise.all([fetchP, sleep(reduce ? 0 : 840)]);

@@ -7,7 +7,7 @@ import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { ArrowLeft, ArrowRight, CheckCircle2, RotateCcw, ShieldCheck } from "lucide-react";
 import { VerifierStepper } from "@/components/verifier/verifier-stepper";
 import { StepScan } from "@/components/verifier/step-scan";
-import { StepMapping } from "@/components/verifier/step-mapping";
+import { StepMapping, type ForcedVerdict } from "@/components/verifier/step-mapping";
 import { StepAnalysis } from "@/components/verifier/step-analysis";
 import { StepCertificate } from "@/components/verifier/step-certificate";
 import { StepValorisation } from "@/components/verifier/step-valorisation";
@@ -84,6 +84,8 @@ export default function VerifierPage() {
   const [, setScan] = useState<ScanResult | null>(null);
   const [parcelle, setParcelle] = useState<Parcelle | null>(null);
   const [whisp, setWhisp] = useState<WhispResult | null>(null);
+  // Verdict imposé par la saisie manuelle (croisement géométrique) ; null pour les 3 exemples démo.
+  const [forced, setForced] = useState<ForcedVerdict | null>(null);
 
   // Aperçu localisé ; le PDF téléchargé (document officiel) reste construit en français.
   const certData = useMemo(
@@ -141,6 +143,7 @@ export default function VerifierPage() {
     setScan(null);
     setParcelle(null);
     setWhisp(null);
+    setForced(null);
     setStep(1);
   }
 
@@ -183,7 +186,7 @@ export default function VerifierPage() {
             <StepMapping
               parcelle={parcelle}
               onScenario={setParcelle}
-              onNext={() => setStep(4)}
+              onNext={(f) => { setForced(f ?? null); setStep(4); }}
               onBack={() => setStep(2)}
             />
           )}
@@ -191,6 +194,7 @@ export default function VerifierPage() {
           {step === 4 && parcelle && (
             <StepAnalysis
               parcelle={parcelle}
+              forced={forced}
               onVerdict={setWhisp}
               onNext={afterAnalysis}
               onBack={() => setStep(3)}

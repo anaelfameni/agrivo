@@ -1,14 +1,26 @@
 import { describe, expect, it } from "vitest";
 import {
   MIN_WAYPOINT_M,
+  aireHa,
   arrondi6,
   dansEmpriseCI,
   distanceCumuleeM,
   estNouveauWaypoint,
   fermerAnneau,
   haversineM,
+  pointInPolygon,
+  polygonesSeChevauchent,
 } from "@/lib/geo/terrain";
+import { evaluerParcelle } from "@/lib/geo/evaluation";
+import { ZONES_SENSIBLES } from "@/data/zones-sensibles";
+import { getParcelle } from "@/data/mock-parcelles";
 import { chargerLive, cleLive } from "@/lib/ai/live-cache";
+
+/** Ring [lon,lat][] d'une parcelle de démonstration. */
+function ringOf(id: string): number[][] {
+  const g = getParcelle(id)!.geojson;
+  return g.type === "Polygon" ? g.coordinates[0] : [g.coordinates];
+}
 
 // Repères : Soubré rural ~[-6.65, 5.83] ; 0,001° de latitude ≈ 111,2 m partout sur le globe.
 const SOUBRE: number[] = [-6.65, 5.83];
@@ -74,5 +86,32 @@ describe("cache client des réponses IA live (filet anti-quota de démonstration
 
   it("chargerLive : renvoie null sans navigateur (jamais d'exception hors client)", () => {
     expect(chargerLive("audit-plan", { lang: "fr" })).toBeNull();
+  });
+});
+
+describe("géométrie de parcelle — superficie & croisement avec les aires protégées", () => {
+  const zoneSoubre = ZONES_SENSIBLES.find((z) => z.nom.includes("Soubré"))!.ring;
+
+  it("aireHa : une parcelle de démonstration de ~3 ha est mesurée entre 2,5 et 4 ha", () => {
+    const a = aireHa(ringOf("sc-conforme"));
+    expect(a).toBeGreaterThan(2.5);
+    expect(a).toBeLessThan(4);
+    expect(aireHa([[-6.65, 5.83], [-6.649, 5.83]])).toBe(0); // moins de 3 sommets → 0
+  });
+
+  it("pointInPolygon : centre de la forêt classée dedans, Soubré-ville dehors", () => {
+    expect(pointInPolygon([-6.802, 5.706], zoneSoubre)).toBe(true);
+    expect(pointInPolygon([-6.649, 5.785], zoneSoubre)).toBe(false);
+  });
+
+  it("polygonesSeChevauchent : la parcelle anomalie recoupe la forêt classée, pas la conforme", () => {
+    expect(polygonesSeChevauchent(ringOf("sc-anomalie"), zoneSoubre)).toBe(true);
+    expect(polygonesSeChevauchent(ringOf("sc-conforme"), zoneSoubre)).toBe(false);
+  });
+
+  it("evaluerParcelle : anomalie si recouvrement, conforme hors zone, insuffisant sous 4 sommets", () => {
+    expect(evaluerParcelle(ringOf("sc-anomalie")).statut).toBe("anomalie");
+    expect(evaluerParcelle(ringOf("sc-conforme")).statut).toBe("conforme");
+    expect(evaluerParcelle([[-6.65, 5.83], [-6.648, 5.83], [-6.648, 5.832]]).statut).toBe("insuffisant");
   });
 });

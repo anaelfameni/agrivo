@@ -3,6 +3,28 @@
 Versioning sémantique (MAJOR.MINOR.PATCH). Chaque release liste ce qui est ajouté, corrigé et
 vérifié, conformément à l'étape 8 du pipeline « Du besoin à la Release ».
 
+## v1.12.0 — 2026-07-09 — Parcelle ≥ 4 sommets + superficie calculée + masque « zones sensibles » + détection géométrique
+
+### Changé
+- **Parcelle = minimum 4 sommets** (Point A/B/C/D…, ajout illimité, retrait bloqué sous 4). La **superficie
+  est CALCULÉE** à partir des sommets (`aireHa`, shoelace équirectangulaire), plus de « point unique ».
+
+### Ajouté
+- **Détection géométrique réelle** pour la saisie manuelle : croisement parcelle × aires protégées
+  (`polygonesSeChevauchent`) → **Anomalie détectée** (recouvre une aire protégée), **Conforme** (hors zone),
+  **Données insuffisantes** (polygone dégénéré). Les 3 exemples démo gardent leur verdict pré-défini.
+  Modules purs `lib/geo/terrain.ts` (aireHa, pointInPolygon, polygonesSeChevauchent) + `lib/geo/evaluation.ts`.
+- **Masque « zones sensibles »** (aires protégées / forêts classées, tracés **indicatifs**, sources WDPA /
+  Ministère — **jamais « zones autorisées »**, inexistant) : couche rouge activable par **bouton on/off** +
+  légende sur les **3 cartes** (portefeuille coop & exportateur, cartographie, analyse).
+  `data/zones-sensibles.ts` + `components/map/zones-sensibles-layer.tsx`.
+
+### Vérifié (test réel refait)
+- `tsc` ✓ · **69/69 tests** Vitest (4 nouveaux : aire, croisement) ✓ · `next build` ✓ · ESLint 0.
+- **Parcours UI bout-en-bout, logué coop démo** (Edge/CDP) : **6/6** — 3 exemples (Conforme / Données
+  insuffisantes / Anomalie) + **saisie manuelle DANS une aire protégée → Anomalie**, **hors zone → Conforme**,
+  + garde **min. 4 sommets**.
+
 ## v1.11.0 — 2026-07-09 — Saisie « Point A–D » + 3 scénarios de démo (Conforme/Insuffisant/Anomalie)
 
 ### Ajouté

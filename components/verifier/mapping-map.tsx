@@ -6,6 +6,7 @@ import L, { type Map as LeafletMap } from "leaflet";
 import { motion } from "framer-motion";
 import "leaflet/dist/leaflet.css";
 import { PinMark } from "@/components/ui/pin-mark";
+import { ZonesSensiblesLayer } from "@/components/map/zones-sensibles-layer";
 import { useLanguage } from "@/components/language-provider";
 
 const LABELS = {
@@ -76,6 +77,7 @@ export default function MappingMap({
 }) {
   const { lang } = useLanguage();
   const tl = LABELS[lang];
+  const [showZones, setShowZones] = useState(false);
   const uid = useId().replace(/[^a-zA-Z0-9]/g, "");
   const wrapRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<LeafletMap | null>(null);
@@ -198,7 +200,19 @@ export default function MappingMap({
           maxZoom={19}
         />
         <MapBridge onReady={onReady} />
+        <ZonesSensiblesLayer show={showZones} />
       </MapContainer>
+
+      {/* Bascule du masque « zones sensibles » (aires protégées, tracé indicatif) */}
+      <button
+        type="button"
+        onClick={() => setShowZones((v) => !v)}
+        aria-pressed={showZones}
+        className={`pointer-events-auto absolute right-3 top-3 z-[520] inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-[0.6rem] font-semibold backdrop-blur-sm outline-none transition-colors ${showZones ? "border-red-block/60 bg-red-block/80 text-white" : "border-white/20 bg-black/40 text-white/90 hover:border-white/40"}`}
+      >
+        <span className="h-2 w-2 rounded-[2px] border border-white/60" style={{ background: showZones ? "#b4231e" : "transparent" }} aria-hidden />
+        {lang === "en" ? "Sensitive areas" : "Zones sensibles"}
+      </button>
 
       {/* Vignette : concentre le regard, garantit le contraste des marqueurs */}
       <div
