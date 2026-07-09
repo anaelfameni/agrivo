@@ -10,7 +10,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion } from "framer-motion";
-import { LayoutDashboard, Users, Map, Globe, Settings, ShieldCheck, type LucideIcon } from "lucide-react";
+import { LayoutDashboard, Users, Map, Settings, ShieldCheck, type LucideIcon } from "lucide-react";
 import { useAuth } from "@/components/auth-provider";
 import { useLanguage } from "@/components/language-provider";
 
@@ -21,7 +21,6 @@ const NAV_COOP: NavItem[] = [
   { href: "/app/dashboard", label: { fr: "Vue d'ensemble", en: "Overview" }, Icon: LayoutDashboard },
   { href: "/app/producteurs", label: { fr: "Producteurs", en: "Farmers" }, Icon: Users },
   { href: "/app/parcelles", label: { fr: "Parcelles", en: "Plots" }, Icon: Map },
-  { href: "/app/exportateur", label: { fr: "Vue exportateur", en: "Exporter view" }, Icon: Globe },
   { href: "/app/parametres", label: { fr: "Paramètres", en: "Settings" }, Icon: Settings },
 ];
 

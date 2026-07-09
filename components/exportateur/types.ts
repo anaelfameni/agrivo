@@ -5,7 +5,7 @@ export type ExpTab = "analytique" | "assistant" | "dossier" | "config";
 /** Une ligne du journal réseau simulé (onglet Configuration, Prompt 5). */
 export interface LogEntry {
   id: string;
-  service: string; // "Whisp API", "Gemini API", "Export", "TRACES NT"…
+  service: string; // "Moteur satellite", "IA Agrivo", "Export", "TRACES NT"…
   label: string;
   ms: number;
   status: "ok" | "warn";

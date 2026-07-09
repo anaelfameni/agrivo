@@ -44,7 +44,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
           <div className="flex items-center gap-2 md:gap-3">
             <LanguageSwitcher tone="dark" />
             <UserMenu />
-            <BackToSiteLink label="Site" />
+            <BackToSiteLink label="Retour à la page d'accueil" />
           </div>
         </div>
       </header>

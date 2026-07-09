@@ -3,6 +3,30 @@
 Versioning sémantique (MAJOR.MINOR.PATCH). Chaque release liste ce qui est ajouté, corrigé et
 vérifié, conformément à l'étape 8 du pipeline « Du besoin à la Release ».
 
+## v1.10.0 — 2026-07-09 — Refonte des deux dashboards + header
+
+### Changé
+- **Header /app** : la **Déconnexion** est désormais un bouton visible **à côté du nom** (fini le menu
+  déroulant) ; le lien « Site » devient **« Retour à la page d'accueil »**. Les boutons de déconnexion
+  ajoutés dans les dashboards (v1.8/1.9) sont retirés (un seul point de déconnexion, dans le header).
+- **Périmètre coopérative corrigé** : les pages **Producteurs** et **Parcelles** de l'espace coop
+  n'affichent plus que **la coopérative de l'utilisateur** (via `parcellesForCoop()`), au lieu des ~45
+  parcelles de toutes les coops. L'espace exportateur garde le **portefeuille complet** — ce qui distingue
+  réellement les deux espaces.
+- **Statuts verbatim** sur les filtres du dashboard exportateur (« Anomalie détectée », « Données
+  insuffisantes »).
+
+### Ajouté
+- **Dashboard coopérative** : bloc **« Répartition des statuts »** (barre + légende) sous les KPI —
+  Conforme / Anomalie détectée / Données insuffisantes, aux couleurs de la charte.
+
+### Retiré
+- **« Vue exportateur »** de la navigation coopérative ; `/app/exportateur` est réservé à l'exportateur
+  (et l'admin) — un compte coopérative y est redirigé vers son tableau de bord.
+
+### Vérifié
+- `tsc` ✓ · 65/65 tests Vitest ✓ · `next build` ✓ · ESLint (0 erreur).
+
 ## v1.9.0 — 2026-07-09 — Deux espaces distincts : Coopérative & Exportateur
 
 ### Ajouté

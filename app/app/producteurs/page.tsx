@@ -6,7 +6,7 @@ import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { Search, UserPlus, ChevronRight, Check } from "lucide-react";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { EmptyState } from "@/components/ui/empty-state";
-import { PARCELLES, FILIERE_LABEL, fmtHa, COOP_DEMO, type Statut } from "@/data/mock-parcelles";
+import { parcellesForCoop, FILIERE_LABEL, fmtHa, COOP_DEMO, type Statut } from "@/data/mock-parcelles";
 import { FILIERES, type FiliereId } from "@/config/filieres";
 import { useLanguage } from "@/components/language-provider";
 import { PRODUCTEURS_KEY, lireProducteursLocaux, type ProducteurLocal } from "@/lib/producteurs-locaux";
@@ -15,7 +15,7 @@ const TR = {
   fr: {
     eyebrow: "Producteurs",
     title: "Vos producteurs",
-    subAfter: "producteurs suivis, toutes coopératives confondues.",
+    subAfter: "producteurs suivis dans votre coopérative.",
     add: "Ajouter un producteur",
     toast: (nom: string) => `Producteur « ${nom} » ajouté. Vérification à planifier.`,
     searchLabel: "Rechercher un producteur",
@@ -45,7 +45,7 @@ const TR = {
   en: {
     eyebrow: "Farmers",
     title: "Your farmers",
-    subAfter: "farmers tracked, across all cooperatives.",
+    subAfter: "farmers tracked in your cooperative.",
     add: "Add a farmer",
     toast: (nom: string) => `Farmer "${nom}" added. Verification to schedule.`,
     searchLabel: "Search a farmer",
@@ -77,7 +77,8 @@ type Tr = (typeof TR)["fr"];
 
 type Producteur = ProducteurLocal;
 
-const BASE: Producteur[] = PARCELLES.map((p) => ({
+// Espace coopérative : uniquement les producteurs de SA coopérative (pas le portefeuille multi-coops).
+const BASE: Producteur[] = parcellesForCoop().map((p) => ({
   id: p.id,
   producteurNom: p.producteurNom,
   numeroCartePro: p.numeroCartePro,

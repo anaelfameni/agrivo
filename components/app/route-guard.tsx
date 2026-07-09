@@ -27,6 +27,13 @@ export function RouteGuard({ children }: { children: React.ReactNode }) {
     user.role === "exporter" &&
     !EXPORTER_ALLOWED.some((p) => pathname === p || pathname.startsWith(p + "/"));
 
+  // L'espace exportateur (`/app/exportateur`) est réservé à l'exportateur (et à l'admin) : un compte
+  // COOPÉRATIVE qui l'ouvre est renvoyé vers son tableau de bord — la vue exportateur a disparu côté coop.
+  const coopBlocked =
+    !!user &&
+    user.role === "coop" &&
+    (pathname === "/app/exportateur" || pathname.startsWith("/app/exportateur/"));
+
   React.useEffect(() => {
     if (!loading && !user) {
       const redirect = encodeURIComponent(pathname || "/app/dashboard");
@@ -38,7 +45,11 @@ export function RouteGuard({ children }: { children: React.ReactNode }) {
     if (!loading && exporterBlocked) router.replace("/app/exportateur");
   }, [loading, exporterBlocked, router]);
 
-  if (loading || !user || exporterBlocked) {
+  React.useEffect(() => {
+    if (!loading && coopBlocked) router.replace("/app/dashboard");
+  }, [loading, coopBlocked, router]);
+
+  if (loading || !user || exporterBlocked || coopBlocked) {
     return (
       <div className="grid min-h-dvh place-items-center bg-ivory text-forest-950">
         <div className="flex flex-col items-center gap-3">

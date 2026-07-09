@@ -8,9 +8,12 @@ import { motion, useReducedMotion } from "framer-motion";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { EmptyState } from "@/components/ui/empty-state";
 import { StatNumber } from "@/components/ui/stat-number";
-import { PARCELLES, portfolioStats, FILIERE_LABEL, fmtHa, formatDateFr, type Parcelle, type Statut } from "@/data/mock-parcelles";
+import { parcellesForCoop, portfolioStats, FILIERE_LABEL, fmtHa, formatDateFr, type Parcelle, type Statut } from "@/data/mock-parcelles";
 import { FILIERES, type FiliereId } from "@/config/filieres";
 import { useLanguage } from "@/components/language-provider";
+
+// Espace coopérative : uniquement les parcelles de SA coopérative (pas le portefeuille multi-coops).
+const COOP_PARCELLES = parcellesForCoop();
 
 const PortfolioMap = dynamic(() => import("@/components/exportateur/portfolio-map"), {
   ssr: false,
@@ -74,7 +77,7 @@ export default function ParcellesPage() {
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
-    return PARCELLES.filter((p) => {
+    return COOP_PARCELLES.filter((p) => {
       if (filiere !== "all" && p.filiere !== filiere) return false;
       if (statut !== "all" && p.statut !== statut) return false;
       if (q && !(p.producteurNom.toLowerCase().includes(q) || p.numeroCertificat.toLowerCase().includes(q) || p.numeroCartePro.toLowerCase().includes(q))) return false;
@@ -82,7 +85,7 @@ export default function ParcellesPage() {
     });
   }, [query, filiere, statut]);
 
-  const stats = useMemo(() => portfolioStats(PARCELLES), []);
+  const stats = useMemo(() => portfolioStats(COOP_PARCELLES), []);
   const kpis = [
     { label: t.kpis[0], value: stats.producteurs, suffix: "" },
     { label: t.kpis[1], value: stats.tauxConformite, suffix: " %" },
@@ -137,7 +140,7 @@ export default function ParcellesPage() {
               <span className="h-4 w-1 rounded-full bg-green-signal" aria-hidden />
               {t.listTitle}
             </h2>
-            <span className="num text-xs text-stone-400">{filtered.length} / {PARCELLES.length}</span>
+            <span className="num text-xs text-stone-400">{filtered.length} / {COOP_PARCELLES.length}</span>
           </div>
           {filtered.length === 0 ? (
             <div className="p-2">

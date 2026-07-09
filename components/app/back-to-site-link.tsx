@@ -24,7 +24,7 @@ export function BackToSiteLink({ label }: { label: string }) {
       className="inline-flex h-9 items-center gap-1.5 rounded-full border border-black/10 px-3.5 text-sm text-stone-600 outline-none transition-colors hover:border-green-signal/40 hover:text-forest-950 focus-visible:ring-2 focus-visible:ring-green-signal focus-visible:ring-offset-2 focus-visible:ring-offset-ivory"
     >
       <ArrowLeft size={14} strokeWidth={2} aria-hidden />
-      <span className="hidden sm:inline">{label}</span>
+      <span className="hidden lg:inline">{label}</span>
     </Link>
   );
 }

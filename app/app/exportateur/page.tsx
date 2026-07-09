@@ -1,9 +1,8 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import { BarChart3, Bell, Command, FileText, LogOut, MessageSquareText, Settings2 } from "lucide-react";
+import { BarChart3, Bell, Command, FileText, MessageSquareText, Settings2 } from "lucide-react";
 import { useAuth } from "@/components/auth-provider";
 import { AnalyticsTab } from "@/components/exportateur/analytics-tab";
 import { AssistantTab } from "@/components/exportateur/assistant-tab";
@@ -75,8 +74,7 @@ export default function ExportateurPage() {
   const reduce = useReducedMotion();
   const { lang } = useLanguage();
   const t = COPY[lang];
-  const { user, logout } = useAuth();
-  const router = useRouter();
+  const { user } = useAuth();
   const firstName = user?.nom?.trim().split(/\s+/)[0] || "Marc";
   const [tab, setTab] = useState<ExpTab>("analytique");
   const [selectedId, setSelectedId] = useState<string | null>(null);
@@ -162,14 +160,6 @@ export default function ExportateurPage() {
         </div>
 
         <div className="flex items-center gap-2">
-          <button
-            type="button"
-            onClick={() => { logout(); router.push("/"); }}
-            className="inline-flex h-10 items-center gap-2 rounded-full border border-black/[0.08] bg-white px-3.5 text-sm text-stone-500 outline-none transition-colors hover:border-red-block/40 hover:text-red-block focus-visible:ring-2 focus-visible:ring-red-block/40"
-          >
-            <LogOut size={15} strokeWidth={2} aria-hidden />
-            <span className="hidden sm:inline">{t.logout}</span>
-          </button>
           <button
             type="button"
             onClick={() => setCmdOpen(true)}

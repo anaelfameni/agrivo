@@ -36,7 +36,7 @@ const STATUT_KEYS: (Statut | "tous")[] = ["tous", "conforme", "anomalie", "insuf
 
 const COPY = {
   fr: {
-    statutFilters: { tous: "Tous", conforme: "Conforme", anomalie: "Anomalie", insuffisant: "Insuffisant" },
+    statutFilters: { tous: "Tous", conforme: "Conforme", anomalie: "Anomalie détectée", insuffisant: "Données insuffisantes" },
     kpi: {
       producteurs: "Producteurs audités",
       taux: "Taux de conformité",
@@ -59,7 +59,7 @@ const COPY = {
     sortLocale: "fr",
   },
   en: {
-    statutFilters: { tous: "All", conforme: "Compliant", anomalie: "Anomaly", insuffisant: "Insufficient" },
+    statutFilters: { tous: "All", conforme: "Compliant", anomalie: "Anomaly detected", insuffisant: "Insufficient data" },
     kpi: {
       producteurs: "Farmers audited",
       taux: "Compliance rate",
@@ -250,7 +250,7 @@ export function AnalyticsTab({
           </div>
 
           {/* Filtre statut (segmenté) */}
-          <div className="flex items-center gap-1 rounded-full border border-black/[0.06] bg-white p-1" role="group" aria-label={t.filterStatut}>
+          <div className="flex flex-wrap items-center gap-1 rounded-2xl border border-black/[0.06] bg-white p-1" role="group" aria-label={t.filterStatut}>
             {STATUT_KEYS.map((k) => (
               <button
                 key={k}
