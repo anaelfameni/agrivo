@@ -247,7 +247,7 @@ export function StepMapping({
     <div className="grid gap-5 lg:grid-cols-[1.5fr_1fr]">
       {/* Aperçu satellite de la parcelle */}
       <div className="relative h-[44vh] min-h-[320px] overflow-hidden rounded-2xl border border-black/[0.08] lg:h-[62vh]">
-        <MappingMap waypoints={previewCoords} count={previewCoords.length} mode={mapMode} closed={phase === "captured"} active={false} />
+        <MappingMap waypoints={previewCoords} count={previewCoords.length} mode={mapMode} closed active={false} />
       </div>
 
       {/* Panneau de saisie */}

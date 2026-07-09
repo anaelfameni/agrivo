@@ -3,6 +3,35 @@
 Versioning sémantique (MAJOR.MINOR.PATCH). Chaque release liste ce qui est ajouté, corrigé et
 vérifié, conformément à l'étape 8 du pipeline « Du besoin à la Release ».
 
+## v1.13.0 — 2026-07-09 — Assistant AGRIVO intelligent, IA « live » assumée, polygone fermé, retrait dioula/baoulé
+
+### Corrigé
+- **Polygone non fermé** à la cartographie : le contour s'affiche désormais **fermé** (plus de 3 segments
+  ouverts) — `step-mapping` passe `closed` en permanence (le mode « tour de champ » n'existe plus).
+
+### Changé
+- **Assistant AGRIVO (ex-Copilote RDUE)** : base de connaissances élargie de 10 à **22 faits** — en plus
+  du RDUE, tout AGRIVO (prix 100 000/1 000 000, deux espaces, parcours, 3 verdicts, masque zones sensibles,
+  comptes démo, valorisation) + chiffres sourcés (bord champ 1 200 vs revenu vital 1 758 FCFA = +47 %,
+  30–40 % du cacao sur terres protégées, simplification −75 %, Ghana faible risque). La route répond
+  désormais à **toute** question à partir de la base (fini l'abandon « reformulez votre question ») ;
+  garde-fou finance conservé (frontière Nanti).
+- **IA « live » assumée** : la clé Gemini est active (prod `mock:false`). Le repli (quota) est une
+  **réponse groundée**, plus jamais étiquetée « démonstration » (badges relabelisés « Réponse vérifiée » /
+  « Diagnostic vérifié » ; log réseau sans « MOCK_MODE »).
+- **Recherche vérifiée (~70 sources)** : faits d'AGRIVO confirmés à jour (échéances, CI risque standard,
+  DDS 1er opérateur, Whisp/FAO). FAQ enrichie d'une entrée valorisation sourcée.
+
+### Retiré
+- **Dioula / Baoulé** : fonction de traduction du verdict retirée (`step-analysis`), carte d'accueil
+  reformulée, préchauffage admin nettoyé, route `traduire-verdict` supprimée. **FR/EN + lecture vocale conservés.**
+
+### Vérifié
+- `tsc` ✓ · **74/74 tests** (dont base de l'assistant) ✓ · `next build` ✓ · ESLint 0.
+- **Assistant : 6/6 réponses pertinentes** (prix, création de compte, verdicts, CI, masque, garde-fou crédit).
+- **Parcours UI (Edge/CDP, logué coop démo) : 7/7** — 3 exemples + 2 saisies manuelles (dans/hors aire
+  protégée) + garde min. 4 sommets + **polygone fermé**.
+
 ## v1.12.0 — 2026-07-09 — Parcelle ≥ 4 sommets + superficie calculée + masque « zones sensibles » + détection géométrique
 
 ### Changé

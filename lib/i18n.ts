@@ -1,6 +1,6 @@
 /**
  * Dictionnaire de traduction AGRIVO. Deux langues d'INTERFACE : Français (défaut) et Anglais.
- * (Le Dioula et le Baoulé ne sont plus des langues d'interface : seule l'IA VOCALE les parle.)
+ * (Interface bilingue : Français et Anglais uniquement.)
  * Les 3 statuts de conformité restent les mots figés de la charte côté français.
  */
 export const LANGUAGES = ["fr", "en"] as const;

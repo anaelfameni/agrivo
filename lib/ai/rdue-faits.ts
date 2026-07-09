@@ -119,14 +119,138 @@ export const FAITS_RDUE: FaitRDUE[] = [
     },
     source: { fr: "Art. 2 du Règlement (UE) 2023/1115", en: "Art. 2 of Regulation (EU) 2023/1115" },
   },
+
+  /* --------------------------- Faits RDUE enrichis (recherche vérifiée) --------------------------- */
+  {
+    id: "simplification",
+    motsCles: ["simplification", "simplifie", "allege", "reduction", "paquet", "reference", "numero", "premier", "operateur", "aval", "downstream", "package", "simplified"],
+    question: { fr: "Qu'a changé la simplification de 2026 ?", en: "What did the 2026 simplification change?" },
+    reponse: {
+      fr: "Le paquet de mai 2026 réduit d'environ 75 % les coûts de conformité sans toucher au fond. Seul le premier opérateur qui met le produit sur le marché de l'Union dépose la déclaration complète ; l'aval se contente d'en référencer le numéro. Les échéances ne bougent plus.",
+      en: "The May 2026 package cuts compliance costs by about 75% without changing the substance. Only the first operator placing the product on the Union market files the full statement; downstream operators just reference its number. The deadlines no longer move.",
+    },
+    source: { fr: "Paquet de simplification RDUE, mai 2026", en: "EUDR simplification package, May 2026" },
+  },
+  {
+    id: "ghana",
+    motsCles: ["ghana", "voisin", "faible", "compare", "comparaison", "neighbour", "low"],
+    question: { fr: "Pourquoi le Ghana est-il traité différemment ?", en: "Why is Ghana treated differently?" },
+    reponse: {
+      fr: "Le classement du 22 mai 2025 place le Ghana en « risque faible » alors que la Côte d'Ivoire est en « risque standard ». Un lot ivoirien subit donc une diligence complète, avec géolocalisation obligatoire, là où un lot ghanéen bénéficie d'une diligence simplifiée. D'où l'urgence d'outiller les coopératives ivoiriennes.",
+      en: "The 22 May 2025 benchmarking places Ghana at \"low risk\" while Côte d'Ivoire is \"standard risk\". An Ivorian batch faces full due diligence with mandatory geolocation, whereas a Ghanaian batch gets simplified due diligence. Hence the urgency to equip Ivorian cooperatives.",
+    },
+    source: { fr: "Benchmarking pays, 22 mai 2025", en: "Country benchmarking, 22 May 2025" },
+  },
+
+  /* --------------------------- AGRIVO : produit, prix, parcours, site --------------------------- */
+  {
+    id: "agrivo-prix",
+    motsCles: ["prix", "cout", "coute", "tarif", "tarifs", "abonnement", "combien", "cher", "payer", "mois", "fcfa", "price", "cost", "pricing", "subscription", "fee", "much"],
+    question: { fr: "Combien coûte AGRIVO ?", en: "How much does AGRIVO cost?" },
+    reponse: {
+      fr: "L'abonnement coopérative est de 100 000 FCFA par mois, soit environ 1 200 FCFA par producteur vérifié et par an. L'API exportateur démarre à 1 000 000 FCFA par mois. Le producteur ne paie rien : la vérification est prise en charge par sa coopérative.",
+      en: "The cooperative subscription is 100,000 FCFA per month, about 1,200 FCFA per verified farmer per year. The exporter API starts at 1,000,000 FCFA per month. The farmer pays nothing: verification is covered by their cooperative.",
+    },
+    source: { fr: "Tarifs AGRIVO", en: "AGRIVO pricing" },
+  },
+  {
+    id: "agrivo-produit",
+    motsCles: ["agrivo", "quoi", "sert", "plateforme", "outil", "comment", "marche", "fonctionne", "parcours", "etapes", "does", "what", "how", "works", "flow", "platform", "utiliser", "use"],
+    question: { fr: "Comment fonctionne AGRIVO ?", en: "How does AGRIVO work?" },
+    reponse: {
+      fr: "AGRIVO déroule un parcours en plusieurs temps : import ou saisie des parcelles, cartographie, analyse satellite, verdict expliqué, certificat d'évaluation de conformité, puis valorisation. Le tout au format accepté par l'Union européenne et directement exploitable pour la déclaration sur TRACES NT.",
+      en: "AGRIVO runs a step-by-step journey: import or enter plots, mapping, satellite analysis, an explained verdict, a compliance-assessment certificate, then valorisation. All in the format accepted by the European Union, ready for the TRACES NT declaration.",
+    },
+    source: { fr: "Parcours AGRIVO", en: "AGRIVO journey" },
+  },
+  {
+    id: "agrivo-espaces",
+    motsCles: ["espace", "espaces", "coop", "exportateur", "dashboard", "tableau", "bord", "difference", "deux", "workspace", "exporter", "spaces"],
+    question: { fr: "Quels sont les deux espaces d'AGRIVO ?", en: "What are AGRIVO's two spaces?" },
+    reponse: {
+      fr: "AGRIVO a deux espaces distincts : l'espace coopérative, pour vérifier les parcelles de ses producteurs, et l'espace exportateur, pour piloter un portefeuille de plusieurs coopératives. Chaque compte atterrit directement sur son propre tableau de bord.",
+      en: "AGRIVO has two distinct spaces: the cooperative workspace, to verify its farmers' plots, and the exporter workspace, to steer a portfolio of several cooperatives. Each account lands on its own dashboard.",
+    },
+    source: { fr: "Espaces AGRIVO", en: "AGRIVO workspaces" },
+  },
+  {
+    id: "agrivo-valorisation",
+    motsCles: ["valorisation", "prime", "primes", "acheteur", "acheteurs", "premium", "vendre", "revenu", "gagner", "rentable", "rapporte", "benefice", "premiums", "buyer", "income", "sell", "worth"],
+    question: { fr: "En quoi la conformité rapporte-t-elle à la coopérative ?", en: "How does compliance pay off for the cooperative?" },
+    reponse: {
+      fr: "Une parcelle conforme ouvre l'accès aux primes de durabilité et aux acheteurs européens exigeants. En Côte d'Ivoire, le prix bord champ est de 1 200 FCFA/kg quand le prix de référence pour un revenu vital atteint 1 758 FCFA/kg, soit 47 % de plus : la conformité prouvée est l'argument pour aller négocier cette différence.",
+      en: "A compliant plot opens access to sustainability premiums and demanding European buyers. In Côte d'Ivoire the farmgate price is 1,200 FCFA/kg while the living-income reference price reaches 1,758 FCFA/kg — 47% more: proven compliance is the argument to negotiate that gap.",
+    },
+    source: { fr: "Fairtrade, prix de référence revenu vital cacao 2026", en: "Fairtrade cocoa living income reference price 2026" },
+  },
+  {
+    id: "agrivo-verdicts",
+    motsCles: ["verdict", "verdicts", "statut", "statuts", "anomalie", "insuffisant", "insuffisantes", "signifie", "veut", "dire", "means", "status", "result", "resultat"],
+    question: { fr: "Que veulent dire les trois verdicts ?", en: "What do the three verdicts mean?" },
+    reponse: {
+      fr: "AGRIVO rend toujours l'un de trois verdicts : « Conforme » (aucune déforestation après le 31 décembre 2020), « Anomalie détectée » (perte de couvert forestier ou recouvrement d'une aire protégée), ou « Données insuffisantes » (nuages ou données satellites insuffisantes). Chaque verdict est expliqué en langage clair.",
+      en: "AGRIVO always returns one of three verdicts: \"Compliant\" (no deforestation after 31 December 2020), \"Anomaly detected\" (forest cover loss or overlap with a protected area), or \"Insufficient data\" (clouds or insufficient satellite data). Each verdict is explained in plain language.",
+    },
+    source: { fr: "Méthodologie AGRIVO", en: "AGRIVO methodology" },
+  },
+  {
+    id: "agrivo-masque",
+    motsCles: ["masque", "zone", "zones", "sensible", "sensibles", "aire", "protegee", "protegees", "foret", "classee", "carte", "rouge", "mask", "protected", "area", "map"],
+    question: { fr: "À quoi sert le masque des zones sensibles ?", en: "What is the sensitive-areas mask for?" },
+    reponse: {
+      fr: "Le masque affiche les aires protégées et forêts classées de Côte d'Ivoire (tracés indicatifs, sources publiques). Une parcelle qui les recoupe est signalée en anomalie : c'est un enjeu réel, car 30 à 40 % du cacao ivoirien provient de terres protégées. Un bouton l'active sur toutes les cartes.",
+      en: "The mask shows Côte d'Ivoire's protected areas and classified forests (indicative outlines, public sources). A plot overlapping them is flagged as an anomaly: a real issue, since 30 to 40% of Ivorian cocoa comes from protected land. A button toggles it on every map.",
+    },
+    source: { fr: "Nature Food 2023 ; WDPA", en: "Nature Food 2023; WDPA" },
+  },
+  {
+    id: "agrivo-compte",
+    motsCles: ["compte", "inscription", "inscrire", "creer", "creation", "connexion", "connecter", "demo", "essayer", "account", "sign", "register", "login", "create", "try"],
+    question: { fr: "Comment créer un compte ou essayer AGRIVO ?", en: "How do I create an account or try AGRIVO?" },
+    reponse: {
+      fr: "Sur la page d'inscription, choisissez votre profil — coopérative ou exportateur — puis renseignez vos informations. Pour essayer sans compte, la page de connexion propose deux démonstrations en un clic : « Démo Coopérative » et « Démo Exportateur ».",
+      en: "On the sign-up page, choose your profile — cooperative or exporter — then fill in your details. To try without an account, the sign-in page offers two one-click demos: \"Cooperative demo\" and \"Exporter demo\".",
+    },
+    source: { fr: "Inscription AGRIVO", en: "AGRIVO sign-up" },
+  },
+  {
+    id: "agrivo-verification",
+    motsCles: ["verifier", "verification", "analyser", "lancer", "nouvelle", "sommet", "sommets", "coordonnees", "cartographier", "verify", "analyse", "run", "vertices", "coordinates"],
+    question: { fr: "Comment lancer la vérification d'une parcelle ?", en: "How do I run a plot verification?" },
+    reponse: {
+      fr: "Depuis le tableau de bord coopérative, cliquez sur « Nouvelle vérification », recueillez le consentement, saisissez les coordonnées de la parcelle (au minimum 4 sommets) ou chargez un exemple, puis lancez l'analyse. AGRIVO calcule la superficie, rend le verdict et génère le certificat.",
+      en: "From the cooperative dashboard, click \"New verification\", collect consent, enter the plot's coordinates (at least 4 vertices) or load an example, then run the analysis. AGRIVO computes the area, returns the verdict and generates the certificate.",
+    },
+    source: { fr: "Parcours de vérification AGRIVO", en: "AGRIVO verification journey" },
+  },
+  {
+    id: "agrivo-certificat",
+    motsCles: ["certificat", "pdf", "telecharger", "document", "qr", "certificate", "download", "proof", "preuve"],
+    question: { fr: "Comment obtenir le certificat d'une parcelle ?", en: "How do I get a plot's certificate?" },
+    reponse: {
+      fr: "À la fin de la vérification, l'écran certificat propose un PDF horodaté portant un QR code. En scannant ce QR, n'importe quel acheteur ouvre la page de vérification publique et confirme l'évaluation. Le certificat ne remplace pas la déclaration de l'exportateur, seul responsable.",
+      en: "At the end of the verification, the certificate screen offers a timestamped PDF carrying a QR code. Scanning it opens the public verification page and confirms the assessment. The certificate does not replace the exporter's declaration; the exporter remains solely responsible.",
+    },
+    source: { fr: "Certificat AGRIVO", en: "AGRIVO certificate" },
+  },
+  {
+    id: "agrivo-alertes",
+    motsCles: ["alerte", "alertes", "notification", "surveiller", "signale", "alert", "alerts", "watch", "centre"],
+    question: { fr: "Où voir les alertes de la coopérative ?", en: "Where can I see the cooperative's alerts?" },
+    reponse: {
+      fr: "Le tableau de bord coopérative affiche un centre d'alertes qui regroupe les parcelles en anomalie ; chaque alerte mène directement à la fiche de la parcelle concernée. La répartition des trois statuts donne la santé globale du portefeuille.",
+      en: "The cooperative dashboard shows an alert centre grouping plots with anomalies; each alert leads straight to the relevant plot's record. The three-status breakdown gives the portfolio's overall health.",
+    },
+    source: { fr: "Tableau de bord AGRIVO", en: "AGRIVO dashboard" },
+  },
 ];
 
 /** Questions d'amorce proposées dans le widget (les plus fréquentes en démo). */
 export const QUESTIONS_SUGGEREES: { fr: string; en: string }[] = [
-  { fr: "Le RDUE peut-il encore être reporté ?", en: "Can the EUDR still be postponed?" },
+  { fr: "Combien coûte AGRIVO ?", en: "How much does AGRIVO cost?" },
   { fr: "La Côte d'Ivoire est-elle concernée ?", en: "Is Côte d'Ivoire concerned?" },
-  { fr: "Qui dépose la déclaration ?", en: "Who files the declaration?" },
-  { fr: "Que risque-t-on en cas de non-conformité ?", en: "What are the penalties?" },
+  { fr: "Comment lancer une vérification ?", en: "How do I run a verification?" },
+  { fr: "Que veut dire « Anomalie détectée » ?", en: "What does \"Anomaly detected\" mean?" },
 ];
 
 /** Réponse charte quand la question glisse vers le crédit / financement (frontière Nanti). */
@@ -135,10 +259,10 @@ export const HORS_PERIMETRE_FINANCE = {
   en: "AGRIVO offers no credit, loan or financing: that is not our business. We valorise compliance through sustainability premiums and access to premium buyers. On EUDR compliance itself, I can explain everything.",
 };
 
-/** Réponse de repli quand aucune correspondance nette n'est trouvée. */
+/** Réponse de repli quand aucune correspondance nette n'est trouvée (et l'IA n'a rien renvoyé). */
 export const HORS_SUJET = {
-  fr: "Je suis spécialisé dans le règlement européen contre la déforestation (RDUE) et son application aux coopératives ivoiriennes. Reformulez votre question sur la conformité, les échéances, la géolocalisation ou la déclaration, et j'y réponds précisément.",
-  en: "I specialise in the EU Deforestation Regulation (EUDR) and how it applies to Ivorian cooperatives. Rephrase your question about compliance, deadlines, geolocation or the declaration, and I will answer precisely.",
+  fr: "Je réponds à vos questions sur AGRIVO (prix, parcours de vérification, verdicts, comptes, valorisation) et sur le règlement européen contre la déforestation (RDUE). Reformulez votre question et j'y réponds précisément.",
+  en: "I answer your questions about AGRIVO (pricing, verification journey, verdicts, accounts, valorisation) and about the EU Deforestation Regulation (EUDR). Rephrase your question and I will answer precisely.",
 };
 
 const MOTS_FINANCE = ["credit", "pret", "prete", "financement", "financer", "emprunt", "microcredit", "prefinancement", "dette", "avance", "tresorerie", "plafond", "solvabilite"];
@@ -159,8 +283,10 @@ function normaliser(s: string): string {
 export interface ReponseDeterministe {
   reponse: string;
   source: string | null;
-  /** true si la question sortait du périmètre RDUE (finance ou hors-sujet). */
+  /** true si la question sortait du périmètre (finance ou aucun match net). */
   horsPerimetre: boolean;
+  /** true UNIQUEMENT pour une question de crédit/financement (frontière Nanti) : réponse figée, aucun appel IA. */
+  finance: boolean;
   faitId: string | null;
 }
 
@@ -175,7 +301,7 @@ export function repondreDeterministe(question: string, lang: "fr" | "en"): Repon
 
   // Garde-fou charte : toute dérive vers le financement est renvoyée à la frontière Nanti.
   if (MOTS_FINANCE.some((f) => q.includes(f))) {
-    return { reponse: HORS_PERIMETRE_FINANCE[lang], source: null, horsPerimetre: true, faitId: null };
+    return { reponse: HORS_PERIMETRE_FINANCE[lang], source: null, horsPerimetre: true, finance: true, faitId: null };
   }
 
   let meilleur: { fait: FaitRDUE; score: number } | null = null;
@@ -192,12 +318,13 @@ export function repondreDeterministe(question: string, lang: "fr" | "en"): Repon
   }
 
   if (!meilleur || meilleur.score < 2) {
-    return { reponse: HORS_SUJET[lang], source: null, horsPerimetre: true, faitId: null };
+    return { reponse: HORS_SUJET[lang], source: null, horsPerimetre: true, finance: false, faitId: null };
   }
   return {
     reponse: meilleur.fait.reponse[lang],
     source: meilleur.fait.source[lang],
     horsPerimetre: false,
+    finance: false,
     faitId: meilleur.fait.id,
   };
 }

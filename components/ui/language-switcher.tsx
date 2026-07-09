@@ -7,7 +7,7 @@ import { useLanguage } from "@/components/language-provider";
 import { LANGUAGES, LANGUAGE_META, type Language } from "@/lib/i18n";
 
 /**
- * Sélecteur de langue accessible (Français · Dioula · Baoulé).
+ * Sélecteur de langue accessible (Français · Anglais).
  * `tone` : "light" pour un fond sombre (hero), "dark" pour un fond clair (pages intérieures).
  * Navigation clavier (flèches, Home/End, Échap), fermeture au clic extérieur, focus rendu.
  */

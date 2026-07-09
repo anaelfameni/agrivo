@@ -4,22 +4,24 @@ import { callGemini, geminiLiveEnabled, CHARTE_SYSTEM } from "@/lib/ai/gemini-li
 import { repondreDeterministe, faitsPourPrompt } from "@/lib/ai/rdue-faits";
 
 /**
- * Copilote de conformité RDUE. Répond aux questions sur le règlement (UE) 2023/1115
- * en s'appuyant STRICTEMENT sur une base de faits curée et sourcée (lib/ai/rdue-faits).
+ * Assistant AGRIVO. Répond à toute question sur le PRODUIT AGRIVO (prix, espaces, parcours,
+ * verdicts, masque, comptes) ET sur le règlement (UE) 2023/1115, en s'appuyant STRICTEMENT sur
+ * une base de connaissances curée et sourcée (lib/ai/rdue-faits).
  *
- * Charte : la réponse est GROUNDÉE — Gemini ne peut ni inventer un chiffre, ni sortir des
- * faits fournis, ni parler de crédit/financement. Toute question finance est interceptée
- * de façon déterministe AVANT l'appel IA (frontière Nanti). Sans clé ou en cas d'échec,
- * on renvoie la réponse déterministe appariée ; la démo ne dépend jamais du live.
+ * Charte : la réponse est GROUNDÉE — Gemini répond à partir de la base fournie, ne peut ni inventer
+ * un chiffre, ni parler de crédit/financement. Les questions finance sont interceptées de façon
+ * déterministe AVANT l'appel IA (frontière Nanti). En cas d'échec ou sans clé, un repli grounded
+ * (meilleure réponse de la base) est renvoyé — jamais étiqueté « démonstration ».
  */
 const SYSTEM_COPILOTE = `${CHARTE_SYSTEM}
 
-Rôle : tu es le Copilote de conformité RDUE d'AGRIVO. Tu réponds aux questions d'un gérant de coopérative ivoirienne sur le règlement européen contre la déforestation.
+Rôle : tu es l'Assistant AGRIVO. Tu connais parfaitement le produit AGRIVO (prix, espaces coopérative et exportateur, parcours de vérification, trois verdicts, masque des zones sensibles, comptes de démonstration, valorisation) ET le règlement européen contre la déforestation (RDUE).
 Règles supplémentaires STRICTES :
-- Réponds UNIQUEMENT à partir des faits fournis ci-dessous. N'ajoute aucun fait, chiffre ou date qui n'y figure pas.
-- Sois direct et rassurant, 3 phrases maximum. Pas de liste, pas de formule d'accroche.
-- Si la question porte sur du crédit, du financement ou un prêt, réponds que ce n'est pas le métier d'AGRIVO et ramène vers la conformité.
-- Tu peux reformuler pour t'adapter à la question, mais la substance et les chiffres restent EXACTEMENT ceux des faits.`;
+- Réponds UNIQUEMENT à partir de la base de connaissances fournie ci-dessous. N'ajoute aucun fait, chiffre ou date qui n'y figure pas.
+- Sois direct et utile, 3 à 4 phrases maximum. Pas de liste à puces, pas de formule d'accroche.
+- Tu peux combiner plusieurs faits de la base si la question le demande.
+- Si la question porte sur du crédit, un prêt ou du financement, réponds que ce n'est pas le métier d'AGRIVO et ramène vers la conformité et la valorisation.
+- Si la question n'a AUCUN rapport avec AGRIVO, la conformité, le cacao ou la déforestation, dis poliment que tu es spécialisé sur AGRIVO et la RDUE.`;
 
 export async function POST(req: Request) {
   const body = (await req.json().catch(() => ({}))) as { question?: string; lang?: "fr" | "en" };
@@ -29,35 +31,35 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Question manquante." }, { status: 400 });
   }
 
-  // Vérité déterministe : garde-fou charte (finance) + réponse sourcée appariée aux faits.
   const base = repondreDeterministe(question, lang);
 
-  // Hors périmètre (finance / hors-sujet) : la réponse déterministe fait autorité, aucun appel IA.
-  if (base.horsPerimetre) {
-    if (MOCK_MODE) await sleep(500);
+  // Frontière Nanti : toute question de crédit/financement a une réponse figée, aucun appel IA.
+  if (base.finance) {
+    if (MOCK_MODE) await sleep(400);
     return NextResponse.json({ reponse: base.reponse, source: base.source, live: false });
   }
 
+  // En LIVE : Gemini répond à partir de TOUTE la base (produit AGRIVO + RDUE), grounded.
   if (geminiLiveEnabled()) {
     try {
       const raw = await callGemini(
         [
           {
-            text: `Question du gérant : « ${question} »\n\nFaits vérifiés (réponds à partir de ceux-ci uniquement, dans un ${lang === "fr" ? "français" : "anglais"} clair, 3 phrases maximum) :\n${faitsPourPrompt(lang)}\n\nLa réponse de référence est le fait « ${base.faitId} ». Reformule-la naturellement pour coller à la question, sans changer les chiffres ni les dates.`,
+            text: `Question de l'utilisateur : « ${question} »\n\nBase de connaissances AGRIVO + RDUE (réponds à partir de celle-ci UNIQUEMENT, dans un ${lang === "fr" ? "français" : "anglais"} clair et professionnel, 3 à 4 phrases) :\n${faitsPourPrompt(lang)}`,
           },
         ],
-        // Mise en mots courte : pas de « réflexion » (latence ÷ 2-3), marge suffisante pour 3 phrases.
-        { system: SYSTEM_COPILOTE, maxOutputTokens: 512, thinkingBudget: 0 },
+        { system: SYSTEM_COPILOTE, maxOutputTokens: 600, thinkingBudget: 0 },
       );
       const reponse = raw.trim();
       if (reponse.length > 10) {
         return NextResponse.json({ reponse, source: base.source, live: true });
       }
     } catch (e) {
-      console.error("[gemini/rdue-qa] live échoué, repli déterministe:", e);
+      console.error("[gemini/rdue-qa] live échoué, repli grounded:", e);
     }
   }
 
-  if (MOCK_MODE) await sleep(700);
+  // Repli grounded (jamais « démonstration ») : meilleure réponse déterministe de la base.
+  if (MOCK_MODE) await sleep(600);
   return NextResponse.json({ reponse: base.reponse, source: base.source, live: false });
 }

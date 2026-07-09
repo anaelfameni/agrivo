@@ -26,7 +26,7 @@ const PINGS = {
 
 const COPY = {
   fr: {
-    seedLog: "Connexion établie (MOCK_MODE)",
+    seedLog: "Connexion établie",
     networkLog: "Journal réseau",
     live: "en direct",
     waiting: "En attente de trafic réseau…",
@@ -36,7 +36,7 @@ const COPY = {
     newAnomaly: "Nouvelle anomalie détectée",
   },
   en: {
-    seedLog: "Connection established (MOCK_MODE)",
+    seedLog: "Connection established",
     networkLog: "Network log",
     live: "live",
     waiting: "Waiting for network traffic…",

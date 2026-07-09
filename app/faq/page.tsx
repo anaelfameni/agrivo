@@ -39,6 +39,13 @@ const QA: { q: { fr: string; en: string }; a: { fr: string; en: string } }[] = [
     },
   },
   {
+    q: { fr: "La conformité rapporte-t-elle vraiment à la coopérative ?", en: "Does compliance really pay off for the cooperative?" },
+    a: {
+      fr: "Oui, par la valorisation — jamais par du crédit. En Côte d'Ivoire le prix bord champ est fixé à 1 200 FCFA/kg, quand le prix de référence pour un revenu vital atteint 1 758 FCFA/kg (+47 %). Une parcelle conforme est l'argument pour négocier primes de durabilité et acheteurs premium au-dessus du prix garanti.",
+      en: "Yes, through valorisation — never through credit. In Côte d'Ivoire the farmgate price is set at 1,200 FCFA/kg while the living-income reference price reaches 1,758 FCFA/kg (+47%). A compliant plot is the argument to negotiate sustainability premiums and premium buyers above the guaranteed price.",
+    },
+  },
+  {
     q: { fr: "Quelle est la fiabilité de la détection ?", en: "How reliable is the detection?" },
     a: {
       fr: "La détection repose sur la méthode de référence de la FAO pour le RDUE (analyse satellite), déjà utilisée en production. Sa convergence de preuves croise plusieurs jeux de données satellites indépendants. Quand les données ne permettent pas de conclure, Agrivo affiche « Données insuffisantes » plutôt que de deviner.",

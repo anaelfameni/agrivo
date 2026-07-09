@@ -33,7 +33,6 @@ const CHAUFFE_LABELS: { cle: string; fr: string; en: string }[] = [
   { cle: "copilote", fr: "Copilote RDUE", en: "EUDR copilot" },
   { cle: "revue", fr: "Revue registre", en: "Register review" },
   { cle: "dossier", fr: "Dossier acheteur", en: "Buyer file" },
-  { cle: "traduction", fr: "Verdict langue locale", en: "Local-language verdict" },
 ];
 
 export default function AdminPage() {
@@ -116,10 +115,6 @@ export default function AdminPage() {
     await warm("dossier", "/api/gemini/dossier-acheteur", {
       faits: { nbConformes: 5, total: 8, haConformes: 12.3, coops: 2, filieres: ["Cacao"], regions: ["Nawa"] },
       lang: "fr",
-    });
-    await warm("traduction", "/api/gemini/traduire-verdict", {
-      texte: "Aucune déforestation détectée après le 31 décembre 2020.",
-      langue: "dioula",
     });
 
     setChauffe(res);

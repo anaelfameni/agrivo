@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import { ArrowRight, Leaf, Loader2, RotateCcw, Sparkles, Volume2, VolumeX, X } from "lucide-react";
+import { ArrowRight, Leaf, RotateCcw, Sparkles, Volume2, VolumeX, X } from "lucide-react";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { PinMark } from "@/components/ui/pin-mark";
 import { PhotoTerrain } from "@/components/verifier/photo-terrain";
@@ -28,12 +28,6 @@ const COPY = {
     listenAria: "Écouter l'explication du verdict",
     stop: "Arrêter",
     listen: "Écouter",
-    localTitle: "Expliquer au producteur",
-    dioula: "Dioula",
-    baoule: "Baoulé",
-    translating: "Traduction…",
-    translatedLive: "Traduit par l'IA · en direct",
-    translatedOff: "Traduction en direct indisponible — texte original.",
     soilScore: "Score de résilience des sols",
     soilDialog: "Explication du score de résilience des sols",
     score: "Score",
@@ -57,12 +51,6 @@ const COPY = {
     listenAria: "Listen to the verdict explanation",
     stop: "Stop",
     listen: "Listen",
-    localTitle: "Explain to the farmer",
-    dioula: "Dioula",
-    baoule: "Baoulé",
-    translating: "Translating…",
-    translatedLive: "Translated by AI · live",
-    translatedOff: "Live translation unavailable — original text.",
     soilScore: "Soil resilience score",
     soilDialog: "Soil resilience score explanation",
     score: "Score",
@@ -145,8 +133,6 @@ export function StepAnalysis({
   const [scoreErr, setScoreErr] = useState(false);
   const [speaking, setSpeaking] = useState(false);
   const [canSpeak, setCanSpeak] = useState(false);
-  const [traduction, setTraduction] = useState<{ texte: string; langue: "dioula" | "baoule"; live: boolean } | null>(null);
-  const [traduireLoading, setTraduireLoading] = useState<"dioula" | "baoule" | null>(null);
   const runningRef = useRef(false);
 
   const ring = parcelle.geojson.type === "Polygon" ? parcelle.geojson.coordinates[0] : [parcelle.geojson.coordinates];
@@ -167,7 +153,6 @@ export function StepAnalysis({
     if (runningRef.current) return;
     runningRef.current = true;
     setScoreOpen(false);
-    setTraduction(null);
     stopParler();
     setPhase("drawing");
     const fetchP: Promise<WhispResult> =
@@ -212,24 +197,6 @@ export function StepAnalysis({
     }
   }
 
-  async function traduire(langue: "dioula" | "baoule") {
-    if (!whisp) return;
-    setTraduireLoading(langue);
-    try {
-      // On ne traduit QUE l'explication (whisp.phrase). Le statut reste figé en français.
-      const r = await fetch("/api/gemini/traduire-verdict", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ texte: whisp.phrase, langue }),
-      });
-      const data = (await r.json()) as { traduction?: string; live?: boolean };
-      setTraduction({ texte: data.traduction ?? whisp.phrase, langue, live: Boolean(data.live) });
-    } catch {
-      setTraduction({ texte: whisp.phrase, langue, live: false });
-    } finally {
-      setTraduireLoading(null);
-    }
-  }
 
   function parler() {
     if (!canSpeak || !whisp) return;
@@ -315,33 +282,6 @@ export function StepAnalysis({
               <p className="max-w-prose text-[0.95rem] font-medium leading-relaxed text-forest-950">
                 {lang === "en" ? (whisp.phraseEn ?? whisp.phrase) : whisp.phrase}
               </p>
-
-              {/* Expliquer en langue locale (Dioula / Baoulé) : on traduit l'EXPLICATION, jamais le statut. */}
-              <div className="flex flex-col gap-2">
-                <div className="flex flex-wrap items-center gap-2">
-                  <span className="text-xs font-medium text-stone-500">{t.localTitle} :</span>
-                  {(["dioula", "baoule"] as const).map((lg) => (
-                    <button
-                      key={lg}
-                      type="button"
-                      onClick={() => traduire(lg)}
-                      disabled={traduireLoading !== null}
-                      className="inline-flex items-center gap-1.5 rounded-full border border-black/10 px-2.5 py-1 text-xs font-medium text-forest-950 outline-none transition-colors hover:border-green-signal/40 focus-visible:ring-2 focus-visible:ring-green-signal disabled:opacity-50"
-                    >
-                      {traduireLoading === lg && <Loader2 size={12} strokeWidth={2} className="animate-spin" aria-hidden />}
-                      {t[lg]}
-                    </button>
-                  ))}
-                </div>
-                {traduction && (
-                  <div className="rounded-xl border border-black/[0.06] bg-ivory-deep/40 p-3">
-                    <p className="text-[0.9rem] leading-relaxed text-forest-950">{traduction.texte}</p>
-                    <p className="mt-1.5 text-[0.68rem] text-stone-400">
-                      {traduction.langue === "dioula" ? t.dioula : t.baoule} · {traduction.live ? t.translatedLive : t.translatedOff}
-                    </p>
-                  </div>
-                )}
-              </div>
 
               {/* Faisceau de preuves (qualitatif) */}
               <ul className="flex flex-col gap-1.5">
