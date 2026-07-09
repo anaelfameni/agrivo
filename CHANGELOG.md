@@ -3,6 +3,26 @@
 Versioning sémantique (MAJOR.MINOR.PATCH). Chaque release liste ce qui est ajouté, corrigé et
 vérifié, conformément à l'étape 8 du pipeline « Du besoin à la Release ».
 
+## v1.11.0 — 2026-07-09 — Saisie « Point A–D » + 3 scénarios de démo (Conforme/Insuffisant/Anomalie)
+
+### Ajouté
+- **Étape Cartographie** : saisie des coordonnées **sommet par sommet** au format officiel
+  **Sommet · Latitude (Y) · Longitude (X)** (tableau éditable Point A/B/C…, ajout/retrait de sommet).
+- **3 exemples analysés (démo)** en un clic, chacun produisant un verdict verbatim : ① **Conforme**
+  (zone stable), ② **Données insuffisantes** (couverture nuageuse), ③ **Anomalie détectée** (perte de
+  couvert). Implémentés via `SCENARIOS_DEMO` (3 parcelles fictives réalistes, zone Soubré/Nawa) — hors
+  portefeuille coop/exportateur. Le verdict découle de `parcelle.statut` (aucun forçage) ; les
+  enchaînements existants s'appliquent (conforme → certificat → valorisation ; anomalie → certificat →
+  fin ; insuffisant → fin sans certificat).
+- Le bouton démo du scan (`CI-CCC-024600`) atterrit directement sur le scénario Conforme
+  (`findParcelleByCarte`).
+
+### Vérifié (test réel)
+- Moteur `/api/whisp/verify` sur les 3 scénarios : **3/3** verdicts corrects (phrases verbatim).
+- **Parcours UI bout-en-bout, logué en compte démo coopérative** (Edge headless/CDP) : **3/3** —
+  scan → cartographie → choix scénario → analyse → verdict attendu affiché.
+- `tsc` ✓ · 65/65 tests Vitest ✓ · `next build` ✓ · ESLint (0 erreur).
+
 ## v1.10.0 — 2026-07-09 — Refonte des deux dashboards + header
 
 ### Changé

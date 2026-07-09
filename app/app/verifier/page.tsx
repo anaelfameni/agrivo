@@ -17,7 +17,7 @@ import { buildCertificat } from "@/lib/certificat-data";
 import {
   COOP_DEMO,
   MANAGER_DEMO,
-  PARCELLES,
+  findParcelleByCarte,
   getParcelle,
   type Parcelle,
 } from "@/data/mock-parcelles";
@@ -111,7 +111,7 @@ export default function VerifierPage() {
 
   function onScanConfirm(scan: ScanResult) {
     setScan(scan);
-    const found = PARCELLES.find((p) => p.numeroCartePro === scan.numeroCartePro) ?? getParcelle("p01")!;
+    const found = findParcelleByCarte(scan.numeroCartePro) ?? getParcelle("p01")!;
     setParcelle(found);
     setStep(3);
   }
@@ -182,6 +182,7 @@ export default function VerifierPage() {
           {step === 3 && parcelle && (
             <StepMapping
               parcelle={parcelle}
+              onScenario={setParcelle}
               onNext={() => setStep(4)}
               onBack={() => setStep(2)}
             />

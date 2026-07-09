@@ -273,9 +273,90 @@ function buildExtra(): Parcelle[] {
 /** Toutes les parcelles (démo coopérative + portefeuille exportateur). */
 export const PARCELLES: Parcelle[] = [...PARCELLES_BASE, ...buildExtra()];
 
+/** Construit un polygone GeoJSON fermé à partir de sommets saisis en (latitude, longitude). */
+function polyFromLatLon(corners: [number, number][]): ParcelleGeometry {
+  const ring = corners.map(([lat, lon]) => [lon, lat]);
+  return { type: "Polygon", coordinates: [[...ring, ring[0]]] };
+}
+
+/**
+ * Scénarios de DÉMONSTRATION du parcours de vérification : 3 jeux de coordonnées fictives mais
+ * réalistes (zone de Soubré/Nawa), un par verdict verbatim. Le moteur `whispMock` lit `statut` via
+ * `parcelleId`, donc le parcours rend le bon verdict ET le bon enchaînement (conforme → certificat →
+ * valorisation ; anomalie → certificat → fin ; insuffisant → fin sans certificat).
+ * NON inclus dans PARCELLES : n'apparaissent ni dans le portefeuille coopérative ni exportateur.
+ */
+export const SCENARIOS_DEMO: Parcelle[] = [
+  {
+    id: "sc-conforme",
+    producteurNom: "Tanoh Michel",
+    numeroCartePro: "CI-CCC-024600",
+    cooperative: COOP_DEMO,
+    region: "Nawa · Soubré",
+    superficieHa: 3.3,
+    filiere: "cacao",
+    geojson: polyFromLatLon([
+      [5.786200, -6.649800],
+      [5.786150, -6.648000],
+      [5.784700, -6.648100],
+      [5.784750, -6.649900],
+    ]),
+    statut: "conforme",
+    dateVerification: "2026-07-08",
+    datePivotAnalyse: "2020-12-31",
+    sourcesDonnees: SOURCES,
+    numeroCertificat: "AGV-2026-0600",
+    referenceDDR: "DDR-CI-2026-10900",
+  },
+  {
+    id: "sc-insuffisant",
+    producteurNom: "N'Guessan Aya",
+    numeroCartePro: "CI-CCC-024601",
+    cooperative: COOP_DEMO,
+    region: "Nawa · Buyo",
+    superficieHa: 3.1,
+    filiere: "cacao",
+    geojson: polyFromLatLon([
+      [5.802800, -6.901700],
+      [5.802750, -6.899900],
+      [5.801300, -6.900000],
+      [5.801350, -6.901800],
+    ]),
+    statut: "insuffisant",
+    dateVerification: "2026-07-08",
+    datePivotAnalyse: "2020-12-31",
+    sourcesDonnees: SOURCES,
+    numeroCertificat: "AGV-2026-0601",
+  },
+  {
+    id: "sc-anomalie",
+    producteurNom: "Koffi Bertrand",
+    numeroCartePro: "CI-CCC-024602",
+    cooperative: COOP_DEMO,
+    region: "Nawa · Soubré",
+    superficieHa: 3.4,
+    filiere: "cacao",
+    geojson: polyFromLatLon([
+      [5.705700, -6.802800],
+      [5.705650, -6.800900],
+      [5.704100, -6.801000],
+      [5.704150, -6.802900],
+    ]),
+    statut: "anomalie",
+    dateVerification: "2026-07-08",
+    datePivotAnalyse: "2020-12-31",
+    sourcesDonnees: SOURCES,
+    numeroCertificat: "AGV-2026-0602",
+  },
+];
+
 /* --------------------------------- Accès & agrégats --------------------------------- */
 export function getParcelle(id: string): Parcelle | undefined {
-  return PARCELLES.find((p) => p.id === id);
+  return PARCELLES.find((p) => p.id === id) ?? SCENARIOS_DEMO.find((p) => p.id === id);
+}
+/** Recherche par numéro de carte producteur (portefeuille réel, puis scénarios de démo). */
+export function findParcelleByCarte(numero: string): Parcelle | undefined {
+  return PARCELLES.find((p) => p.numeroCartePro === numero) ?? SCENARIOS_DEMO.find((p) => p.numeroCartePro === numero);
 }
 export function parcellesForCoop(coop: string = COOP_DEMO): Parcelle[] {
   return PARCELLES.filter((p) => p.cooperative === coop);
