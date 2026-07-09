@@ -4,26 +4,44 @@ import * as React from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { motion, useReducedMotion } from "framer-motion";
-import { Loader2, Check } from "lucide-react";
+import { Loader2, Check, Building2, Globe } from "lucide-react";
 import { SiteHeader } from "@/components/site-header";
-import { useAuth } from "@/components/auth-provider";
+import { useAuth, landingFor } from "@/components/auth-provider";
 import { useLanguage } from "@/components/language-provider";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+type Role = "coop" | "exporter";
+
 const COPY = {
   fr: {
     title: "Créer un compte",
-    subtitle: "Quelques secondes pour équiper votre coopérative avant l'échéance RDUE.",
-    bullets: [
-      "Vérifications de parcelles illimitées",
-      "Certificats prêts pour TRACES NT",
-      "Dossier de conformité partageable avec votre exportateur",
-    ],
+    subtitle: {
+      coop: "Quelques secondes pour équiper votre coopérative avant l'échéance RDUE.",
+      exporter: "Quelques secondes pour piloter la conformité de votre portefeuille d'export.",
+    },
+    roleQuestion: "Je crée un compte en tant que :",
+    roleCoop: "Coopérative",
+    roleCoopDesc: "Je vérifie les parcelles de mes producteurs.",
+    roleExport: "Exportateur",
+    roleExportDesc: "Je pilote un portefeuille de coopératives.",
+    bullets: {
+      coop: [
+        "Vérifications de parcelles illimitées",
+        "Certificats d'évaluation de conformité prêts pour TRACES NT",
+        "Dossier de conformité partageable avec votre exportateur",
+      ],
+      exporter: [
+        "Portefeuille multi-coopératives, en un tableau de bord",
+        "Export en masse + API REST",
+        "Déclarations prêtes pour TRACES NT",
+      ],
+    },
     name: "Nom complet",
     org: "Organisation",
-    orgPlaceholder: "Coopérative Agricole de…",
+    orgPlaceholder: { coop: "Coopérative Agricole de…", exporter: "Nom de votre société d'export…" },
     email: "E-mail professionnel",
+    emailPlaceholder: { coop: "vous@cooperative.ci", exporter: "vous@societe-export.ci" },
     password: "Mot de passe",
     passwordPlaceholder: "8 caractères minimum",
     submit: "Créer mon compte",
@@ -37,16 +55,32 @@ const COPY = {
   },
   en: {
     title: "Create an account",
-    subtitle: "A few seconds to equip your cooperative before the EUDR deadline.",
-    bullets: [
-      "Unlimited plot verifications",
-      "Certificates ready for TRACES NT",
-      "Compliance file you can share with your exporter",
-    ],
+    subtitle: {
+      coop: "A few seconds to equip your cooperative before the EUDR deadline.",
+      exporter: "A few seconds to steer the compliance of your export portfolio.",
+    },
+    roleQuestion: "I'm creating an account as:",
+    roleCoop: "Cooperative",
+    roleCoopDesc: "I verify my farmers' plots.",
+    roleExport: "Exporter",
+    roleExportDesc: "I steer a portfolio of cooperatives.",
+    bullets: {
+      coop: [
+        "Unlimited plot verifications",
+        "Compliance-assessment certificates ready for TRACES NT",
+        "Compliance file you can share with your exporter",
+      ],
+      exporter: [
+        "Multi-cooperative portfolio, in one dashboard",
+        "Batch export + REST API",
+        "Declarations ready for TRACES NT",
+      ],
+    },
     name: "Full name",
     org: "Organization",
-    orgPlaceholder: "Agricultural Cooperative of…",
+    orgPlaceholder: { coop: "Agricultural Cooperative of…", exporter: "Your export company name…" },
     email: "Work email",
+    emailPlaceholder: { coop: "you@cooperative.ci", exporter: "you@export-company.ci" },
     password: "Password",
     passwordPlaceholder: "8 characters minimum",
     submit: "Create my account",
@@ -66,6 +100,7 @@ export default function InscriptionPage() {
   const { lang } = useLanguage();
   const t = COPY[lang] ?? COPY.fr;
   const reduce = useReducedMotion();
+  const [role, setRole] = React.useState<Role>("coop");
   const [nom, setNom] = React.useState("");
   const [organisation, setOrganisation] = React.useState("");
   const [email, setEmail] = React.useState("");
@@ -75,7 +110,7 @@ export default function InscriptionPage() {
   const [pending, setPending] = React.useState(false);
 
   React.useEffect(() => {
-    if (!loading && user) router.replace("/app/dashboard");
+    if (!loading && user) router.replace(landingFor(user.role));
   }, [loading, user, router]);
 
   const validate = (): boolean => {
@@ -94,8 +129,8 @@ export default function InscriptionPage() {
     if (!validate()) return;
     setPending(true);
     window.setTimeout(() => {
-      const res = signup({ nom, email, organisation, password });
-      if (res.ok) router.replace("/app/dashboard");
+      const res = signup({ nom, email, organisation, password, role });
+      if (res.ok) router.replace(landingFor(res.role));
       else {
         setGlobalError(res.error ?? t.failed);
         setPending(false);
@@ -118,10 +153,31 @@ export default function InscriptionPage() {
           transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
         >
           <h1 className="font-display text-3xl text-forest-950">{t.title}</h1>
-          <p className="mt-2 text-sm text-stone-500">{t.subtitle}</p>
+          <p className="mt-2 text-sm text-stone-500">{t.subtitle[role]}</p>
+
+          {/* Choix du profil : coopérative ou exportateur */}
+          <div className="mt-6">
+            <p className="text-sm font-medium text-forest-950">{t.roleQuestion}</p>
+            <div className="mt-2.5 grid grid-cols-2 gap-2.5" role="radiogroup" aria-label={t.roleQuestion}>
+              <RoleCard
+                icon={<Building2 size={18} strokeWidth={2} aria-hidden />}
+                title={t.roleCoop}
+                desc={t.roleCoopDesc}
+                selected={role === "coop"}
+                onSelect={() => setRole("coop")}
+              />
+              <RoleCard
+                icon={<Globe size={18} strokeWidth={2} aria-hidden />}
+                title={t.roleExport}
+                desc={t.roleExportDesc}
+                selected={role === "exporter"}
+                onSelect={() => setRole("exporter")}
+              />
+            </div>
+          </div>
 
           <ul className="mt-5 flex flex-col gap-1.5 text-sm text-stone-600">
-            {t.bullets.map((b) => (
+            {t.bullets[role].map((b) => (
               <li key={b} className="flex items-center gap-2">
                 <Check size={15} className="text-green-signal" aria-hidden /> {b}
               </li>
@@ -131,19 +187,19 @@ export default function InscriptionPage() {
           <form onSubmit={onSubmit} noValidate className="mt-7 flex flex-col gap-4">
             <label className="flex flex-col gap-1.5">
               <span className="text-sm font-medium text-forest-950">{t.name}</span>
-              <input value={nom} onChange={(e) => setNom(e.target.value)} autoComplete="name" placeholder="Amadou Koné" className={fieldCls("nom")} />
+              <input value={nom} onChange={(e) => setNom(e.target.value)} autoComplete="name" placeholder={role === "coop" ? "Amadou Koné" : "Marc Kouassi"} className={fieldCls("nom")} />
               {errors.nom && <span className="text-xs text-red-block">{errors.nom}</span>}
             </label>
 
             <label className="flex flex-col gap-1.5">
               <span className="text-sm font-medium text-forest-950">{t.org}</span>
-              <input value={organisation} onChange={(e) => setOrganisation(e.target.value)} autoComplete="organization" placeholder={t.orgPlaceholder} className={fieldCls("organisation")} />
+              <input value={organisation} onChange={(e) => setOrganisation(e.target.value)} autoComplete="organization" placeholder={t.orgPlaceholder[role]} className={fieldCls("organisation")} />
               {errors.organisation && <span className="text-xs text-red-block">{errors.organisation}</span>}
             </label>
 
             <label className="flex flex-col gap-1.5">
               <span className="text-sm font-medium text-forest-950">{t.email}</span>
-              <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} autoComplete="email" placeholder="vous@cooperative.ci" className={fieldCls("email")} />
+              <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} autoComplete="email" placeholder={t.emailPlaceholder[role]} className={fieldCls("email")} />
               {errors.email && <span className="text-xs text-red-block">{errors.email}</span>}
             </label>
 
@@ -178,5 +234,40 @@ export default function InscriptionPage() {
         </motion.div>
       </main>
     </div>
+  );
+}
+
+function RoleCard({
+  icon,
+  title,
+  desc,
+  selected,
+  onSelect,
+}: {
+  icon: React.ReactNode;
+  title: string;
+  desc: string;
+  selected: boolean;
+  onSelect: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      role="radio"
+      aria-checked={selected}
+      onClick={onSelect}
+      className={`flex flex-col gap-1.5 rounded-xl border p-3.5 text-left outline-none transition-colors focus-visible:ring-2 focus-visible:ring-green-signal ${
+        selected ? "border-green-signal/50 bg-green-signal/[0.06]" : "border-black/[0.08] bg-white hover:border-green-signal/30"
+      }`}
+    >
+      <span
+        className={`grid h-9 w-9 place-items-center rounded-lg ${selected ? "bg-green-signal text-white" : "bg-ivory-deep/70 text-forest-950"}`}
+        aria-hidden
+      >
+        {icon}
+      </span>
+      <span className="text-sm font-semibold text-forest-950">{title}</span>
+      <span className="text-xs leading-relaxed text-stone-500">{desc}</span>
+    </button>
   );
 }

@@ -4,18 +4,21 @@ import * as React from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { motion, useReducedMotion } from "framer-motion";
-import { ArrowRight, Loader2, Sparkles, Lock, Mail } from "lucide-react";
+import { Loader2, Sparkles, Lock, Mail, Building2, Globe } from "lucide-react";
 import { SiteHeader } from "@/components/site-header";
-import { useAuth, DEMO_ACCOUNT } from "@/components/auth-provider";
+import { useAuth, COOP_DEMO_ACCOUNT, EXPORT_DEMO_ACCOUNT, landingFor } from "@/components/auth-provider";
 import { useLanguage } from "@/components/language-provider";
 
 const COPY = {
   fr: {
     title: "Connexion",
     subtitle: "Accédez à votre espace de conformité RDUE.",
-    demoTitle: "Compte de démonstration",
-    demoHint: "Explorez l'espace coopérative avec des données fictives (Amadou, Coopérative de Soubré), en un clic.",
-    demoCta: "Entrer avec le compte de démonstration",
+    demoTitle: "Comptes de démonstration",
+    demoHint: "Choisissez le profil à explorer, en un clic — données fictives.",
+    demoCoop: "Démo Coopérative",
+    demoCoopSub: "Amadou · Coop. de Soubré",
+    demoExport: "Démo Exportateur",
+    demoExportSub: "Marc · Cacao Export CI",
     or: "ou avec vos identifiants",
     email: "E-mail",
     password: "Mot de passe",
@@ -28,9 +31,12 @@ const COPY = {
   en: {
     title: "Sign in",
     subtitle: "Access your EUDR compliance workspace.",
-    demoTitle: "Demo account",
-    demoHint: "Explore the cooperative workspace with fictional data (Amadou, Soubré cooperative), in one click.",
-    demoCta: "Enter with the demo account",
+    demoTitle: "Demo accounts",
+    demoHint: "Pick the profile to explore, in one click — fictional data.",
+    demoCoop: "Cooperative demo",
+    demoCoopSub: "Amadou · Soubré coop.",
+    demoExport: "Exporter demo",
+    demoExportSub: "Marc · Cacao Export CI",
     or: "or with your credentials",
     email: "Email",
     password: "Password",
@@ -42,12 +48,11 @@ const COPY = {
   },
 } as const;
 
-/** Ne suit une redirection que vers un chemin interne (anti open-redirect). */
-function safeRedirect(): string {
-  if (typeof window === "undefined") return "/app/dashboard";
+/** Chemin de redirection interne demandé (?redirect=), sinon null (anti open-redirect). */
+function redirectParam(): string | null {
+  if (typeof window === "undefined") return null;
   const r = new URLSearchParams(window.location.search).get("redirect");
-  if (r && r.startsWith("/") && !r.startsWith("//")) return r;
-  return "/app/dashboard";
+  return r && r.startsWith("/") && !r.startsWith("//") ? r : null;
 }
 
 export default function ConnexionPage() {
@@ -62,7 +67,7 @@ export default function ConnexionPage() {
   const [pending, setPending] = React.useState(false);
 
   React.useEffect(() => {
-    if (!loading && user) router.replace(safeRedirect());
+    if (!loading && user) router.replace(redirectParam() ?? landingFor(user.role));
   }, [loading, user, router]);
 
   const doLogin = React.useCallback(
@@ -76,7 +81,7 @@ export default function ConnexionPage() {
       // Latence courte : ressenti « vrai SaaS ».
       window.setTimeout(() => {
         const res = login(em, pw);
-        if (res.ok) router.replace(safeRedirect());
+        if (res.ok) router.replace(redirectParam() ?? landingFor(res.role));
         else {
           setError(res.error ?? t.failed);
           setPending(false);
@@ -90,10 +95,15 @@ export default function ConnexionPage() {
     e.preventDefault();
     doLogin(email, password);
   };
-  const onDemo = () => {
-    setEmail(DEMO_ACCOUNT.email);
-    setPassword(DEMO_ACCOUNT.password);
-    doLogin(DEMO_ACCOUNT.email, DEMO_ACCOUNT.password);
+  const onDemoCoop = () => {
+    setEmail(COOP_DEMO_ACCOUNT.email);
+    setPassword(COOP_DEMO_ACCOUNT.password);
+    doLogin(COOP_DEMO_ACCOUNT.email, COOP_DEMO_ACCOUNT.password);
+  };
+  const onDemoExport = () => {
+    setEmail(EXPORT_DEMO_ACCOUNT.email);
+    setPassword(EXPORT_DEMO_ACCOUNT.password);
+    doLogin(EXPORT_DEMO_ACCOUNT.email, EXPORT_DEMO_ACCOUNT.password);
   };
 
   return (
@@ -116,15 +126,36 @@ export default function ConnexionPage() {
               {t.demoTitle}
             </div>
             <p className="mt-2 text-xs text-stone-600">{t.demoHint}</p>
-            <button
-              type="button"
-              onClick={onDemo}
-              disabled={pending}
-              className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-full bg-green-signal px-5 py-3 text-sm font-semibold text-white shadow-[0_12px_36px_-12px_rgba(22,163,74,0.8)] transition-[filter] hover:brightness-110 disabled:opacity-70"
-            >
-              {pending ? <Loader2 size={16} className="animate-spin" /> : <ArrowRight size={16} />}
-              {t.demoCta}
-            </button>
+            <div className="mt-3 grid gap-2.5 sm:grid-cols-2">
+              <button
+                type="button"
+                onClick={onDemoCoop}
+                disabled={pending}
+                className="group flex items-center gap-3 rounded-xl bg-green-signal px-4 py-3 text-left text-white shadow-[0_12px_36px_-14px_rgba(22,163,74,0.8)] outline-none transition-[filter] hover:brightness-110 focus-visible:ring-2 focus-visible:ring-green-signal focus-visible:ring-offset-2 focus-visible:ring-offset-ivory disabled:opacity-70"
+              >
+                <span className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-white/15">
+                  {pending ? <Loader2 size={16} className="animate-spin" /> : <Building2 size={16} aria-hidden />}
+                </span>
+                <span className="min-w-0">
+                  <span className="block text-sm font-semibold leading-tight">{t.demoCoop}</span>
+                  <span className="block truncate text-[0.7rem] text-white/75">{t.demoCoopSub}</span>
+                </span>
+              </button>
+              <button
+                type="button"
+                onClick={onDemoExport}
+                disabled={pending}
+                className="group flex items-center gap-3 rounded-xl bg-forest-950 px-4 py-3 text-left text-white shadow-[0_12px_36px_-14px_rgba(10,31,20,0.7)] outline-none transition-[filter] hover:brightness-125 focus-visible:ring-2 focus-visible:ring-forest-950 focus-visible:ring-offset-2 focus-visible:ring-offset-ivory disabled:opacity-70"
+              >
+                <span className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-white/10 text-amber-soft">
+                  {pending ? <Loader2 size={16} className="animate-spin" /> : <Globe size={16} aria-hidden />}
+                </span>
+                <span className="min-w-0">
+                  <span className="block text-sm font-semibold leading-tight">{t.demoExport}</span>
+                  <span className="block truncate text-[0.7rem] text-white/70">{t.demoExportSub}</span>
+                </span>
+              </button>
+            </div>
           </div>
 
           <div className="my-6 flex items-center gap-3 text-xs text-stone-400">

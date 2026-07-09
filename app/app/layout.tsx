@@ -15,7 +15,7 @@ import { BRAND_NAME } from "@/config/brand";
  * Composant serveur — la seule île client est le sélecteur de langue.
  */
 export const metadata: Metadata = {
-  title: `Espace coopérative · ${BRAND_NAME}`,
+  title: `Espace · ${BRAND_NAME}`,
 };
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {

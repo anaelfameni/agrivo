@@ -14,7 +14,10 @@ import { LayoutDashboard, Users, Map, Globe, Settings, ShieldCheck, type LucideI
 import { useAuth } from "@/components/auth-provider";
 import { useLanguage } from "@/components/language-provider";
 
-const NAV: { href: string; label: { fr: string; en: string }; Icon: LucideIcon }[] = [
+type NavItem = { href: string; label: { fr: string; en: string }; Icon: LucideIcon };
+
+/** Navigation de l'espace COOPÉRATIVE (vérification des parcelles). */
+const NAV_COOP: NavItem[] = [
   { href: "/app/dashboard", label: { fr: "Vue d'ensemble", en: "Overview" }, Icon: LayoutDashboard },
   { href: "/app/producteurs", label: { fr: "Producteurs", en: "Farmers" }, Icon: Users },
   { href: "/app/parcelles", label: { fr: "Parcelles", en: "Plots" }, Icon: Map },
@@ -22,7 +25,13 @@ const NAV: { href: string; label: { fr: string; en: string }; Icon: LucideIcon }
   { href: "/app/parametres", label: { fr: "Paramètres", en: "Settings" }, Icon: Settings },
 ];
 
-const ADMIN_ITEM = { href: "/app/admin", label: { fr: "Admin", en: "Admin" }, Icon: ShieldCheck };
+/** Navigation de l'espace EXPORTATEUR (portefeuille multi-coopératives). */
+const NAV_EXPORTER: NavItem[] = [
+  { href: "/app/exportateur", label: { fr: "Tableau de bord", en: "Dashboard" }, Icon: LayoutDashboard },
+  { href: "/app/parametres", label: { fr: "Paramètres", en: "Settings" }, Icon: Settings },
+];
+
+const ADMIN_ITEM: NavItem = { href: "/app/admin", label: { fr: "Admin", en: "Admin" }, Icon: ShieldCheck };
 
 const SIDE_TR = {
   fr: { navLabel: "Navigation de l'espace" },
@@ -36,10 +45,12 @@ function useIsActive() {
   return (href: string) => path === href || path.startsWith(href + "/");
 }
 
-/** NAV enrichie de l'entrée « Admin » uniquement pour le rôle admin. */
-function useNav() {
+/** NAV selon le rôle : l'exportateur a sa propre navigation ; l'admin voit l'espace coop + Admin. */
+function useNav(): NavItem[] {
   const { user } = useAuth();
-  return user?.role === "admin" ? [...NAV, ADMIN_ITEM] : NAV;
+  if (user?.role === "exporter") return NAV_EXPORTER;
+  if (user?.role === "admin") return [...NAV_COOP, ADMIN_ITEM];
+  return NAV_COOP;
 }
 
 export function AppSidebar() {

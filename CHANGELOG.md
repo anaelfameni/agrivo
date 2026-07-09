@@ -3,6 +3,26 @@
 Versioning sémantique (MAJOR.MINOR.PATCH). Chaque release liste ce qui est ajouté, corrigé et
 vérifié, conformément à l'étape 8 du pipeline « Du besoin à la Release ».
 
+## v1.9.0 — 2026-07-09 — Deux espaces distincts : Coopérative & Exportateur
+
+### Ajouté
+- **Rôles** `coop | exporter | admin` (auth). **Deux comptes démo « 1 clic »** sur `/connexion` :
+  **Démo Coopérative** (`client@test.com / 123client123`, Amadou · Coop. de Soubré) et **Démo
+  Exportateur** (`export@agrivo.com / 123export123`, Marc · Cacao Export CI). Chaque compte atterrit
+  sur SON tableau de bord (coop → `/app/dashboard`, exportateur → `/app/exportateur`).
+- **Choix du profil à l'inscription** : bascule **Coopérative / Exportateur** (bullets, placeholders,
+  sous-titre adaptés) ; le compte créé atterrit sur le bon espace.
+
+### Changé
+- **Navigation par rôle** : l'exportateur a sa propre nav (Tableau de bord + Paramètres) ; la coop
+  garde sa nav complète (dont « Vue exportateur ») ; l'admin voit l'espace coop + Admin.
+- **RouteGuard** : l'exportateur est confiné à `/app/exportateur` + `/app/parametres` (aucune fuite
+  vers l'espace coopérative, pas de « Bonjour Amadou »). Eyebrow topbar role-aware.
+- **Dashboard exportateur** personnalisé au compte connecté (prénom réel, note « votre portefeuille »).
+
+### Vérifié
+- `tsc` ✓ · 65/65 tests Vitest ✓ · `next build` ✓ · ESLint (0 erreur).
+
 ## v1.8.0 — 2026-07-09 — Cible B2B (coop + exportateur), prix ajustés, méthodologie discrète
 
 ### Changé

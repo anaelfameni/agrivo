@@ -43,6 +43,7 @@ const COPY = {
     subtitle: (coops: number, parcelles: number) =>
       `Directeur durabilité · ${coops} coopératives · ${parcelles} parcelles suivies`,
     designed: "Vue de démonstration : le tableau de bord que votre exportateur consulte. Son portefeuille couvre plusieurs coopératives, dont la vôtre.",
+    ownNote: "Votre portefeuille de conformité, coopérative par coopérative.",
     search: "Rechercher",
     alertsAria: (n: number) => `Centre d'alertes${n ? `, ${n} actives` : ""}`,
     tablist: "Sections du dashboard exportateur",
@@ -62,6 +63,7 @@ const COPY = {
     subtitle: (coops: number, parcelles: number) =>
       `Sustainability director · ${coops} cooperatives · ${parcelles} plots tracked`,
     designed: "Demo view: the dashboard your exporter uses. Their portfolio spans several cooperatives, including yours.",
+    ownNote: "Your compliance portfolio, cooperative by cooperative.",
     search: "Search",
     alertsAria: (n: number) => `Alert centre${n ? `, ${n} active` : ""}`,
     tablist: "Exporter dashboard sections",
@@ -73,8 +75,9 @@ export default function ExportateurPage() {
   const reduce = useReducedMotion();
   const { lang } = useLanguage();
   const t = COPY[lang];
-  const { logout } = useAuth();
+  const { user, logout } = useAuth();
   const router = useRouter();
+  const firstName = user?.nom?.trim().split(/\s+/)[0] || "Marc";
   const [tab, setTab] = useState<ExpTab>("analytique");
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [hoveredId, setHoveredId] = useState<string | null>(null);
@@ -149,9 +152,9 @@ export default function ExportateurPage() {
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div>
           <p className="eyebrow text-green-signal">{t.eyebrow}</p>
-          <h1 className="mt-1.5 font-display text-3xl leading-tight text-forest-950 sm:text-4xl">Marc</h1>
+          <h1 className="mt-1.5 font-display text-3xl leading-tight text-forest-950 sm:text-4xl">{firstName}</h1>
           <p className="mt-1 text-sm text-stone-500">{t.subtitle(nbCoops, PARCELLES.length)}</p>
-          <p className="mt-0.5 text-xs text-stone-400">{t.designed}</p>
+          <p className="mt-0.5 text-xs text-stone-400">{user?.role === "exporter" ? t.ownNote : t.designed}</p>
           <span className="mt-2 inline-flex items-center gap-1.5 rounded-full border border-green-signal/25 bg-green-signal/[0.07] px-3 py-1 text-xs font-medium text-green-signal">
             <BarChart3 size={13} strokeWidth={2} aria-hidden />
             {t.plan}

@@ -10,7 +10,7 @@ import { X, Keyboard } from "lucide-react";
  * Invisible pour un visiteur normal ; aucun bouton ne le déclenche.
  */
 const ETAPES = [
-  { t: "1 · Connexion", d: "client@test.com / 123client123 (Amadou, Coopérative de Soubré). Un clic sur « Entrer avec le compte de démonstration »." },
+  { t: "1 · Connexion", d: "Deux comptes démo « 1 clic » sur /connexion : « Démo Coopérative » (Amadou, Coop. de Soubré) et « Démo Exportateur » (Marc, Cacao Export CI). Chacun atterrit sur SON tableau de bord." },
   { t: "2 · Nouvelle vérification", d: "Dashboard → « Nouvelle vérification » → écran de consentement ARTCI (cocher, insister : conçu conforme dès le départ)." },
   { t: "3 · Scan de la carte", d: "Sur mobile : viser la carte producteur (lecture automatique pré-remplit). Sur desktop : « Saisir manuellement » ou « Remplir un exemple (démo) »." },
   { t: "4 · Analyse satellite", d: "LE moment signature : le polygone se dessine, le moteur satellite (FAO) rend le verdict, badge sols, certificat PDF téléchargeable (QR de vérification publique)." },
