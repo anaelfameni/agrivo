@@ -3,6 +3,22 @@
 Versioning sémantique (MAJOR.MINOR.PATCH). Chaque release liste ce qui est ajouté, corrigé et
 vérifié, conformément à l'étape 8 du pipeline « Du besoin à la Release ».
 
+## v1.16.1 — 2026-07-10 — Hero d'accueil : apparition d'un seul bloc (fin du délai fond-puis-éléments)
+
+### Corrigé
+- **Le hero de l'accueil apparaît désormais d'un seul bloc.** Avant, le fond (mesh gradient)
+  était peint immédiatement tandis que le contenu restait invisible jusqu'à l'événement
+  `agrivo:enter` (ou un fallback de 2,5 s), puis entrait en cascade (délais 0,15 → 1,1 s) →
+  on voyait le fond seul, puis les éléments un par un.
+- **Correctif** : (1) l'entrée se déclenche **dès le montage** (pendant que le splash recouvre
+  encore la page), plus à `agrivo:enter` ni au fallback ; au lever du splash, fond et contenu
+  sont déjà en place. (2) Tous les éléments partagent **le même fondu, sans décalage** (délai 0),
+  au lieu d'une cascade. Fondu unifié bref (~0,55 s) en arrivée directe ; `reduced-motion` reste
+  visible immédiatement.
+
+### Vérifié
+- `tsc` ✓ · tests Vitest ✓ · `next build` ✓ · déployé + alias `agrivo-io.vercel.app`.
+
 ## v1.16.0 — 2026-07-10 — Scan mobile réparé (caméra + netteté), hero FAQ unifié (veille du jury)
 
 ### Corrigé

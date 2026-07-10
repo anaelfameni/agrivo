@@ -100,51 +100,43 @@ function joursAvantRDUE(now: Date): number {
 
 const fmtHa = (n: number) => `${new Intl.NumberFormat("fr-FR").format(n)} ha`;
 
-/** Variants d'entrée par élément (réduits à un simple fondu en reduced-motion). */
+/**
+ * Variants d'entrée : TOUS les éléments du hero partagent le même fondu, SANS décalage
+ * (aucun `delay`), pour qu'au lever du splash le fond et le contenu apparaissent
+ * ensemble — jamais le fond seul puis les éléments en cascade.
+ */
 function buildVariants(reduced: boolean): Record<string, Variants> {
   if (reduced) {
-    const fade = (delay: number): Variants => ({
-      hidden: { opacity: 0 },
-      show: { opacity: 1, transition: { duration: 0.4, delay } },
-    });
+    const shown: Variants = { hidden: { opacity: 1 }, show: { opacity: 1 } };
     return {
-      badge: fade(0),
-      line1: fade(0.1),
-      line2: fade(0.2),
-      sub: fade(0.3),
-      ctas: fade(0.4),
-      mockup: fade(0.5),
-      bar: { hidden: { opacity: 1 }, show: { opacity: 1 } },
+      badge: shown,
+      line1: shown,
+      line2: shown,
+      sub: shown,
+      ctas: shown,
+      mockup: shown,
+      bar: { hidden: { scaleX: 1 }, show: { scaleX: 1 } },
     };
   }
+  // Un seul fondu commun (montée douce de 14 px), même durée, délai 0 : tout entre d'un bloc.
+  const together: Variants = {
+    hidden: { opacity: 0, y: 14 },
+    show: { opacity: 1, y: 0, transition: { duration: 0.55, ease: EASE } },
+  };
   return {
-    badge: {
-      hidden: { opacity: 0, y: 16 },
-      show: { opacity: 1, y: 0, transition: { duration: 0.6, delay: 0, ease: EASE } },
-    },
-    line1: {
-      hidden: { opacity: 0, y: 24, filter: "blur(8px)" },
-      show: { opacity: 1, y: 0, filter: "blur(0px)", transition: { duration: 0.7, delay: 0.15, ease: EASE } },
-    },
-    line2: {
-      hidden: { opacity: 0, y: 24, filter: "blur(8px)" },
-      show: { opacity: 1, y: 0, filter: "blur(0px)", transition: { duration: 0.7, delay: 0.35, ease: EASE } },
-    },
-    sub: {
-      hidden: { opacity: 0, y: 12 },
-      show: { opacity: 1, y: 0, transition: { duration: 0.6, delay: 0.5, ease: EASE } },
-    },
-    ctas: {
-      hidden: { opacity: 0, scale: 0.96 },
-      show: { opacity: 1, scale: 1, transition: { duration: 0.5, delay: 0.65, ease: EASE } },
-    },
+    badge: together,
+    line1: together,
+    line2: together,
+    sub: together,
+    ctas: together,
     mockup: {
-      hidden: { opacity: 0, x: 40 },
-      show: { opacity: 1, x: 0, transition: { duration: 0.8, delay: 0.8, ease: EASE } },
+      hidden: { opacity: 0, y: 14 },
+      show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: EASE } },
     },
+    // La barre se remplit en même temps que sa carte (pas de délai d'apparition).
     bar: {
       hidden: { scaleX: 0 },
-      show: { scaleX: 1, transition: { duration: 0.8, delay: 1.1, ease: EASE } },
+      show: { scaleX: 1, transition: { duration: 0.7, ease: EASE } },
     },
   };
 }
@@ -157,26 +149,17 @@ export function Hero() {
   const tr = HERO_TR[lang === "en" ? "en" : "fr"];
 
   useEffect(() => {
-    let played = false;
-    const play = () => {
-      if (played) return;
-      played = true;
-      controls.start("show");
-    };
     // Reduced-motion : le hero est visible immédiatement (jamais d'écran vide).
     if (reduced) {
       controls.set("show");
-      played = true;
       return;
     }
-    // Si le splash a déjà été passé (retour depuis /app, flag skip), l'événement
-    // `agrivo:enter` peut avoir été émis avant notre montage : fallback court.
-    window.addEventListener("agrivo:enter", play);
-    const fallback = setTimeout(play, 2500);
-    return () => {
-      window.removeEventListener("agrivo:enter", play);
-      clearTimeout(fallback);
-    };
+    // On révèle le hero DÈS le montage — pas à l'événement `agrivo:enter`. L'entrée se
+    // joue pendant que le splash recouvre encore la page : quand le splash se lève, le fond
+    // ET tous les éléments sont déjà en place et apparaissent ensemble, sans délai ni
+    // cascade. En arrivée directe (splash passé), l'entrée reste un fondu unifié très bref.
+    const raf = requestAnimationFrame(() => controls.start("show"));
+    return () => cancelAnimationFrame(raf);
   }, [controls, reduced]);
 
   return (
