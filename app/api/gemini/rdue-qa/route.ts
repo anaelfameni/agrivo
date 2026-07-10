@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { MOCK_MODE, sleep } from "@/lib/ai/config";
 import { callGemini, geminiLiveEnabled, CHARTE_SYSTEM } from "@/lib/ai/gemini-live";
-import { repondreDeterministe, faitsPourPrompt } from "@/lib/ai/rdue-faits";
+import { repondreDeterministe, faitsPourPrompt, detecterSmallTalk } from "@/lib/ai/rdue-faits";
 
 /**
  * Assistant AGRIVO. Répond à toute question sur le PRODUIT AGRIVO (prix, espaces, parcours,
@@ -31,6 +31,13 @@ export async function POST(req: Request) {
   const question = (body.question ?? "").toString().slice(0, 500).trim();
   if (!question) {
     return NextResponse.json({ error: "Question manquante." }, { status: 400 });
+  }
+
+  // Small-talk pur (salut, merci, au revoir, « ça va ? ») : réponse chaleureuse instantanée,
+  // identique en live et en repli, sans consommer le quota IA.
+  const smallTalk = detecterSmallTalk(question, lang);
+  if (smallTalk) {
+    return NextResponse.json({ reponse: smallTalk.reponse, source: "Assistant AGRIVO", live: false });
   }
 
   const base = repondreDeterministe(question, lang);

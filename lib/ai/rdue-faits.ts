@@ -304,6 +304,46 @@ export const FAITS_RDUE: FaitRDUE[] = [
     source: { fr: "Vérification publique AGRIVO", en: "AGRIVO public verification" },
   },
   {
+    id: "guide-tour",
+    motsCles: ["guide", "tutoriel", "tuto", "interactif", "relancer", "demarrer", "commencer", "premiers pas", "decouvrir", "visite", "tour", "onboarding", "getting started"],
+    question: { fr: "Comment relancer le guide interactif ?", en: "How do I relaunch the interactive guide?" },
+    reponse: {
+      fr: "Cliquez sur le bouton « ? » en haut de votre espace : le guide interactif se relance et vous fait visiter pas à pas votre tableau de bord, la vérification d'une parcelle, les verdicts et le certificat. Il s'ouvre aussi automatiquement à votre première connexion.",
+      en: "Click the \"?\" button at the top of your workspace: the interactive guide relaunches and walks you step by step through your dashboard, plot verification, verdicts and the certificate. It also opens automatically on your first sign-in.",
+    },
+    source: { fr: "Guide interactif AGRIVO", en: "AGRIVO interactive guide" },
+  },
+  {
+    id: "guide-import",
+    motsCles: ["importer", "import", "registre", "auditer", "audit", "fichier", "charger", "geojson", "csv", "kml", "exporter", "export", "upload", "register", "file"],
+    question: { fr: "Comment importer ou exporter mon registre de parcelles ?", en: "How do I import or export my plot register?" },
+    reponse: {
+      fr: "Depuis le tableau de bord coopérative, la carte « Auditer mon registre » accepte vos fichiers GeoJSON, CSV ou KML : AGRIVO calcule le pourcentage de parcelles prêtes pour le RDUE et liste les anomalies à corriger. Le bouton « Exporter (GeoJSON) » télécharge à l'inverse votre registre au format accepté par TRACES NT.",
+      en: "From the cooperative dashboard, the \"Audit my register\" card accepts your GeoJSON, CSV or KML files: AGRIVO computes the share of EUDR-ready plots and lists the anomalies to fix. Conversely, the \"Export (GeoJSON)\" button downloads your register in the TRACES NT-accepted format.",
+    },
+    source: { fr: "Audit de registre AGRIVO", en: "AGRIVO register audit" },
+  },
+  {
+    id: "guide-producteurs",
+    motsCles: ["producteur", "producteurs", "ajouter", "ajouter un producteur", "nouveau producteur", "enregistrer", "fiche", "planteurs", "liste des", "add a farmer", "farmers"],
+    question: { fr: "Comment ajouter un producteur ?", en: "How do I add a farmer?" },
+    reponse: {
+      fr: "Ouvrez la page « Producteurs » dans le menu latéral de votre espace coopérative, puis cliquez sur « Ajouter un producteur » : nom, matricule et, si vous les avez, les coordonnées de sa parcelle. Sa fiche devient ensuite cliquable et vous pouvez lancer sa vérification à tout moment.",
+      en: "Open the \"Producers\" page in your cooperative workspace's side menu, then click \"Add a producer\": name, ID number and, if you have them, the plot's coordinates. Their record then becomes clickable and you can start their verification at any time.",
+    },
+    source: { fr: "Page Producteurs AGRIVO", en: "AGRIVO Producers page" },
+  },
+  {
+    id: "guide-parametres",
+    motsCles: ["parametres", "parametre", "mot de passe", "password", "profil", "organisation", "modifier", "changer", "securite", "settings", "deconnecter", "deconnexion", "logout"],
+    question: { fr: "Où modifier mon profil ou mon mot de passe ?", en: "Where do I edit my profile or password?" },
+    reponse: {
+      fr: "Dans la page « Paramètres » de votre espace : l'onglet Profil pour vos informations, Organisation pour la coopérative, et Sécurité pour changer votre mot de passe. Le sélecteur de langue est en haut de page, et le bouton de déconnexion se trouve dans l'en-tête, à côté de votre nom.",
+      en: "In your workspace's \"Settings\" page: the Profile tab for your details, Organisation for the cooperative, and Security to change your password. The language switcher is at the top of the page, and the sign-out button sits in the header, next to your name.",
+    },
+    source: { fr: "Paramètres AGRIVO", en: "AGRIVO settings" },
+  },
+  {
     id: "agrivo-alertes",
     motsCles: ["alerte", "alertes", "notification", "surveiller", "signale", "alert", "alerts", "watch", "centre"],
     question: { fr: "Où voir les alertes de la coopérative ?", en: "Where can I see the cooperative's alerts?" },
@@ -397,6 +437,63 @@ export function repondreDeterministe(question: string, lang: "fr" | "en"): Repon
     finance: false,
     faitId: meilleur.fait.id,
   };
+}
+
+/* --------------------------- Small-talk déterministe --------------------------- */
+
+const SMALL_TALK: { marqueurs: string[]; reponse: { fr: string; en: string } }[] = [
+  {
+    // Remerciements / approbations — testés AVANT les saluts (« merci bonne journée »).
+    marqueurs: ["merci", "thank", "thanks", "super", "parfait", "genial", "top", "d accord", "daccord", "ok", "compris", "note"],
+    reponse: {
+      fr: "Avec plaisir ! N'hésitez pas si vous avez une autre question — prix, vérification d'une parcelle, certificats, RDUE… je suis là pour ça. Et pour une demande complexe : support@agrivo.ci.",
+      en: "You're welcome! Feel free to ask anything else — pricing, plot verification, certificates, EUDR… that's what I'm here for. For complex requests: support@agrivo.ci.",
+    },
+  },
+  {
+    marqueurs: ["au revoir", "a bientot", "bonne journee", "bonne soiree", "bye", "goodbye", "a plus", "ciao"],
+    reponse: {
+      fr: "Au revoir, et à bientôt sur AGRIVO ! Je reste disponible à tout moment depuis cette bulle, et notre équipe répond à support@agrivo.ci.",
+      en: "Goodbye, and see you soon on AGRIVO! I remain available anytime from this bubble, and our team answers at support@agrivo.ci.",
+    },
+  },
+  {
+    marqueurs: ["ca va", "comment vas", "comment allez", "tu vas bien", "vous allez bien", "how are you", "la forme"],
+    reponse: {
+      fr: "Très bien, merci ! Je suis l'Assistant AGRIVO, toujours là pour vous aider : posez-moi une question sur la plateforme (prix, vérification, certificats) ou sur le règlement européen contre la déforestation.",
+      en: "Very well, thank you! I'm the AGRIVO Assistant, always ready to help: ask me about the platform (pricing, verification, certificates) or the EU Deforestation Regulation.",
+    },
+  },
+  {
+    marqueurs: ["bonjour", "bonsoir", "salut", "coucou", "hello", "hey", "bjr", "slt", "good morning", "good evening"],
+    reponse: {
+      fr: "Bonjour ! Je suis l'Assistant AGRIVO. Je connais toute la plateforme et le règlement européen contre la déforestation. Posez-moi votre question, je vous guide pas à pas — et pour une demande complexe, notre équipe répond à support@agrivo.ci.",
+      en: "Hello! I'm the AGRIVO Assistant. I know the whole platform and the EU Deforestation Regulation. Ask me your question and I'll guide you step by step — for complex requests, our team answers at support@agrivo.ci.",
+    },
+  },
+];
+
+/**
+ * Détecte un message de pur small-talk (salut, merci, au revoir, « ça va ? ») et renvoie une
+ * réponse chaleureuse INSTANTANÉE (aucun appel réseau, aucun quota consommé). Ne se déclenche
+ * que si le message, une fois les marqueurs retirés, ne contient plus de vraie question :
+ * « bonjour, comment créer un compte ? » passe donc au circuit normal.
+ */
+export function detecterSmallTalk(question: string, lang: "fr" | "en"): { reponse: string } | null {
+  const q = normaliser(question);
+  if (!q || q.length > 60) return null;
+  const touche = SMALL_TALK.find((st) => st.marqueurs.some((m) => q.includes(m)));
+  if (!touche) return null;
+  // Retire TOUS les marqueurs small-talk (toutes catégories) puis regarde ce qui reste.
+  let reste = q;
+  for (const st of SMALL_TALK) for (const m of st.marqueurs) reste = reste.split(m).join(" ");
+  const restants = reste.split(" ").filter(
+    (w) =>
+      w.length > 2 &&
+      !["assistant", "agrivo", "monsieur", "madame", "bien", "toi", "vous", "moi", "beaucoup", "tres", "encore", "infiniment", "much", "very"].includes(w),
+  );
+  if (restants.length > 0) return null;
+  return { reponse: touche.reponse[lang] };
 }
 
 /** Bloc de faits injecté dans le prompt live pour grounder Gemini (il ne peut rien ajouter). */

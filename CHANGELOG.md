@@ -3,6 +3,25 @@
 Versioning sémantique (MAJOR.MINOR.PATCH). Chaque release liste ce qui est ajouté, corrigé et
 vérifié, conformément à l'étape 8 du pipeline « Du besoin à la Release ».
 
+## v1.15.0 — 2026-07-10 — Assistant conversationnel fiabilisé, guidage in-app, README aligné (J-1 jury)
+
+### Ajouté
+- **Small-talk déterministe de l'assistant** : « bonjour », « merci », « ça va ? », « au revoir »
+  reçoivent une réponse chaleureuse **instantanée et identique en live comme en repli** (aucun quota
+  IA consommé) ; un salut suivi d'une vraie question passe au circuit normal.
+- **4 faits de guidage in-app** dans la base de connaissances (33 faits au total) : relancer le
+  guide interactif (bouton « ? »), importer/exporter le registre, ajouter un producteur, modifier
+  profil/mot de passe/langue — l'assistant guide écran par écran même sans IA live.
+
+### Corrigé / cohérence
+- **README réécrit intégralement** : il décrivait encore le micro-crédit (retiré au pivot
+  Valorisation), « Gemini Vision », MOCK_MODE et 24 tests — désormais aligné sur le produit réel
+  (v1.15, deux espaces, 3 verdicts verbatim, tarifs B2B, usages IA actuels, comptes démo, prod).
+
+### Vérifié
+- `tsc` ✓ · tests Vitest ✓ (small-talk + guidage couverts) · `next build` ✓.
+- Prod re-testée après déploiement (assistant : saluts, guidage, garde-fou finance, hors-sujet).
+
 ## v1.14.0 — 2026-07-09 — Guide interactif d'accueil, Assistant AGRIVO complet, dashboards enrichis
 
 ### Ajouté

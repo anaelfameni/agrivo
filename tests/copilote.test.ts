@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { repondreDeterministe, FAITS_RDUE } from "@/lib/ai/rdue-faits";
+import { repondreDeterministe, detecterSmallTalk, FAITS_RDUE } from "@/lib/ai/rdue-faits";
 
 describe("Assistant AGRIVO — base de connaissances & appariement", () => {
   it("la base couvre AGRIVO (produit/prix/site) ET la RDUE", () => {
@@ -50,5 +50,25 @@ describe("Assistant AGRIVO — base de connaissances & appariement", () => {
     const sup = repondreDeterministe("Comment contacter le support ?", "fr");
     expect(sup.faitId).toBe("agrivo-support");
     expect(sup.reponse).toContain("support@agrivo.ci");
+  });
+
+  it("small-talk : merci / ça va / au revoir ont une réponse chaleureuse instantanée", () => {
+    expect(detecterSmallTalk("Merci beaucoup !", "fr")?.reponse).toContain("plaisir");
+    expect(detecterSmallTalk("ça va ?", "fr")?.reponse).toContain("Assistant AGRIVO");
+    expect(detecterSmallTalk("au revoir", "fr")?.reponse.toLowerCase()).toContain("au revoir");
+    expect(detecterSmallTalk("bonjour", "fr")?.reponse).toContain("Assistant AGRIVO");
+  });
+
+  it("small-talk : une vraie question N'EST PAS avalée par le salut", () => {
+    expect(detecterSmallTalk("Bonjour, comment créer un compte ?", "fr")).toBeNull();
+    expect(detecterSmallTalk("Merci, et combien coûte AGRIVO ?", "fr")).toBeNull();
+    expect(detecterSmallTalk("Quelles sont les échéances ?", "fr")).toBeNull();
+  });
+
+  it("guidage dans le site : guide interactif, import registre, producteurs, paramètres", () => {
+    expect(repondreDeterministe("Comment relancer le guide interactif ?", "fr").faitId).toBe("guide-tour");
+    expect(repondreDeterministe("Comment importer mon registre de parcelles ?", "fr").faitId).toBe("guide-import");
+    expect(repondreDeterministe("Comment ajouter un producteur ?", "fr").faitId).toBe("guide-producteurs");
+    expect(repondreDeterministe("Où changer mon mot de passe ?", "fr").faitId).toBe("guide-parametres");
   });
 });
