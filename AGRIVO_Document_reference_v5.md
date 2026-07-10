@@ -1,7 +1,14 @@
 # AGRIVO — Document de référence stratégique et opérationnel · v5.0
 
 *Vibeathon 2026 · jury samedi 11 juillet · rédigé par Anael (chef de projet) · confidentiel équipe*
-*État du produit : **v1.7.1 EN PRODUCTION** — https://agrivo-io.vercel.app · 65 tests automatisés · 13 usages IA*
+*État du produit : **v1.16.0 EN PRODUCTION** — https://agrivo-io.vercel.app · 79 tests automatisés · IA en direct*
+
+> 🟢 **MISE À JOUR — VEILLE DU JURY (vendredi 10 juillet 2026, v1.16.0).** En cas de contradiction avec le texte plus bas, **ce bloc fait foi**. Document de synthèse à lire en priorité : **`AGRIVO_Equipe_JourJ.pdf`**.
+> - **Produit** : v1.16.0 en production — **79 tests** au vert, CI verte.
+> - **Prix (à jour)** : coopérative **100 000 FCFA/mois** (≈ **1 200 FCFA** par producteur et par an) · API exportateur **à partir de 1 000 000 FCFA/mois**. *(Anciens 125 000 / 120 000 / 1 500 000 caducs.)*
+> - **Deux espaces, deux comptes démo** : Coop `client@test.com` / `123client123` (Amadou) · Exportateur `export@agrivo.com` / `123export123` (Marc).
+> - **Le pitch est un pitch PUR de 5 minutes — AUCUNE démo en direct.** PowerPoint **envoyé à l'avance** sur **vibeathonci.com/soumettre**.
+> - **Langage** : « évaluation » (jamais « garantie ») · aucun crédit/financement · verdicts **Conforme / Anomalie détectée / Données insuffisantes** · CCC = « démarche engagée ».
 
 > **Comment lire ce document.** C'est la source de vérité du projet, volontairement courte (la v4
 > faisait 34 pages ; tout ce qui n'a pas changé n'est pas répété). Chaque membre doit pouvoir

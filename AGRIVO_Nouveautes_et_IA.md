@@ -1,6 +1,11 @@
 # AGRIVO — Ce que je viens d'améliorer, et toute l'IA du site expliquée simplement
 
-*Par Anael — version du site : v1.7.0 (finale) · 8 juillet 2026 · https://agrivo-io.vercel.app*
+*Par Anael — version du site : v1.16.0 · 10 juillet 2026 · https://agrivo-io.vercel.app*
+
+> 🟢 **MISE À JOUR — VEILLE DU JURY (vendredi 10 juillet 2026, v1.16.0).** En cas de contradiction avec le texte plus bas, **ce bloc fait foi**. Document de synthèse à lire en priorité : **`AGRIVO_Equipe_JourJ.pdf`**.
+> - **Prix (à jour)** : coopérative **100 000 FCFA/mois** (≈ **1 200 FCFA** par producteur et par an) · API exportateur **à partir de 1 000 000 FCFA/mois**. *(Anciens 125 000 / 1 500 FCFA/producteur caducs.)*
+> - **79 tests** au vert · **deux comptes démo** : Coop `client@test.com` / `123client123` · Exportateur `export@agrivo.com` / `123export123`.
+> - **Le pitch est un pitch PUR de 5 minutes — AUCUNE démo.** PowerPoint **envoyé à l'avance** sur **vibeathonci.com/soumettre**.
 
 Ce document est pour vous, l'équipe. Je vous explique en langage simple **tout ce que j'ai amélioré ces derniers jours**, puis **chaque fonctionnalité IA du site, une par une** : ce qu'elle fait, et surtout **ce que ça apporte au client**. Après l'avoir lu, chacun de vous doit pouvoir présenter n'importe quelle partie du produit.
 
@@ -24,7 +29,7 @@ Avant, si l'IA de Google (Gemini) était saturée pendant la démo, certains tex
 Le site est passé de 8 à **13 usages de l'IA** (détail au chapitre suivant) : le Copilote RDUE, la Revue du registre, le Dossier acheteur, le verdict en langue locale (dioula/baoulé) et le diagnostic visuel de parcelle par photo.
 
 **f) La qualité est prouvée, pas promise.**
-**65 tests automatiques** passent au vert, le code compile sans aucune erreur, et tout est déployé en production. Le prix affiché est partout cohérent : 125 000 FCFA/mois par coopérative (≈ 1 500 FCFA par producteur vérifié et par an).
+**79 tests automatiques** passent au vert, le code compile sans aucune erreur, et tout est déployé en production. Le prix affiché est partout cohérent : 100 000 FCFA/mois par coopérative (≈ 1 200 FCFA par producteur vérifié et par an).
 
 ---
 

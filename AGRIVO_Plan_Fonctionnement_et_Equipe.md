@@ -1,7 +1,14 @@
 # AGRIVO — Plan de fonctionnement & équipe (sprint final)
 
 *Mis à jour mercredi 8 juillet 2026 au soir — jury **samedi 11 juillet** · par Anael, chef de projet*
-*Produit : **v1.7.1 EN PRODUCTION** · https://agrivo-io.vercel.app · 65 tests · 13 usages IA*
+*Produit : **v1.16.0 EN PRODUCTION** · https://agrivo-io.vercel.app · 79 tests · IA en direct*
+
+> 🟢 **MISE À JOUR — VEILLE DU JURY (vendredi 10 juillet 2026, v1.16.0).** En cas de contradiction avec le texte plus bas, **ce bloc fait foi**. Document de synthèse à lire en priorité : **`AGRIVO_Equipe_JourJ.pdf`**.
+> - **Produit** : v1.16.0 en production — **79 tests** au vert, CI verte.
+> - **Prix (à jour)** : coopérative **100 000 FCFA/mois** (≈ **1 200 FCFA** par producteur et par an) · API exportateur **à partir de 1 000 000 FCFA/mois**. *(Anciens 125 000 / 120 000 / 1 500 000 caducs.)*
+> - **Deux comptes démo** : Coop `client@test.com` / `123client123` · Exportateur `export@agrivo.com` / `123export123`.
+> - **Le pitch est un pitch PUR de 5 minutes — AUCUNE démo en direct.** PowerPoint **envoyé à l'avance** sur **vibeathonci.com/soumettre**.
+> - **Langage** : « évaluation » (jamais « garantie ») · aucun crédit/financement · verdicts **Conforme / Anomalie détectée / Données insuffisantes** · CCC = « démarche engagée ».
 
 > Ce document remplace la version du 6 juillet (10 pages) : il est volontairement **court**.
 > Il dit qui fait quoi, comment on travaille jusqu'à samedi, et ce qui reste à faire. Point final.

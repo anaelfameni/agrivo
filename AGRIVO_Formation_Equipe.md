@@ -7,7 +7,16 @@
 > d'entre nous, pas seulement celui qui pitche.
 > Ce document se suffit à lui-même : aucune connaissance préalable n'est nécessaire.
 > **Temps de lecture : ~45 minutes. À lire AVANT la répétition générale de vendredi 10.**
-> Version du produit à jour : **v1.7.1 en production** (mode terrain PWA + IA fiabilisée — voir §4.6).
+> Version du produit à jour : **v1.16.0 en production**.
+
+> 🟢 **MISE À JOUR — VEILLE DU JURY (vendredi 10 juillet 2026, v1.16.0).** En cas de contradiction avec le texte plus bas, **ce bloc fait foi**. Document de synthèse à lire en priorité : **`AGRIVO_Equipe_JourJ.pdf`**.
+> - **Produit** : v1.16.0 en production sur https://agrivo-io.vercel.app — **79 tests** automatisés au vert, CI verte.
+> - **Prix (à jour)** : coopérative **100 000 FCFA/mois** (≈ **1 200 FCFA** par producteur vérifié et par an) · API exportateur **à partir de 1 000 000 FCFA/mois**. *(Les anciens 125 000 / 120 000 / 1 500 000 cités plus bas sont caducs.)*
+> - **Deux espaces, deux comptes démo** : Coopérative `client@test.com` / `123client123` (Amadou) · Exportateur `export@agrivo.com` / `123export123` (Marc).
+> - **Le pitch est un pitch PUR de 5 minutes — AUCUNE démonstration en direct.** Le PowerPoint est **envoyé à l'avance** sur **vibeathonci.com/soumettre**. Les passages « vérifier en direct » / « démo » plus bas ne s'appliquent PAS au pitch (ils restent vrais pour tester le site à titre personnel).
+> - **Capture GPS** : sur le **site web, la coopérative saisit ses coordonnées** (le mode « Tour de champ GPS réel » du web a été RETIRÉ en v1.8) ; la capture GPS temps réel vit dans l'**app mobile**. Ignorer le §4.6 « mode terrain PWA ».
+> - **Scan mobile réparé** : bouton **« Activer la caméra »** puis **« Scanner la carte »** ; sinon **« Saisir manuellement »**. Message si l'image est floue.
+> - **Langage** : « évaluation » (jamais « garantie ») · **aucun crédit ni financement** · verdicts exacts **Conforme / Anomalie détectée / Données insuffisantes** · Conseil du Café-Cacao = « **démarche engagée** », jamais « partenariat ».
 
 ---
 

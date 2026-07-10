@@ -6,7 +6,15 @@
 > le projet en lisant ce seul document. Pour MAÎTRISER le projet et répondre au jury, lire ensuite le
 > document de formation joint : **`AGRIVO_Formation_Equipe.pdf`**. Confidentiel équipe :
 > Anael · Christ · Gaddiel · Domy.
-> Jury : **samedi 11 juillet 2026, CSCTICAO** · Produit : **https://agrivo-io.vercel.app** (**v1.7.0, EN PRODUCTION**).
+> Jury : **samedi 11 juillet 2026, CSCTICAO** · Produit : **https://agrivo-io.vercel.app** (**v1.16.0, EN PRODUCTION**).
+
+> 🟢 **MISE À JOUR — VEILLE DU JURY (vendredi 10 juillet 2026, v1.16.0).** En cas de contradiction avec le texte plus bas, **ce bloc fait foi**. Document de synthèse à lire en priorité : **`AGRIVO_Equipe_JourJ.pdf`**.
+> - **Produit** : v1.16.0 en production sur https://agrivo-io.vercel.app — **79 tests** automatisés au vert, CI verte.
+> - **Prix (à jour)** : coopérative **100 000 FCFA/mois** (≈ **1 200 FCFA** par producteur vérifié et par an) · API exportateur **à partir de 1 000 000 FCFA/mois**. *(Les anciens 125 000 / 120 000 / 1 500 000 cités plus bas sont caducs.)*
+> - **Deux espaces, deux comptes démo** : Coopérative `client@test.com` / `123client123` (Amadou) · Exportateur `export@agrivo.com` / `123export123` (Marc).
+> - **Le pitch est un pitch PUR de 5 minutes — AUCUNE démonstration en direct.** Le PowerPoint est **envoyé à l'avance** sur **vibeathonci.com/soumettre** (il ne sera pas projeté). Toute mention de « démo au jury » plus bas est caduque.
+> - **Scan mobile réparé** : sur téléphone, bouton **« Activer la caméra »** puis **« Scanner la carte »** ; sinon **« Saisir manuellement »**. Message si l'image est floue (l'OCR redemande une photo nette).
+> - **Langage** : « évaluation » (jamais « garantie ») · **aucun crédit ni financement** · verdicts exacts **Conforme / Anomalie détectée / Données insuffisantes** · Conseil du Café-Cacao = « **démarche engagée** », jamais « partenariat ».
 
 ---
 
@@ -305,9 +313,9 @@ Le pitch dure **5 minutes** + 2 minutes de questions.
 1. ☐ **Action Anael (5 min) : facturation Tier 1 sur la clé Gemini** (AI Studio → Billing) — supprime
    la loterie 429 du free tier depuis les IP partagées Vercel. À faire AVANT la répétition de vendredi.
    (En attendant : bouton admin **« Préchauffer l'IA (démo) »** à cliquer avant la démo.)
-1bis. ☐ Décision Anael : le tarif coopérative est passé à **125 000 FCFA/mois** (= modèle
-   par-producteur du deck) dans le code — **committé mais pas encore déployé** ; déployer ou garder
-   120 000 (la version en ligne montre encore 120 000 tant que non déployé).
+1bis. ☑ **RÉSOLU (v1.16.0)** : le tarif coopérative est fixé et déployé à **100 000 FCFA/mois**
+   (≈ 1 200 FCFA par producteur vérifié et par an) ; API exportateur **à partir de 1 000 000 FCFA/mois**.
+   Les anciens 120 000 / 125 000 / 1 500 000 sont caducs.
 2. ☐ Action Anael (2 min) : domaine `agrivo-io.vercel.app` attaché au projet Vercel (sinon réassigner l'alias à chaque déploiement).
 3. ☐ Domy : test OCR avec une vraie carte producteur (mar–mer).
 4. ☐ Christ : alignement app mobile (guide joint) puis vidéo plan B (jeudi soir max).

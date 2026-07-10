@@ -8,7 +8,18 @@
 > les nouveautés backend qui te concernent sont dans l'encadré §4.6).
 > Jury : samedi 11 juillet 2026 — priorité absolue aux écrans du golden path.
 
-> ⚠️ **MISE À JOUR STRATÉGIQUE IMPORTANTE (7 juillet, v1.7.0) — à lire avant tout.**
+> 🟢 **MISE À JOUR — VEILLE DU JURY (vendredi 10 juillet 2026, v1.16.0).** En cas de contradiction avec le texte plus bas, **ce bloc fait foi**. Document de synthèse équipe : **`AGRIVO_Equipe_JourJ.pdf`**.
+> - **Backend de référence** : v1.16.0 en production, https://agrivo-io.vercel.app — 79 tests, CI verte.
+> - **Prix (à jour)** : coopérative **100 000 FCFA/mois** · API exportateur **à partir de 1 000 000 FCFA/mois** *(anciens 125 000 / 1 500 000 caducs)*.
+> - **Deux comptes démo** : Coop `client@test.com` / `123client123` · Exportateur `export@agrivo.com` / `123export123`.
+> - **Écran Scan (v1.16.0, à répliquer côté mobile)** : bouton principal **« Activer la caméra »**, puis **« Scanner la carte »** une fois la caméra active ; bouton secondaire **« Saisir manuellement la carte producteur »**. **Contrôle de netteté** avant l'OCR : si l'image est floue, message « reprenez la photo » et on ne lance pas la lecture. Gérer l'échec d'accès caméra par un message clair.
+> - **Capture GPS** : côté **web**, la coopérative **saisit ses coordonnées** (le mode « Tour de champ GPS réel » du web a été RETIRÉ en v1.8). La **capture GPS temps réel reste la mission de l'app mobile** → l'encadré ⚠️ ci-dessous décrit l'objectif mobile, mais ne reflète plus le web.
+> - **Le pitch de samedi est un pitch PUR de 5 minutes, sans démo.** Une vidéo de secours n'est donc plus indispensable, mais l'app doit être présentable si le jury la demande.
+> - ⏳ **Anael va m'envoyer le dossier complet de l'app mobile existante** → ce guide sera ré-aligné écran par écran à ce moment-là.
+
+> ⚠️ **(PARTIELLEMENT CADUC — voir le bloc vert « veille du jury » ci-dessus.)** Ce passage décrivait la capture GPS temps réel sur le **web** ; elle a été **retirée du site en v1.8** (la coopérative saisit désormais ses coordonnées). L'objectif de capture GPS temps réel **reste valable pour l'app mobile de Christ**.
+>
+> ⚠️ **MISE À JOUR STRATÉGIQUE IMPORTANTE (7 juillet, v1.7.0) — contexte historique.**
 > **La PWA web fait désormais la capture GPS RÉELLE au bord du champ** (mode « Tour de champ GPS
 > réel » : `navigator.geolocation.watchPosition`, waypoints en marchant, fermeture de polygone,
 > RFC 7946). Autrement dit : **une seule application (la PWA), installable depuis le navigateur, du
