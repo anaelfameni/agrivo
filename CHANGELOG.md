@@ -3,6 +3,32 @@
 Versioning sémantique (MAJOR.MINOR.PATCH). Chaque release liste ce qui est ajouté, corrigé et
 vérifié, conformément à l'étape 8 du pipeline « Du besoin à la Release ».
 
+## v1.18.0 — 2026-07-10 — Intégration v0 : espaces multi-pages, guide spotlight, tarification Essentiel/Pro
+
+### Ajouté (issu des améliorations v0, portées sur la v1.17)
+- **Espace exportateur multi-pages** : le menu latéral gagne des pages dédiées — Coopératives
+  (avec « Ajouter une coopérative » + **carte des sièges**), Producteurs consolidés, Parcelles,
+  **Dossiers & rapports** (dossier acheteur + alertes) et Assistant IA. Le tableau de bord à
+  onglets reste la page d'accueil de l'espace.
+- **Espace coopérative** : nouvelle page **Certificats** dans le menu latéral.
+- **Explication de verdict enrichie** (`verdict-explication.tsx` + `lib/verdict-explanations.ts`)
+  sur l'analyse et la fiche parcelle : causes réelles et marche à suivre par verdict.
+- **Transitions de page** (`app/app/template.tsx`) + raffinements landing et dashboard.
+- **Guide interactif version spotlight** (celle validée par Anael) : surligne les vrais éléments
+  de la page, ancres `data-tour` dans la sidebar et les dashboards.
+- **Base assistant enrichie** : nouveaux faits (offres exportateur Essentiel/Pro, verdicts
+  expliqués, ajouter une coopérative, dossier acheteur, équipe) + **scoring amélioré** (mots-clés
+  courts appariés en mot entier). Fusionné AVEC le small-talk et le guidage v1.15-1.17 conservés.
+
+### Modifié
+- **Tarification (référence v0)** : Coopérative **100 000** · **Exportateur Essentiel 500 000** ·
+  **Exportateur Pro 1 000 000 FCFA/mois** (page Tarifs 3 colonnes, fait assistant, badge de
+  l'espace exportateur).
+
+### Conservé (v1.15 → v1.17, non régressé)
+- OCR caméra réel (jamais de résultat démo), assistant court, hero d'accueil d'un seul bloc,
+  scan mobile (caméra + netteté), hero FAQ, comptes démo `coop@test.com` / `export@test.com`.
+
 ## v1.17.0 — 2026-07-10 — OCR réel, assistant resserré, deux paliers exportateur, comptes démo
 
 ### Corrigé

@@ -143,13 +143,13 @@ const COPY = {
     },
     modele: {
       eyebrow: "Modèle économique",
-      title: "Deux abonnements, un modèle transparent.",
+      title: "Trois offres, un modèle transparent.",
       revenues: [
-        { name: "Abonnement coopérative", price: "100 000", unit: "FCFA / mois", desc: "Vérifications illimitées, certificats d'évaluation de conformité (PDF), mode hors connexion, support." },
-        { name: "API exportateur", price: "1 000 000", unit: "FCFA / mois · à partir de", desc: "API REST, export en masse, déclarations TRACES NT intégrées, engagement de disponibilité (SLA)." },
-        { name: "Dossier exportateur", price: "Inclus", unit: "dans l'abonnement coopérative", desc: "Le dossier de conformité se partage avec l'exportateur : la coopérative le fait valoir pour négocier." },
+        { name: "Abonnement coopérative", price: "100 000", unit: "FCFA / mois", desc: "Vérifications illimitées, certificats d'évaluation de conformité (PDF), import & audit RDUE du registre, mode hors connexion, support." },
+        { name: "Exportateur Essentiel", price: "500 000", unit: "FCFA / mois", desc: "Portefeuille multi-coopératives : tableau de bord, coopératives et producteurs consolidés, registre satellite, dossiers acheteurs, alertes." },
+        { name: "Exportateur Pro", price: "1 000 000", unit: "FCFA / mois", desc: "Tout Essentiel, plus : API REST, export en masse, déclarations TRACES NT intégrées, assistant IA de portefeuille, engagement de disponibilité (SLA)." },
       ],
-      note: "Le service AGRIVO est gratuit pour le producteur : il ne paie aucun frais pour être vérifié. Le modèle repose sur l'abonnement coopérative et l'API exportateur.",
+      note: "Le service AGRIVO est gratuit pour le producteur : il ne paie aucun frais pour être vérifié. Le modèle repose sur l'abonnement coopérative et les offres exportateur.",
     },
     verdicts: {
       eyebrow: "Jamais un simple oui / non",
@@ -272,13 +272,13 @@ const COPY = {
     },
     modele: {
       eyebrow: "Business model",
-      title: "Two subscriptions, one transparent model.",
+      title: "Three plans, one transparent model.",
       revenues: [
-        { name: "Cooperative subscription", price: "100,000", unit: "FCFA / month", desc: "Unlimited verifications, compliance-assessment certificates (PDF), offline mode, support." },
-        { name: "Exporter API", price: "1,000,000", unit: "FCFA / month · from", desc: "REST API, batch export, integrated TRACES NT declarations, SLA commitment." },
-        { name: "Exporter file", price: "Included", unit: "in the cooperative subscription", desc: "The compliance file is shared with the exporter: the cooperative leverages it to negotiate." },
+        { name: "Cooperative subscription", price: "100,000", unit: "FCFA / month", desc: "Unlimited verifications, compliance-assessment certificates (PDF), register import & EUDR audit, offline mode, support." },
+        { name: "Exporter Essential", price: "500,000", unit: "FCFA / month", desc: "Multi-cooperative portfolio: dashboard, consolidated cooperatives and farmers, satellite register, buyer files, alerts." },
+        { name: "Exporter Pro", price: "1,000,000", unit: "FCFA / month", desc: "Everything in Essential, plus: REST API, batch export, built-in TRACES NT declarations, portfolio AI assistant, SLA commitment." },
       ],
-      note: "The AGRIVO service is free for the farmer: they pay no fee to be verified. The model relies on the cooperative subscription and the exporter API.",
+      note: "The AGRIVO service is free for the farmer: they pay no fee to be verified. The model relies on the cooperative subscription and the exporter plans.",
     },
     verdicts: {
       eyebrow: "Never a plain yes / no",
@@ -790,7 +790,7 @@ function PersonasSection() {
 function ModeleSection() {
   const c = useCopy().modele;
   const icons = [<Building2 key="0" size={22} className="text-green-signal" />, <Satellite key="1" size={22} className="text-amber-cacao" />, <Percent key="2" size={22} className="text-forest-700" />];
-  const highlight = [false, true, false];
+  const highlight = [false, false, true];
   return (
     <section className="mx-auto max-w-7xl px-6 py-24 md:px-8 lg:px-12">
       <Reveal>

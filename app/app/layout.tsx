@@ -1,20 +1,21 @@
 import type { Metadata } from "next";
-import Link from "next/link";
-import { Logo } from "@/components/ui/logo";
 import { LanguageSwitcher } from "@/components/ui/language-switcher";
 import { AppSidebar, AppMobileNav } from "@/components/app/app-sidebar";
 import { RouteGuard } from "@/components/app/route-guard";
 import { UserMenu } from "@/components/app/user-menu";
 import { TourButton } from "@/components/app/tour-button";
 import { OnboardingTour } from "@/components/app/onboarding-tour";
+import { AppHomeLink } from "@/components/app/app-home-link";
+import { CopiloteRdue } from "@/components/app/copilote-rdue";
 import { BackToSiteLink } from "@/components/app/back-to-site-link";
 import { AppEyebrow } from "@/components/app/app-eyebrow";
 import { BRAND_NAME } from "@/config/brand";
 
 /**
- * Coquille de l'espace applicatif AGRIVO (dashboard coopérative, parcelle, consentement,
- * parcours). Fond ivoire, topbar sobre : la navbar du site vitrine n'apparaît jamais ici.
- * Composant serveur — la seule île client est le sélecteur de langue.
+ * Coquille de l'espace applicatif AGRIVO (dashboards coopérative & exportateur, parcelle,
+ * consentement, parcours). Fond ivoire, topbar sobre : la navbar du site vitrine n'apparaît
+ * jamais ici. Composant serveur — les îlots clients sont le sélecteur de langue, le logo
+ * route-aware, le guide interactif et l'Assistant AGRIVO (présent sur TOUTES les pages).
  */
 export const metadata: Metadata = {
   title: `Espace · ${BRAND_NAME}`,
@@ -32,13 +33,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
         <div aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-green-signal/45 to-transparent" />
         <div className="flex h-16 w-full items-center justify-between gap-4 px-5 md:px-8">
           <div className="flex items-center gap-3">
-            <Link
-              href="/app/dashboard"
-              aria-label={`${BRAND_NAME} · tableau de bord`}
-              className="rounded-full outline-none focus-visible:ring-2 focus-visible:ring-green-signal focus-visible:ring-offset-2 focus-visible:ring-offset-ivory"
-            >
-              <Logo />
-            </Link>
+            <AppHomeLink />
             <span aria-hidden className="hidden h-5 w-px bg-black/10 sm:block" />
             <AppEyebrow />
           </div>
@@ -62,6 +57,8 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
 
       {/* Guide interactif d'accueil (1re visite + bouton « ? ») */}
       <OnboardingTour />
+      {/* L'Assistant AGRIVO suit l'utilisateur sur TOUTES les pages de l'espace */}
+      <CopiloteRdue />
     </div>
     </RouteGuard>
   );

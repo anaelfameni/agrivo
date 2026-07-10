@@ -317,6 +317,7 @@ export function AnalyticsTab({
 
         <button
           type="button"
+          data-tour="export-geojson"
           onClick={() => onExport(sorted, t.filteredView)}
           className="inline-flex h-10 shrink-0 items-center justify-center gap-2 rounded-full border border-black/10 bg-white px-4 text-sm font-semibold text-forest-950 outline-none transition-colors hover:border-green-signal/40 focus-visible:ring-2 focus-visible:ring-green-signal"
         >

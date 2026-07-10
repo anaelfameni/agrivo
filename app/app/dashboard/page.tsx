@@ -11,7 +11,6 @@ import { PinMark } from "@/components/ui/pin-mark";
 import { EmptyState } from "@/components/ui/empty-state";
 import { Magnetic } from "@/components/ui/motion-primitives";
 import { RegistreImport } from "@/components/app/registre-import";
-import { CopiloteRdue } from "@/components/app/copilote-rdue";
 import { useLanguage } from "@/components/language-provider";
 import {
   COOP_DEMO,
@@ -242,6 +241,7 @@ export default function DashboardPage() {
           <Magnetic strength={0.25} className="w-full sm:w-auto">
             <Link
               href="/app/consentement"
+              data-tour="nouvelle-verification"
               className="btn-green inline-flex w-full items-center justify-center gap-2 rounded-full px-6 py-3.5 text-sm font-semibold outline-none focus-visible:ring-2 focus-visible:ring-white/70 focus-visible:ring-offset-2 focus-visible:ring-offset-forest-950 sm:w-auto"
             >
               <Plus size={18} strokeWidth={2.25} aria-hidden />
@@ -257,6 +257,7 @@ export default function DashboardPage() {
         animate="show"
         variants={{ show: { transition: { staggerChildren: reduce ? 0 : 0.07 } } }}
         className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4"
+        data-tour="kpis"
       >
         {kpis.map((k) => (
           <motion.div
@@ -299,7 +300,7 @@ export default function DashboardPage() {
       </motion.div>
 
       {/* Santé du portefeuille : répartition des 3 statuts (verbatim charte) */}
-      <div className="card-premium p-4 sm:p-5">
+      <div className="card-premium p-4 sm:p-5" data-tour="repartition">
         <div className="flex items-center justify-between">
           <h2 className="flex items-center gap-2 text-sm font-semibold text-forest-950">
             <span className="h-4 w-1 rounded-full bg-green-signal" aria-hidden />
@@ -329,7 +330,9 @@ export default function DashboardPage() {
       <div className="grid gap-6 lg:grid-cols-3">
         <section className="order-2 flex flex-col gap-4 lg:order-none lg:col-span-2">
           {/* Import & audit RDUE du registre de la coopérative */}
-          <RegistreImport />
+          <div data-tour="registre-import">
+            <RegistreImport />
+          </div>
 
           {/* Recherche producteur */}
           <div className="relative">
@@ -422,7 +425,7 @@ export default function DashboardPage() {
 
         {/* Rail : centre d'alertes + parcelles à re-vérifier */}
         <aside className="order-1 flex flex-col gap-6 lg:order-none lg:col-span-1">
-          <div className="card-premium p-4 sm:p-5">
+          <div className="card-premium p-4 sm:p-5" data-tour="alertes">
             <div className="flex items-center justify-between">
               <h2 className="flex items-center gap-2 text-sm font-semibold text-forest-950">
                 <span className="relative grid h-8 w-8 place-items-center rounded-xl" style={{ background: "rgba(180,35,30,0.10)" }} aria-hidden>
@@ -468,7 +471,7 @@ export default function DashboardPage() {
           </div>
 
           {/* Parcelles en « Données insuffisantes » : à reprogrammer (nouveau passage satellite) */}
-          <div className="card-premium p-4 sm:p-5">
+          <div className="card-premium p-4 sm:p-5" data-tour="reverifier">
             <div className="flex items-center justify-between">
               <h2 className="flex items-center gap-2 text-sm font-semibold text-forest-950">
                 <span className="grid h-8 w-8 place-items-center rounded-xl" style={{ background: "rgba(200,134,29,0.12)" }} aria-hidden>
@@ -506,7 +509,6 @@ export default function DashboardPage() {
           </div>
         </aside>
       </div>
-      <CopiloteRdue />
     </div>
   );
 }

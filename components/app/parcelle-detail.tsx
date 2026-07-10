@@ -14,6 +14,7 @@ const ParcelleMapSat = dynamic(() => import("@/components/app/parcelle-map-sat")
 });
 import { DdsMemo } from "@/components/app/dds-memo";
 import { RiskCard } from "@/components/app/risk-card";
+import { VerdictExplication } from "@/components/verdict-explication";
 import { ValorisationCard } from "@/components/app/valorisation-card";
 import { useLanguage } from "@/components/language-provider";
 import type { RiskAssessment, Valorisation, ChangementSatellite } from "@/lib/ai/gemini";
@@ -133,6 +134,9 @@ export function ParcelleDetail({
               ))}
             </div>
           </div>
+
+          {/* Pourquoi ce verdict ? — causes réelles + prochaines étapes (insuffisant / anomalie) */}
+          <VerdictExplication statut={p.statut} lang={lang} defaultOpen={p.statut === "insuffisant"} />
 
           {/* Analyse de risque RDUE expliquée (feature IA) */}
           <RiskCard risk={risk} lang={lang} />

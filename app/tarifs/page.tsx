@@ -21,68 +21,40 @@ const PLANS = [
       en: "For cooperative managers who validate lots at the edge of the field. Basis ≈ 1,200 FCFA per verified producer per year (cooperative of about 1,000 producers).",
     },
     features: {
-      fr: ["Vérifications illimitées", "Certificats d'évaluation de conformité (PDF)", "Mode hors connexion", "Sélecteur de langue", "Support"],
-      en: ["Unlimited verifications", "Compliance-assessment certificates (PDF)", "Offline mode", "Language switcher", "Support"],
+      fr: ["Vérifications illimitées", "Certificats d'évaluation de conformité (PDF)", "Import & audit RDUE du registre", "Mode hors connexion", "Support"],
+      en: ["Unlimited verifications", "Compliance-assessment certificates (PDF)", "Register import & EUDR audit", "Offline mode", "Support"],
     },
     highlight: false,
     cta: { fr: "Commencer", en: "Get started" },
   },
   {
-    name: { fr: "Exportateur · Suivi", en: "Exporter · Monitoring" },
+    name: { fr: "Exportateur Essentiel", en: "Exporter Essential" },
     monthly: 500_000,
     from: false,
     unit: { fr: "FCFA / mois", en: "FCFA / month" },
     desc: {
-      fr: "Pour les exportateurs qui suivent la conformité de plusieurs coopératives, coopérative par coopérative.",
-      en: "For exporters monitoring compliance across several cooperatives, cooperative by cooperative.",
+      fr: "Pour les exportateurs qui pilotent la conformité d'un réseau de coopératives, sans intégration technique.",
+      en: "For exporters steering the compliance of a cooperative network, without technical integration.",
     },
     features: {
-      fr: [
-        "Portefeuille multi-coopératives",
-        "Cartographie satellite du portefeuille",
-        "4 indicateurs clés + tableau filtrable",
-        "Centre d'alertes de conformité",
-        "Dossier acheteur (certificats + export GeoJSON)",
-        "Assistant IA sur votre portefeuille",
-      ],
-      en: [
-        "Multi-cooperative portfolio",
-        "Satellite portfolio mapping",
-        "4 key indicators + filterable table",
-        "Compliance alert centre",
-        "Buyer file (certificates + GeoJSON export)",
-        "AI assistant on your portfolio",
-      ],
+      fr: ["Portefeuille multi-coopératives", "Coopératives & producteurs consolidés", "Registre satellite (tableau ↔ carte)", "Dossiers acheteurs & alertes", "Support prioritaire"],
+      en: ["Multi-cooperative portfolio", "Consolidated cooperatives & farmers", "Satellite register (table ↔ map)", "Buyer files & alerts", "Priority support"],
     },
     highlight: false,
     cta: { fr: "Nous contacter", en: "Contact us" },
   },
   {
-    name: { fr: "Exportateur · API & intégration", en: "Exporter · API & integration" },
+    name: { fr: "Exportateur Pro", en: "Exporter Pro" },
     monthly: 1_000_000,
-    from: true,
+    from: false,
     unit: { fr: "FCFA / mois", en: "FCFA / month" },
     desc: {
-      fr: "Pour les exportateurs qui gèrent des milliers de parcelles et automatisent leurs déclarations européennes.",
-      en: "For exporters managing thousands of plots and automating their European declarations.",
+      fr: "Pour les exportateurs qui déposent des DDS et intègrent AGRIVO à leur système d'information.",
+      en: "For exporters filing due diligence statements and integrating AGRIVO into their IT systems.",
     },
     features: {
-      fr: [
-        "Tout « Suivi », plus :",
-        "API REST & export en masse",
-        "Déclarations TRACES NT intégrées",
-        "Accès multi-utilisateurs",
-        "Journal d'activité & clés d'API",
-        "Engagement de disponibilité (SLA)",
-      ],
-      en: [
-        "Everything in Monitoring, plus:",
-        "REST API & batch export",
-        "Built-in TRACES NT declarations",
-        "Multi-user access",
-        "Activity log & API keys",
-        "Availability commitment (SLA)",
-      ],
+      fr: ["Tout Essentiel, plus :", "API REST & export en masse", "Déclarations TRACES NT intégrées", "Assistant IA de portefeuille", "Engagement de disponibilité (SLA)"],
+      en: ["Everything in Essential, plus:", "REST API & batch export", "Built-in TRACES NT declarations", "Portfolio AI assistant", "Availability commitment (SLA)"],
     },
     highlight: true,
     cta: { fr: "Nous contacter", en: "Contact us" },
@@ -140,7 +112,7 @@ export default function Tarifs() {
           </div>
         </PageHero>
 
-        <section className="mx-auto max-w-6xl px-6 py-10 md:px-8">
+        <section className="mx-auto max-w-5xl px-6 py-10 md:px-8">
           <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
             {PLANS.map((p, i) => (
               <Reveal key={p.name.fr} delay={i * 0.1}>
@@ -186,8 +158,8 @@ export default function Tarifs() {
               <p className="mx-auto max-w-2xl text-sm text-stone-600">
                 <span className="font-semibold text-forest-950">{en ? "Is it free for the farmer?" : "Et pour le producteur ?"}</span>{" "}
                 {en
-                  ? "AGRIVO charges the farmer nothing: verification is covered by their cooperative's subscription. Our revenue comes from the cooperative subscription and the exporter API."
-                  : "AGRIVO ne facture rien au producteur : la vérification est prise en charge par l'abonnement de sa coopérative. Notre revenu vient de l'abonnement coopérative et de l'API exportateur."}
+                  ? "AGRIVO charges the farmer nothing: verification is covered by their cooperative's subscription. Our revenue comes from the cooperative subscription and the exporter plans."
+                  : "AGRIVO ne facture rien au producteur : la vérification est prise en charge par l'abonnement de sa coopérative. Notre revenu vient de l'abonnement coopérative et des offres exportateur."}
               </p>
             </div>
           </Reveal>

@@ -7,6 +7,7 @@ import { ArrowRight, Leaf, RotateCcw, Sparkles, Volume2, VolumeX, X } from "luci
 import { StatusBadge } from "@/components/ui/status-badge";
 import { PinMark } from "@/components/ui/pin-mark";
 import { PhotoTerrain } from "@/components/verifier/photo-terrain";
+import { VerdictExplication } from "@/components/verdict-explication";
 import { useLanguage } from "@/components/language-provider";
 import type { AnalysisPhase } from "@/components/verifier/analysis-map";
 import type { WhispResult } from "@/lib/ai/whisp";
@@ -292,6 +293,9 @@ export function StepAnalysis({
                   </li>
                 ))}
               </ul>
+
+              {/* Pourquoi ce verdict ? — causes réelles + prochaines étapes (jamais générique) */}
+              <VerdictExplication statut={whisp.statut} lang={lang} defaultOpen={whisp.statut === "insuffisant"} />
 
               {/* Score de résilience des sols (XAI) */}
               <div className="relative">

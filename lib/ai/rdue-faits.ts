@@ -61,7 +61,7 @@ export const FAITS_RDUE: FaitRDUE[] = [
   },
   {
     id: "qui-declare",
-    motsCles: ["qui", "declare", "declaration", "dds", "diligence", "traces", "depose", "operateur", "importateur", "signe", "responsable", "who", "file", "files", "statement", "operator", "importer"],
+    motsCles: ["qui declare", "qui depose", "declare", "declaration", "dds", "diligence", "traces", "depose", "operateur", "importateur", "signe", "responsable", "who", "file", "files", "statement", "operator", "importer"],
     question: { fr: "Qui dépose la déclaration ?", en: "Who files the declaration?" },
     reponse: {
       fr: "C'est l'opérateur qui met le produit sur le marché de l'Union — l'importateur européen — qui dépose la déclaration de diligence raisonnée sur TRACES NT. Depuis la simplification de 2025, seul le premier opérateur dépose la déclaration complète ; l'aval peut la référencer.",
@@ -148,10 +148,20 @@ export const FAITS_RDUE: FaitRDUE[] = [
     motsCles: ["prix", "cout", "coute", "tarif", "tarifs", "abonnement", "combien", "cher", "payer", "mois", "fcfa", "price", "cost", "pricing", "subscription", "fee", "much"],
     question: { fr: "Combien coûte AGRIVO ?", en: "How much does AGRIVO cost?" },
     reponse: {
-      fr: "L'abonnement coopérative est de 100 000 FCFA par mois, soit environ 1 200 FCFA par producteur vérifié et par an. Côté exportateur, deux formules : « Suivi » à 500 000 FCFA par mois (portefeuille, cartographie, alertes, dossier acheteur) et « API & intégration » à partir de 1 000 000 FCFA par mois (API REST, TRACES NT, SLA). Le producteur ne paie rien.",
-      en: "The cooperative subscription is 100,000 FCFA per month, about 1,200 FCFA per verified farmer per year. For exporters, two plans: \"Monitoring\" at 500,000 FCFA per month (portfolio, mapping, alerts, buyer file) and \"API & integration\" from 1,000,000 FCFA per month (REST API, TRACES NT, SLA). The farmer pays nothing.",
+      fr: "L'abonnement coopérative est de 100 000 FCFA par mois, soit environ 1 200 FCFA par producteur vérifié et par an. Côté exportateur, deux offres : Essentiel à 500 000 FCFA par mois (portefeuille multi-coopératives, dossiers acheteurs, alertes) et Pro à 1 000 000 FCFA par mois (API REST, export en masse, TRACES NT, SLA). Le producteur ne paie rien : la vérification est prise en charge par sa coopérative.",
+      en: "The cooperative subscription is 100,000 FCFA per month, about 1,200 FCFA per verified farmer per year. On the exporter side, two plans: Essential at 500,000 FCFA per month (multi-cooperative portfolio, buyer files, alerts) and Pro at 1,000,000 FCFA per month (REST API, batch export, TRACES NT, SLA). The farmer pays nothing: verification is covered by their cooperative.",
     },
     source: { fr: "Tarifs AGRIVO", en: "AGRIVO pricing" },
+  },
+  {
+    id: "exportateur-prix",
+    motsCles: ["essentiel", "exportateur essentiel", "exportateur pro", "offre", "offres", "palier", "paliers", "exportateur", "500 000", "1 000 000", "essential", "tier", "tiers", "offer", "offers", "plan"],
+    question: { fr: "Que contiennent les offres exportateur ?", en: "What do the exporter plans include?" },
+    reponse: {
+      fr: "L'offre Exportateur Essentiel, à 500 000 FCFA par mois, couvre le pilotage du portefeuille multi-coopératives : tableau de bord, coopératives et producteurs consolidés, registre satellite, dossiers acheteurs et alertes. L'offre Exportateur Pro, à 1 000 000 FCFA par mois, ajoute l'API REST, l'export en masse, les déclarations TRACES NT intégrées, l'assistant IA de portefeuille et un engagement de disponibilité (SLA).",
+      en: "The Exporter Essential plan, at 500,000 FCFA per month, covers multi-cooperative portfolio steering: dashboard, consolidated cooperatives and farmers, satellite register, buyer files and alerts. The Exporter Pro plan, at 1,000,000 FCFA per month, adds the REST API, batch export, built-in TRACES NT declarations, the portfolio AI assistant and an availability commitment (SLA).",
+    },
+    source: { fr: "Tarifs AGRIVO · offres exportateur", en: "AGRIVO pricing · exporter plans" },
   },
   {
     id: "agrivo-produit",
@@ -185,13 +195,65 @@ export const FAITS_RDUE: FaitRDUE[] = [
   },
   {
     id: "agrivo-verdicts",
-    motsCles: ["verdict", "verdicts", "statut", "statuts", "anomalie", "insuffisant", "insuffisantes", "signifie", "veut", "dire", "means", "status", "result", "resultat"],
+    motsCles: ["verdict", "verdicts", "statut", "statuts", "trois verdicts", "les trois", "signifient", "status", "result", "resultat"],
     question: { fr: "Que veulent dire les trois verdicts ?", en: "What do the three verdicts mean?" },
     reponse: {
       fr: "AGRIVO rend toujours l'un de trois verdicts : « Conforme » (aucune déforestation après le 31 décembre 2020), « Anomalie détectée » (perte de couvert forestier ou recouvrement d'une aire protégée), ou « Données insuffisantes » (nuages ou données satellites insuffisantes). Chaque verdict est expliqué en langage clair.",
       en: "AGRIVO always returns one of three verdicts: \"Compliant\" (no deforestation after 31 December 2020), \"Anomaly detected\" (forest cover loss or overlap with a protected area), or \"Insufficient data\" (clouds or insufficient satellite data). Each verdict is explained in plain language.",
     },
     source: { fr: "Méthodologie AGRIVO", en: "AGRIVO methodology" },
+  },
+
+  /* --------------------- Verdicts expliqués (causes réelles, jamais générique) --------------------- */
+  {
+    id: "verdict-insuffisant",
+    motsCles: ["insuffisant", "insuffisantes", "donnees insuffisantes", "veut dire", "signifie", "ombrage", "nuage", "nuages", "ambre", "re-verifier", "reverifier", "insufficient", "insufficient data", "cloud", "clouds", "shade", "amber"],
+    question: { fr: "Que veut dire exactement « Données insuffisantes » ?", en: "What exactly does \"Insufficient data\" mean?" },
+    reponse: {
+      fr: "Ce n'est ni un refus ni une anomalie : les preuves satellites ne permettent pas encore de statuer, et AGRIVO ne délivre jamais un « Conforme » par défaut. Les causes réelles : une cacaoyère sous ombrage vue comme de la forêt (le cas le plus fréquent), les nuages persistants de la saison des pluies, une parcelle très petite ou un tracé imprécis, ou des sources satellites en désaccord. La marche à suivre : relancer l'analyse en saison sèche depuis la file « À re-vérifier », repréciser le tracé sur le terrain, ou documenter l'âge de la plantation.",
+      en: "It is neither a rejection nor an anomaly: the satellite evidence cannot yet decide, and AGRIVO never issues a default \"Compliant\". The real causes: a shade-grown cocoa farm seen as forest (the most frequent case), persistent rainy-season clouds, a very small plot or an imprecise outline, or disagreeing satellite sources. The way forward: re-run the analysis in the dry season from the \"To re-verify\" queue, refine the outline in the field, or document the plantation's age.",
+    },
+    source: { fr: "Méthodologie AGRIVO · convergence de preuves (FAO)", en: "AGRIVO methodology · convergence of evidence (FAO)" },
+  },
+  {
+    id: "verdict-anomalie",
+    motsCles: ["anomalie", "anomalie detectee", "detectee", "rouge", "perte de couvert", "que faire", "conteste", "contester", "recouvrement", "anomaly", "anomaly detected", "detected", "flagged", "red"],
+    question: { fr: "Que faire après une « Anomalie détectée » ?", en: "What to do after an \"Anomaly detected\"?" },
+    reponse: {
+      fr: "« Anomalie détectée » signifie qu'une perte de couverture forestière après le 31 décembre 2020, ou un recouvrement d'aire protégée, a été identifiée. Ensuite : vérifiez le tracé de la parcelle (une erreur de saisie se corrige puis se réanalyse), activez le masque « Zones sensibles » sur la carte pour voir le recouvrement, et si l'anomalie se confirme, écartez cette seule parcelle du dossier export — le reste du portefeuille n'est pas pénalisé.",
+      en: "\"Anomaly detected\" means a loss of forest cover after 31 December 2020, or an overlap with a protected area, was identified. Next: check the plot's outline (a data-entry error can be fixed then re-analysed), toggle the \"Sensitive areas\" mask on the map to see the overlap, and if the anomaly is confirmed, set aside this single plot from the export file — the rest of the portfolio is not penalised.",
+    },
+    source: { fr: "Méthodologie AGRIVO · verdicts", en: "AGRIVO methodology · verdicts" },
+  },
+  {
+    id: "exportateur-cooperatives",
+    motsCles: ["ajouter", "ajouter une cooperative", "cooperative", "cooperatives", "siege", "sieges", "reseau", "portefeuille", "partenaire", "registre partage", "add", "add a cooperative", "headquarters", "partner", "network"],
+    question: { fr: "Comment ajouter une coopérative à mon portefeuille ?", en: "How do I add a cooperative to my portfolio?" },
+    reponse: {
+      fr: "Dans l'espace exportateur, page Coopératives, cliquez « Ajouter une coopérative » : renseignez les informations qu'elle vous a partagées (contact, siège, effectif, filières), puis importez si vous le détenez son registre de parcelles (GeoJSON, CSV ou KML). AGRIVO l'audite immédiatement selon la règle RDUE et affiche le pourcentage de parcelles prêtes. Sur la carte, chaque coopérative est représentée par le point de son siège, jamais par une superficie.",
+      en: "In the exporter workspace, on the Cooperatives page, click \"Add a cooperative\": fill in the information it shared with you (contact, headquarters, headcount, commodities), then import its plot register if you hold it (GeoJSON, CSV or KML). AGRIVO audits it immediately against the EUDR rule and shows the percentage of ready plots. On the map, each cooperative is represented by its headquarters point, never by an area.",
+    },
+    source: { fr: "Espace exportateur · Coopératives", en: "Exporter workspace · Cooperatives" },
+  },
+  {
+    id: "exportateur-rapports",
+    motsCles: ["dossier", "dossiers", "acheteur", "acheteurs", "rapport", "rapports", "resume executif", "consolide", "client europeen", "buyer", "buyer file", "report", "reports", "executive"],
+    question: { fr: "Qu'est-ce que le dossier acheteur ?", en: "What is the buyer file?" },
+    reponse: {
+      fr: "La page Dossiers & rapports de l'espace exportateur consolide vos parcelles conformes en un dossier destiné à l'acheteur européen : résumé exécutif rédigé par l'IA, certificats vérifiables par QR code et géométries GeoJSON au format attendu par TRACES NT. On y trouve aussi le centre d'alertes du portefeuille, groupé par coopérative.",
+      en: "The Files & reports page of the exporter workspace consolidates your compliant plots into a file for the European buyer: an AI-written executive summary, QR-verifiable certificates and GeoJSON geometries in the format expected by TRACES NT. It also hosts the portfolio alert centre, grouped by cooperative.",
+    },
+    source: { fr: "Espace exportateur · Dossiers & rapports", en: "Exporter workspace · Files & reports" },
+  },
+  {
+    id: "agrivo-equipe",
+    motsCles: ["equipe", "qui est derriere", "derriere", "fondateur", "fondateurs", "createur", "createurs", "membres", "team", "behind", "founder", "founders", "who is behind"],
+    question: { fr: "Qui est derrière AGRIVO ?", en: "Who is behind AGRIVO?" },
+    reponse: {
+      fr: "AGRIVO est porté par une équipe ivoirienne de quatre personnes : Anael (fondateur et chef de projet, produit et plateforme web), Christ (ingénieur application mobile), Gaddiel (ingénieur backend et API) et Domy (responsable conformité et réglementaire). L'équipe est présentée sur la page À propos.",
+      en: "AGRIVO is built by an Ivorian team of four: Anael (founder and project lead, product and web platform), Christ (mobile app engineer), Gaddiel (backend and API engineer) and Domy (compliance and regulatory lead). The team is presented on the About page.",
+    },
+    source: { fr: "Page À propos", en: "About page" },
   },
   {
     id: "agrivo-masque",
@@ -414,15 +476,23 @@ export function repondreDeterministe(question: string, lang: "fr" | "en"): Repon
     return { reponse: HORS_PERIMETRE_FINANCE[lang], source: null, horsPerimetre: true, finance: true, faitId: null };
   }
 
+  const qPad = ` ${q} `;
   let meilleur: { fait: FaitRDUE; score: number } | null = null;
   for (const fait of FAITS_RDUE) {
     let score = 0;
     for (const mc of fait.motsCles) {
-      if (q.includes(mc)) score += mc.length > 4 ? 2 : 1;
+      // Les mots-clés très courts (« dds », « qr »…) ne matchent qu'en MOT ENTIER :
+      // en sous-chaîne, ils fuiraient dans des mots quelconques et pollueraient l'appariement.
+      if (mc.length <= 3) {
+        if (qPad.includes(` ${mc} `)) score += 1;
+      } else if (q.includes(mc)) {
+        score += mc.length > 4 ? 2 : 1;
+      }
     }
-    // Bonus : recoupement avec les mots de la question (robustesse aux formulations).
+    // Bonus : recoupement avec les mots de la question (robustesse aux formulations),
+    // restreint aux mots-clés significatifs (≥ 4 caractères) ou à l'égalité stricte.
     for (const m of mots) {
-      if (fait.motsCles.some((mc) => mc.includes(m) || m.includes(mc))) score += 1;
+      if (fait.motsCles.some((mc) => mc === m || (mc.length >= 4 && (mc.includes(m) || m.includes(mc))))) score += 1;
     }
     if (!meilleur || score > meilleur.score) meilleur = { fait, score };
   }

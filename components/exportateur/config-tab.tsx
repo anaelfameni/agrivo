@@ -163,7 +163,7 @@ export function ConfigTab({
                   {g.items.map((p) => (
                     <li key={p.id}>
                       <Link
-                        href={`/app/parcelle/${p.id}`}
+                        href={`/app/exportateur/parcelles?parcelle=${p.id}`}
                         className="group flex items-start gap-3 rounded-xl border border-red-block/15 bg-red-block/[0.04] p-3 outline-none transition-colors hover:bg-red-block/[0.07] focus-visible:ring-2 focus-visible:ring-red-block/40"
                       >
                         <PinMark size={22} color="var(--color-red-block)" pulse className="mt-0.5 shrink-0" />
