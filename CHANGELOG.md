@@ -3,6 +3,26 @@
 Versioning sémantique (MAJOR.MINOR.PATCH). Chaque release liste ce qui est ajouté, corrigé et
 vérifié, conformément à l'étape 8 du pipeline « Du besoin à la Release ».
 
+## v1.16.0 — 2026-07-10 — Scan mobile réparé (caméra + netteté), hero FAQ unifié (veille du jury)
+
+### Corrigé
+- **Caméra du scan (mobile) — bug réel corrigé** : le flux vidéo était attaché AVANT le montage de
+  l'élément `<video>` (rendu conditionnel) → écran noir systématique au clic « Activer la caméra ».
+  Le flux est désormais attaché par un effet après montage, et la vidéo est en `autoPlay`.
+- **Parcours mobile clarifié** : bouton principal « Activer la caméra » (puis « Scanner la carte »
+  une fois la caméra active), bouton secondaire « Saisir manuellement la carte producteur ».
+  Message explicite si l'accès caméra est refusé.
+
+### Ajouté
+- **Contrôle de netteté avant OCR** (variance du Laplacien sur miniature) : une photo franchement
+  floue n'est pas envoyée — message « Image floue : … reprenez la photo », caméra laissée active
+  pour reprendre immédiatement. Message dédié si la lecture échoue (réseau/illisible).
+- **Hero FAQ unifié** : la page FAQ reprend le hero sombre signature (`PageHero`) comme
+  Méthodologie, À propos et Tarifs — l'ensemble des pages de navigation est désormais cohérent.
+
+### Vérifié
+- `tsc` ✓ · tests Vitest ✓ · `next build` ✓ · déployé + alias `agrivo-io.vercel.app`.
+
 ## v1.15.0 — 2026-07-10 — Assistant conversationnel fiabilisé, guidage in-app, README aligné (J-1 jury)
 
 ### Ajouté

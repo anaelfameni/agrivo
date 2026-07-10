@@ -337,6 +337,35 @@ variables CSS dans `app/globals.css`.
 
 ## 📓 Journal de build (le plus récent en haut)
 
+### Session 26 — 2026-07-10 (veille du jury) — v1.16.0 : scan mobile réparé + hero FAQ + deck REBUILDÉ + doc équipe Jour J
+*(Les v1.8→v1.15 sont détaillées dans CHANGELOG.md — sessions non journalisées ici, voir mémoire globale.)*
+- 🐛 **BUG CAMÉRA TROUVÉ ET CORRIGÉ** (`step-scan.tsx`) : le flux `getUserMedia` était attaché à
+  `videoRef.current` AVANT que la `<video>` ne soit montée (elle n'est rendue que si `cameraOn`) →
+  `videoRef.current` était `null`, le flux n'était jamais affiché = « la caméra ne s'ouvre pas ».
+  Fix : `setCameraOn(true)` d'abord, attache du flux dans un `useEffect([cameraOn])` + `autoPlay`.
+- 📱 **Parcours scan mobile réordonné (demande Anael)** : bouton PRINCIPAL = « Activer la caméra »
+  (devient « Scanner la carte » une fois la caméra active) ; bouton secondaire = « Saisir manuellement
+  la carte producteur ». Étiquette viseur « Mode démonstration » → « Caméra inactive » (jury !).
+  Message d'erreur si caméra refusée (`cameraError`).
+- 🔍 **Contrôle de netteté avant OCR** : `mesurerNettete()` (variance du Laplacien, miniature 160 px,
+  seuil 20 volontairement bas) → photo floue = message « Image floue… reprenez la photo », caméra
+  laissée active. Échec de lecture (réseau/vide) = message « La lecture n'a pas abouti… ». Le QR
+  décodé court-circuite le contrôle (un QR lu prouve la lisibilité).
+- 🎨 **Hero FAQ unifié** : `app/faq/page.tsx` passe sur `PageHero` + `SiteHeader variant="overlay"`
+  (même fond forest signature que Méthodologie/À propos/Tarifs — tout le nav public est cohérent).
+- 📊 **DECK RECONSTRUIT DE ZÉRO** (`scratchpad/deck_final.py`, demande d'Anael « meilleur design,
+  meilleur copywriting, pas trop technique ») : 11 slides structure officielle Masterclass, 16:9,
+  palette AGRIVO, Segoe UI/Segoe UI Black (installées partout), pastilles des 3 verdicts verbatim,
+  QR code réel vers agrivo-io.vercel.app (slide 11), notes orateur minutées (cumul 5:00) avec les
+  chiffres techniques déplacés DANS les notes (slides non techniques). Anciens decks sauvegardés :
+  `_ANCIEN_v115.pptx` (+ `_BACKUP_v170.pptx` existant). Vérifié par export PNG COM des 11 slides.
+- 📄 **`Desktop\AGRIVO_Equipe_JourJ.pdf`** : LE document unique de l'équipe pour demain (déroulé du
+  jour, pitch 30 s, 7 chiffres, interdits de langage, qui fait quoi, 6 réponses cold-call 15 s,
+  check-list matin, comptes démo). Ultra concis (3 pages), à envoyer tel quel.
+- ✉️ **Gemini Tier 1 délégué à Christ** (message WhatsApp prêt remis à Anael). ⏭️ EN ATTENTE :
+  dossier de l'app mobile de Christ (Anael l'enverra plus tard pour analyse + mise à jour).
+- ✅ Gates : tsc ✓ · 79/79 ✓ · build ✓ → commit + push + deploy + alias (voir fin de session).
+
 ### Session 25 — 2026-07-08 — v1.7.1 EN PROD : mention DDS sur le certificat + Fatim retirée + purge crédit UI + docs v5
 *(Les versions v1.4→v1.7.0 — 13 usages IA, 65 tests, site vitrine final — sont détaillées dans CHANGELOG.md ; ce CLAUDE.md n'avait pas été journalisé entre-temps.)*
 - 🧭 **Recherche décisive (question d'Anael, déclenchée par sa collègue export citant Bureau Veritas)** :

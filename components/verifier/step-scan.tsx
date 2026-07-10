@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
-import { ArrowRight, Camera, RotateCcw, ScanLine, Wand2 } from "lucide-react";
+import { ArrowRight, Camera, PenLine, RotateCcw, ScanLine, Wand2 } from "lucide-react";
 import { PinMark } from "@/components/ui/pin-mark";
 import { useLanguage } from "@/components/language-provider";
 import { FILIERE_LABEL, PARCELLES, type Filiere } from "@/data/mock-parcelles";
@@ -10,23 +10,31 @@ import type { ScanResult } from "@/lib/ai/gemini";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 type Phase = "aim" | "scanning" | "review";
+/** Seuil de netteté (variance du Laplacien sur miniature 160 px) : en dessous, la photo est reprise. */
+const SEUIL_NETTETE = 20;
 
 const COPY = {
   fr: {
     cardLabel: "Carte producteur",
     reading: "Lecture en cours…",
     cameraActive: "Caméra active",
-    demoMode: "Mode démonstration",
+    demoMode: "Caméra inactive",
     mobileOnly: "Scan sur mobile uniquement",
     eyebrow: "Scan",
     title: "Carte producteur",
     aimHelp:
-      "Positionnez la carte du producteur dans le cadre. La lecture tente d'abord le QR code, puis l'OCR des champs imprimés : toutes les générations de cartes sont couvertes, avec ou sans QR. La photo est conservée comme pièce justificative.",
+      "Activez la caméra, puis positionnez la carte du producteur dans le cadre. La lecture tente d'abord le QR code, puis l'OCR des champs imprimés : toutes les générations de cartes sont couvertes, avec ou sans QR. La photo est conservée comme pièce justificative.",
     scanBtn: "Scanner la carte",
     enableCamera: "Activer la caméra",
     webHelp:
-      "Le scan de la carte producteur (caméra + lecture automatique) est réservé à l'application mobile Agrivo, au bord du champ. Sur le web, saisissez les informations de la carte manuellement.",
+      "Le scan de la carte producteur (caméra + lecture automatique) se fait depuis un téléphone, au bord du champ. Sur cet écran, saisissez les informations de la carte manuellement.",
     manualEntry: "Saisir manuellement",
+    manualEntryMobile: "Saisir manuellement la carte producteur",
+    cameraError:
+      "Impossible d'accéder à la caméra. Autorisez la caméra dans les réglages du navigateur, puis réessayez.",
+    blurry: "Image floue : rapprochez-vous de la carte, stabilisez le téléphone et reprenez la photo.",
+    unreadable:
+      "La lecture n'a pas abouti. Reprenez la photo plus près et bien à plat, ou saisissez la carte manuellement.",
     demoFill: "Remplir un exemple (démo)",
     extracted: "Informations extraites · vérifiez et corrigez si besoin.",
     viaQr: "Lues depuis le QR code de la carte",
@@ -44,17 +52,21 @@ const COPY = {
     cardLabel: "Farmer card",
     reading: "Reading…",
     cameraActive: "Camera active",
-    demoMode: "Demo mode",
+    demoMode: "Camera off",
     mobileOnly: "Scanning on mobile only",
     eyebrow: "Scan",
     title: "Farmer card",
     aimHelp:
-      "Position the farmer's card inside the frame. The reading tries the QR code first, then OCR of the printed fields: every card generation is covered, with or without QR. The photo is kept as supporting evidence.",
+      "Enable the camera, then position the farmer's card inside the frame. The reading tries the QR code first, then OCR of the printed fields: every card generation is covered, with or without QR. The photo is kept as supporting evidence.",
     scanBtn: "Scan the card",
     enableCamera: "Enable camera",
     webHelp:
-      "Scanning the farmer card (camera + automatic reading) is reserved for the Agrivo mobile app, at the edge of the field. On the web, enter the card details manually.",
+      "Scanning the farmer card (camera + automatic reading) happens on a phone, at the edge of the field. On this screen, enter the card details manually.",
     manualEntry: "Enter manually",
+    manualEntryMobile: "Enter the farmer card manually",
+    cameraError: "Could not access the camera. Allow camera access in your browser settings, then try again.",
+    blurry: "Blurry image: move closer to the card, hold the phone steady and take the photo again.",
+    unreadable: "The reading failed. Take the photo again, closer and flat, or enter the card manually.",
     demoFill: "Fill a sample (demo)",
     extracted: "Extracted information · review and correct if needed.",
     viaQr: "Read from the card's QR code",
@@ -87,10 +99,11 @@ export function StepScan({
   const t = COPY[lang];
   const [phase, setPhase] = useState<Phase>("aim");
   const [cameraOn, setCameraOn] = useState(false);
+  const [hint, setHint] = useState<null | "cameraError" | "blurry" | "unreadable">(null);
   const [form, setForm] = useState<ScanResult | null>(null);
   const [viaQr, setViaQr] = useState(false);
-  // Le scan caméra + OCR est réservé à l'application mobile. Sur le web (pointeur fin), on bascule
-  // en saisie manuelle : pas de caméra, pas de bouton « Scanner ».
+  // Le scan caméra + OCR vit sur téléphone (pointeur grossier), y compris la version mobile du site
+  // web. Sur desktop (pointeur fin) : saisie manuelle, pas de caméra ni de bouton « Scanner ».
   const [isMobile, setIsMobile] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
@@ -111,6 +124,17 @@ export function StepScan({
     }
   }, []);
 
+  // La <video> n'est montée qu'une fois cameraOn : attacher le flux APRÈS le montage (sinon écran noir).
+  useEffect(() => {
+    if (!cameraOn) return;
+    const v = videoRef.current;
+    const s = streamRef.current;
+    if (v && s && v.srcObject !== s) {
+      v.srcObject = s;
+      v.play().catch(() => {});
+    }
+  }, [cameraOn]);
+
   function saisirManuellement() {
     setForm({ producteurNom: "", numeroCartePro: "", localite: "", filiere: "cacao" });
     setPhase("review");
@@ -124,20 +148,18 @@ export function StepScan({
   }
 
   async function activerCamera() {
+    setHint(null);
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
         video: { facingMode: "environment" },
         audio: false,
       });
       streamRef.current = stream;
-      if (videoRef.current) {
-        videoRef.current.srcObject = stream;
-        await videoRef.current.play().catch(() => {});
-      }
-      setCameraOn(true);
+      setCameraOn(true); // le flux est attaché par l'effet ci-dessus, une fois la <video> montée
     } catch {
-      // Caméra refusée/indisponible → on garde le mode démonstration (mock).
+      stopCamera();
       setCameraOn(false);
+      setHint("cameraError");
     }
   }
   function stopCamera() {
@@ -158,6 +180,45 @@ export function StepScan({
       return canvas.toDataURL("image/jpeg", 0.85).split(",")[1];
     } catch {
       return undefined;
+    }
+  }
+
+  /**
+   * Netteté du viseur (variance du Laplacien sur une miniature en niveaux de gris) : détecte les
+   * photos franchement floues AVANT l'OCR pour demander une reprise. Renvoie null si la mesure
+   * échoue — dans ce cas le scan n'est jamais bloqué.
+   */
+  function mesurerNettete(): number | null {
+    const v = videoRef.current;
+    if (!cameraOn || !v || !v.videoWidth) return null;
+    try {
+      const w = 160;
+      const h = Math.max(2, Math.round((v.videoHeight / v.videoWidth) * w));
+      const c = document.createElement("canvas");
+      c.width = w;
+      c.height = h;
+      const ctx = c.getContext("2d", { willReadFrequently: true });
+      if (!ctx) return null;
+      ctx.drawImage(v, 0, 0, w, h);
+      const { data } = ctx.getImageData(0, 0, w, h);
+      const gris = new Float32Array(w * h);
+      for (let i = 0; i < w * h; i++) gris[i] = 0.299 * data[i * 4] + 0.587 * data[i * 4 + 1] + 0.114 * data[i * 4 + 2];
+      let somme = 0;
+      let somme2 = 0;
+      let n = 0;
+      for (let y = 1; y < h - 1; y++) {
+        for (let x = 1; x < w - 1; x++) {
+          const i = y * w + x;
+          const lap = 4 * gris[i] - gris[i - 1] - gris[i + 1] - gris[i - w] - gris[i + w];
+          somme += lap;
+          somme2 += lap * lap;
+          n++;
+        }
+      }
+      const moyenne = somme / n;
+      return somme2 / n - moyenne * moyenne;
+    } catch {
+      return null;
     }
   }
 
@@ -194,26 +255,44 @@ export function StepScan({
   }
 
   async function scanner() {
+    setHint(null);
     setPhase("scanning");
-    const imageBase64 = captureFrame();
-    // QR d'abord (instantané, zéro coût) ; sinon OCR des champs imprimés (cartes sans QR incluses).
+    // QR d'abord (instantané, zéro coût) : un QR décodé prouve que l'image est lisible.
     const qr = await lireQr();
     if (qr) {
       setViaQr(true);
       setForm(qr);
-    } else {
-      setViaQr(false);
-      try {
-        const r = await fetch("/api/gemini/scan", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(imageBase64 ? { imageBase64, mimeType: "image/jpeg" } : {}),
-        });
-        const data: ScanResult = await r.json();
-        setForm(data);
-      } catch {
-        setForm({ producteurNom: "", numeroCartePro: "", localite: "", filiere: "cacao" });
+      stopCamera();
+      setCameraOn(false);
+      setPhase("review");
+      return;
+    }
+    // Pas de QR → contrôle de netteté avant l'OCR : une photo floue est reprise, pas envoyée.
+    const nettete = mesurerNettete();
+    if (nettete !== null && nettete < SEUIL_NETTETE) {
+      setHint("blurry");
+      setPhase("aim"); // caméra laissée active pour reprendre immédiatement
+      return;
+    }
+    const imageBase64 = captureFrame();
+    setViaQr(false);
+    try {
+      const r = await fetch("/api/gemini/scan", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(imageBase64 ? { imageBase64, mimeType: "image/jpeg" } : {}),
+      });
+      const data: ScanResult = await r.json();
+      if (!data.producteurNom && !data.numeroCartePro) {
+        setHint("unreadable");
+        setPhase("aim");
+        return;
       }
+      setForm(data);
+    } catch {
+      setHint("unreadable");
+      setPhase("aim");
+      return;
     }
     stopCamera();
     setCameraOn(false);
@@ -225,7 +304,7 @@ export function StepScan({
       {/* Viseur */}
       <div className="relative aspect-[4/3] overflow-hidden rounded-2xl border border-black/[0.08] bg-forest-950">
         {cameraOn ? (
-          <video ref={videoRef} muted playsInline className="h-full w-full object-cover" />
+          <video ref={videoRef} autoPlay muted playsInline className="h-full w-full object-cover" />
         ) : (
           <>
             <div
@@ -301,26 +380,44 @@ export function StepScan({
             {isMobile ? (
               <>
                 <p className="text-sm leading-relaxed text-stone-500">{t.aimHelp}</p>
-                <div className="mt-6 flex flex-col gap-3">
-                  <button
-                    type="button"
-                    disabled={phase === "scanning"}
-                    onClick={scanner}
-                    className="inline-flex items-center justify-center gap-2 rounded-full bg-green-signal px-6 py-3.5 text-sm font-semibold text-white shadow-[0_14px_34px_-12px_rgba(22,163,74,0.75)] outline-none transition-[filter,transform,opacity] hover:brightness-105 active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-green-signal focus-visible:ring-offset-2 focus-visible:ring-offset-white disabled:cursor-not-allowed disabled:opacity-60"
+                {hint && (
+                  <p
+                    role="alert"
+                    className="mt-3 rounded-lg border border-amber-soft/50 bg-amber-soft/10 px-3 py-2 text-xs leading-relaxed text-stone-700"
                   >
-                    <ScanLine size={16} strokeWidth={2} aria-hidden />
-                    {phase === "scanning" ? t.reading : t.scanBtn}
-                  </button>
-                  {!cameraOn && phase === "aim" && (
+                    {t[hint]}
+                  </p>
+                )}
+                <div className="mt-6 flex flex-col gap-3">
+                  {cameraOn ? (
+                    <button
+                      type="button"
+                      disabled={phase === "scanning"}
+                      onClick={scanner}
+                      className="inline-flex items-center justify-center gap-2 rounded-full bg-green-signal px-6 py-3.5 text-sm font-semibold text-white shadow-[0_14px_34px_-12px_rgba(22,163,74,0.75)] outline-none transition-[filter,transform,opacity] hover:brightness-105 active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-green-signal focus-visible:ring-offset-2 focus-visible:ring-offset-white disabled:cursor-not-allowed disabled:opacity-60"
+                    >
+                      <ScanLine size={16} strokeWidth={2} aria-hidden />
+                      {phase === "scanning" ? t.reading : t.scanBtn}
+                    </button>
+                  ) : (
                     <button
                       type="button"
                       onClick={activerCamera}
-                      className="inline-flex items-center justify-center gap-2 rounded-full border border-black/10 px-5 py-3 text-sm font-medium text-stone-600 outline-none transition-colors hover:border-green-signal/40 hover:text-forest-950 focus-visible:ring-2 focus-visible:ring-green-signal"
+                      className="inline-flex items-center justify-center gap-2 rounded-full bg-green-signal px-6 py-3.5 text-sm font-semibold text-white shadow-[0_14px_34px_-12px_rgba(22,163,74,0.75)] outline-none transition-[filter,transform,opacity] hover:brightness-105 active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-green-signal focus-visible:ring-offset-2 focus-visible:ring-offset-white"
                     >
-                      <Camera size={15} strokeWidth={2} aria-hidden />
+                      <Camera size={16} strokeWidth={2} aria-hidden />
                       {t.enableCamera}
                     </button>
                   )}
+                  <button
+                    type="button"
+                    disabled={phase === "scanning"}
+                    onClick={saisirManuellement}
+                    className="inline-flex items-center justify-center gap-2 rounded-full border border-black/10 px-5 py-3 text-sm font-medium text-stone-600 outline-none transition-colors hover:border-green-signal/40 hover:text-forest-950 focus-visible:ring-2 focus-visible:ring-green-signal disabled:cursor-not-allowed disabled:opacity-60"
+                  >
+                    <PenLine size={15} strokeWidth={2} aria-hidden />
+                    {t.manualEntryMobile}
+                  </button>
                 </div>
               </>
             ) : (

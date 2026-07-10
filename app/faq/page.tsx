@@ -6,6 +6,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { Reveal } from "@/components/landing/reveal";
+import { PageHero } from "@/components/landing/page-hero";
 import { useLanguage } from "@/components/language-provider";
 import { CopiloteRdue } from "@/components/app/copilote-rdue";
 
@@ -111,18 +112,16 @@ export default function Faq() {
   const [open, setOpen] = React.useState<number | null>(0);
   return (
     <div className="min-h-screen bg-ivory text-forest-950">
-      <SiteHeader variant="solid" />
+      <SiteHeader variant="overlay" />
       <main>
-        <section className="mx-auto max-w-3xl px-6 pb-6 pt-20 md:px-8">
-          <Reveal>
-            <span className="eyebrow text-amber-cacao">{en ? "Frequently asked questions" : "Questions fréquentes"}</span>
-            <h1 className="mt-4 font-display text-4xl leading-tight sm:text-5xl">
-              {en
-                ? "Everything an exporter or a cooperative wants to know."
-                : "Tout ce qu'un exportateur ou une coopérative se demande."}
-            </h1>
-          </Reveal>
-        </section>
+        <PageHero
+          eyebrow={en ? "Frequently asked questions" : "Questions fréquentes"}
+          title={
+            en
+              ? "Everything an exporter or a cooperative wants to know."
+              : "Tout ce qu'un exportateur ou une coopérative se demande."
+          }
+        />
 
         <section className="mx-auto max-w-3xl px-6 py-10 md:px-8">
           <Reveal>
