@@ -42,8 +42,8 @@ interface AuthContextValue {
 
 /** Compte de démonstration COOPÉRATIVE (entrée « 1 clic » pour le jury / les prospects). */
 export const COOP_DEMO_ACCOUNT = {
-  email: "client@test.com",
-  password: "123client123",
+  email: "coop@test.com",
+  password: "123TestCoop123",
   nom: "Amadou",
   organisation: "Coopérative Agricole de Soubré",
   role: "coop" as const,
@@ -51,8 +51,8 @@ export const COOP_DEMO_ACCOUNT = {
 
 /** Compte de démonstration EXPORTATEUR (entrée « 1 clic »). */
 export const EXPORT_DEMO_ACCOUNT = {
-  email: "export@agrivo.com",
-  password: "123export123",
+  email: "export@test.com",
+  password: "123TestExport123",
   nom: "Marc",
   organisation: "Cacao Export CI",
   role: "exporter" as const,

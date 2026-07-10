@@ -148,8 +148,8 @@ export const FAITS_RDUE: FaitRDUE[] = [
     motsCles: ["prix", "cout", "coute", "tarif", "tarifs", "abonnement", "combien", "cher", "payer", "mois", "fcfa", "price", "cost", "pricing", "subscription", "fee", "much"],
     question: { fr: "Combien coûte AGRIVO ?", en: "How much does AGRIVO cost?" },
     reponse: {
-      fr: "L'abonnement coopérative est de 100 000 FCFA par mois, soit environ 1 200 FCFA par producteur vérifié et par an. L'API exportateur démarre à 1 000 000 FCFA par mois. Le producteur ne paie rien : la vérification est prise en charge par sa coopérative.",
-      en: "The cooperative subscription is 100,000 FCFA per month, about 1,200 FCFA per verified farmer per year. The exporter API starts at 1,000,000 FCFA per month. The farmer pays nothing: verification is covered by their cooperative.",
+      fr: "L'abonnement coopérative est de 100 000 FCFA par mois, soit environ 1 200 FCFA par producteur vérifié et par an. Côté exportateur, deux formules : « Suivi » à 500 000 FCFA par mois (portefeuille, cartographie, alertes, dossier acheteur) et « API & intégration » à partir de 1 000 000 FCFA par mois (API REST, TRACES NT, SLA). Le producteur ne paie rien.",
+      en: "The cooperative subscription is 100,000 FCFA per month, about 1,200 FCFA per verified farmer per year. For exporters, two plans: \"Monitoring\" at 500,000 FCFA per month (portfolio, mapping, alerts, buyer file) and \"API & integration\" from 1,000,000 FCFA per month (REST API, TRACES NT, SLA). The farmer pays nothing.",
     },
     source: { fr: "Tarifs AGRIVO", en: "AGRIVO pricing" },
   },

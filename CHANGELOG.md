@@ -3,6 +3,35 @@
 Versioning sémantique (MAJOR.MINOR.PATCH). Chaque release liste ce qui est ajouté, corrigé et
 vérifié, conformément à l'étape 8 du pipeline « Du besoin à la Release ».
 
+## v1.17.0 — 2026-07-10 — OCR réel, assistant resserré, deux paliers exportateur, comptes démo
+
+### Corrigé
+- **OCR caméra : plus jamais de résultat de démonstration lors d'un vrai scan.** La route
+  `/api/gemini/scan` retombait systématiquement sur le mock « Kouassi Yao » quand Gemini échouait
+  ou lisait une image vide. Désormais, en production (clé posée) : lecture RÉELLE de la photo ; si
+  la carte est illisible (floue, vide, autre document) ou si l'appel échoue → champs vides →
+  l'application redemande une photo nette ou propose la saisie manuelle. Le résultat pré-enregistré
+  ne sert plus qu'en développement local sans clé. Prompt Vision durci (« n'invente jamais un nom »).
+
+### Modifié
+- **Assistant IA — réponses courtes et plus utiles.** 1 à 3 phrases maximum (au lieu de 3-4),
+  `maxOutputTokens` 600 → 320. Il peut reformuler et combiner librement les faits de la base
+  (qualité conversationnelle) tout en gardant l'interdiction d'inventer un chiffre/date et le refus
+  poli du hors-sujet.
+- **Deux paliers exportateur (tarifs justifiés par des fonctionnalités réelles).**
+  « Exportateur · Suivi » à **500 000 FCFA/mois** (portefeuille multi-coopératives, cartographie,
+  4 KPI + tableau, centre d'alertes, dossier acheteur, assistant IA) et « Exportateur · API &
+  intégration » **dès 1 000 000 FCFA/mois** (API REST, export en masse, TRACES NT, multi-utilisateurs,
+  SLA). Chaque ligne correspond à un onglet réel du tableau de bord exportateur.
+- **Comptes de démonstration** : coopérative `coop@test.com` / `123TestCoop123`, exportateur
+  `export@test.com` / `123TestExport123` (les boutons « 1 clic » utilisent ces constantes).
+
+### Vérifié
+- Conformité au **Guide des compétiteurs VIBEATHON CI 2026** (grille jury 20/25/20/15/20, IA
+  Execution 25 % + Technical Excellence 20 %) : priorité au produit réellement opérationnel.
+- Langues : interface FR/EN uniquement (dioula/baoulé déjà absents du site — confirmé).
+- `tsc` ✓ · tests Vitest ✓ · `next build` ✓ · déployé + alias `agrivo-io.vercel.app`.
+
 ## v1.16.1 — 2026-07-10 — Hero d'accueil : apparition d'un seul bloc (fin du délai fond-puis-éléments)
 
 ### Corrigé

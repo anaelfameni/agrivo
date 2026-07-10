@@ -28,17 +28,61 @@ const PLANS = [
     cta: { fr: "Commencer", en: "Get started" },
   },
   {
-    name: { fr: "API exportateur", en: "Exporter API" },
+    name: { fr: "Exportateur · Suivi", en: "Exporter · Monitoring" },
+    monthly: 500_000,
+    from: false,
+    unit: { fr: "FCFA / mois", en: "FCFA / month" },
+    desc: {
+      fr: "Pour les exportateurs qui suivent la conformité de plusieurs coopératives, coopérative par coopérative.",
+      en: "For exporters monitoring compliance across several cooperatives, cooperative by cooperative.",
+    },
+    features: {
+      fr: [
+        "Portefeuille multi-coopératives",
+        "Cartographie satellite du portefeuille",
+        "4 indicateurs clés + tableau filtrable",
+        "Centre d'alertes de conformité",
+        "Dossier acheteur (certificats + export GeoJSON)",
+        "Assistant IA sur votre portefeuille",
+      ],
+      en: [
+        "Multi-cooperative portfolio",
+        "Satellite portfolio mapping",
+        "4 key indicators + filterable table",
+        "Compliance alert centre",
+        "Buyer file (certificates + GeoJSON export)",
+        "AI assistant on your portfolio",
+      ],
+    },
+    highlight: false,
+    cta: { fr: "Nous contacter", en: "Contact us" },
+  },
+  {
+    name: { fr: "Exportateur · API & intégration", en: "Exporter · API & integration" },
     monthly: 1_000_000,
     from: true,
     unit: { fr: "FCFA / mois", en: "FCFA / month" },
     desc: {
-      fr: "Pour les exportateurs qui gèrent des milliers de parcelles et déposent des DDR.",
-      en: "For exporters managing thousands of plots and filing due diligence statements.",
+      fr: "Pour les exportateurs qui gèrent des milliers de parcelles et automatisent leurs déclarations européennes.",
+      en: "For exporters managing thousands of plots and automating their European declarations.",
     },
     features: {
-      fr: ["Tout Coopérative, plus :", "API REST & export en masse", "Déclarations TRACES NT intégrées", "Assistant conversationnel", "Engagement de disponibilité (SLA)"],
-      en: ["Everything in Cooperative, plus:", "REST API & batch export", "Built-in TRACES NT declarations", "Conversational assistant", "Availability commitment (SLA)"],
+      fr: [
+        "Tout « Suivi », plus :",
+        "API REST & export en masse",
+        "Déclarations TRACES NT intégrées",
+        "Accès multi-utilisateurs",
+        "Journal d'activité & clés d'API",
+        "Engagement de disponibilité (SLA)",
+      ],
+      en: [
+        "Everything in Monitoring, plus:",
+        "REST API & batch export",
+        "Built-in TRACES NT declarations",
+        "Multi-user access",
+        "Activity log & API keys",
+        "Availability commitment (SLA)",
+      ],
     },
     highlight: true,
     cta: { fr: "Nous contacter", en: "Contact us" },
@@ -96,8 +140,8 @@ export default function Tarifs() {
           </div>
         </PageHero>
 
-        <section className="mx-auto max-w-5xl px-6 py-10 md:px-8">
-          <div className="grid gap-5 md:grid-cols-2">
+        <section className="mx-auto max-w-6xl px-6 py-10 md:px-8">
+          <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
             {PLANS.map((p, i) => (
               <Reveal key={p.name.fr} delay={i * 0.1}>
                 <div className={`flex h-full flex-col rounded-2xl border p-8 ${p.highlight ? "border-green-signal/40 bg-forest-950 text-white shadow-[0_40px_90px_-40px_rgba(22,163,74,0.5)]" : "border-black/[0.06] bg-white"}`}>

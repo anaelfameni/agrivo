@@ -37,7 +37,7 @@ const COPY = {
     },
     fullPortfolio: "portefeuille complet",
     eyebrow: "Espace exportateur",
-    plan: "API exportateur · à partir de 1 000 000 FCFA/mois",
+    plan: "Espace exportateur · Suivi 500 000 – API dès 1 000 000 FCFA/mois",
     logout: "Déconnexion",
     subtitle: (coops: number, parcelles: number) =>
       `Directeur durabilité · ${coops} coopératives · ${parcelles} parcelles suivies`,
@@ -57,7 +57,7 @@ const COPY = {
     },
     fullPortfolio: "full portfolio",
     eyebrow: "Exporter workspace",
-    plan: "Exporter API · from 1,000,000 FCFA/month",
+    plan: "Exporter workspace · Monitoring 500,000 – API from 1,000,000 FCFA/month",
     logout: "Sign out",
     subtitle: (coops: number, parcelles: number) =>
       `Sustainability director · ${coops} cooperatives · ${parcelles} plots tracked`,
