@@ -401,6 +401,17 @@ variables CSS dans `app/globals.css`.
   convergence réelle (Bas-Sassandra · 0,44 ha · 0 %). AndroidManifest : INTERNET/LOCATION/CAMERA/
   RECORD_AUDIO déjà déclarées. Commandes de rebuild pour Christ (flutter clean → pub get →
   **analyze obligatoire** → run --release → build apk → install) dans `ANALYSE_ET_CHANGEMENTS.md` §5.
+- 📦 **APK CONSTRUIT ✅ (16 h 59) — `Desktop/AGRIVO_Mobile_v2.apk` (1,6 Mo, signé)** via le service
+  cloud PWABuilder (`build-apk-cloud.mjs`, scratchpad : POST generateAppPackage avec NOTRE
+  keystore en base64, signingMode "mine") — zéro outillage local (leçon disque plein).
+  **Empreinte vérifiée = celle publiée dans assetlinks.json en prod** → plein écran sans barre
+  d'URL. Paquet complet `Desktop/AGRIVO_Mobile_v2_APK/` (APK + .aab Play Store + keystore + infos
+  de signature À CONSERVER). L'app charge le site en direct : les mises à jour du site sont dans
+  l'app sans réinstallation. **Vérif v1.24 en prod : 17/18 puis 18/18** — le seul KO était MON
+  test (piège documenté : titres rendus en MAJUSCULES par CSS uppercase + innerText, re-tombé
+  dedans malgré la leçon S22 → TOUJOURS des regex insensibles à la casse dans les vérifs CDP).
+  Parcours client vérifié : assistant 3 étapes, lot créé, jalon déclaré, PDF/CSV/GeoJSON/contrôle
+  IA (« Prêt à embarquer » sur EXP-2026-0001 en prod), check-list + multi-pièces coopérative.
 - 🧭 **v1.23.0 + v1.24.0 — ESPACE EXPORTATEUR COMPLET (vision client, demande Anael)** :
   v1.23 = **contrôle pré-embarquement IA** (`controleEmbarquement()` pur dans mock-expeditions :
   5 points factuels — plafonds > 90 %, fraîcheur > 30 j, alertes coop, références DDR,
