@@ -34,3 +34,7 @@ next-env.d.ts
 
 # Documents internes equipe (confidentiels)
 AGRIVO_Repartition_Taches_Sprint_Final.pdf
+
+# Sorties de deploiement locales
+deploy_out.txt
+deploy_url.txt
