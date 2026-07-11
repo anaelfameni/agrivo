@@ -2,7 +2,8 @@
 
 > Étapes 1 et 2 du pipeline « Du besoin à la Release ». Ce document trace le besoin, les user
 > stories avec leurs critères d'acceptation mesurables, le périmètre du MVP et la justification
-> de la stack. Il est la référence de la « definition of done » de la release v1.0.0.
+> de la stack. Référence de la « definition of done » depuis la release v1.0.0 ; le produit
+> livré est en **v1.18+** (92 tests, CHANGELOG.md exhaustif, chemin V2 dans PLAN_V2.md).
 
 ## 1. Le problème
 

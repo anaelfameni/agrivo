@@ -267,6 +267,12 @@ export function StepAnalysis({
             >
               <div className="flex flex-wrap items-center gap-2">
                 <StatusBadge statut={whisp.statut} lang={lang} />
+                {whisp.live && (
+                  <span className="inline-flex items-center gap-1.5 rounded-full border border-green-signal/30 bg-green-signal/[0.08] px-2.5 py-1 text-[0.65rem] font-semibold uppercase tracking-wide text-green-signal">
+                    <span className="glow-pulse h-1.5 w-1.5 rounded-full bg-green-signal" aria-hidden />
+                    {lang === "en" ? "FAO satellite detection · live" : "Détection satellite FAO · en direct"}
+                  </span>
+                )}
                 {canSpeak && (
                   <button
                     type="button"

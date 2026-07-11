@@ -48,13 +48,13 @@ export interface Filiere {
 }
 
 export const FILIERES: readonly Filiere[] = [
-  { id: "cacao",   label: "Cacao",           eudr: "cocoa",    statut: "production", couleur: "#C8861D", icone: Bean,     image: "/filieres/cacao.jpg",   position: "1er producteur mondial" },
-  { id: "cafe",    label: "Café",            eudr: "coffee",   statut: "production", couleur: "#7B4F2E", icone: Coffee,   image: "/filieres/cafe.jpg",    position: "Filière historique" },
-  { id: "hevea",   label: "Hévéa",           eudr: "rubber",   statut: "production", couleur: "#16A34A", icone: Droplets, image: "/filieres/hevea.jpg",   position: "1er africain, 3e mondial" },
-  { id: "palmier", label: "Palmier à huile", eudr: "oil palm", statut: "production", couleur: "#4A6B1F", icone: TreePalm, image: "/filieres/palmier.jpg", position: "~400 000 ha en production" },
-  { id: "bovins",  label: "Bovins",          eudr: "cattle",   statut: "couverte",   couleur: "#8A5A44", icone: Beef,     image: "/filieres/bovins.jpg",  position: "Cuir et viande soumis au RDUE" },
-  { id: "soja",    label: "Soja",            eudr: "soya",     statut: "couverte",   couleur: "#A9A02A", icone: Sprout,   image: "/filieres/soja.jpg",    position: "Chaîne d'appro. mondiale" },
-  { id: "bois",    label: "Bois",            eudr: "wood",     statut: "couverte",   couleur: "#5A6B54", icone: TreePine, image: "/filieres/bois.jpg",    position: "Grumes, sciages et papier" },
+  { id: "cacao",   label: "Cacao",           eudr: "cocoa",    statut: "production", couleur: "#C8861D", icone: Bean,     image: "/filieres/cacao-v2.webp",   position: "1er producteur mondial" },
+  { id: "cafe",    label: "Café",            eudr: "coffee",   statut: "production", couleur: "#7B4F2E", icone: Coffee,   image: "/filieres/cafe-v2.webp",    position: "Filière historique" },
+  { id: "hevea",   label: "Hévéa",           eudr: "rubber",   statut: "production", couleur: "#16A34A", icone: Droplets, image: "/filieres/hevea-v2.webp",   position: "1er africain, 3e mondial" },
+  { id: "palmier", label: "Palmier à huile", eudr: "oil palm", statut: "production", couleur: "#4A6B1F", icone: TreePalm, image: "/filieres/palmier-v2.webp", position: "~400 000 ha en production" },
+  { id: "bovins",  label: "Bovins",          eudr: "cattle",   statut: "couverte",   couleur: "#8A5A44", icone: Beef,     image: "/filieres/bovins-v2.webp",  position: "Cuir et viande soumis au RDUE" },
+  { id: "soja",    label: "Soja",            eudr: "soya",     statut: "couverte",   couleur: "#A9A02A", icone: Sprout,   image: "/filieres/soja-v2.webp",    position: "Chaîne d'appro. mondiale" },
+  { id: "bois",    label: "Bois",            eudr: "wood",     statut: "couverte",   couleur: "#5A6B54", icone: TreePine, image: "/filieres/bois-v2.webp",    position: "Grumes, sciages et papier" },
 ];
 
 export const FILIERE_IDS: FiliereId[] = FILIERES.map((f) => f.id);

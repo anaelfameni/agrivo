@@ -1,6 +1,6 @@
 {
   "name": "agrivo",
-  "version": "1.18.1",
+  "version": "1.19.0",
   "private": true,
   "description": "AGRIVO — La conformité agricole, simplifiée. Vibeathon 2026.",
   "scripts": {
@@ -31,6 +31,7 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.2.9",
+    "sharp": "^0.35.3",
     "tailwindcss": "^4",
     "typescript": "^5",
     "vitest": "^4.1.9"

@@ -1,7 +1,7 @@
 import type { MetadataRoute } from "next";
 
 const BASE = "https://agrivo-io.vercel.app";
-const ROUTES = ["", "/methodologie", "/a-propos", "/tarifs", "/faq", "/contact", "/aide", "/verifier-certificat", "/confidentialite", "/cgu", "/mentions-legales"];
+const ROUTES = ["", "/methodologie", "/a-propos", "/tarifs", "/faq", "/contact", "/aide", "/verifier-certificat", "/status", "/confidentialite", "/cgu", "/mentions-legales"];
 
 export default function sitemap(): MetadataRoute.Sitemap {
   return ROUTES.map((r) => ({

@@ -6,13 +6,13 @@ import { useLanguage } from "@/components/language-provider";
 
 const COLS_FR = [
   { title: "Produit", links: [{ label: "Méthodologie", href: "/methodologie" }, { label: "Tarifs", href: "/tarifs" }, { label: "Vérifier un certificat", href: "/verifier-certificat" }, { label: "Tableau de bord", href: "/app/dashboard" }] },
-  { title: "Ressources", links: [{ label: "FAQ", href: "/faq" }, { label: "Centre d'aide", href: "/aide" }, { label: "À propos", href: "/a-propos" }, { label: "Contact", href: "/contact" }] },
+  { title: "Ressources", links: [{ label: "FAQ", href: "/faq" }, { label: "Centre d'aide", href: "/aide" }, { label: "À propos", href: "/a-propos" }, { label: "État des services", href: "/status" }, { label: "Contact", href: "/contact" }] },
   { title: "Légal", links: [{ label: "Confidentialité", href: "/confidentialite" }, { label: "Conditions d'utilisation", href: "/cgu" }, { label: "Mentions légales", href: "/mentions-legales" }] },
 ];
 
 const COLS_EN = [
   { title: "Product", links: [{ label: "Method", href: "/methodologie" }, { label: "Pricing", href: "/tarifs" }, { label: "Verify a certificate", href: "/verifier-certificat" }, { label: "Dashboard", href: "/app/dashboard" }] },
-  { title: "Resources", links: [{ label: "FAQ", href: "/faq" }, { label: "Help center", href: "/aide" }, { label: "About", href: "/a-propos" }, { label: "Contact", href: "/contact" }] },
+  { title: "Resources", links: [{ label: "FAQ", href: "/faq" }, { label: "Help center", href: "/aide" }, { label: "About", href: "/a-propos" }, { label: "Service status", href: "/status" }, { label: "Contact", href: "/contact" }] },
   { title: "Legal", links: [{ label: "Privacy", href: "/confidentialite" }, { label: "Terms of use", href: "/cgu" }, { label: "Legal notice", href: "/mentions-legales" }] },
 ];
 

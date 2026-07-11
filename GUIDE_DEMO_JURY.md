@@ -1,12 +1,19 @@
 # GUIDE DE DÉMO — Vibeathon, 11 juillet 2026
 
+> 🟢 **ÉTAT ACTUEL (11/07/2026, v1.18+ en production — ce bloc fait foi sur toute mention plus bas)** :
+> **92 tests** au vert · tarifs **Coopérative 100 000 · Exportateur Essentiel 500 000 · Exportateur
+> Pro 1 000 000 FCFA/mois** · espaces **multi-pages** (coop : Vue d'ensemble, Producteurs, Parcelles,
+> Certificats, Paramètres · exportateur : Tableau de bord, Coopératives, Producteurs, Parcelles,
+> Dossiers & rapports, Assistant IA) · **API REST** `GET /api/exporteur/portefeuille` · page publique
+> `/status`. **Le pitch jury est un pitch PUR de 5 minutes, sans démonstration en direct** (le
+> PowerPoint est soumis à l'avance sur vibeathonci.com/soumettre).
+
 > Anti-sèche intégrée à l'app : **Ctrl+Shift+D** sur n'importe quelle page ouvre le guide présentateur.
-> La démo du parcours producteur se fait sur **l'app mobile de Christ** ; la plateforme web sert la
-> partie coopérative/exportateur et la vérification publique.
 
 ## Comptes
-- Coopérative (Amadou) : `client@test.com` / `123client123` — bouton « Entrer avec le compte de démonstration ».
-- Admin : `admin@agrivo.com` / `123admin123` (clés d'API, MOCK_MODE, état des services).
+- Coopérative (Amadou) : `coop@test.com` / `123TestCoop123` — bouton « Démo Coopérative » (1 clic).
+- Exportateur (Marc) : `export@test.com` / `123TestExport123` — bouton « Démo Exportateur » (1 clic).
+- Admin : `admin@agrivo.com` / `123admin123` (clés d'API masquées, état des services, préchauffage IA).
 
 ## Déroulé recommandé (7 minutes)
 1. **Splash + landing (30 s)** — la promesse : « De la parcelle vérifiée à la prime négociée. »
@@ -156,7 +163,7 @@ compte démo déjà connecté · vider la recherche du dashboard · préparer la
 
 ## Mise à jour v1.7.0 (7 juillet, soir) — nouveaux moments IA + rituel pré-vol
 
-> Le site est passé en « version finale » : v1.7.0 en prod, 13 usages IA, 65 tests. Ce qui change
+> (Note historique du 7 juillet — l'état actuel est v1.18+, 92 tests : voir le bandeau en tête.) Ce qui change
 > pour la démo et le tournage :
 
 ### Le rituel pré-vol (à faire SYSTÉMATIQUEMENT avant de monter sur scène)

@@ -4,6 +4,25 @@
 > Il condense la charte de marque, les règles de contenu, les faits produit et l'avancement.
 > En cas de doute, ce fichier prime sur mes souvenirs. Il reflète l'état au dernier prompt traité.
 
+> 🟢 **ÉTAT ACTUEL — v1.18.1+, 11 juillet 2026 (CE BLOC FAIT FOI sur toute mention contraire
+> plus bas, qui relève de l'historique de construction).**
+> - **Modèle économique** : Coopérative **100 000 FCFA/mois** (≈ 1 200 FCFA/producteur/an) ·
+>   **Exportateur Essentiel 500 000** · **Exportateur Pro 1 000 000 FCFA/mois**. **AUCUN crédit,
+>   prêt ni financement — jamais** (pivot Valorisation : primes + acheteurs premium).
+> - **Comptes démo** : coop `coop@test.com`/`123TestCoop123` · exportateur
+>   `export@test.com`/`123TestExport123` · admin `admin@agrivo.com`/`123admin123`.
+> - **Espaces multi-pages** : coop (Vue d'ensemble · Producteurs · Parcelles · Certificats ·
+>   Paramètres) ; exportateur (Tableau de bord · Coopératives, avec ajout + carte des sièges ·
+>   Producteurs · Parcelles · Dossiers & rapports · Assistant IA). **API REST**
+>   `GET /api/exporteur/portefeuille` (GeoJSON TRACES NT). Page publique `/status`.
+> - **Détection satellite** : moteur déterministe calibré méthode Whisp (FAO) ; **appel RÉEL à
+>   l'API Whisp activable par `WHISP_API_KEY`** (lib/ai/whisp-live.ts, repli garanti). IA
+>   générative Gemini réelle via `GEMINI_API_KEY` (OCR, assistant 39 faits, mémos, dossiers).
+> - **Qualité** : 92+ tests Vitest, CI verte, tags jusqu'à v1.18.1+, prod `agrivo-io.vercel.app`
+>   (réassigner l'alias à chaque deploy). Polices réelles : Space Grotesk / Geist / Geist Mono.
+> - Interface **FR/EN uniquement** (dioula/baoulé retirés). Statuts verbatim, « évaluation »
+>   jamais « garantie », zéro % inventé. Docs de construction archivés dans `docs/archives/`.
+
 ---
 
 ## 🎯 BUT ULTIME (ne jamais l'oublier)

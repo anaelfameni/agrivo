@@ -3,6 +3,39 @@
 Versioning sémantique (MAJOR.MINOR.PATCH). Chaque release liste ce qui est ajouté, corrigé et
 vérifié, conformément à l'étape 8 du pipeline « Du besoin à la Release ».
 
+## v1.19.0 — 2026-07-11 — Détection Whisp réelle (activable), performance images, page /status, repo assaini
+
+### Ajouté
+- **Intégration RÉELLE de l'API Whisp (FAO Open Foris)** — `lib/ai/whisp-live.ts` : dès que
+  `WHISP_API_KEY` est posée (compte gratuit sur whisp.openforis.org), la route
+  `/api/whisp/verify` envoie l'anneau du polygone à l'API officielle et le verdict vient de sa
+  catégorie de risque (mapping défensif : faible → Conforme, élevé → Anomalie détectée, ambigu →
+  Données insuffisantes). Badge « Détection satellite FAO · en direct » sur l'analyse. Les
+  parcelles de scénario (`sc-*`) et verdicts forcés restent déterministes : la démonstration ne
+  dépend jamais du réseau. Repli garanti sans clé/échec/timeout (comportement historique).
+  5 nouveaux tests (`tests/whisp-live.test.ts`).
+- **Page publique `/status`** : chaque service vérifié EN DIRECT depuis le navigateur du visiteur
+  (moteur de verdicts, assistant IA, API REST exportateur, vérification publique) — socle de
+  l'engagement de disponibilité (SLA) de l'offre Pro. Lien dans le pied de page.
+- **Score de résilience des sols** : désormais dérivé de façon stable du dossier (3 profils
+  Élevé/Moyen/À renforcer avec explications distinctes) — plus jamais une valeur constante.
+
+### Performance
+- **Images de la landing : 6,6 Mo → 1,6 Mo (-76 %)** — les 8 visuels de filières + la canopée
+  convertis en WebP (≤ 1600 px), anciens JPG retirés. Chargement mobile nettement plus rapide.
+
+### Assaini (lisibilité du dépôt pour l'évaluation IA)
+- **Racine du dépôt réduite à 8 documents de référence** (README, CHANGELOG, SPECS,
+  ARCHITECTURE, PLAN_V2, GUIDE_DEMO_JURY, CLAUDE, IMAGES_CREDITS) ; ~25 journaux de construction
+  déplacés dans `docs/archives/` (README d'archives explicite).
+- **ARCHITECTURE.md** : schéma sans scoring crédit (pivot Valorisation), routes à jour (API REST
+  exportateur, rdue-qa…), ADR-1/ADR-6 reformulés (activation par clé, chemin V2), versioning réel.
+- **GUIDE_DEMO_JURY.md** : bandeau « état actuel » (v1.18+, 92 tests, comptes à jour, pitch pur
+  sans démo), comptes démo corrigés. **SPECS.md** et **CLAUDE.md** : bandeaux d'état actuel.
+
+### Vérifié
+- `tsc` ✓ · 97 tests Vitest ✓ · `next build` ✓ · révision prod complète re-jouée.
+
 ## v1.18.1 — 2026-07-11 — Offre Pro tangible (API REST + rapport consolidé), purge « démo », README v1.18
 
 ### Ajouté (justification concrète des offres exportateur 500 000 / 1 000 000 FCFA)

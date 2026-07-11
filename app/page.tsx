@@ -540,7 +540,7 @@ function FilieresSection() {
             <Tilt max={9} className="group relative aspect-[4/5] overflow-hidden rounded-2xl">
               <div className="absolute inset-0 bg-forest-900" />
               <Image
-                src="/filieres/derives.jpg"
+                src="/filieres/derives-v2.webp"
                 alt={c.derives.title}
                 fill
                 sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
@@ -905,7 +905,7 @@ function CtaFooter() {
     <>
       <section className="relative overflow-hidden bg-forest-950 text-white">
         {/* Fond aérien conservé, légèrement visible (masque vert à 0,22). */}
-        <Image src="/textures/aerial-canopy.jpg" alt="" aria-hidden fill sizes="100vw" className="pointer-events-none absolute inset-0 object-cover opacity-[0.22]" />
+        <Image src="/textures/aerial-canopy-v2.webp" alt="" aria-hidden fill sizes="100vw" className="pointer-events-none absolute inset-0 object-cover opacity-[0.22]" />
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-forest-950/72 via-forest-950/80 to-forest-950" />
         <div className="grain pointer-events-none absolute inset-0 opacity-[0.07]" />
         <div className="glow-radial pointer-events-none absolute inset-0" />

@@ -33,6 +33,8 @@ export interface WhispResult {
   convergenceEn: string[];
   analyseMs: number; // rempli par la route (latence simulée)
   demo: boolean;
+  /** true si le verdict vient de l'API Whisp (FAO) appelée en direct. */
+  live?: boolean;
 }
 
 /** Faisceau de preuves qualitatif présenté selon le verdict (aucun pourcentage inventé). */
@@ -95,11 +97,11 @@ export function whispMock(input: WhispVerifyInput): WhispResult {
 }
 
 /**
- * Vérification Whisp d'une parcelle.
- * // TODO: brancher la vraie API Whisp (endpoint + clé FAO Open Foris) en envoyant le GeoJSON.
- * // Aucun appel réseau ne doit partir du client — toujours via la route serveur.
+ * Vérification d'une parcelle par le moteur déterministe (calibré sur la méthode Whisp/FAO).
+ * L'appel RÉEL à l'API Whisp vit dans lib/ai/whisp-live.ts et s'active via WHISP_API_KEY
+ * (branché dans app/api/whisp/verify) ; ce moteur reste le repli garanti de la démonstration.
+ * Aucun appel réseau ne part jamais du client — toujours via la route serveur.
  */
 export async function whispVerify(input: WhispVerifyInput): Promise<WhispResult> {
-  // En production (MOCK_MODE off) : POST du GeoJSON vers l'API Whisp, puis mapping du résultat.
   return whispMock(input);
 }
