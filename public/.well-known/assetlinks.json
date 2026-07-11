@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "ci.agrivo.app",
+      "sha256_cert_fingerprints": [
+        "D2:78:CE:00:7E:79:F9:C5:CA:49:8C:B7:B6:55:A1:DB:34:0B:5C:D3:0E:EC:78:21:DC:06:96:8A:A1:53:1D:C9"
+      ]
+    }
+  }
+]
