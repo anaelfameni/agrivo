@@ -401,6 +401,31 @@ variables CSS dans `app/globals.css`.
   convergence réelle (Bas-Sassandra · 0,44 ha · 0 %). AndroidManifest : INTERNET/LOCATION/CAMERA/
   RECORD_AUDIO déjà déclarées. Commandes de rebuild pour Christ (flutter clean → pub get →
   **analyze obligatoire** → run --release → build apk → install) dans `ANALYSE_ET_CHANGEMENTS.md` §5.
+- 🚢 **v1.22.0 — MODULE « EXPÉDITIONS » (traçabilité DOCUMENTAIRE parcelle → conteneur)**, demandé
+  par Anael pour « frôler le 20/20 », recherche marché faite (osapiens/Koltiva/TraceX : lot =
+  parcelles assignées + ségrégation + DDS par expédition). Livré : `data/mock-expeditions.ts`
+  (moteur pur : `composerExpedition` refuse non-conformes + tonnages > plafond anti-fraude,
+  `expeditionFeatureCollection` GeoJSON TRACES NT du lot, 5 jalons déclaratifs, 3 lots démo dont
+  EXP-2026-0001 arrivé UE) ; page `/app/exportateur/expeditions` (timeline, tableau certificats
+  cliquables, carte PortfolioMap — ⚠️ export DEFAULT, importer sans `.then(m => m.PortfolioMap)` —,
+  GeoJSON, QR public, résumé IA `/api/gemini/expedition-memo`, composeur interactif où la
+  ségrégation SE VOIT) ; sidebar + étape tour `sidebar-expeditions` ; page publique
+  `/verifier-expedition?ref=` ; bloc coop « Vos parcelles en expédition » (dashboard) ; landing
+  6 temps (« Expédiez, prouvé », grille md:3/xl:6) ; tarifs (Essentiel 5 dossiers/mois · Pro
+  illimités) ; méthodologie (« Du certificat au conteneur ») ; FAQ camions/sacs (complémentaire
+  SNT). **125 tests** (+10 expeditions). RÈGLE de discours : « traçabilité DOCUMENTAIRE », jalons
+  déclaratifs — JAMAIS « suivi physique » (terrain Trusty/SNT).
+- 💥 **INCIDENT DISQUE (14 h)** : C:\ à 100 % (57 Mo libres) pendant les téléchargements Android —
+  ENOSPC en pleine écriture. Nettoyé : profils Edge de test (+700 Mo), zips JDK/SDK, dossier
+  shots, désinstallation Bubblewrap → 1,4 Go libres. ⚠️ Machine à 99 % en permanence : surveiller
+  avant tout gros build ; ne JAMAIS relancer l'outillage Android sur ce PC.
+- 📱 **APK TWA : pivot PLAN B assumé** (le SDK Android + Gradle ≈ 1 Go impossibles ici). L'ESSENTIEL
+  est fait et EN PROD : icônes PNG (v1.21.2) + `assetlinks.json` (v1.21.3) + **keystore créée et
+  sauvegardée sur le Bureau** (`android.keystore`, alias agrivo, mdp Agrivo2026Vibeathon, SHA-256
+  publiée dans assetlinks). Installation AUJOURD'HUI : Chrome → « Ajouter à l'écran d'accueil »
+  (= même moteur/rendu qu'une TWA). APK signé constructible en 20 min sur le PC de Christ :
+  procédure complète dans `Desktop/AGRIVO_MOBILE_V2_NOTICE.md`. L'app Flutter de Christ = plan C,
+  non touchée.
 - 🔗 **v1.21.1 EN PROD (commit `d75dd62`, deploy `agrivo-8u4s3zpbv…` aliasé, tag)** : le QR de
   TOUT PDF que le site peut émettre résout sur `/verifier-certificat` — les certificats des
   scénarios (AGV-2026-0600 Tanoh Michel, AGV-2026-0602 Koffi Bertrand) tombaient sur

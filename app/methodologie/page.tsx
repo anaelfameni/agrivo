@@ -223,6 +223,25 @@ export default function Methodologie() {
           </div>
         </section>
 
+        {/* Du certificat au dossier d'expédition (traçabilité documentaire) */}
+        <section className="bg-ivory">
+          <div className="mx-auto max-w-6xl px-6 py-20 md:px-8">
+            <Reveal>
+              <span className="eyebrow text-green-signal">
+                {en ? "From certificate to container" : "Du certificat au conteneur"}
+              </span>
+              <h2 className="mt-3 max-w-2xl font-display text-3xl text-forest-950">
+                {en ? "The shipment file: what the DDS actually requires." : "Le dossier d'expédition : ce que la DDS exige vraiment."}
+              </h2>
+              <p className="mt-4 max-w-3xl leading-relaxed text-stone-600">
+                {en
+                  ? "For every shipment, Regulation (EU) 2023/1115 requires the due diligence statement (DDS) to carry the geolocation of ALL plots of origin — and mass balance is not allowed. Agrivo therefore composes each lot exclusively from plots assessed \"Compliant\" (strict segregation), reconciles every tonnage against the plot's cap (area × regional yield, the same anti-fraud lock used at verification), and generates the lot's GeoJSON (RFC 7946) ready for TRACES NT. Milestones (departure, port, vessel, EU arrival) are documentary: declared at each step by your teams — Agrivo traces the compliance file, it does not physically track bags."
+                  : "Pour chaque expédition, le règlement (UE) 2023/1115 exige que la déclaration de diligence raisonnée (DDS) porte la géolocalisation de TOUTES les parcelles d'origine — et le bilan de masse n'est pas admis. Agrivo compose donc chaque lot exclusivement à partir de parcelles évaluées « Conforme » (ségrégation stricte), réconcilie chaque tonnage contre le plafond de la parcelle (superficie × rendement régional, le même verrou anti-fraude qu'à la vérification), et génère le GeoJSON du lot (RFC 7946) prêt pour TRACES NT. Les jalons (départ, port, navire, arrivée UE) sont documentaires : déclarés à chaque étape par vos équipes — Agrivo trace le dossier de conformité, il ne suit pas physiquement les sacs."}
+              </p>
+            </Reveal>
+          </div>
+        </section>
+
         {/* CTA */}
         <section className="bg-forest-950 text-white">
           <div className="mx-auto flex max-w-4xl flex-col items-center gap-6 px-6 py-20 text-center md:px-8">

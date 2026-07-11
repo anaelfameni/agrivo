@@ -20,6 +20,19 @@
 > verdict vient d'être calculé en direct par l'outil officiel de la FAO, avec les données nationales
 > ivoiriennes du BNETD — voici le jeton d'analyse. »
 
+> 🚢 **NOUVEAU v1.22 — module « Expéditions » : la traçabilité documentaire parcelle → conteneur.**
+> Espace exportateur → Expéditions : 3 dossiers de démonstration (EXP-2026-0001 = ARRIVÉ UE, les
+> 5 jalons au vert — le lot à montrer). Démo 60 s : ouvrir EXP-2026-0001 → timeline des 5 jalons →
+> tableau des parcelles (certificats cliquables, tonnage ≤ plafond) → « GeoJSON du lot (TRACES NT) »
+> → « QR de vérification publique » (un juré scanne → la page publique confirme). Le bouton
+> « Composer une expédition » MONTRE la ségrégation : les parcelles en anomalie sont refusées à
+> l'écran. Phrase jury : « Le règlement exige les géolocalisations de TOUTES les parcelles de chaque
+> expédition — voici le dossier du conteneur, généré en un clic, prêt pour TRACES NT. » Réponse
+> « et Trusty/le SNT ? » : « Eux suivent les sacs — nous, nous assemblons la PREUVE documentaire
+> que la DDS exige. Complémentaires : le SNT donne l'identité, AGRIVO donne le dossier. »
+> La coop voit ses parcelles en expédition (dashboard, lecture seule). Jalons DÉCLARATIFS — dire
+> « documentaire », jamais « suivi physique de bout en bout ».
+
 > 🎓 **v1.21 — le guide interactif s'ouvre à CHAQUE connexion des comptes démo** (demande Anael) :
 > à l'arrivée sur le tableau de bord, la visite guidée « spotlight » démarre seule (~0,7 s). Pour la
 > dérouler devant quelqu'un : flèches ← →. Pour la passer immédiatement : **Échap** (ou « Passer le

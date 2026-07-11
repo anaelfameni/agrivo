@@ -12,6 +12,13 @@ import { CopiloteRdue } from "@/components/app/copilote-rdue";
 
 const QA: { q: { fr: string; en: string }; a: { fr: string; en: string } }[] = [
   {
+    q: { fr: "Suivez-vous physiquement les camions et les sacs ?", en: "Do you physically track trucks and bags?" },
+    a: {
+      fr: "Non, et c'est un choix. Agrivo assure la traçabilité DOCUMENTAIRE de la parcelle au conteneur : chaque expédition est composée exclusivement de parcelles évaluées « Conforme », ses volumes sont réconciliés parcelle par parcelle, et son dossier (GeoJSON des parcelles d'origine, prêt pour TRACES NT) est vérifiable par QR code. Les jalons — départ coopérative, port, navire, arrivée UE — sont déclarés à chaque étape par vos équipes. Le suivi physique des sacs relève du Système National de Traçabilité : Agrivo s'y adosse, il ne le remplace pas.",
+      en: "No, by design. Agrivo provides DOCUMENTARY traceability from plot to container: every shipment is composed exclusively of plots assessed \"Compliant\", its volumes are reconciled plot by plot, and its file (GeoJSON of the plots of origin, ready for TRACES NT) is verifiable by QR code. Milestones — cooperative departure, port, vessel, EU arrival — are declared at each step by your teams. Physical bag tracking belongs to the National Traceability System: Agrivo builds on it, it does not replace it.",
+    },
+  },
+  {
     q: { fr: "Le RDUE peut-il encore être reporté ?", en: "Can the EUDR still be postponed?" },
     a: {
       fr: "Non. Une révision ciblée adoptée en décembre 2025 a repoussé et simplifié le règlement, mais confirmé l'échéance : 30 décembre 2026 pour les grands et moyens opérateurs, 30 juin 2027 pour les petites entreprises. Le calendrier ne bouge plus.",

@@ -46,8 +46,8 @@ const PLANS = [
       en: "For exporters steering the compliance of a cooperative network, without technical integration.",
     },
     features: {
-      fr: ["Portefeuille multi-coopératives", "Coopératives & producteurs consolidés", "Registre satellite (tableau ↔ carte)", "Dossiers acheteurs & alertes", "Support prioritaire"],
-      en: ["Multi-cooperative portfolio", "Consolidated cooperatives & farmers", "Satellite register (table ↔ map)", "Buyer files & alerts", "Priority support"],
+      fr: ["Portefeuille multi-coopératives", "Coopératives & producteurs consolidés", "Registre satellite (tableau ↔ carte)", "Dossiers acheteurs & alertes", "5 dossiers d'expédition par mois (parcelle → conteneur)", "Support prioritaire"],
+      en: ["Multi-cooperative portfolio", "Consolidated cooperatives & farmers", "Satellite register (table ↔ map)", "Buyer files & alerts", "5 shipment files per month (plot → container)", "Priority support"],
     },
     roi: {
       fr: "Moins qu'un poste de chargé de conformité — pour tout votre réseau.",
@@ -71,8 +71,8 @@ const PLANS = [
       en: "For exporters filing due diligence statements and integrating AGRIVO into their IT systems.",
     },
     features: {
-      fr: ["Tout Essentiel, plus :", "API REST & export en masse", "Déclarations TRACES NT intégrées", "Assistant IA de portefeuille", "Engagement de disponibilité (SLA) — état des services public"],
-      en: ["Everything in Essential, plus:", "REST API & batch export", "Built-in TRACES NT declarations", "Portfolio AI assistant", "Availability commitment (SLA) — public service status"],
+      fr: ["Tout Essentiel, plus :", "Dossiers d'expédition illimités — GeoJSON TRACES NT par conteneur", "API REST & export en masse", "Déclarations TRACES NT intégrées", "Assistant IA de portefeuille", "Engagement de disponibilité (SLA) — état des services public"],
+      en: ["Everything in Essential, plus:", "Unlimited shipment files — TRACES NT GeoJSON per container", "REST API & batch export", "Built-in TRACES NT declarations", "Portfolio AI assistant", "Availability commitment (SLA) — public service status"],
     },
     roi: {
       fr: "Une fraction de la valeur d'un seul conteneur sécurisé.",

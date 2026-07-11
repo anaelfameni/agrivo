@@ -37,6 +37,7 @@ import {
   MousePointerClick,
   ScrollText,
   ShieldCheck,
+  Ship,
   Sparkles,
   Sprout,
   Table2,
@@ -230,6 +231,17 @@ const ETAPES_EXPORT: Etape[] = [
     corps: {
       fr: "La page Parcelles lie un tableau triable et la carte satellite : cliquez d'un côté, ça se surligne de l'autre. Activez le masque « Zones sensibles » pour comprendre visuellement les anomalies, et exportez en GeoJSON.",
       en: "The Plots page links a sortable table with the satellite map: click on one side, it highlights on the other. Toggle the \"Sensitive areas\" mask to visually understand anomalies, and export as GeoJSON.",
+    },
+  },
+  {
+    target: "sidebar-expeditions",
+    pointer: true,
+    Icon: Ship,
+    accent: "#16a34a",
+    titre: { fr: "Du certificat au conteneur", en: "From certificate to container" },
+    corps: {
+      fr: "La page Expéditions assemble le dossier RDUE de chaque conteneur : les parcelles d'origine géolocalisées (100 % conformes, ségrégation stricte), les volumes réconciliés, les jalons documentaires et le GeoJSON prêt pour TRACES NT.",
+      en: "The Shipments page assembles each container's EUDR file: geolocated plots of origin (100% compliant, strict segregation), reconciled volumes, documentary milestones and the GeoJSON ready for TRACES NT.",
     },
   },
   {

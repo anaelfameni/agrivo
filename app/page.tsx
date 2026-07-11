@@ -4,6 +4,7 @@ import Image from "next/image";
 import { motion, useReducedMotion, type Variants } from "framer-motion";
 import {
   ArrowRight,
+  Ship,
   ShieldAlert,
   Receipt,
   Landmark,
@@ -58,13 +59,14 @@ const COPY = {
     goldenPath: {
       eyebrow: "Comment ça marche",
       title: "Vos données existent déjà. AGRIVO les rend prouvables.",
-      sub: "De vos fichiers existants au dossier prêt pour l'export, en 5 étapes.",
+      sub: "De vos fichiers existants au conteneur prouvé, en 6 étapes.",
       steps: [
         { title: "Importez votre registre", body: "Fichiers de certification, cartographies financées par vos exportateurs : chargez ce que la coopérative détient déjà (.geojson, .kml, .csv)." },
         { title: "AGRIVO l'audite", body: "Chaque parcelle est passée au crible de la règle RDUE : polygones ouverts, doublons, chevauchements, points seuls au-delà de 4 ha." },
         { title: "Complétez les trous", body: "Seules les parcelles manquantes ou rejetées repassent par le terrain : scan de la carte, capture GPS guidée, contrôles d'intégrité." },
         { title: "Le satellite juge", body: "Chaque parcelle est comparée aux images satellites de référence : Conforme, Anomalie détectée ou Données insuffisantes. Chaque verdict est expliqué et certifié." },
         { title: "Valorisez", body: "Certificats vérifiables et dossier DDS prêt pour TRACES NT : la coopérative négocie primes de durabilité et acheteurs premium." },
+        { title: "Expédiez, prouvé", body: "L'exportateur compose ses lots à partir de parcelles conformes uniquement : chaque conteneur part avec son dossier RDUE — parcelles d'origine géolocalisées, volumes réconciliés, GeoJSON prêt pour TRACES NT." },
       ],
     },
     triptyque: {
@@ -187,13 +189,14 @@ const COPY = {
     goldenPath: {
       eyebrow: "How it works",
       title: "Your data already exists. AGRIVO makes it provable.",
-      sub: "From your existing files to an export-ready dossier, in 5 steps.",
+      sub: "From your existing files to a proven container, in 6 steps.",
       steps: [
         { title: "Import your register", body: "Certification files, exporter-funded mapping campaigns: load what the cooperative already owns (.geojson, .kml, .csv)." },
         { title: "AGRIVO audits it", body: "Every plot is checked against the EUDR rule: open polygons, duplicates, overlaps, lone points above 4 ha." },
         { title: "Fill the gaps", body: "Only missing or rejected plots go back to the field: card scan, guided GPS capture, integrity checks." },
         { title: "The satellite judges", body: "Every plot is compared against reference satellite imagery: Compliant, Anomaly detected or Insufficient data. Every verdict is explained and certified." },
         { title: "Valorise", body: "Verifiable certificates and a DDS file ready for TRACES NT: the cooperative negotiates sustainability premiums and premium buyers." },
+        { title: "Ship it, proven", body: "The exporter composes lots from compliant plots only: every container leaves with its EUDR file — geolocated plots of origin, reconciled volumes, GeoJSON ready for TRACES NT." },
       ],
     },
     triptyque: {
@@ -382,8 +385,8 @@ function ProblemeSection() {
 /* ------------------------------------------------------------------ Golden path (signature) */
 function GoldenPathSection() {
   const c = useCopy().goldenPath;
-  const icons = [<FileUp key="0" size={22} />, <SearchCheck key="1" size={22} />, <MapPinned key="2" size={22} />, <Satellite key="3" size={22} />, <HandCoins key="4" size={22} />];
-  const nums = ["01", "02", "03", "04", "05"];
+  const icons = [<FileUp key="0" size={22} />, <SearchCheck key="1" size={22} />, <MapPinned key="2" size={22} />, <Satellite key="3" size={22} />, <HandCoins key="4" size={22} />, <Ship key="5" size={22} />];
+  const nums = ["01", "02", "03", "04", "05", "06"];
   const reduce = useReducedMotion();
   return (
     <section id="produit" className="relative overflow-hidden bg-ivory-deep/40 scroll-mt-24">
@@ -403,7 +406,7 @@ function GoldenPathSection() {
             viewport={{ once: true, amount: 0.4 }}
             transition={{ duration: 1.4, ease: EASE }}
           />
-          <motion.ol variants={container} initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.25 }} className="grid gap-x-5 gap-y-10 md:grid-cols-5">
+          <motion.ol variants={container} initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.25 }} className="grid gap-x-5 gap-y-10 md:grid-cols-3 xl:grid-cols-6">
             {c.steps.map((s, i) => (
               <motion.li key={nums[i]} variants={rise} className="group relative">
                 <motion.div whileHover={reduce ? undefined : { y: -6 }} transition={{ type: "spring", stiffness: 300, damping: 20 }} className="flex flex-col items-start">

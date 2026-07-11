@@ -3,6 +3,35 @@
 Versioning sémantique (MAJOR.MINOR.PATCH). Chaque release liste ce qui est ajouté, corrigé et
 vérifié, conformément à l'étape 8 du pipeline « Du besoin à la Release ».
 
+## v1.22.0 — 2026-07-11 — Module « Expéditions » : traçabilité documentaire parcelle → conteneur
+
+### Ajouté
+- **`data/mock-expeditions.ts`** (moteur PUR) : lots d'expédition avec **ségrégation stricte**
+  (seules des parcelles « Conforme » peuvent composer un lot — le bilan de masse est interdit par
+  le RDUE) et **réconciliation des volumes** (tonnage ≤ superficie × rendement régional, le verrou
+  anti-fraude existant appliqué au lot) ; 5 jalons documentaires (composé → départ coopérative →
+  reçu port → embarqué → arrivé UE·DDS) ; GeoJSON TRACES NT du lot (parcelles d'origine enrichies
+  de la référence d'expédition) ; 3 expéditions de démonstration (EXP-2026-0001 arrivée UE,
+  0002 embarquée, 0003 en composition).
+- **Page « Expéditions » (espace exportateur)** : liste + détail (timeline 5 jalons, tableau des
+  parcelles avec certificats cliquables et plafonds, carte satellite du lot, export GeoJSON, QR de
+  vérification publique, résumé exécutif IA) + **composeur interactif** où la ségrégation SE VOIT
+  (parcelles non conformes refusées à l'écran, tonnages bornés en direct). Entrée sidebar + étape
+  du guide interactif.
+- **Page publique `/verifier-expedition`** (`?ref=EXP-…`) : le QR du dossier conteneur résout
+  publiquement — parcelles d'origine, tonnage, jalons, rappel « évaluation, pas garantie ».
+- **API `POST /api/gemini/expedition-memo`** : résumé exécutif du dossier d'expédition (faits
+  recalculés côté serveur, réécriture Gemini live, repli déterministe étiqueté).
+- **Coopérative** : bloc « Vos parcelles en expédition » (dashboard, lecture seule) — la coop voit
+  où va son cacao.
+- **Site public** : « Comment ça marche » passe à 6 temps (« Expédiez, prouvé ») ; tarifs
+  (Essentiel : 5 dossiers/mois · Pro : illimités) ; méthodologie (« Du certificat au conteneur ») ;
+  FAQ (« Suivez-vous les camions et les sacs ? » — non-revendication honnête, complémentaire SNT).
+
+### Vérifié
+- 10 nouveaux tests (`tests/expeditions.test.ts`) : ségrégation, plafonds, lots démo irréprochables,
+  GeoJSON du lot, jalons ordonnés, recherche publique, unicité des références, vue coopérative.
+
 ## v1.21.1 — 2026-07-11 — Le QR de TOUT PDF émis résout sur la vérification publique
 
 ### Corrigé

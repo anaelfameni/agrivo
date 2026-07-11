@@ -24,6 +24,14 @@ import {
   type Parcelle,
   type Statut,
 } from "@/data/mock-parcelles";
+import {
+  JALONS_ORDRE,
+  JALON_LABEL,
+  expeditionsPourCoop,
+  parcellesExpedition,
+  progressionExpedition,
+  statutExpedition,
+} from "@/data/mock-expeditions";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
@@ -334,6 +342,9 @@ export default function DashboardPage() {
             <RegistreImport />
           </div>
 
+          {/* Traçabilité aval (lecture seule) : où vont les parcelles de la coopérative */}
+          <ParcellesEnExpedition lang={lang} />
+
           {/* Recherche producteur */}
           <div className="relative">
             <Search
@@ -543,5 +554,53 @@ function VerificationRow({ parcelle: p, lang }: { parcelle: Parcelle; lang: "fr"
         </span>
       </div>
     </Link>
+  );
+}
+
+/**
+ * Traçabilité aval, en LECTURE SEULE : les expéditions de l'exportateur qui contiennent des
+ * parcelles de la coopérative. La coop voit où va son cacao (jalon documentaire courant) —
+ * cohérent avec l'étape Valorisation (« Partager le dossier avec l'exportateur »).
+ */
+function ParcellesEnExpedition({ lang }: { lang: "fr" | "en" }) {
+  const expeditions = expeditionsPourCoop(COOP_DEMO);
+  if (expeditions.length === 0) return null;
+  const en = lang === "en";
+  return (
+    <div className="card-premium p-4 sm:p-5">
+      <h2 className="flex items-center gap-2 text-sm font-semibold text-forest-950">
+        <span className="h-4 w-1 rounded-full bg-green-signal" aria-hidden />
+        {en ? "Your plots in shipments" : "Vos parcelles en expédition"}
+      </h2>
+      <p className="mt-1 text-xs text-stone-500">
+        {en
+          ? "Read-only view: your verified plots contributed to the exporter's shipment files."
+          : "Vue en lecture seule : vos parcelles vérifiées intégrées aux dossiers d'expédition de l'exportateur."}
+      </p>
+      <ul className="mt-3 space-y-2">
+        {expeditions.map((exp) => {
+          const parcellesCoop = parcellesExpedition(exp).filter((p) => p.cooperative === COOP_DEMO);
+          const prog = progressionExpedition(exp);
+          return (
+            <li key={exp.id} className="rounded-xl border border-black/[0.06] bg-white p-3">
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <p className="font-mono text-xs text-forest-950">{exp.ref}</p>
+                <p className="text-[11px] font-semibold text-green-signal">
+                  {JALON_LABEL[statutExpedition(exp).code][lang]}
+                </p>
+              </div>
+              <p className="mt-1 text-xs text-stone-600">
+                {parcellesCoop.map((p) => p.producteurNom).join(" · ")}
+              </p>
+              <div className="mt-2 flex items-center gap-1" aria-hidden>
+                {JALONS_ORDRE.map((code, i) => (
+                  <span key={code} className={`h-1 flex-1 rounded-full ${i < prog ? "bg-green-signal" : "bg-forest-950/10"}`} />
+                ))}
+              </div>
+            </li>
+          );
+        })}
+      </ul>
+    </div>
   );
 }

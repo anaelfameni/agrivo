@@ -25,6 +25,7 @@ import {
   ScrollText,
   Settings,
   ShieldCheck,
+  Ship,
   Users,
   type LucideIcon,
 } from "lucide-react";
@@ -56,6 +57,7 @@ const NAV_EXPORTER: NavItem[] = [
   { href: "/app/exportateur/cooperatives", label: { fr: "Coopératives", en: "Cooperatives" }, Icon: Building2, tour: "sidebar-cooperatives" },
   { href: "/app/exportateur/producteurs", label: { fr: "Producteurs", en: "Farmers" }, Icon: Users, tour: "sidebar-producteurs" },
   { href: "/app/exportateur/parcelles", label: { fr: "Parcelles", en: "Plots" }, Icon: Map, tour: "sidebar-parcelles" },
+  { href: "/app/exportateur/expeditions", label: { fr: "Expéditions", en: "Shipments" }, Icon: Ship, tour: "sidebar-expeditions" },
   { href: "/app/exportateur/rapports", label: { fr: "Dossiers & rapports", en: "Files & reports" }, Icon: FileText, tour: "sidebar-rapports" },
   { href: "/app/exportateur/assistant", label: { fr: "Assistant IA", en: "AI Assistant" }, Icon: MessageSquareText, tour: "sidebar-assistant" },
   { href: "/app/parametres", label: { fr: "Paramètres", en: "Settings" }, Icon: Settings },
