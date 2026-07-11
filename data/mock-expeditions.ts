@@ -226,16 +226,17 @@ export function controleEmbarquement(exp: Expedition, toutesParcelles: Parcelle[
     });
   }
 
-  // 3. Contexte coopérative : des alertes actives AILLEURS dans les coops contributrices
-  //    n'entament pas ce lot (ségrégation), mais se mentionnent au dossier acheteur.
+  // 3. Contexte coopérative : des alertes actives AILLEURS dans les coops contributrices.
+  //    La ségrégation les exclut déjà du lot → point INFORMATIF (niveau ok), jamais bloquant :
+  //    « Points d'attention avant embarquement » est réservé à ce qui demande une action.
   const coops = new Set(parcelles.map((p) => p.cooperative));
   const alertes = toutesParcelles.filter((p) => coops.has(p.cooperative) && p.alerteActive && !exp.parcelleIds.includes(p.id));
   if (alertes.length > 0) {
     points.push({
-      niveau: "attention",
+      niveau: "ok",
       code: "alertes-coop",
-      fr: `${alertes.length} alerte(s) active(s) sur d'autres parcelles des coopératives contributrices — sans effet sur ce lot (ségrégation stricte), mais à mentionner au dossier acheteur.`,
-      en: `${alertes.length} active alert(s) on other plots of the contributing cooperatives — no effect on this lot (strict segregation), but worth mentioning in the buyer file.`,
+      fr: `Pour information : ${alertes.length} alerte(s) active(s) sur d'autres parcelles des coopératives contributrices — sans effet sur ce lot (ségrégation stricte).`,
+      en: `For information: ${alertes.length} active alert(s) on other plots of the contributing cooperatives — no effect on this lot (strict segregation).`,
     });
   } else {
     points.push({
