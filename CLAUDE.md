@@ -389,6 +389,18 @@ variables CSS dans `app/globals.css`.
   décontaminé (« certifiées exactes » retiré, GPS Abidjan→Soubré, date dynamique) ; pubspec 1.8.0.
   ⚠️ Firebase initialisé mais inutilisé : laissé en place (pas de compilateur ici), à retirer
   après le jury.
+- 📱 **2e passe mobile (même session, demande Anael « mêmes cartes que le site + Whisp doit
+  marcher »)** : vérifié — AUCUN Google Maps dans le code (l'unique carte = flutter_map + tuiles
+  **Esri World Imagery, les mêmes que le site**) ; parité complétée par
+  `lib/widgets/parcelle_map_widget.dart` (fond Esri + couleurs verdict du site) posé sur : vue
+  VERDICT (polygone teinté, vue passée en scroll anti-débordement), tableau de bord EXPORTATEUR
+  (« Carte du portefeuille », 3 dossiers démo) et les 3 onglets placeholder du détail de dossier
+  (Parcelle/Analyses/Docs) remplacés par du vrai contenu ; `maxZoom: 16` (tuiles Esri absentes
+  au-delà en rural). **Whisp mobile PROUVÉ contre la prod** (`whisp-mobile-proof.mjs`, scratchpad) :
+  l'appel octet-pour-octet de `whisp_service.dart` → HTTP 200 en 10,0 s, `conforme`, `live:true`,
+  convergence réelle (Bas-Sassandra · 0,44 ha · 0 %). AndroidManifest : INTERNET/LOCATION/CAMERA/
+  RECORD_AUDIO déjà déclarées. Commandes de rebuild pour Christ (flutter clean → pub get →
+  **analyze obligatoire** → run --release → build apk → install) dans `ANALYSE_ET_CHANGEMENTS.md` §5.
 
 ### Session 26 — 2026-07-10 (veille du jury) — v1.16.0 : scan mobile réparé + hero FAQ + deck REBUILDÉ + doc équipe Jour J
 *(Les v1.8→v1.15 sont détaillées dans CHANGELOG.md — sessions non journalisées ici, voir mémoire globale.)*
