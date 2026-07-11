@@ -6,8 +6,16 @@
  * - Cache d'abord pour les assets immuables de Next (/_next/static) et les images locales.
  * - Ne touche JAMAIS aux routes API ni aux tuiles satellites tierces.
  */
-const VERSION = "agrivo-sw-v1";
-const PRECACHE = ["/hors-connexion", "/icons/icon.svg", "/icons/icon-maskable.svg"];
+const VERSION = "agrivo-sw-v2";
+const PRECACHE = [
+  "/hors-connexion",
+  "/icons/icon.svg",
+  "/icons/icon-maskable.svg",
+  "/icons/icon-192.png",
+  "/icons/icon-512.png",
+  "/icons/icon-maskable-192.png",
+  "/icons/icon-maskable-512.png",
+];
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
