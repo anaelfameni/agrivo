@@ -401,6 +401,15 @@ variables CSS dans `app/globals.css`.
   convergence réelle (Bas-Sassandra · 0,44 ha · 0 %). AndroidManifest : INTERNET/LOCATION/CAMERA/
   RECORD_AUDIO déjà déclarées. Commandes de rebuild pour Christ (flutter clean → pub get →
   **analyze obligatoire** → run --release → build apk → install) dans `ANALYSE_ET_CHANGEMENTS.md` §5.
+- ✅ **3e passe : vérité terrain finale + cohérence mobile↔site (après-midi)** : **QR vérifié de
+  bout en bout en prod** (CDP rendu mobile : `verifier-certificat?ref=AGV-2026-0417` → 7/7, badge
+  Conforme + phrase charte + Kouassi Yao + 3,2 ha ; ref bidon → « introuvable » propre) ;
+  **révision prod 48 OK / 1 KO** (= le faux positif U+202F connu de /tarifs) — 3 verdicts,
+  portefeuille 45 features, Gemini live (`mock=false`), garde-fou crédit OK. **Incohérences
+  mobile corrigées** : parcelle démo mobile déplacée zone p01 avec géométrie **≈ 3,2 ha calculée**
+  (le certif démo AGV-2026-0417 doit dire pareil que le site), « Coopeca Soubré »→« Coopérative
+  Agricole de Soubré », détail dossier 2.35→3,2 ha, cartes générées du dashboard décalées 024530+
+  (plus de collision avec 024517), périmètre calculé (plus de 315 m en dur).
 
 ### Session 26 — 2026-07-10 (veille du jury) — v1.16.0 : scan mobile réparé + hero FAQ + deck REBUILDÉ + doc équipe Jour J
 *(Les v1.8→v1.15 sont détaillées dans CHANGELOG.md — sessions non journalisées ici, voir mémoire globale.)*
