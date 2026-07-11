@@ -365,6 +365,31 @@ variables CSS dans `app/globals.css`.
 
 ## 📓 Journal de build (le plus récent en haut)
 
+### Session 27 — 2026-07-11 (JOUR DU JURY) — v1.21.0 : guide à chaque connexion démo (EN PROD) + app mobile de Christ analysée et corrigée
+- 🎓 **v1.21.0 EN PROD (commit `fdda8f7`, deploy `agrivo-kqh8nj98y…` aliasé, tag)** : le guide
+  interactif se rejoue à **CHAQUE connexion des comptes démo** (demande Anael). Mécanique :
+  `lib/tour.ts` (nouveau, clés + `reinitialiserTour()`) ; `auth-provider.login()` efface les
+  drapeaux `agrivo:tour:v2:*` pour coop/export démo ; comptes inscrits = « une fois » inchangé ;
+  pas de réouverture en re-naviguant dans la session ; bouton « ? » = relance. **110 tests** (+3
+  `tests/tour.test.ts`). **Vérifié en PROD par CDP : 14/14** (drapeau pré-posé → login → guide
+  ouvert ; Échap → drapeau reposé ; re-navigation → pas de réouverture ; coop ET exportateur) +
+  capture écran du guide ouvert sur le dashboard.
+- 📱 **App mobile de Christ (`Desktop/Agrivo (2)/Agrivo`, Flutter) : AUDIT + CORRECTIFS APPLIQUÉS**
+  (Flutter absent de cette machine → Christ recompile, doc `ANALYSE_ET_CHANGEMENTS.md` posée à la
+  racine du dossier, originaux dans `AVANT_MODIFS_BACKUP/`). Était déjà réel : GPS, QR, voix, chat
+  IA branché sur `/api/gemini/rdue-qa` (bonne archi, clé côté serveur). Corrigé : **le polygone
+  capturé circule enfin entre les écrans** (`VerificationProvider` nouveau) ; **verdict Whisp EN
+  DIRECT** pour les captures réelles via `POST /api/whisp/verify` du site (`whisp_service.dart`,
+  timeout 50 s, badge « en direct », convergence ; parcelle démo = déterministe zéro réseau,
+  doctrine sc-*) ; **certificat dynamique** (nom/carte/surface/verdict/date du jour, titre charte
+  « Certificat d'évaluation de conformité », n° démo = AGV-2026-0417 = p01 → **le QR résout en
+  vrai sur le site**) ; QR `agrivo.io`/`agrivo.com` (domaines morts) réparés ; bouton
+  « Coordonnées existantes » implémenté (dialog lat,lon, bornes CI) ; précision GPS réelle
+  affichée ; comptes démo du site reconnus ; imports à mauvaise casse corrigés ; PDF exportateur
+  décontaminé (« certifiées exactes » retiré, GPS Abidjan→Soubré, date dynamique) ; pubspec 1.8.0.
+  ⚠️ Firebase initialisé mais inutilisé : laissé en place (pas de compilateur ici), à retirer
+  après le jury.
+
 ### Session 26 — 2026-07-10 (veille du jury) — v1.16.0 : scan mobile réparé + hero FAQ + deck REBUILDÉ + doc équipe Jour J
 *(Les v1.8→v1.15 sont détaillées dans CHANGELOG.md — sessions non journalisées ici, voir mémoire globale.)*
 - 🐛 **BUG CAMÉRA TROUVÉ ET CORRIGÉ** (`step-scan.tsx`) : le flux `getUserMedia` était attaché à
