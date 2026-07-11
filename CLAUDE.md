@@ -401,6 +401,12 @@ variables CSS dans `app/globals.css`.
   convergence réelle (Bas-Sassandra · 0,44 ha · 0 %). AndroidManifest : INTERNET/LOCATION/CAMERA/
   RECORD_AUDIO déjà déclarées. Commandes de rebuild pour Christ (flutter clean → pub get →
   **analyze obligatoire** → run --release → build apk → install) dans `ANALYSE_ET_CHANGEMENTS.md` §5.
+- 🔗 **v1.21.1 EN PROD (commit `d75dd62`, deploy `agrivo-8u4s3zpbv…` aliasé, tag)** : le QR de
+  TOUT PDF que le site peut émettre résout sur `/verifier-certificat` — les certificats des
+  scénarios (AGV-2026-0600 Tanoh Michel, AGV-2026-0602 Koffi Bertrand) tombaient sur
+  « introuvable » (la page ne cherchait que PARCELLES). Nouveau `findCertificat()`
+  (mock-parcelles : portefeuille + SCENARIOS_DEMO, insensible casse/espaces) + 5 tests
+  (`tests/certificat-lookup.test.ts`, dont unicité de tous les numéros) → **115 tests**.
 - ✅ **3e passe : vérité terrain finale + cohérence mobile↔site (après-midi)** : **QR vérifié de
   bout en bout en prod** (CDP rendu mobile : `verifier-certificat?ref=AGV-2026-0417` → 7/7, badge
   Conforme + phrase charte + Kouassi Yao + 3,2 ha ; ref bidon → « introuvable » propre) ;
