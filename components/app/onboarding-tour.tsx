@@ -9,8 +9,11 @@
  * laissent l'élément surligné RÉELLEMENT cliquable (« c'est ici qu'on clique ») : cliquer dessus
  * quitte le guide et exécute l'action pour de vrai.
  *
- * Mécanique : ouverture automatique à la première arrivée sur le tableau de bord (drapeau
- * localStorage par rôle, clé v2), relance via le bouton « ? » (événement `agrivo:tour:open`),
+ * Mécanique : ouverture automatique à l'arrivée sur le tableau de bord tant que le drapeau
+ * « visite vue » (localStorage par rôle, clé v2, posé à la fermeture) est absent. Les comptes de
+ * démonstration effacent ce drapeau à CHAQUE connexion (auth-provider → lib/tour) : la visite se
+ * rejoue à toutes les connexions démo, sans se rouvrir à chaque navigation pendant la session.
+ * Relance manuelle via le bouton « ? » (événement `agrivo:tour:open`),
  * clavier (Échap ferme, ←/→ naviguent), `prefers-reduced-motion` respecté (aucune pulsation,
  * défilement instantané). Si l'élément ciblé n'existe pas (mobile, page différente), l'étape
  * se replie en carte centrée : le guide ne casse jamais.
@@ -43,6 +46,7 @@ import {
 } from "lucide-react";
 import { useAuth } from "@/components/auth-provider";
 import { useLanguage } from "@/components/language-provider";
+import { tourKey } from "@/lib/tour";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 const PAD = 10; // marge du halo autour de l'élément ciblé (px)
@@ -293,10 +297,6 @@ const UI = {
   },
 } as const;
 
-function tourKey(role: string): string {
-  return role === "exporter" ? "agrivo:tour:v2:exporter" : "agrivo:tour:v2:coop";
-}
-
 interface Rect {
   top: number;
   left: number;
@@ -342,7 +342,8 @@ export function OnboardingTour() {
     }
   }, [role]);
 
-  // Ouverture automatique à la première visite (clé v2 : la nouvelle visite se montre une fois à tous).
+  // Ouverture automatique tant que la visite n'a pas été vue. Les comptes démo effacent le
+  // drapeau à chaque connexion (auth-provider) : la visite se rejoue à chaque login démo.
   React.useEffect(() => {
     if (loading || !user || !surAccueil || open) return;
     try {

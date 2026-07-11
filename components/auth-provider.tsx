@@ -12,6 +12,7 @@
  */
 
 import * as React from "react";
+import { reinitialiserTour } from "@/lib/tour";
 
 export type UserRole = "admin" | "coop" | "exporter";
 
@@ -136,6 +137,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (!e || !password) return { ok: false, error: "Renseignez votre e-mail et votre mot de passe." };
       for (const acc of [ADMIN_ACCOUNT, COOP_DEMO_ACCOUNT, EXPORT_DEMO_ACCOUNT]) {
         if (e === acc.email && password === acc.password) {
+          // Comptes de démonstration : le guide interactif se rejoue à CHAQUE connexion
+          // (les comptes créés par inscription gardent le comportement « une seule fois »).
+          if (acc.role !== "admin") reinitialiserTour();
           persist({ email: acc.email, nom: acc.nom, organisation: acc.organisation, role: acc.role });
           return { ok: true, role: acc.role };
         }

@@ -20,6 +20,11 @@
 > verdict vient d'être calculé en direct par l'outil officiel de la FAO, avec les données nationales
 > ivoiriennes du BNETD — voici le jeton d'analyse. »
 
+> 🎓 **v1.21 — le guide interactif s'ouvre à CHAQUE connexion des comptes démo** (demande Anael) :
+> à l'arrivée sur le tableau de bord, la visite guidée « spotlight » démarre seule (~0,7 s). Pour la
+> dérouler devant quelqu'un : flèches ← →. Pour la passer immédiatement : **Échap** (ou « Passer le
+> guide »). Elle ne se rouvre pas en navigant pendant la session ; le bouton « ? » la relance.
+
 > Anti-sèche intégrée à l'app : **Ctrl+Shift+D** sur n'importe quelle page ouvre le guide présentateur.
 
 ## Comptes

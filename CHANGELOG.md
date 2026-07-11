@@ -3,6 +3,21 @@
 Versioning sémantique (MAJOR.MINOR.PATCH). Chaque release liste ce qui est ajouté, corrigé et
 vérifié, conformément à l'étape 8 du pipeline « Du besoin à la Release ».
 
+## v1.21.0 — 2026-07-11 — Guide interactif rejoué à CHAQUE connexion des comptes démo
+
+### Modifié
+- **Le guide interactif (visite « spotlight ») s'ouvre désormais à TOUTES les connexions des
+  comptes de démonstration** (`coop@test.com`, `export@test.com`), plus seulement à la première :
+  la connexion démo efface les drapeaux « visite vue » (`agrivo:tour:v2:*`). Dans une même session,
+  le guide ne se rouvre pas à chaque retour au tableau de bord (anti-agacement) ; le bouton « ? »
+  reste la relance manuelle. Les comptes créés par inscription gardent le comportement « une fois ».
+- Clés et réinitialisation du guide extraites dans **`lib/tour.ts`** (partagé entre
+  `onboarding-tour` et `auth-provider`, évite tout import circulaire).
+
+### Vérifié
+- 3 nouveaux tests (`tests/tour.test.ts`) : mapping rôle→clé, réinitialisation qui n'efface que les
+  drapeaux du guide, robustesse sans stockage. Gates complets (tsc · Vitest · build).
+
 ## v1.20.1 — 2026-07-11 — Grille tarifaire structurée (analyse de marché) : paliers, sponsoring, Enterprise
 
 ### Ajouté

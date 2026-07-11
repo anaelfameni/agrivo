@@ -22,7 +22,12 @@
 >   11 indicateurs + jeton à l'étape analyse, ~8-30 s (maxDuration 60). Scénarios `sc-*`/force =
 >   toujours déterministes ; repli garanti. IA générative Gemini réelle via `GEMINI_API_KEY`
 >   (OCR, assistant 39 faits, mémos, dossiers). ⚠️ Rotation des 2 clés APRÈS le jury.
-> - **Qualité** : 92+ tests Vitest, CI verte, tags jusqu'à v1.18.1+, prod `agrivo-io.vercel.app`
+> - **Guide interactif (v1.21)** : la visite « spotlight » se rejoue à **CHAQUE connexion des
+>   comptes démo** (login démo → `reinitialiserTour()` de `lib/tour.ts` efface les drapeaux
+>   `agrivo:tour:v2:*`) ; comptes inscrits = une seule fois ; bouton « ? » = relance manuelle.
+> - **App mobile de Christ** : dossier `Desktop/Agrivo (2)/Agrivo` (Flutter) analysé et corrigé le
+>   11/07 — voir `ANALYSE_ET_CHANGEMENTS.md` dans ce dossier ; Christ doit recompiler l'APK.
+> - **Qualité** : 110 tests Vitest, CI verte, tags jusqu'à v1.21.0, prod `agrivo-io.vercel.app`
 >   (réassigner l'alias à chaque deploy). Polices réelles : Space Grotesk / Geist / Geist Mono.
 > - Interface **FR/EN uniquement** (dioula/baoulé retirés). Statuts verbatim, « évaluation »
 >   jamais « garantie », zéro % inventé. Docs de construction archivés dans `docs/archives/`.
