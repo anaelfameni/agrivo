@@ -20,6 +20,14 @@
 > verdict vient d'être calculé en direct par l'outil officiel de la FAO, avec les données nationales
 > ivoiriennes du BNETD — voici le jeton d'analyse. »
 
+> 🧭 **v1.24 — l'espace exportateur est un VRAI produit client** : « Composer une expédition » est
+> un assistant en 3 étapes (Parcelles → Infos du lot → Récapitulatif + contrôle pré-embarquement
+> automatique, boutons Suivant/Retour) ; la timeline a « Déclarer le jalon suivant » (Embarqué
+> exige navire + conteneur) ; chaque dossier génère : GeoJSON TRACES NT, **PDF acheteur avec QR**,
+> **CSV des parcelles**, résumé IA, **contrôle pré-embarquement IA** (5 points factuels, verdict
+> « Prêt à embarquer »). « Ajouter une coopérative » liste les 6 pièces attendues + upload
+> multi-documents (métadonnées seules conservées — dire « les fichiers restent sur votre poste »).
+
 > 🚢 **NOUVEAU v1.22 — module « Expéditions » : la traçabilité documentaire parcelle → conteneur.**
 > Espace exportateur → Expéditions : 3 dossiers de démonstration (EXP-2026-0001 = ARRIVÉ UE, les
 > 5 jalons au vert — le lot à montrer). Démo 60 s : ouvrir EXP-2026-0001 → timeline des 5 jalons →

@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { motion, useReducedMotion } from "framer-motion";
-import { Building2, FileUp, Loader2, MapPin, Trash2, X } from "lucide-react";
+import { Building2, ClipboardList, FileUp, Loader2, MapPin, Paperclip, Trash2, X } from "lucide-react";
 import { useLanguage } from "@/components/language-provider";
 import { FILIERES, type FiliereId } from "@/config/filieres";
 import { ZONE_CI, auditerRegistre, parserRegistre, type AuditRegistre } from "@/lib/registre/audit";
@@ -42,6 +42,20 @@ const COPY = {
     lon: "Longitude",
     siegeInvalide: "Coordonnées hors de l'emprise ivoirienne (lat 4 à 11, lon −9 à −2).",
     filieres: "Filières de la coopérative",
+    checklistTitre: "Ce dont AGRIVO a besoin pour bien analyser une coopérative",
+    checklist: [
+      "Le registre de parcelles (GeoJSON, CSV ou KML) — audité immédiatement selon la règle RDUE ; c'est la pièce clé.",
+      "L'agrément ou les statuts de la coopérative (PDF).",
+      "La liste des producteurs avec leurs numéros de carte (CSV ou Excel).",
+      "Les certificats de durabilité en cours (Rainforest Alliance, Fairtrade…).",
+      "Un modèle de la carte producteur utilisée (photo).",
+      "Les attestations de consentement des producteurs (loi ivoirienne n° 2013-450, ARTCI).",
+    ],
+    checklistNote: "Seuls le nom et la région bloquent l'ajout : les pièces peuvent être complétées plus tard, mais plus le dossier est complet, plus l'analyse est fiable.",
+    pieces: "Pièces du dossier (optionnelles)",
+    piecesAide: "Joignez les documents ci-dessus (PDF, images, CSV, Excel). Les fichiers restent sur votre poste : seule la liste des pièces est conservée au dossier.",
+    ajouterPieces: "Joindre des documents",
+    retirerPiece: "Retirer cette pièce",
     registre: "Registre de parcelles partagé (optionnel)",
     registreAide: "GeoJSON, CSV ou KML. Audité immédiatement selon la règle RDUE — le fichier ne quitte jamais votre navigateur.",
     choisir: "Choisir un fichier",
@@ -79,6 +93,20 @@ const COPY = {
     lon: "Longitude",
     siegeInvalide: "Coordinates outside the Ivorian extent (lat 4 to 11, lon −9 to −2).",
     filieres: "Cooperative's commodities",
+    checklistTitre: "What AGRIVO needs to properly analyse a cooperative",
+    checklist: [
+      "The plot register (GeoJSON, CSV or KML) — audited immediately against the EUDR rule; the key document.",
+      "The cooperative's licence or statutes (PDF).",
+      "The farmer list with card numbers (CSV or Excel).",
+      "Current sustainability certificates (Rainforest Alliance, Fairtrade…).",
+      "A sample of the farmer card in use (photo).",
+      "Farmer consent attestations (Ivorian law No. 2013-450, ARTCI).",
+    ],
+    checklistNote: "Only the name and region block the addition: documents can be completed later, but the more complete the file, the more reliable the analysis.",
+    pieces: "File attachments (optional)",
+    piecesAide: "Attach the documents above (PDF, images, CSV, Excel). Files stay on your computer: only the list of attachments is kept in the record.",
+    ajouterPieces: "Attach documents",
+    retirerPiece: "Remove this attachment",
     registre: "Shared plot register (optional)",
     registreAide: "GeoJSON, CSV or KML. Audited immediately against the EUDR rule — the file never leaves your browser.",
     choisir: "Choose a file",
@@ -131,6 +159,31 @@ export function AjouterCooperative({
   const [auditErr, setAuditErr] = React.useState<string | null>(null);
   const [analyse, setAnalyse] = React.useState(false);
   const fileRef = React.useRef<HTMLInputElement>(null);
+  const [pieces, setPieces] = React.useState<{ nom: string; taille: number; categorie: string }[]>([]);
+  const piecesRef = React.useRef<HTMLInputElement>(null);
+
+  /** Catégorie lisible déduite de l'extension — pour la liste des pièces au dossier. */
+  function categoriePiece(nom: string): string {
+    const ext = nom.toLowerCase().split(".").pop() ?? "";
+    if (["pdf"].includes(ext)) return "PDF";
+    if (["jpg", "jpeg", "png", "webp", "heic"].includes(ext)) return lang === "en" ? "Photo" : "Photo";
+    if (["csv", "xlsx", "xls"].includes(ext)) return lang === "en" ? "Spreadsheet" : "Tableur";
+    if (["geojson", "json", "kml"].includes(ext)) return lang === "en" ? "Geodata" : "Géodonnées";
+    return lang === "en" ? "Document" : "Document";
+  }
+
+  function onPieces(e: React.ChangeEvent<HTMLInputElement>) {
+    const fichiers = Array.from(e.target.files ?? []);
+    if (fichiers.length === 0) return;
+    setPieces((prev) => {
+      const existants = new Set(prev.map((p) => p.nom));
+      const nouveaux = fichiers
+        .filter((f) => !existants.has(f.name))
+        .map((f) => ({ nom: f.name, taille: f.size, categorie: categoriePiece(f.name) }));
+      return [...prev, ...nouveaux];
+    });
+    if (piecesRef.current) piecesRef.current.value = "";
+  }
 
   function toggleFiliere(id: FiliereId) {
     setFilieres((prev) => (prev.includes(id) ? prev.filter((f) => f !== id) : [...prev, id]));
@@ -197,6 +250,7 @@ export function AjouterCooperative({
       producteursDeclares: effectif.trim() ? Math.max(0, Math.round(Number(effectif))) || undefined : undefined,
       filieres: filieres.length ? filieres : ["cacao"],
       audit: audit ? { pretPct: audit.pretPct, total: audit.total, anomalies: audit.anomalies.length } : undefined,
+      documents: pieces.length > 0 ? pieces : undefined,
     });
     onAjoutee(coop);
   }
@@ -226,6 +280,23 @@ export function AjouterCooperative({
           {t.titre}
         </h2>
         <p className="mt-1.5 max-w-2xl text-xs text-stone-500">{t.sous}</p>
+
+        {/* Check-list documentaire : ce qu'AGRIVO attend pour une analyse fiable */}
+        <div className="mt-4 rounded-xl border border-green-signal/25 bg-green-signal/[0.05] p-3.5">
+          <p className="flex items-center gap-1.5 text-xs font-semibold text-forest-950">
+            <ClipboardList size={14} strokeWidth={2} className="text-green-signal" aria-hidden />
+            {t.checklistTitre}
+          </p>
+          <ol className="mt-2 space-y-1 pl-1">
+            {t.checklist.map((item, i) => (
+              <li key={i} className="flex items-start gap-2 text-xs leading-relaxed text-stone-600">
+                <span className="num mt-px shrink-0 text-[10px] font-semibold text-green-signal">{i + 1}.</span>
+                {item}
+              </li>
+            ))}
+          </ol>
+          <p className="mt-2 text-[0.7rem] italic text-stone-500">{t.checklistNote}</p>
+        </div>
 
         {/* Identité */}
         <div className="mt-5 grid gap-4 sm:grid-cols-2">
@@ -347,6 +418,55 @@ export function AjouterCooperative({
             <p className="mt-2 rounded-xl border border-red-block/25 bg-red-block/[0.05] px-3.5 py-2.5 text-xs text-red-block" role="alert">
               {auditErr}
             </p>
+          )}
+        </fieldset>
+
+        {/* Pièces du dossier : multi-fichiers, métadonnées seules conservées */}
+        <fieldset className="mt-5">
+          <legend className="flex items-center gap-1.5 text-xs font-medium text-forest-950">
+            <Paperclip size={13} strokeWidth={2} aria-hidden className="text-green-signal" />
+            {t.pieces}
+          </legend>
+          <p className="mt-1 max-w-xl text-[0.7rem] text-stone-400">{t.piecesAide}</p>
+          <div className="mt-2">
+            <input
+              ref={piecesRef}
+              type="file"
+              multiple
+              accept=".pdf,.jpg,.jpeg,.png,.webp,.csv,.xlsx,.xls,.geojson,.json,.kml"
+              onChange={onPieces}
+              className="sr-only"
+              id="pieces-coop-files"
+            />
+            <label
+              htmlFor="pieces-coop-files"
+              className="inline-flex cursor-pointer items-center gap-2 rounded-full border border-black/10 bg-white px-4 py-2 text-xs font-semibold text-forest-950 outline-none transition-colors hover:border-green-signal/40 focus-within:ring-2 focus-within:ring-green-signal"
+            >
+              <Paperclip size={13} strokeWidth={2} aria-hidden />
+              {t.ajouterPieces}
+            </label>
+          </div>
+          {pieces.length > 0 && (
+            <ul className="mt-2.5 space-y-1.5">
+              {pieces.map((p) => (
+                <li key={p.nom} className="flex items-center justify-between gap-2 rounded-lg border border-black/[0.06] bg-white px-3 py-2 text-xs">
+                  <span className="flex min-w-0 items-center gap-2">
+                    <span className="shrink-0 rounded bg-green-signal/10 px-1.5 py-0.5 text-[10px] font-semibold text-green-signal">{p.categorie}</span>
+                    <span className="num truncate text-forest-950">{p.nom}</span>
+                    <span className="num shrink-0 text-stone-400">{Math.max(1, Math.round(p.taille / 1024))} Ko</span>
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setPieces((prev) => prev.filter((x) => x.nom !== p.nom))}
+                    aria-label={t.retirerPiece}
+                    title={t.retirerPiece}
+                    className="grid h-6 w-6 shrink-0 place-items-center rounded-full text-stone-400 outline-none transition-colors hover:bg-red-block/10 hover:text-red-block focus-visible:ring-2 focus-visible:ring-red-block/40"
+                  >
+                    <Trash2 size={12} strokeWidth={2} />
+                  </button>
+                </li>
+              ))}
+            </ul>
           )}
         </fieldset>
 

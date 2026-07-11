@@ -35,6 +35,8 @@ const COPY = {
     fiche: { parcelles: "Parcelles vérifiées", declares: "producteurs déclarés", voir: "Voir ses parcelles" },
     importee: "Ajoutée par vous",
     auditResume: (pct: number, total: number) => `Registre importé : ${pct} % prêt (${total} parcelles)`,
+    piecesSg: "pièce au dossier",
+    piecesPl: "pièces au dossier",
     sansAudit: "Aucun registre importé pour l'instant.",
     retirer: "Retirer cette coopérative",
     ajouteeOk: (nom: string) => `« ${nom} » ajoutée à votre portefeuille.`,
@@ -50,6 +52,8 @@ const COPY = {
     fiche: { parcelles: "Plots verified", declares: "declared farmers", voir: "View its plots" },
     importee: "Added by you",
     auditResume: (pct: number, total: number) => `Imported register: ${pct}% ready (${total} plots)`,
+    piecesSg: "attachment on file",
+    piecesPl: "attachments on file",
     sansAudit: "No register imported yet.",
     retirer: "Remove this cooperative",
     ajouteeOk: (nom: string) => `"${nom}" added to your portfolio.`,
@@ -294,6 +298,13 @@ export default function CooperativesPage() {
                   ) : (
                     <p className="mt-3 text-xs text-stone-500">
                       {f.locale?.audit ? t.auditResume(f.locale.audit.pretPct, f.locale.audit.total) : t.sansAudit}
+                    </p>
+                  )}
+
+                  {/* Pièces jointes au dossier (métadonnées locales — jamais téléversées) */}
+                  {f.locale?.documents && f.locale.documents.length > 0 && (
+                    <p className="mt-1.5 text-[0.7rem] text-stone-500">
+                      📎 {f.locale.documents.length} {f.locale.documents.length > 1 ? t.piecesPl : t.piecesSg}
                     </p>
                   )}
 

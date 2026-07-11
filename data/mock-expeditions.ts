@@ -159,6 +159,132 @@ export function expeditionsPourCoop(cooperative: string): Expedition[] {
   return EXPEDITIONS.filter((e) => parcellesExpedition(e).some((p) => p.cooperative === cooperative));
 }
 
+/* ------------------------------------------------------------------------------------------
+ * Contrôle PRÉ-EMBARQUEMENT — le screening documentaire du lot avant départ.
+ * Niveaux QUALITATIFS uniquement (jamais de score inventé) ; chaque point est un fait
+ * recalculé depuis les données du lot. Référence temporelle = date de composition du lot
+ * (déterministe : mêmes résultats en test, en démo et en production).
+ * ---------------------------------------------------------------------------------------- */
+
+export interface PointControle {
+  niveau: "ok" | "attention";
+  code: "plafonds" | "fraicheur" | "alertes-coop" | "references-ddr" | "logistique";
+  fr: string;
+  en: string;
+}
+
+export interface ControleEmbarquement {
+  /** « pret » si aucun point d'attention, sinon « attention ». Jamais de faux « prêt ». */
+  niveau: "pret" | "attention";
+  points: PointControle[];
+}
+
+/** Jours entre deux dates ISO (b - a). */
+function joursEntre(aIso: string, bIso: string): number {
+  return Math.round((new Date(bIso).getTime() - new Date(aIso).getTime()) / 86_400_000);
+}
+
+export function controleEmbarquement(exp: Expedition, toutesParcelles: Parcelle[]): ControleEmbarquement {
+  const parcelles = parcellesExpedition(exp);
+  const points: PointControle[] = [];
+
+  // 1. Plafonds anti-fraude : un prélèvement > 90 % du plafond mérite une re-pesée avant départ.
+  const ratios = parcelles.map((p) => (exp.tonnages[p.id] ?? 0) / Math.max(plafondTonnes(p), 1e-9));
+  const tendues = parcelles.filter((_, i) => ratios[i] > 0.9);
+  const moyen = Math.round((ratios.reduce((s, r) => s + r, 0) / Math.max(ratios.length, 1)) * 100);
+  if (tendues.length > 0) {
+    points.push({
+      niveau: "attention",
+      code: "plafonds",
+      fr: `${tendues.length} prélèvement(s) au-delà de 90 % du plafond anti-fraude (${tendues.map((p) => p.producteurNom).join(", ")}) : re-vérifier les pesées avant embarquement.`,
+      en: `${tendues.length} draw(s) above 90% of the anti-fraud cap (${tendues.map((p) => p.producteurNom).join(", ")}): re-check weighings before loading.`,
+    });
+  } else {
+    points.push({
+      niveau: "ok",
+      code: "plafonds",
+      fr: `Volumes réconciliés : utilisation moyenne de ${moyen} % des plafonds anti-fraude, marge saine sur chaque parcelle.`,
+      en: `Volumes reconciled: average use of ${moyen}% of the anti-fraud caps, healthy margin on every plot.`,
+    });
+  }
+
+  // 2. Fraîcheur des vérifications satellites à la date de composition du lot.
+  const agees = parcelles.filter((p) => joursEntre(p.dateVerification, exp.creeLe) > 30);
+  if (agees.length > 0) {
+    points.push({
+      niveau: "attention",
+      code: "fraicheur",
+      fr: `${agees.length} parcelle(s) vérifiée(s) plus de 30 jours avant la composition du lot : une re-vérification satellite est conseillée avant l'embarquement.`,
+      en: `${agees.length} plot(s) verified more than 30 days before the lot was composed: a satellite re-verification is advised before loading.`,
+    });
+  } else {
+    points.push({
+      niveau: "ok",
+      code: "fraicheur",
+      fr: "Toutes les vérifications satellites datent de moins de 30 jours à la composition du lot.",
+      en: "All satellite verifications are less than 30 days old at lot composition.",
+    });
+  }
+
+  // 3. Contexte coopérative : des alertes actives AILLEURS dans les coops contributrices
+  //    n'entament pas ce lot (ségrégation), mais se mentionnent au dossier acheteur.
+  const coops = new Set(parcelles.map((p) => p.cooperative));
+  const alertes = toutesParcelles.filter((p) => coops.has(p.cooperative) && p.alerteActive && !exp.parcelleIds.includes(p.id));
+  if (alertes.length > 0) {
+    points.push({
+      niveau: "attention",
+      code: "alertes-coop",
+      fr: `${alertes.length} alerte(s) active(s) sur d'autres parcelles des coopératives contributrices — sans effet sur ce lot (ségrégation stricte), mais à mentionner au dossier acheteur.`,
+      en: `${alertes.length} active alert(s) on other plots of the contributing cooperatives — no effect on this lot (strict segregation), but worth mentioning in the buyer file.`,
+    });
+  } else {
+    points.push({
+      niveau: "ok",
+      code: "alertes-coop",
+      fr: "Aucune alerte active dans les coopératives contributrices.",
+      en: "No active alert in the contributing cooperatives.",
+    });
+  }
+
+  // 4. Références DDR : chaque parcelle conforme devrait porter la sienne au dossier.
+  const sansDdr = parcelles.filter((p) => !p.referenceDDR);
+  if (sansDdr.length > 0) {
+    points.push({
+      niveau: "attention",
+      code: "references-ddr",
+      fr: `${sansDdr.length} parcelle(s) sans référence DDR enregistrée : compléter le dossier avant la déclaration.`,
+      en: `${sansDdr.length} plot(s) without a recorded DDR reference: complete the file before filing.`,
+    });
+  } else {
+    points.push({
+      niveau: "ok",
+      code: "references-ddr",
+      fr: `Références DDR présentes pour les ${parcelles.length} parcelles du lot.`,
+      en: `DDR references present for all ${parcelles.length} plots in the lot.`,
+    });
+  }
+
+  // 5. Logistique documentaire : navire et conteneur à renseigner avant l'embarquement.
+  const dernierJalon = statutExpedition(exp).code;
+  if ((dernierJalon === "compose" || dernierJalon === "depart-coop" || dernierJalon === "recu-port") && (!exp.navire || !exp.numeroConteneur)) {
+    points.push({
+      niveau: "attention",
+      code: "logistique",
+      fr: "Navire et numéro de conteneur à renseigner avant le jalon « Embarqué ».",
+      en: "Vessel and container number to be filled in before the \"Loaded\" milestone.",
+    });
+  } else {
+    points.push({
+      niveau: "ok",
+      code: "logistique",
+      fr: "Informations logistiques complètes pour le stade actuel du lot.",
+      en: "Logistics information complete for the lot's current stage.",
+    });
+  }
+
+  return { niveau: points.some((p) => p.niveau === "attention") ? "attention" : "pret", points };
+}
+
 /**
  * Trois expéditions de démonstration, composées UNIQUEMENT de parcelles conformes existantes
  * (les tonnages respectent les plafonds — vérifié par les tests) :
@@ -180,7 +306,8 @@ export const EXPEDITIONS: Expedition[] = [
     codeSH: "1801",
     filiere: "cacao",
     parcelleIds: ["p01", "p02", "p03", "p04"],
-    tonnages: { p01: 1.9, p02: 1.5, p03: 2.8, p04: 1.1 },
+    // ~78-80 % des plafonds anti-fraude : marge saine, le contrôle pré-embarquement sort « Prêt ».
+    tonnages: { p01: 1.5, p02: 1.2, p03: 2.3, p04: 0.9 },
     jalons: [
       { code: "compose", date: "2026-06-12" },
       { code: "depart-coop", date: "2026-06-15", note: { fr: "Coopérative Agricole de Soubré", en: "Soubré Agricultural Cooperative" } },

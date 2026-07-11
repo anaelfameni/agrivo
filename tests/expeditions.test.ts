@@ -3,6 +3,7 @@ import {
   EXPEDITIONS,
   JALONS_ORDRE,
   composerExpedition,
+  controleEmbarquement,
   expeditionFeatureCollection,
   expeditionsPourCoop,
   findExpedition,
@@ -12,7 +13,7 @@ import {
   statutExpedition,
   tonnageExpedition,
 } from "@/data/mock-expeditions";
-import { getParcelle, COOP_DEMO } from "@/data/mock-parcelles";
+import { getParcelle, COOP_DEMO, PARCELLES } from "@/data/mock-parcelles";
 
 describe("expéditions — ségrégation et réconciliation (règles RDUE)", () => {
   it("refuse toute parcelle non conforme dans un lot (ségrégation, jamais de bilan de masse)", () => {
@@ -73,7 +74,7 @@ describe("expéditions — dossier GeoJSON TRACES NT du lot", () => {
   });
 
   it("tonnage total = somme des prélèvements", () => {
-    expect(tonnageExpedition(EXPEDITIONS[0])).toBeCloseTo(7.3, 5); // 1.9+1.5+2.8+1.1
+    expect(tonnageExpedition(EXPEDITIONS[0])).toBeCloseTo(5.9, 5); // 1.5+1.2+2.3+0.9
   });
 });
 
@@ -105,5 +106,39 @@ describe("expéditions — jalons, recherche publique et vue coopérative", () =
     const pourCoop = expeditionsPourCoop(COOP_DEMO);
     expect(pourCoop.map((e) => e.ref)).toContain("EXP-2026-0001");
     expect(pourCoop.map((e) => e.ref)).not.toContain("EXP-2026-0002"); // café UCACO Man
+  });
+});
+
+describe("expéditions — contrôle pré-embarquement (screening IA, faits déterministes)", () => {
+  it("rend toujours les 5 points de contrôle, chacun bilingue", () => {
+    const c = controleEmbarquement(EXPEDITIONS[0], PARCELLES);
+    expect(c.points).toHaveLength(5);
+    expect(c.points.map((p) => p.code).sort()).toEqual(
+      ["alertes-coop", "fraicheur", "logistique", "plafonds", "references-ddr"],
+    );
+    for (const p of c.points) {
+      expect(p.fr.length).toBeGreaterThan(10);
+      expect(p.en.length).toBeGreaterThan(10);
+    }
+  });
+
+  it("signale un prélèvement au-delà de 90 % du plafond (jamais de faux « prêt »)", () => {
+    const exp = { ...EXPEDITIONS[0], tonnages: { ...EXPEDITIONS[0].tonnages, p01: plafondTonnes(getParcelle("p01")!) * 0.95 } };
+    const c = controleEmbarquement(exp, PARCELLES);
+    const plafonds = c.points.find((p) => p.code === "plafonds")!;
+    expect(plafonds.niveau).toBe("attention");
+    expect(c.niveau).toBe("attention");
+  });
+
+  it("le lot de démonstration EXP-2026-0001 a des volumes sous 90 % des plafonds", () => {
+    const c = controleEmbarquement(EXPEDITIONS[0], PARCELLES);
+    expect(c.points.find((p) => p.code === "plafonds")!.niveau).toBe("ok");
+    expect(c.points.find((p) => p.code === "references-ddr")!.niveau).toBe("ok");
+  });
+
+  it("un lot en composition sans navire reçoit le point logistique", () => {
+    const c = controleEmbarquement(EXPEDITIONS[2], PARCELLES); // exp3 : composé, sans navire
+    expect(c.points.find((p) => p.code === "logistique")!.niveau).toBe("attention");
+    expect(c.niveau).toBe("attention");
   });
 });

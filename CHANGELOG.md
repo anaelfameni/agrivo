@@ -3,6 +3,50 @@
 Versioning sémantique (MAJOR.MINOR.PATCH). Chaque release liste ce qui est ajouté, corrigé et
 vérifié, conformément à l'étape 8 du pipeline « Du besoin à la Release ».
 
+## v1.24.0 — 2026-07-11 — Espace exportateur complet (vision client) : assistant d'expédition 3 étapes, jalons déclarables, documents
+
+### Ajouté
+- **Composeur d'expédition = assistant en 3 étapes avec Suivant/Retour** (demande Anael : il
+  manquait les boutons « Suivant ») : ① Parcelles & tonnages (ségrégation visible, plafonds
+  bornés) → ② Informations du lot (acheteur, pays, ports, navire/conteneur optionnels) →
+  ③ Récapitulatif + **contrôle pré-embarquement automatique** (moteur pur côté client) → création
+  → le dossier s'ouvre directement.
+- **Jalons DÉCLARABLES** : bouton « Déclarer le jalon suivant » sur la timeline (composé → départ
+  coopérative → reçu port → embarqué → arrivé UE). Le passage à « Embarqué » exige navire + n° de
+  conteneur (mini-formulaire). État de session — les données de démo ne sont jamais mutées.
+- **« Dossier d'expédition (PDF) »** : le document acheteur imprimable (@react-pdf/renderer à la
+  demande) — parcelles d'origine, tonnages/plafonds, jalons datés, QR de vérification publique,
+  mention DDS verbatim. FR/EN.
+- **« Liste des parcelles (CSV) »** : export tableur du lot (producteur;carte;certificat;
+  coopérative;région;ha;tonnes;référence DDR), BOM UTF-8 pour Excel.
+- **Suppression d'un lot de session** (les dossiers de démonstration restent intouchables).
+- **« Ajouter une coopérative » : check-list documentaire + pièces multi-fichiers** (demande
+  Anael) : encart « Ce dont AGRIVO a besoin pour bien analyser une coopérative » (6 pièces :
+  registre, agrément/statuts, liste des producteurs, certificats de durabilité, modèle de carte,
+  consentements ARTCI) + section « Pièces du dossier » multi-upload — les fichiers restent sur le
+  poste, seules les métadonnées sont conservées ; « N pièces au dossier » affiché sur la carte
+  coopérative.
+
+## v1.23.0 — 2026-07-11 — Contrôle pré-embarquement (IA) : le screening du lot avant départ
+
+### Ajouté
+- **« Contrôle pré-embarquement (IA) »** sur chaque dossier d'expédition — le 7ᵉ usage IA en
+  production. **5 points de contrôle factuels** recalculés côté serveur
+  (`controleEmbarquement()`, pur et testé) : plafonds anti-fraude (> 90 % signalé), fraîcheur des
+  vérifications satellites (> 30 j à la composition), alertes actives dans les coopératives
+  contributrices (contexte, sans effet sur le lot — ségrégation), références DDR, logistique
+  (navire/conteneur avant « Embarqué »). Verdict QUALITATIF « Prêt à embarquer » /
+  « Points d'attention » — jamais de score inventé, jamais de faux « prêt ». Note de synthèse
+  rédigée par Gemini (live, repli déterministe étiqueté) via `POST /api/gemini/controle-embarquement`.
+- Tonnages du lot démo EXP-2026-0001 ramenés à ~78-80 % des plafonds (5,9 t) : le lot du jury
+  sort « Prêt à embarquer » ; EXP-2026-0003 (en composition) montre les points d'attention.
+
+### Vérifié
+- 4 nouveaux tests (5 points toujours rendus et bilingues, seuil 90 %, lot démo sous les
+  plafonds, point logistique du lot en composition). **Vérification v1.22 complète au préalable :
+  révision prod 48 OK/1 faux positif connu + 17/17 contrôles CDP in-app (résumé IA « en direct »
+  confirmé à l'écran, ségrégation visible, bloc coop, EN).**
+
 ## v1.22.0 — 2026-07-11 — Module « Expéditions » : traçabilité documentaire parcelle → conteneur
 
 ### Ajouté

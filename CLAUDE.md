@@ -401,6 +401,22 @@ variables CSS dans `app/globals.css`.
   convergence réelle (Bas-Sassandra · 0,44 ha · 0 %). AndroidManifest : INTERNET/LOCATION/CAMERA/
   RECORD_AUDIO déjà déclarées. Commandes de rebuild pour Christ (flutter clean → pub get →
   **analyze obligatoire** → run --release → build apk → install) dans `ANALYSE_ET_CHANGEMENTS.md` §5.
+- 🧭 **v1.23.0 + v1.24.0 — ESPACE EXPORTATEUR COMPLET (vision client, demande Anael)** :
+  v1.23 = **contrôle pré-embarquement IA** (`controleEmbarquement()` pur dans mock-expeditions :
+  5 points factuels — plafonds > 90 %, fraîcheur > 30 j, alertes coop, références DDR,
+  logistique — verdict qualitatif « Prêt/Attention », note Gemini via
+  `/api/gemini/controle-embarquement`, 4 tests, tonnages EXP-2026-0001 ramenés à 5,9 t ≈ 78 % des
+  plafonds pour sortir « Prêt »). v1.24 = **composeur en ASSISTANT 3 ÉTAPES** (Parcelles →
+  Infos lot → Récap + contrôle auto client-side, Suivant/Retour — les boutons manquants signalés
+  par Anael) ; **jalons DÉCLARABLES** (« Déclarer le jalon suivant », Embarqué exige
+  navire+conteneur, état de session fusionné — jamais de mutation des constantes) ; **PDF
+  acheteur** (`components/exportateur/expedition-pdf.tsx`, react-pdf dynamique, QR public,
+  mention DDS) ; **CSV des parcelles** (BOM UTF-8) ; suppression lot session ; **« Ajouter une
+  coopérative » : check-list 6 pièces + multi-upload** (métadonnées seules dans
+  `CoopLocale.documents`, « N pièces au dossier » sur la carte). ⚠️ Leçon heredoc : un bloc TSX
+  de 300+ lignes via heredoc bash = parse error silencieux → écrire en scratch (Write) puis
+  `cat file >> page`. Pitch v3 sur le Bureau (début verbatim d'Anael + « 1 % » + 5 gestes dont
+  conteneur + 7 usages IA + Q&A 11 réponses).
 - 🚢 **v1.22.0 — MODULE « EXPÉDITIONS » (traçabilité DOCUMENTAIRE parcelle → conteneur)**, demandé
   par Anael pour « frôler le 20/20 », recherche marché faite (osapiens/Koltiva/TraceX : lot =
   parcelles assignées + ségrégation + DDS par expédition). Livré : `data/mock-expeditions.ts`

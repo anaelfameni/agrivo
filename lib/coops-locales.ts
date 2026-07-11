@@ -22,6 +22,12 @@ export interface CoopLocale {
   ajouteeLe: string;
   /** Résumé de l'audit RDUE du registre partagé (si un fichier a été importé). */
   audit?: { pretPct: number; total: number; anomalies: number };
+  /**
+   * Pièces du dossier de la coopérative (agrément, liste des producteurs, certificats de
+   * durabilité, consentements…). MÉTADONNÉES uniquement : les fichiers restent sur le poste
+   * de l'exportateur, ils ne sont jamais téléversés.
+   */
+  documents?: { nom: string; taille: number; categorie: string }[];
 }
 
 const KEY = "agrivo:coops";
