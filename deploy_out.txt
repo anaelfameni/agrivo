@@ -1,0 +1,122 @@
+<claude-code-hint v="1" type="plugin" value="vercel@claude-plugins-official" />
+Vercel CLI 54.20.0 (Node.js 24.15.0)
+Retrieving project…
+Deploying anaelfameni-6401s-projects/agrivo
+Uploading [--------------------] (0.0B/443.6KB)
+Uploading [=====---------------] (114.8KB/443.6KB)
+Uploading [==========----------] (223.6KB/443.6KB)
+Uploading [===============-----] (344.8KB/443.6KB)
+Uploading [====================] (443.6KB/443.6KB)
+  Inspect         https://vercel.com/anaelfameni-6401s-projects/agrivo/59NLPihSwmBJ28sWBZGD9dHEMYBw
+  Production      https://agrivo-k2hy6aomj-anaelfameni-6401s-projects.vercel.app
+Building…
+Running build in Washington, D.C., USA (East) – iad1
+Build machine configuration: 2 cores, 8 GB
+Retrieving list of deployment files...
+Downloading 223 deployment files...
+Downloading 223 deployment files...
+Restored build cache from previous deployment (4YgWCgTiNXksSQTaRF3BmsKLftYv)
+Running "vercel build"
+Vercel CLI 55.0.0
+Installing dependencies...
+up to date in 941ms
+166 packages are looking for funding
+run `npm fund` for details
+Detected Next.js version: 16.2.9
+Running "npm run build"
+> agrivo@1.19.0 build
+> next build
+Applying modifyConfig from Vercel
+▲ Next.js 16.2.9 (Turbopack)
+Creating an optimized production build ...
+✓ Compiled successfully in 16.9s
+Running TypeScript ...
+Finished TypeScript in 10.9s ...
+Collecting page data using 1 worker ...
+Generating static pages using 1 worker (0/47) ...
+Generating static pages using 1 worker (11/47)
+Generating static pages using 1 worker (23/47)
+Generating static pages using 1 worker (35/47)
+✓ Generating static pages using 1 worker (47/47) in 784ms
+Finalizing page optimization ...
+Running onBuildComplete from Vercel
+Route (app)
+┌ ○ /
+├ ○ /_not-found
+├ ○ /a-propos
+├ ○ /aide
+├ ƒ /api/admin/etat
+├ ƒ /api/exporteur/portefeuille
+├ ƒ /api/gemini/audit-plan
+├ ƒ /api/gemini/dossier-acheteur
+├ ƒ /api/gemini/explain
+├ ƒ /api/gemini/memo
+├ ƒ /api/gemini/parcelle-photo
+├ ƒ /api/gemini/query
+├ ƒ /api/gemini/rdue-qa
+├ ƒ /api/gemini/registre-revue
+├ ƒ /api/gemini/scan
+├ ƒ /api/gemini/valorisation-memo
+├ ƒ /api/whisp/verify
+├ ○ /app/admin
+├ ○ /app/certificats
+├ ○ /app/consentement
+├ ○ /app/dashboard
+├ ○ /app/exportateur
+├ ○ /app/exportateur/assistant
+├ ○ /app/exportateur/cooperatives
+├ ○ /app/exportateur/parcelles
+├ ○ /app/exportateur/producteurs
+├ ○ /app/exportateur/rapports
+├ ○ /app/parametres
+├ ƒ /app/parcelle/[id]
+├ ○ /app/parcelles
+├ ○ /app/producteurs
+├ ○ /app/verifier
+├ ○ /cgu
+├ ○ /confidentialite
+├ ○ /connexion
+├ ○ /contact
+├ ○ /faq
+├ ○ /hors-connexion
+├ ○ /icon.svg
+├ ○ /inscription
+├ ○ /manifest.webmanifest
+├ ○ /mentions-legales
+├ ○ /methodologie
+├ ○ /robots.txt
+├ ○ /sitemap.xml
+├ ○ /status
+├ ○ /tarifs
+└ ○ /verifier-certificat
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+Build Completed in /vercel/output [33s]
+Deploying outputs...
+Deployment completed
+Creating build cache...
+[2K[1A[2K[G  Production      https://agrivo-k2hy6aomj-anaelfameni-6401s-projects.vercel.app
+Completing…
+▲ Aliased         https://agrivo-io.vercel.app
+{
+  "status": "ok",
+  "deployment": {
+    "id": "dpl_59NLPihSwmBJ28sWBZGD9dHEMYBw",
+    "url": "https://agrivo-k2hy6aomj-anaelfameni-6401s-projects.vercel.app",
+    "inspectorUrl": "https://vercel.com/anaelfameni-6401s-projects/agrivo/59NLPihSwmBJ28sWBZGD9dHEMYBw",
+    "readyState": "READY",
+    "target": "production",
+    "deploymentApiUrl": "https://api.vercel.com/v13/deployments/dpl_59NLPihSwmBJ28sWBZGD9dHEMYBw"
+  },
+  "message": "Deployment agrivo-k2hy6aomj-anaelfameni-6401s-projects.vercel.app ready.",
+  "next": [
+    {
+      "command": "vercel inspect agrivo-k2hy6aomj-anaelfameni-6401s-projects.vercel.app",
+      "when": "Inspect deployment"
+    },
+    {
+      "command": "vercel deploy --prod",
+      "when": "Promote to production"
+    }
+  ]
+}

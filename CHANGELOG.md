@@ -3,6 +3,18 @@
 Versioning sémantique (MAJOR.MINOR.PATCH). Chaque release liste ce qui est ajouté, corrigé et
 vérifié, conformément à l'étape 8 du pipeline « Du besoin à la Release ».
 
+## v1.20.1 — 2026-07-11 — Grille tarifaire structurée (analyse de marché) : paliers, sponsoring, Enterprise
+
+### Ajouté
+- **/tarifs — structure alignée sur le marché** (analyse comparative Koltiva/Meridia ~2-5 $/producteur/an,
+  plateformes RDUE européennes sur devis) sans changer les trois prix de lancement :
+  - Coopérative : **« Jusqu'à 1 000 producteurs · +50 000 FCFA/mois par tranche de 1 000 »** (fin du
+    forfait unique mal calibré aux extrêmes) ;
+  - **Sponsoring exportateur** (le flux d'argent réel de la filière) : Essentiel inclut l'abonnement
+    d'1 coopérative de son réseau, Pro en inclut 3 (+100 000/mois par coopérative supplémentaire) ;
+  - bandeau **« Tarifs de lancement — premières coopératives et premiers exportateurs partenaires »** ;
+  - bandeau **Enterprise sur devis** (multi-pays, SSO, intégrations SI, volumes) → /contact.
+
 ## v1.20.0 — 2026-07-11 — Analyse Whisp EN DIRECT aux paramètres officiels (clé posée), panneau détaillé v3, ROI tarifs
 
 ### Ajouté

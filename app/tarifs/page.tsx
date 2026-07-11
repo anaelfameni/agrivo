@@ -28,6 +28,10 @@ const PLANS = [
       fr: "Au plus l'équivalent d'un kilo de cacao par producteur et par an.",
       en: "At most the equivalent of one kilo of cocoa per producer per year.",
     },
+    note: {
+      fr: "Jusqu'à 1 000 producteurs · +50 000 FCFA/mois par tranche de 1 000 supplémentaires.",
+      en: "Up to 1,000 producers · +50,000 FCFA/month per additional 1,000.",
+    },
     href: "/app/dashboard",
     highlight: false,
     cta: { fr: "Commencer", en: "Get started" },
@@ -49,6 +53,10 @@ const PLANS = [
       fr: "Moins qu'un poste de chargé de conformité — pour tout votre réseau.",
       en: "Less than one compliance officer — for your entire network.",
     },
+    note: {
+      fr: "Abonnement d'1 coopérative de votre réseau inclus.",
+      en: "Subscription for 1 cooperative in your network included.",
+    },
     href: "/contact",
     highlight: false,
     cta: { fr: "Nous contacter", en: "Contact us" },
@@ -69,6 +77,10 @@ const PLANS = [
     roi: {
       fr: "Une fraction de la valeur d'un seul conteneur sécurisé.",
       en: "A fraction of the value of a single secured container.",
+    },
+    note: {
+      fr: "Abonnements de 3 coopératives inclus · coopérative supplémentaire : 100 000 FCFA/mois.",
+      en: "Subscriptions for 3 cooperatives included · additional cooperative: 100,000 FCFA/month.",
     },
     href: "/contact",
     highlight: true,
@@ -128,6 +140,11 @@ export default function Tarifs() {
         </PageHero>
 
         <section className="mx-auto max-w-5xl px-6 py-10 md:px-8">
+          <p className="mb-6 text-center">
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-amber-cacao/25 bg-amber-cacao/[0.07] px-3.5 py-1.5 text-xs font-semibold text-amber-cacao">
+              {en ? "Launch pricing — first partner cooperatives and exporters" : "Tarifs de lancement — premières coopératives et premiers exportateurs partenaires"}
+            </span>
+          </p>
           <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
             {PLANS.map((p, i) => (
               <Reveal key={p.name.fr} delay={i * 0.1}>
@@ -151,6 +168,9 @@ export default function Tarifs() {
                   {billing === "annual" && (
                     <span className="num mt-1 text-xs text-green-signal">{en ? "Billed annually" : "Facturé annuellement"}</span>
                   )}
+                  <p className={`mt-1.5 text-xs ${p.highlight ? "text-white/60" : "text-stone-500"}`}>
+                    {en ? p.note.en : p.note.fr}
+                  </p>
                   <p className={`mt-2 text-xs font-medium ${p.highlight ? "text-amber-soft" : "text-amber-cacao"}`}>
                     {en ? p.roi.en : p.roi.fr}
                   </p>
@@ -171,6 +191,24 @@ export default function Tarifs() {
               </Reveal>
             ))}
           </div>
+          <Reveal delay={0.12}>
+            <div className="mt-6 flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-black/[0.06] bg-forest-950 p-6 text-white">
+              <div>
+                <p className="text-sm font-semibold">Enterprise</p>
+                <p className="mt-1 max-w-xl text-sm text-white/65">
+                  {en
+                    ? "Multi-country, SSO, IT-system integrations, high volumes: a plan sized to your organisation, on request."
+                    : "Multi-pays, SSO, intégrations à votre SI, gros volumes : une offre à la taille de votre organisation, sur devis."}
+                </p>
+              </div>
+              <Link
+                href="/contact"
+                className="inline-flex items-center gap-2 rounded-full border border-white/25 px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:border-green-signal hover:text-green-signal"
+              >
+                {en ? "Talk to the team" : "Parler à l'équipe"} <ArrowRight size={15} />
+              </Link>
+            </div>
+          </Reveal>
           <Reveal delay={0.15}>
             <div className="mt-6 rounded-2xl border border-black/[0.06] bg-white p-6 text-center">
               <p className="mx-auto max-w-2xl text-sm text-stone-600">
