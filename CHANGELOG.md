@@ -3,6 +3,19 @@
 Versioning sémantique (MAJOR.MINOR.PATCH). Chaque release liste ce qui est ajouté, corrigé et
 vérifié, conformément à l'étape 8 du pipeline « Du besoin à la Release ».
 
+## v1.21.1 — 2026-07-11 — Le QR de TOUT PDF émis résout sur la vérification publique
+
+### Corrigé
+- **Les certificats des parcelles de scénario résolvent désormais sur `/verifier-certificat`**
+  (AGV-2026-0600 « Tanoh Michel », AGV-2026-0602 « Koffi Bertrand ») : le parcours de vérification
+  peut émettre leur PDF, mais la page publique ne cherchait que dans le portefeuille — le QR
+  imprimé tombait sur « Certificat introuvable ». Nouveau helper `findCertificat()`
+  (portefeuille + scénarios, insensible à la casse) partagé par la page publique.
+
+### Vérifié
+- 5 nouveaux tests (`tests/certificat-lookup.test.ts`) : TOUS les numéros émis par le site
+  résolvent (45 parcelles + scénarios), unicité des numéros, casse/espaces, inconnus → introuvable.
+
 ## v1.21.0 — 2026-07-11 — Guide interactif rejoué à CHAQUE connexion des comptes démo
 
 ### Modifié

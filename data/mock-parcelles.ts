@@ -358,6 +358,20 @@ export function getParcelle(id: string): Parcelle | undefined {
 export function findParcelleByCarte(numero: string): Parcelle | undefined {
   return PARCELLES.find((p) => p.numeroCartePro === numero) ?? SCENARIOS_DEMO.find((p) => p.numeroCartePro === numero);
 }
+/**
+ * Recherche par numéro de certificat pour la VÉRIFICATION PUBLIQUE (QR du PDF téléchargé).
+ * Couvre le portefeuille ET les scénarios de démonstration : tout PDF que le site peut émettre
+ * (p01…p45, sc-conforme AGV-2026-0600, sc-anomalie AGV-2026-0602…) doit résoudre — jamais un
+ * QR imprimé qui tombe sur « introuvable ». Insensible à la casse.
+ */
+export function findCertificat(numero: string): Parcelle | undefined {
+  const q = numero.trim().toUpperCase();
+  if (!q) return undefined;
+  return (
+    PARCELLES.find((p) => p.numeroCertificat.toUpperCase() === q) ??
+    SCENARIOS_DEMO.find((p) => p.numeroCertificat.toUpperCase() === q)
+  );
+}
 export function parcellesForCoop(coop: string = COOP_DEMO): Parcelle[] {
   return PARCELLES.filter((p) => p.cooperative === coop);
 }

@@ -10,7 +10,7 @@ import { SiteFooter } from "@/components/site-footer";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { useLanguage } from "@/components/language-provider";
 import {
-  PARCELLES,
+  findCertificat,
   STATUT_PHRASE,
   STATUT_PHRASE_EN,
   FILIERE_LABEL,
@@ -32,11 +32,8 @@ export function VerifierCertificatClient() {
   const [query, setQuery] = useState(initial);
   const [searched, setSearched] = useState(initial);
 
-  const result: Parcelle | undefined = useMemo(() => {
-    const q = searched.trim().toUpperCase();
-    if (!q) return undefined;
-    return PARCELLES.find((p) => p.numeroCertificat.toUpperCase() === q);
-  }, [searched]);
+  // Portefeuille + scénarios de démo : tout certificat que le site peut émettre en PDF résout ici.
+  const result: Parcelle | undefined = useMemo(() => findCertificat(searched), [searched]);
 
   const notFound = Boolean(searched.trim()) && !result;
 
