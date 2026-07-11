@@ -27,16 +27,18 @@ const SERVICES: Service[] = [
   {
     id: "verdicts",
     nom: { fr: "Moteur de verdicts (détection satellite)", en: "Verdict engine (satellite detection)" },
-    detail: { fr: "POST /api/whisp/verify — parcelle témoin", en: "POST /api/whisp/verify — reference plot" },
+    detail: { fr: "POST /api/whisp/verify — moteur déterministe", en: "POST /api/whisp/verify — deterministic engine" },
+    // Parcelle de scénario (`sc-*`) : vérifie le moteur sans consommer le quota Earth Engine à
+    // chaque visite — l'appel RÉEL à l'API FAO a sa propre carte, déclenchée à la demande.
     verifier: async () => {
       const r = await fetch("/api/whisp/verify", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ parcelleId: "p01" }),
+        body: JSON.stringify({ parcelleId: "sc-status" }),
       });
       const d = (await r.json()) as { statut?: string; live?: boolean };
       if (!r.ok || !d.statut) throw new Error(`HTTP ${r.status}`);
-      return d.live ? "Whisp (FAO) en direct" : `verdict « ${d.statut} »`;
+      return `verdict « ${d.statut} »`;
     },
   },
   {
@@ -87,6 +89,14 @@ const COPY = {
     pending: "Vérification…",
     relancer: "Relancer les vérifications",
     horodatage: (d: string) => `Dernière vérification : ${d}`,
+    liveTitre: "API Whisp (FAO) · appel en direct",
+    liveDetail: "POST whisp.openforis.org via /api/whisp/verify — parcelle témoin p01",
+    liveDesc: "Soumet la parcelle témoin à l'API officielle de la FAO (Google Earth Engine). Durée : ~10 à 30 s.",
+    liveBtn: "Tester l'API FAO en direct",
+    liveEnCours: "Analyse en cours sur Earth Engine…",
+    liveDirect: (s: string, v: string) => `Réponse EN DIRECT en ${s} s · verdict « ${v} »`,
+    liveRepli: "Réponse servie par le moteur de repli (clé absente ou API indisponible).",
+    liveEchec: "Appel échoué — le moteur de repli reste disponible.",
   },
   en: {
     eyebrow: "Service status",
@@ -97,8 +107,90 @@ const COPY = {
     pending: "Checking…",
     relancer: "Re-run checks",
     horodatage: (d: string) => `Last check: ${d}`,
+    liveTitre: "Whisp API (FAO) · live call",
+    liveDetail: "POST whisp.openforis.org via /api/whisp/verify — reference plot p01",
+    liveDesc: "Submits the reference plot to the official FAO API (Google Earth Engine). Takes ~10 to 30 s.",
+    liveBtn: "Test the FAO API live",
+    liveEnCours: "Analysis running on Earth Engine…",
+    liveDirect: (s: string, v: string) => `LIVE response in ${s} s · verdict "${v}"`,
+    liveRepli: "Response served by the fallback engine (missing key or API unavailable).",
+    liveEchec: "Call failed — the fallback engine remains available.",
   },
 } as const;
+
+/**
+ * Test EN DIRECT de l'API Whisp (FAO) — à la demande uniquement : un vrai appel Google Earth
+ * Engine (~10-30 s) consomme du quota, il n'est donc jamais lancé automatiquement à la visite.
+ */
+function TestWhispLive({ lang }: { lang: "fr" | "en" }) {
+  const t = COPY[lang];
+  const [etat, setEtat] = React.useState<"idle" | "running" | "live" | "repli" | "echec">("idle");
+  const [note, setNote] = React.useState("");
+
+  const tester = async () => {
+    setEtat("running");
+    setNote("");
+    const debut = Date.now();
+    try {
+      const r = await fetch("/api/whisp/verify", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ parcelleId: "p01" }),
+      });
+      const d = (await r.json()) as { statut?: string; live?: boolean };
+      if (!r.ok || !d.statut) throw new Error(`HTTP ${r.status}`);
+      const secondes = ((Date.now() - debut) / 1000).toFixed(1);
+      if (d.live) {
+        setEtat("live");
+        setNote(t.liveDirect(secondes, d.statut));
+      } else {
+        setEtat("repli");
+        setNote(t.liveRepli);
+      }
+    } catch {
+      setEtat("echec");
+      setNote(t.liveEchec);
+    }
+  };
+
+  return (
+    <li className="flex flex-wrap items-center gap-3 rounded-2xl border border-green-signal/20 bg-white p-5">
+      {etat === "live" ? (
+        <CheckCircle2 size={20} strokeWidth={2} className="shrink-0 text-green-signal" aria-hidden />
+      ) : etat === "repli" || etat === "echec" ? (
+        <CircleAlert size={20} strokeWidth={2} className="shrink-0 text-amber-cacao" aria-hidden />
+      ) : (
+        <Activity
+          size={20}
+          strokeWidth={2}
+          className={`shrink-0 text-stone-400 ${etat === "running" ? "animate-pulse" : ""}`}
+          aria-hidden
+        />
+      )}
+      <div className="min-w-0 flex-1">
+        <p className="text-sm font-semibold text-forest-950">{t.liveTitre}</p>
+        <p className="num mt-0.5 text-xs text-stone-400">{t.liveDetail}</p>
+        <p className="mt-1 text-xs text-stone-500">{t.liveDesc}</p>
+      </div>
+      <button
+        type="button"
+        disabled={etat === "running"}
+        onClick={() => void tester()}
+        className="rounded-full bg-green-signal px-4 py-2 text-xs font-semibold text-white outline-none transition-[filter,opacity] hover:brightness-105 focus-visible:ring-2 focus-visible:ring-green-signal focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60"
+      >
+        {etat === "running" ? t.liveEnCours : t.liveBtn}
+      </button>
+      {note && (
+        <span
+          className={`w-full text-xs font-medium ${etat === "live" ? "text-green-signal" : "text-amber-cacao"}`}
+          role="status"
+        >
+          {note}
+        </span>
+      )}
+    </li>
+  );
+}
 
 export default function StatusPage() {
   const { lang } = useLanguage();
@@ -165,6 +257,7 @@ export default function StatusPage() {
                   </li>
                 );
               })}
+              <TestWhispLive lang={lang} />
             </ul>
           </Reveal>
 

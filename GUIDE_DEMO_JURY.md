@@ -1,12 +1,24 @@
 # GUIDE DE DÉMO — Vibeathon, 11 juillet 2026
 
-> 🟢 **ÉTAT ACTUEL (11/07/2026, v1.18+ en production — ce bloc fait foi sur toute mention plus bas)** :
-> **92 tests** au vert · tarifs **Coopérative 100 000 · Exportateur Essentiel 500 000 · Exportateur
+> 🟢 **ÉTAT ACTUEL (11/07/2026, v1.20 en production — ce bloc fait foi sur toute mention plus bas)** :
+> **107 tests** au vert · tarifs **Coopérative 100 000 · Exportateur Essentiel 500 000 · Exportateur
 > Pro 1 000 000 FCFA/mois** · espaces **multi-pages** (coop : Vue d'ensemble, Producteurs, Parcelles,
 > Certificats, Paramètres · exportateur : Tableau de bord, Coopératives, Producteurs, Parcelles,
 > Dossiers & rapports, Assistant IA) · **API REST** `GET /api/exporteur/portefeuille` · page publique
 > `/status`. **Le pitch jury est un pitch PUR de 5 minutes, sans démonstration en direct** (le
 > PowerPoint est soumis à l'avance sur vibeathonci.com/soumettre).
+
+> 🛰️ **NOUVEAU v1.20 — la détection satellite est RÉELLE ET EN DIRECT** : chaque vérification (hors
+> scénarios `sc-*`) est analysée par l'API officielle **Whisp v3 (FAO / Google Earth Engine)** avec
+> les paramètres du site officiel (unités ha, **données nationales CI dont la carte cacao BNETD**,
+> id AGRIVO tracé). À l'écran : badge « Détection satellite FAO · en direct » + panneau « Analyse
+> Whisp officielle » (11 indicateurs, 3 catégories de risque, % réels, jeton d'analyse).
+> **À savoir en démo** : l'analyse en direct prend **10 à 30 s** (le libellé l'annonce à l'écran) —
+> c'est un ARGUMENT (« l'analyse tourne en ce moment sur Google Earth Engine »), pas un défaut.
+> « Revoir l'analyse » réutilise le résultat (aucun quota consommé). Si le réseau lâche : repli
+> automatique silencieux sur le moteur déterministe, la démo ne casse jamais. Phrase jury : « Ce
+> verdict vient d'être calculé en direct par l'outil officiel de la FAO, avec les données nationales
+> ivoiriennes du BNETD — voici le jeton d'analyse. »
 
 > Anti-sèche intégrée à l'app : **Ctrl+Shift+D** sur n'importe quelle page ouvre le guide présentateur.
 

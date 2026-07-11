@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import { ArrowRight, Leaf, RotateCcw, Sparkles, Volume2, VolumeX, X } from "lucide-react";
+import { ArrowRight, ChevronDown, Leaf, RotateCcw, Satellite, Sparkles, Volume2, VolumeX, X } from "lucide-react";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { PinMark } from "@/components/ui/pin-mark";
 import { PhotoTerrain } from "@/components/verifier/photo-terrain";
@@ -12,7 +12,7 @@ import { useLanguage } from "@/components/language-provider";
 import type { AnalysisPhase } from "@/components/verifier/analysis-map";
 import type { WhispResult } from "@/lib/ai/whisp";
 import type { ScoreSols } from "@/lib/ai/gemini";
-import { STATUT_COLOR, type Parcelle, type Statut } from "@/data/mock-parcelles";
+import { STATUT_COLOR, type Filiere, type Parcelle, type Statut } from "@/data/mock-parcelles";
 import type { ForcedVerdict } from "@/components/verifier/step-mapping";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
@@ -41,6 +41,22 @@ const COPY = {
     next: "Continuer",
     replay: "Revoir l'analyse",
     back: "Retour",
+    scanningLive: "Analyse satellite en direct (Google Earth Engine)… jusqu'à ~30 s",
+    officialTitle: "Analyse Whisp officielle · v3 · Google Earth Engine",
+    officialParams: "Paramètres du site officiel FAO : unités ha · données nationales CI · WGS-84",
+    indicatorsTitle: "Indicateurs officiels",
+    indicatorsShow: "Voir les 11 indicateurs officiels",
+    indicatorsHide: "Réduire les indicateurs",
+    risksTitle: "Catégories de risque officielles",
+    riskUsed: "verdict AGRIVO dérivé de cette catégorie",
+    pcrop: "Cultures pérennes (cacao, café, hévéa, palmier)",
+    acrop: "Cultures annuelles (soja)",
+    timber: "Bois",
+    coverageTitle: "Couvertures détectées (% de la parcelle)",
+    yes: "Oui",
+    no: "Non",
+    analysed: "analysés",
+    token: "jeton d'analyse",
   },
   en: {
     eyebrow: "Satellite analysis · FAO",
@@ -64,6 +80,22 @@ const COPY = {
     next: "Continue",
     replay: "Replay the analysis",
     back: "Back",
+    scanningLive: "Live satellite analysis (Google Earth Engine)… up to ~30 s",
+    officialTitle: "Official Whisp analysis · v3 · Google Earth Engine",
+    officialParams: "Official FAO site parameters: ha units · CI national data · WGS-84",
+    indicatorsTitle: "Official indicators",
+    indicatorsShow: "Show all 11 official indicators",
+    indicatorsHide: "Collapse indicators",
+    risksTitle: "Official risk categories",
+    riskUsed: "AGRIVO verdict derived from this category",
+    pcrop: "Perennial crops (cocoa, coffee, rubber, oil palm)",
+    acrop: "Annual crops (soy)",
+    timber: "Timber",
+    coverageTitle: "Detected coverage (% of the plot)",
+    yes: "Yes",
+    no: "No",
+    analysed: "analysed",
+    token: "analysis token",
   },
 } as const;
 
@@ -134,10 +166,21 @@ export function StepAnalysis({
   const [scoreErr, setScoreErr] = useState(false);
   const [speaking, setSpeaking] = useState(false);
   const [canSpeak, setCanSpeak] = useState(false);
+  const [longScan, setLongScan] = useState(false);
   const runningRef = useRef(false);
 
   const ring = parcelle.geojson.type === "Polygon" ? parcelle.geojson.coordinates[0] : [parcelle.geojson.coordinates];
   const done = phase === "verdict" && whisp;
+
+  // Attente honnête : au-delà de 4 s de balayage, on annonce l'analyse en direct (GEE ~8-30 s).
+  useEffect(() => {
+    if (phase !== "scanning") {
+      setLongScan(false);
+      return;
+    }
+    const timer = setTimeout(() => setLongScan(true), 4_000);
+    return () => clearTimeout(timer);
+  }, [phase]);
 
   useEffect(() => {
     setCanSpeak(typeof window !== "undefined" && "speechSynthesis" in window);
@@ -253,7 +296,7 @@ export function StepAnalysis({
                 <div className="mt-5 flex items-center gap-3 rounded-xl bg-ivory-deep/50 px-4 py-3">
                   <PinMark size={22} color="var(--color-green-signal)" pulse />
                   <span className="text-sm font-medium text-forest-950">
-                    {phase === "drawing" ? t.drawing : t.scanning}
+                    {phase === "drawing" ? t.drawing : longScan ? t.scanningLive : t.scanning}
                   </span>
                 </div>
               )}
@@ -299,6 +342,11 @@ export function StepAnalysis({
                   </li>
                 ))}
               </ul>
+
+              {/* Détail officiel Whisp v3 — UNIQUEMENT pour les analyses en direct (jamais simulé) */}
+              {whisp.live && whisp.detail && (
+                <WhispDetailPanel detail={whisp.detail} filiere={parcelle.filiere} lang={lang} />
+              )}
 
               {/* Pourquoi ce verdict ? — causes réelles + prochaines étapes (jamais générique) */}
               <VerdictExplication statut={whisp.statut} lang={lang} defaultOpen={whisp.statut === "insuffisant"} />
@@ -395,6 +443,170 @@ export function StepAnalysis({
           </button>
         </div>
       </div>
+    </div>
+  );
+}
+
+/** Niveau visuel d'une catégorie de risque officielle (low/high/autre), accents neutralisés. */
+function nivRisque(v: string | null): "low" | "high" | "autre" {
+  if (!v) return "autre";
+  const r = v.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
+  if (/\b(low|faible|no[_\s-]?risk)\b/.test(r)) return "low";
+  if (/\b(high|eleve)\b/.test(r)) return "high";
+  return "autre";
+}
+
+const RISQUE_CLASSES: Record<"low" | "high" | "autre", string> = {
+  low: "border-green-signal/30 bg-green-signal/[0.08] text-green-signal",
+  high: "border-red-block/30 bg-red-block/[0.08] text-red-block",
+  autre: "border-amber-cacao/30 bg-amber-cacao/[0.08] text-amber-cacao",
+};
+
+/**
+ * Détail officiel d'une analyse Whisp en direct : mêmes paramètres et mêmes sorties que
+ * whisp.openforis.org (11 indicateurs, 3 catégories de risque, couvertures, jeton). Rendu
+ * UNIQUEMENT quand `whisp.live` — jamais pour le moteur de repli (zéro pourcentage inventé).
+ */
+function WhispDetailPanel({
+  detail,
+  filiere,
+  lang,
+}: {
+  detail: NonNullable<WhispResult["detail"]>;
+  filiere: Filiere;
+  lang: "fr" | "en";
+}) {
+  const t = COPY[lang];
+  const [open, setOpen] = useState(true);
+  const [tousIndics, setTousIndics] = useState(false);
+
+  const groupeFiliere: "pcrop" | "acrop" | "timber" | null =
+    filiere === "soja" ? "acrop" : filiere === "bois" ? "timber" : filiere === "bovins" ? null : "pcrop";
+
+  const risques: Array<{ key: "pcrop" | "acrop" | "timber"; label: string; valeur: string | null }> = [
+    { key: "pcrop", label: t.pcrop, valeur: detail.risques.pcrop },
+    { key: "acrop", label: t.acrop, valeur: detail.risques.acrop },
+    { key: "timber", label: t.timber, valeur: detail.risques.timber },
+  ];
+
+  const indicateurs = tousIndics ? detail.indicateurs : detail.indicateurs.slice(0, 4);
+  const surface =
+    detail.surfaceHa !== null
+      ? `${detail.surfaceHa.toLocaleString(lang === "en" ? "en-GB" : "fr-FR", { maximumFractionDigits: 2 })} ha ${t.analysed}`
+      : null;
+  const lieu = [detail.region, detail.pays === "CIV" ? "Côte d'Ivoire" : detail.pays].filter(Boolean).join(", ");
+
+  return (
+    <div className="rounded-xl border border-black/[0.08] bg-ivory-deep/40">
+      <button
+        type="button"
+        onClick={() => setOpen(!open)}
+        aria-expanded={open}
+        className="flex w-full items-center justify-between gap-2 px-4 py-3 text-left outline-none focus-visible:ring-2 focus-visible:ring-green-signal"
+      >
+        <span className="flex items-center gap-2 text-xs font-semibold text-forest-950">
+          <Satellite size={14} strokeWidth={2} className="text-green-signal" aria-hidden />
+          {t.officialTitle}
+        </span>
+        <ChevronDown
+          size={15}
+          strokeWidth={2}
+          aria-hidden
+          className={`shrink-0 text-stone-400 transition-transform ${open ? "rotate-180" : ""}`}
+        />
+      </button>
+
+      {open && (
+        <div className="flex flex-col gap-3 border-t border-black/[0.05] px-4 pb-4 pt-3">
+          <p className="text-[0.7rem] leading-relaxed text-stone-500">
+            {t.officialParams}
+            {(lieu || surface) && (
+              <>
+                {" · "}
+                <span className="font-medium text-forest-950">{[lieu, surface].filter(Boolean).join(" · ")}</span>
+              </>
+            )}
+          </p>
+
+          {/* Les 3 catégories de risque officielles */}
+          <div className="flex flex-col gap-1.5">
+            <p className="text-[0.65rem] font-semibold uppercase tracking-wide text-stone-400">{t.risksTitle}</p>
+            {risques.map((r) => (
+              <div key={r.key} className="flex flex-wrap items-center justify-between gap-2 text-xs">
+                <span className={groupeFiliere === r.key ? "font-semibold text-forest-950" : "text-stone-500"}>
+                  {r.label}
+                  {groupeFiliere === r.key && (
+                    <span className="ml-1.5 text-[0.62rem] font-normal text-stone-400">· {t.riskUsed}</span>
+                  )}
+                </span>
+                <span
+                  className={`num inline-flex rounded-full border px-2 py-0.5 text-[0.65rem] font-semibold ${RISQUE_CLASSES[nivRisque(r.valeur)]}`}
+                >
+                  {r.valeur ?? "—"}
+                </span>
+              </div>
+            ))}
+          </div>
+
+          {/* Les 11 indicateurs officiels (4 cœur + repli) */}
+          {detail.indicateurs.length > 0 && (
+            <div className="flex flex-col gap-1.5">
+              <p className="text-[0.65rem] font-semibold uppercase tracking-wide text-stone-400">{t.indicatorsTitle}</p>
+              <ul className="flex flex-col gap-1">
+                {indicateurs.map((ind) => (
+                  <li key={ind.code} className="flex items-center justify-between gap-2 text-xs text-stone-600">
+                    <span>{lang === "en" ? ind.en : ind.fr}</span>
+                    <span
+                      className={`inline-flex rounded-full border px-2 py-0.5 text-[0.62rem] font-semibold ${
+                        ind.valeur === "yes"
+                          ? "border-forest-950/20 bg-forest-950/[0.06] text-forest-950"
+                          : "border-black/10 text-stone-400"
+                      }`}
+                    >
+                      {ind.valeur === "yes" ? t.yes : t.no}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+              {detail.indicateurs.length > 4 && (
+                <button
+                  type="button"
+                  onClick={() => setTousIndics(!tousIndics)}
+                  className="self-start text-[0.68rem] font-medium text-green-signal outline-none transition-colors hover:text-forest-950 focus-visible:ring-2 focus-visible:ring-green-signal"
+                >
+                  {tousIndics ? t.indicatorsHide : t.indicatorsShow}
+                </button>
+              )}
+            </div>
+          )}
+
+          {/* Couvertures détectées (% réels retournés par l'API) */}
+          {detail.couvertures.length > 0 && (
+            <div className="flex flex-col gap-1.5">
+              <p className="text-[0.65rem] font-semibold uppercase tracking-wide text-stone-400">{t.coverageTitle}</p>
+              <ul className="flex flex-col gap-1">
+                {detail.couvertures.map((c) => (
+                  <li key={c.code} className="flex items-center justify-between gap-2 text-xs text-stone-600">
+                    <span>{lang === "en" ? c.en : c.fr}</span>
+                    <span className="num font-semibold text-forest-950">{c.pct} %</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          {/* Traçabilité de l'exécution */}
+          <p className="num border-t border-black/[0.05] pt-2 text-[0.62rem] text-stone-400">
+            {[
+              detail.version ? `Whisp v${detail.version}` : null,
+              detail.horodatage ? `${detail.horodatage}` : null,
+              detail.token ? `${t.token} ${detail.token.slice(0, 8)}…` : null,
+            ]
+              .filter(Boolean)
+              .join(" · ")}
+          </p>
+        </div>
+      )}
     </div>
   );
 }

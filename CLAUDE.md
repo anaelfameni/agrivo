@@ -15,9 +15,13 @@
 >   Paramètres) ; exportateur (Tableau de bord · Coopératives, avec ajout + carte des sièges ·
 >   Producteurs · Parcelles · Dossiers & rapports · Assistant IA). **API REST**
 >   `GET /api/exporteur/portefeuille` (GeoJSON TRACES NT). Page publique `/status`.
-> - **Détection satellite** : moteur déterministe calibré méthode Whisp (FAO) ; **appel RÉEL à
->   l'API Whisp activable par `WHISP_API_KEY`** (lib/ai/whisp-live.ts, repli garanti). IA
->   générative Gemini réelle via `GEMINI_API_KEY` (OCR, assistant 39 faits, mémos, dossiers).
+> - **Détection satellite : RÉELLE ET ACTIVE (v1.20)** — `WHISP_API_KEY` posée (local + Vercel
+>   prod) : analyse EN DIRECT par l'API officielle Whisp v3 (FAO/Earth Engine) aux paramètres du
+>   site officiel (`unitType ha`, `nationalCodes ["ci"]` = carte cacao BNETD, `externalIdColumn`
+>   agrivoId), verdict par filière (pcrop/acrop/timber, pire-des-trois pour bovins), panneau
+>   11 indicateurs + jeton à l'étape analyse, ~8-30 s (maxDuration 60). Scénarios `sc-*`/force =
+>   toujours déterministes ; repli garanti. IA générative Gemini réelle via `GEMINI_API_KEY`
+>   (OCR, assistant 39 faits, mémos, dossiers). ⚠️ Rotation des 2 clés APRÈS le jury.
 > - **Qualité** : 92+ tests Vitest, CI verte, tags jusqu'à v1.18.1+, prod `agrivo-io.vercel.app`
 >   (réassigner l'alias à chaque deploy). Polices réelles : Space Grotesk / Geist / Geist Mono.
 > - Interface **FR/EN uniquement** (dioula/baoulé retirés). Statuts verbatim, « évaluation »

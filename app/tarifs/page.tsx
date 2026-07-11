@@ -21,9 +21,14 @@ const PLANS = [
       en: "For cooperative managers who validate lots at the edge of the field. Basis ≈ 1,200 FCFA per verified producer per year (cooperative of about 1,000 producers).",
     },
     features: {
-      fr: ["Vérifications illimitées", "Certificats d'évaluation de conformité (PDF)", "Import & audit RDUE du registre", "Mode hors connexion", "Support"],
-      en: ["Unlimited verifications", "Compliance-assessment certificates (PDF)", "Register import & EUDR audit", "Offline mode", "Support"],
+      fr: ["Vérifications illimitées — analyse satellite FAO (Whisp) en direct", "Certificats d'évaluation vérifiables par QR (PDF)", "Import & audit RDUE du registre", "Mode hors connexion", "Support"],
+      en: ["Unlimited verifications — live FAO (Whisp) satellite analysis", "QR-verifiable assessment certificates (PDF)", "Register import & EUDR audit", "Offline mode", "Support"],
     },
+    roi: {
+      fr: "Au plus l'équivalent d'un kilo de cacao par producteur et par an.",
+      en: "At most the equivalent of one kilo of cocoa per producer per year.",
+    },
+    href: "/app/dashboard",
     highlight: false,
     cta: { fr: "Commencer", en: "Get started" },
   },
@@ -40,6 +45,11 @@ const PLANS = [
       fr: ["Portefeuille multi-coopératives", "Coopératives & producteurs consolidés", "Registre satellite (tableau ↔ carte)", "Dossiers acheteurs & alertes", "Support prioritaire"],
       en: ["Multi-cooperative portfolio", "Consolidated cooperatives & farmers", "Satellite register (table ↔ map)", "Buyer files & alerts", "Priority support"],
     },
+    roi: {
+      fr: "Moins qu'un poste de chargé de conformité — pour tout votre réseau.",
+      en: "Less than one compliance officer — for your entire network.",
+    },
+    href: "/contact",
     highlight: false,
     cta: { fr: "Nous contacter", en: "Contact us" },
   },
@@ -53,9 +63,14 @@ const PLANS = [
       en: "For exporters filing due diligence statements and integrating AGRIVO into their IT systems.",
     },
     features: {
-      fr: ["Tout Essentiel, plus :", "API REST & export en masse", "Déclarations TRACES NT intégrées", "Assistant IA de portefeuille", "Engagement de disponibilité (SLA)"],
-      en: ["Everything in Essential, plus:", "REST API & batch export", "Built-in TRACES NT declarations", "Portfolio AI assistant", "Availability commitment (SLA)"],
+      fr: ["Tout Essentiel, plus :", "API REST & export en masse", "Déclarations TRACES NT intégrées", "Assistant IA de portefeuille", "Engagement de disponibilité (SLA) — état des services public"],
+      en: ["Everything in Essential, plus:", "REST API & batch export", "Built-in TRACES NT declarations", "Portfolio AI assistant", "Availability commitment (SLA) — public service status"],
     },
+    roi: {
+      fr: "Une fraction de la valeur d'un seul conteneur sécurisé.",
+      en: "A fraction of the value of a single secured container.",
+    },
+    href: "/contact",
     highlight: true,
     cta: { fr: "Nous contacter", en: "Contact us" },
   },
@@ -136,6 +151,9 @@ export default function Tarifs() {
                   {billing === "annual" && (
                     <span className="num mt-1 text-xs text-green-signal">{en ? "Billed annually" : "Facturé annuellement"}</span>
                   )}
+                  <p className={`mt-2 text-xs font-medium ${p.highlight ? "text-amber-soft" : "text-amber-cacao"}`}>
+                    {en ? p.roi.en : p.roi.fr}
+                  </p>
                   <ul className="mt-6 flex-1 space-y-3 text-sm">
                     {(en ? p.features.en : p.features.fr).map((f) => (
                       <li key={f} className={`flex items-start gap-2.5 ${p.highlight ? "text-white/80" : "text-stone-600"}`}>
@@ -144,7 +162,7 @@ export default function Tarifs() {
                     ))}
                   </ul>
                   <Link
-                    href="/app/dashboard"
+                    href={p.href}
                     className={`mt-8 inline-flex items-center justify-center gap-2 rounded-full px-6 py-3.5 text-sm font-semibold transition-transform hover:scale-[1.02] active:scale-95 ${p.highlight ? "bg-green-signal text-white" : "bg-forest-950 text-white"}`}
                   >
                     {en ? p.cta.en : p.cta.fr} <ArrowRight size={15} />
@@ -158,8 +176,8 @@ export default function Tarifs() {
               <p className="mx-auto max-w-2xl text-sm text-stone-600">
                 <span className="font-semibold text-forest-950">{en ? "Is it free for the farmer?" : "Et pour le producteur ?"}</span>{" "}
                 {en
-                  ? "AGRIVO charges the farmer nothing: verification is covered by their cooperative's subscription. Our revenue comes from the cooperative subscription and the exporter plans."
-                  : "AGRIVO ne facture rien au producteur : la vérification est prise en charge par l'abonnement de sa coopérative. Notre revenu vient de l'abonnement coopérative et des offres exportateur."}
+                  ? "AGRIVO charges the farmer nothing: verification is covered by their cooperative's subscription. Our revenue comes from the cooperative subscription and the exporter plans. No lock-in — and your data remains the property of the cooperative (Ivorian law no. 2013-450, ARTCI)."
+                  : "AGRIVO ne facture rien au producteur : la vérification est prise en charge par l'abonnement de sa coopérative. Notre revenu vient de l'abonnement coopérative et des offres exportateur. Sans engagement — et vos données restent la propriété de la coopérative (loi ivoirienne n° 2013-450, ARTCI)."}
               </p>
             </div>
           </Reveal>

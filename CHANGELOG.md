@@ -3,6 +3,47 @@
 Versioning sémantique (MAJOR.MINOR.PATCH). Chaque release liste ce qui est ajouté, corrigé et
 vérifié, conformément à l'étape 8 du pipeline « Du besoin à la Release ».
 
+## v1.20.0 — 2026-07-11 — Analyse Whisp EN DIRECT aux paramètres officiels (clé posée), panneau détaillé v3, ROI tarifs
+
+### Ajouté
+- **Détection satellite RÉELLE ACTIVE** : `WHISP_API_KEY` posée (local + Vercel production). Chaque
+  vérification hors scénario est désormais analysée EN DIRECT par l'API officielle Whisp v3
+  (FAO Open Foris / Google Earth Engine), **avec les mêmes paramètres que whisp.openforis.org** :
+  `analysisOptions { unitType: "ha", nationalCodes: ["ci"], externalIdColumn: "agrivoId" }` —
+  les données nationales Côte d'Ivoire (carte cacao BNETD) sont incluses et l'id AGRIVO de la
+  parcelle est tracé de bout en bout (`external_id`). Validé par appels réels (HTTP 200 ≈ 8 s).
+- **Parseur du modèle officiel v3** (`lib/ai/whisp-live.ts`) : les **11 indicateurs**
+  `Ind_01…Ind_11`, les **3 catégories de risque** (`risk_pcrop`/`risk_acrop`/`risk_timber`), la
+  surface, la localisation GAUL, les couvertures par jeu de données (GFC, BNETD, FDaP, ETH, TMF,
+  RADD…), la version Whisp et le jeton d'analyse. **Verdict par filière** : cultures pérennes →
+  pcrop, soja → acrop, bois → timber, bovins/inconnu → le pire des trois (jamais de faux
+  « Conforme »). File d'attente gérée (202 → sondage `/api/status/{token}`), budget 52 s,
+  `maxDuration 60` sur la route.
+- **Panneau « Analyse Whisp officielle · v3 · Google Earth Engine »** à l'étape d'analyse
+  (analyses live uniquement — zéro pourcentage inventé en repli) : 4 indicateurs cœur + les 11
+  repliables, 3 catégories de risque (celle de la filière surlignée), couvertures en % réels,
+  version + horodatage + jeton (traçabilité auditable). Convergence de preuves reconstruite sur
+  les vraies valeurs (localisation confirmée, perturbation post-2020 en %).
+- **/status** : le ping automatique du moteur passe sur une parcelle de scénario (préserve le
+  quota Earth Engine) + nouvelle carte « API Whisp (FAO) · appel en direct » à la demande
+  (bouton, verdict + latence réelle affichés).
+- **/tarifs — la valeur en face de chaque prix** : ligne ROI par plan (« l'équivalent d'un kilo
+  de cacao par producteur et par an » · « moins qu'un poste de chargé de conformité » · « une
+  fraction de la valeur d'un seul conteneur »), analyse satellite FAO en direct affichée sur le
+  plan Coopérative, SLA relié à l'état public des services, mention « sans engagement + données
+  propriété de la coopérative (loi n° 2013-450, ARTCI) ».
+
+### Corrigé
+- Les CTA « Nous contacter » des plans exportateur pointaient vers le dashboard coopérative →
+  ils mènent au formulaire de contact ; « Commencer » (Coopérative) conserve l'accès démo.
+- Attente honnête à l'analyse : au-delà de 4 s, le libellé annonce « Analyse satellite en direct
+  (Google Earth Engine)… jusqu'à ~30 s ».
+
+### Vérifié
+- `tsc` ✓ · **107 tests Vitest** ✓ (dont fixture RÉELLE de l'API du 11/07/2026) · `next build` ✓ ·
+  2 appels réels validés (external_id restitué, colonne BNETD présente, risques low) ·
+  vérité terrain prod post-deploy (verdicts live des parcelles de démo).
+
 ## v1.19.0 — 2026-07-11 — Détection Whisp réelle (activable), performance images, page /status, repo assaini
 
 ### Ajouté

@@ -14,6 +14,7 @@ import {
   type Filiere,
   type Statut,
 } from "@/data/mock-parcelles";
+import type { WhispLiveDetail } from "@/lib/ai/whisp-live";
 
 export interface WhispVerifyInput {
   parcelleId?: string;
@@ -35,6 +36,8 @@ export interface WhispResult {
   demo: boolean;
   /** true si le verdict vient de l'API Whisp (FAO) appelée en direct. */
   live?: boolean;
+  /** Détail officiel Whisp v3 (11 indicateurs, 3 risques, couvertures) — analyses live uniquement. */
+  detail?: WhispLiveDetail;
 }
 
 /** Faisceau de preuves qualitatif présenté selon le verdict (aucun pourcentage inventé). */
