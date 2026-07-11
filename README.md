@@ -50,8 +50,8 @@ npm run typecheck  # tsc --noEmit
 
 | Espace | E-mail | Mot de passe | Persona |
 |---|---|---|---|
-| Coopérative | `client@test.com` | `123client123` | Amadou · Coopérative Agricole de Soubré |
-| Exportateur | `export@agrivo.com` | `123export123` | Marc · Cacao Export CI |
+| Coopérative | `coop@test.com` | `123TestCoop123` | Amadou · Coopérative Agricole de Soubré |
+| Exportateur | `export@test.com` | `123TestExport123` | Marc · Cacao Export CI |
 | Admin | `admin@agrivo.com` | `123admin123` | Console interne (état IA, préchauffage) |
 
 Un **guide interactif animé** s'ouvre à la première connexion de chaque espace (relançable via le
@@ -62,7 +62,8 @@ déterministe groundé : la démo ne casse jamais.
 
 - **Espace coopérative** (`/app`) : tableau de bord (KPI, répartition des 3 statuts, alertes,
   parcelles à re-vérifier), **audit du registre** (import GeoJSON/CSV/KML → % prêt RDUE + anomalies +
-  plan d'action IA), **export GeoJSON** TRACES NT, producteurs, parcelles, paramètres.
+  plan d'action IA), **export GeoJSON** TRACES NT, producteurs, parcelles, **certificats** (registre
+  des certificats émis), paramètres.
 - **Vérification d'une parcelle** (`/app/verifier`) : consentement (ARTCI, loi n°2013-450) →
   coordonnées de la parcelle (**minimum 4 sommets**, table Sommet | Latitude | Longitude, superficie
   calculée, bornes Côte d'Ivoire) → analyse satellite animée → verdict expliqué (+ lecture vocale) →
@@ -70,21 +71,24 @@ déterministe groundé : la démo ne casse jamais.
 - **Masque « zones sensibles »** : aires protégées et forêts classées (tracés indicatifs, sources
   publiques WDPA/Ministère) affichables sur toutes les cartes ; une saisie manuelle qui recoupe une
   aire protégée déclenche une **détection géométrique réelle** (verdict « Anomalie détectée »).
-- **Espace exportateur** (`/app/exportateur`) : portefeuille multi-coopératives (tableau trié ↔ carte
-  satellite liée), répartition des statuts, assistant de portefeuille, export GeoJSON, alertes,
-  configuration.
+- **Espace exportateur** (`/app/exportateur`) — multi-pages : tableau de bord (portefeuille tableau
+  trié ↔ carte satellite liée, répartition des statuts), **Coopératives** (fiches réseau, « Ajouter
+  une coopérative » avec import de registre audité, carte des sièges), **Producteurs** et
+  **Parcelles** consolidés, **Dossiers & rapports** (dossier acheteur EUDR : résumé exécutif IA,
+  rapport consolidé téléchargeable, certificats, GeoJSON TRACES NT, centre d'alertes), **Assistant
+  IA** de portefeuille, et **API REST d'export en masse** (`GET /api/exporteur/portefeuille`).
 - **Vérification publique** (`/verifier-certificat`) : tout acheteur scanne le QR d'un certificat et
   confirme le verdict sans compte.
-- **Site vitrine bilingue FR/EN** : méthodologie, tarifs (coopérative 100 000 FCFA/mois · API
-  exportateur à partir de 1 000 000 FCFA/mois), FAQ, à-propos, contact, aide, pages légales. PWA
-  installable avec mode hors connexion.
+- **Site vitrine bilingue FR/EN** : méthodologie, tarifs (Coopérative 100 000 · Exportateur
+  Essentiel 500 000 · Exportateur Pro 1 000 000 FCFA/mois), FAQ, à-propos, contact, aide, pages
+  légales. PWA installable avec mode hors connexion.
 
 ## 🤖 Usages de l'IA (en production)
 
-- **Assistant AGRIVO** (`/api/gemini/rdue-qa`) : chatbot groundé sur une **base de 33 faits sourcés**
-  (produit + RDUE) — il se présente, guide écran par écran, répond en 3-4 phrases, intercepte les
-  questions de financement (hors périmètre) et oriente les demandes complexes vers support@agrivo.ci.
-  Small-talk déterministe instantané ; repli groundé sans clé.
+- **Assistant AGRIVO** (`/api/gemini/rdue-qa`) : chatbot groundé sur une **base de 39 faits sourcés**
+  (produit + RDUE + verdicts expliqués) — il se présente, guide écran par écran, répond court
+  (1 à 3 phrases), intercepte les questions de financement (hors périmètre) et oriente les demandes
+  complexes vers support@agrivo.ci. Small-talk déterministe instantané ; repli groundé sans clé.
 - **Plan d'action IA** sur l'audit de registre : priorise bureau/terrain à partir des anomalies réelles.
 - **Mémo de diligence (DDS)** : trame déterministe tirée des données, rédaction IA charte-safe.
 - **Argumentaire de prime** (valorisation) : stats du portefeuille + faits de marché sourcés.

@@ -31,7 +31,7 @@ const COPY = {
     noCoords: "La coopérative n'a pas encore fourni la géolocalisation de cette parcelle. Ajoutez-la lors de la vérification (saisie directe ou capture au champ).",
     verify: "Lancer la vérification",
     notFoundTitle: "Cette parcelle est introuvable",
-    notFoundDesc: "Elle n'existe pas ou a été ajoutée depuis un autre navigateur (les producteurs ajoutés en démonstration sont stockés localement).",
+    notFoundDesc: "Elle n'existe pas ou a été ajoutée depuis un autre navigateur (pendant la phase pilote, les fiches ajoutées sont stockées sur votre appareil).",
     backList: "Retour aux producteurs",
   },
   en: {

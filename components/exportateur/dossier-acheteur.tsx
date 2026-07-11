@@ -1,7 +1,7 @@
 "use client";
 import * as React from "react";
 import { motion } from "framer-motion";
-import { FileText, Sparkles, Loader2, Download, ShieldCheck, BadgeCheck } from "lucide-react";
+import { FileText, Sparkles, Loader2, Download, ShieldCheck, BadgeCheck, ClipboardCopy, TerminalSquare } from "lucide-react";
 import { useLanguage } from "@/components/language-provider";
 import { PARCELLES, exporterFeatureCollection, type Parcelle } from "@/data/mock-parcelles";
 import { FILIERE_LABEL } from "@/config/filieres";
@@ -28,8 +28,14 @@ const COPY = {
     live: "Rédigé par l'IA · en direct",
     base: "Résumé déterministe",
     download: "Télécharger le GeoJSON du dossier",
+    downloadReport: "Télécharger le rapport consolidé",
+    copy: "Copier le résumé",
+    copied: "Résumé copié !",
+    api: "API REST (offre Pro) :",
+    apiHint: "renvoie le portefeuille complet au format TRACES NT (filtre ?statut=conforme).",
     listTitle: "Parcelles incluses",
     certificate: "Certificat",
+    reportTitle: "RAPPORT CONSOLIDÉ EUDR — AGRIVO",
     footer: "Évaluation de conformité, non une garantie. L'opérateur reste responsable de sa déclaration de diligence (TRACES NT).",
   },
   en: {
@@ -44,8 +50,14 @@ const COPY = {
     live: "Written by AI · live",
     base: "Deterministic summary",
     download: "Download the file's GeoJSON",
+    downloadReport: "Download the consolidated report",
+    copy: "Copy the summary",
+    copied: "Summary copied!",
+    api: "REST API (Pro plan):",
+    apiHint: "returns the full portfolio in TRACES NT format (filter ?statut=conforme).",
     listTitle: "Included plots",
     certificate: "Certificate",
+    reportTitle: "EUDR CONSOLIDATED REPORT — AGRIVO",
     footer: "Compliance assessment, not a guarantee. The operator remains responsible for its due diligence statement (TRACES NT).",
   },
 } as const;
@@ -56,6 +68,7 @@ export function DossierAcheteur() {
   const [resume, setResume] = React.useState<string | null>(null);
   const [live, setLive] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
+  const [copie, setCopie] = React.useState(false);
 
   const conformes = React.useMemo<Parcelle[]>(() => PARCELLES.filter((p) => p.statut === "conforme"), []);
 
@@ -101,6 +114,42 @@ export function DossierAcheteur() {
     a.download = `agrivo-dossier-acheteur-${conformes.length}-parcelles.geojson`;
     a.click();
     URL.revokeObjectURL(url);
+  }
+
+  /** Rapport consolidé lisible (texte) : en-tête, indicateurs, résumé exécutif s'il existe, liste complète. */
+  function telechargerRapport() {
+    const date = new Date().toLocaleDateString(lang === "en" ? "en-GB" : "fr-FR");
+    const lignes = [
+      t.reportTitle,
+      `${date} · ${faits.nbConformes}/${faits.total} ${t.conformes} · ${faits.haConformes} ${t.hectares} · ${faits.coops} ${t.coops}`,
+      `${lang === "en" ? "Value chains" : "Filières"} : ${faits.filieres.join(", ")} · ${lang === "en" ? "Regions" : "Régions"} : ${faits.regions.join(", ")}`,
+      "",
+      ...(resume ? [resume, ""] : []),
+      `--- ${t.listTitle} (${conformes.length}) ---`,
+      ...conformes.map(
+        (p) => `${p.producteurNom} · ${p.cooperative} · ${p.superficieHa} ha · ${t.certificate} ${p.numeroCertificat}`,
+      ),
+      "",
+      t.footer,
+    ];
+    const blob = new Blob([lignes.join("\n")], { type: "text/plain;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `agrivo-rapport-eudr-${conformes.length}-parcelles.txt`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  async function copier() {
+    if (!resume) return;
+    try {
+      await navigator.clipboard.writeText(resume);
+      setCopie(true);
+      setTimeout(() => setCopie(false), 2000);
+    } catch {
+      /* clipboard indisponible : silencieux */
+    }
   }
 
   const chips: { valeur: string | number; libelle: string }[] = [
@@ -149,6 +198,14 @@ export function DossierAcheteur() {
           <Download size={13} strokeWidth={2} aria-hidden />
           {t.download}
         </button>
+        <button
+          type="button"
+          onClick={telechargerRapport}
+          className="inline-flex items-center justify-center gap-2 rounded-full px-3 py-2 text-xs font-medium text-stone-500 outline-none transition-colors hover:text-forest-950 focus-visible:text-forest-950"
+        >
+          <FileText size={13} strokeWidth={2} aria-hidden />
+          {t.downloadReport}
+        </button>
       </div>
 
       {/* Résumé exécutif */}
@@ -169,6 +226,14 @@ export function DossierAcheteur() {
             </span>
           </div>
           <p className="text-sm leading-relaxed text-stone-700">{resume}</p>
+          <button
+            type="button"
+            onClick={copier}
+            className="mt-3 inline-flex items-center gap-1.5 rounded-full border border-black/10 px-3 py-1.5 text-[0.7rem] font-medium text-stone-600 outline-none transition-colors hover:border-green-signal/40 hover:text-forest-950 focus-visible:ring-2 focus-visible:ring-green-signal"
+          >
+            <ClipboardCopy size={12} strokeWidth={2} aria-hidden />
+            {copie ? t.copied : t.copy}
+          </button>
         </motion.div>
       )}
 
@@ -190,7 +255,22 @@ export function DossierAcheteur() {
         </ul>
       </div>
 
-      <p className="mt-4 flex items-start gap-1.5 border-t border-black/[0.05] pt-3 text-[0.7rem] leading-relaxed text-stone-400">
+      {/* API REST (offre Pro) — démontrable en direct */}
+      <p className="mt-4 flex flex-wrap items-center gap-x-2 gap-y-1 rounded-lg bg-ivory-deep/40 px-3 py-2 text-[0.7rem] leading-relaxed text-stone-500">
+        <TerminalSquare size={12} strokeWidth={2} aria-hidden className="shrink-0 text-green-signal/80" />
+        <span className="font-semibold text-forest-950">{t.api}</span>
+        <a
+          href="/api/exporteur/portefeuille?statut=conforme"
+          target="_blank"
+          rel="noreferrer"
+          className="num rounded bg-white px-1.5 py-0.5 ring-1 ring-black/[0.06] transition-colors hover:text-green-signal"
+        >
+          GET /api/exporteur/portefeuille
+        </a>
+        <span>{t.apiHint}</span>
+      </p>
+
+      <p className="mt-3 flex items-start gap-1.5 border-t border-black/[0.05] pt-3 text-[0.7rem] leading-relaxed text-stone-400">
         <ShieldCheck size={12} strokeWidth={2} aria-hidden className="mt-0.5 shrink-0 text-green-signal/70" />
         {t.footer}
       </p>

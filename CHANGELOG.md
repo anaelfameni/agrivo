@@ -3,6 +3,28 @@
 Versioning sémantique (MAJOR.MINOR.PATCH). Chaque release liste ce qui est ajouté, corrigé et
 vérifié, conformément à l'étape 8 du pipeline « Du besoin à la Release ».
 
+## v1.18.1 — 2026-07-11 — Offre Pro tangible (API REST + rapport consolidé), purge « démo », README v1.18
+
+### Ajouté (justification concrète des offres exportateur 500 000 / 1 000 000 FCFA)
+- **API REST d'export en masse — réelle et démontrable** : `GET /api/exporteur/portefeuille`
+  (+ filtre `?statut=conforme|anomalie|insuffisant`) renvoie le portefeuille en GeoJSON RFC 7946
+  au format TRACES NT. Lien cliquable dans le Dossier acheteur (« API REST · offre Pro »).
+- **Rapport consolidé EUDR téléchargeable** (Dossier acheteur) : en-tête daté, indicateurs, résumé
+  exécutif s'il a été généré, liste complète des parcelles avec n° de certificat.
+- **Copier le résumé exécutif** en un clic (presse-papiers, confirmation visuelle).
+
+### Corrigé / présentation
+- Mentions « démonstration » retirées des écrans produit non autorisés : sous-titre de l'espace
+  exportateur, message « parcelle introuvable » (fiches locales) — les boutons de démo assumés
+  (connexion 1 clic, « Remplir un exemple (démo) », registre/scénarios de démonstration, console
+  admin) sont conservés tels quels.
+- **README aligné v1.18** (lu par l'IA de pré-sélection) : comptes démo à jour, espaces coopérative
+  (page Certificats) et exportateur multi-pages détaillés, tarifs Essentiel/Pro, 39 faits assistant,
+  API REST.
+
+### Vérifié
+- `tsc` ✓ · tests Vitest ✓ · `next build` ✓ · smoke prod complet (pages + API).
+
 ## v1.18.0 — 2026-07-10 — Intégration v0 : espaces multi-pages, guide spotlight, tarification Essentiel/Pro
 
 ### Ajouté (issu des améliorations v0, portées sur la v1.17)

@@ -41,7 +41,7 @@ const COPY = {
     logout: "Déconnexion",
     subtitle: (coops: number, parcelles: number) =>
       `Directeur durabilité · ${coops} coopératives · ${parcelles} parcelles suivies`,
-    designed: "Vue de démonstration : le tableau de bord que votre exportateur consulte. Son portefeuille couvre plusieurs coopératives, dont la vôtre.",
+    designed: "Le tableau de bord que votre exportateur consulte : son portefeuille couvre plusieurs coopératives, dont la vôtre.",
     ownNote: "Votre portefeuille de conformité, coopérative par coopérative.",
     search: "Rechercher",
     alertsAria: (n: number) => `Centre d'alertes${n ? `, ${n} actives` : ""}`,
@@ -61,7 +61,7 @@ const COPY = {
     logout: "Sign out",
     subtitle: (coops: number, parcelles: number) =>
       `Sustainability director · ${coops} cooperatives · ${parcelles} plots tracked`,
-    designed: "Demo view: the dashboard your exporter uses. Their portfolio spans several cooperatives, including yours.",
+    designed: "The dashboard your exporter uses: their portfolio spans several cooperatives, including yours.",
     ownNote: "Your compliance portfolio, cooperative by cooperative.",
     search: "Search",
     alertsAria: (n: number) => `Alert centre${n ? `, ${n} active` : ""}`,
