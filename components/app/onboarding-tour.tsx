@@ -40,6 +40,7 @@ import {
   Ship,
   Sparkles,
   Sprout,
+  Store,
   Table2,
   Users,
   X,
@@ -242,6 +243,17 @@ const ETAPES_EXPORT: Etape[] = [
     corps: {
       fr: "La page Expéditions assemble le dossier RDUE de chaque conteneur : les parcelles d'origine géolocalisées (100 % conformes, ségrégation stricte), les volumes réconciliés, les jalons documentaires et le GeoJSON prêt pour TRACES NT.",
       en: "The Shipments page assembles each container's EUDR file: geolocated plots of origin (100% compliant, strict segregation), reconciled volumes, documentary milestones and the GeoJSON ready for TRACES NT.",
+    },
+  },
+  {
+    target: "sidebar-marketplace",
+    pointer: true,
+    Icon: Store,
+    accent: "#16a34a",
+    titre: { fr: "Vendez vos lots conformes, en direct", en: "Sell your compliant lots, directly" },
+    corps: {
+      fr: "La Marketplace transforme un lot déjà tracé en offre commerciale : elle ne devient vendable que s'il porte le sceau AGRIVO (double verrou : conformité, carte producteur, intégrité de volume). Côté vendeur, vous publiez et voyez la commission estimée ; côté acheteur, on ne voit que du conforme vérifié. AGRIVO fait le commerce des fèves, jamais le financement.",
+      en: "The Marketplace turns an already-traced lot into a commercial offer: it only becomes sellable if it carries the AGRIVO seal (double lock: compliance, producer card, volume integrity). As a seller you list and see the estimated commission; as a buyer you only see verified-compliant. AGRIVO handles the bean trade, never financing.",
     },
   },
   {

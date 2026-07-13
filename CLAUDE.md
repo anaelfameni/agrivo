@@ -14,7 +14,7 @@
 >   DOUBLE VERROU** : ① carte producteur (ancre d'identité de l'État) ② polygone vérifié +
 >   non-déforestation + volume plausible. Multi-filière par conception (7 RDUE). **Frontière Nanti =
 >   par métier** (AGRIVO = commerce/traçabilité ; Nanti = finance). Détail : `data/mock-marketplace.ts`,
->   `/marketplace`, `/app/marketplace`. Docs stratégie : `Bureau/AGRIVO DOCUMENTS/AGRIVO_Plan_Marketplace.md`.
+>   `/marketplace` (public), `/app/exportateur/marketplace` (module). Docs stratégie : `Bureau/AGRIVO DOCUMENTS/AGRIVO_Plan_Marketplace.md`.
 > - **Modèle économique** : Coopérative **100 000 FCFA/mois** (≈ 1 200 FCFA/producteur/an) ·
 >   **Exportateur Essentiel 500 000** · **Exportateur Pro 1 000 000 FCFA/mois** · **+ take-rate
 >   marketplace 1-3 % sur les ventes de lots + sceau de vérification par expédition**. **AUCUN crédit,
@@ -393,10 +393,16 @@ variables CSS dans `app/globals.css`.
     lots des EXPÉDITIONS seedées + prix indicatif), `estVendable`.
   - `components/marketplace/sceau-agrivo.tsx` : badge « vérifié / en préparation » + détail des
     4 critères (FR/EN). ⚠️ token texte = `forest-950` (PAS `neutral-ink`, qui n'existe pas depuis S2).
-  - `/app/marketplace` (module) : vue **Offre** (publier/retirer un lot vérifié, take-rate estimé,
-    état de session — constantes jamais mutées) + vue **Demande** (parcourir lots vendables,
-    réserver → lien `/verifier-expedition?ref=`). ⚠️ `COPY` typé `Record<"fr"|"en", Copy>` (sinon
-    TS2719 union de littéraux incompatibles entre langues).
+  - `/app/exportateur/marketplace` (module) : vue **Offre** (publier/retirer un lot vérifié,
+    take-rate estimé, état de session — constantes jamais mutées) + vue **Demande** (parcourir lots
+    vendables, réserver → lien `/verifier-expedition?ref=`). ⚠️ `COPY` typé `Record<"fr"|"en", Copy>`
+    (sinon TS2719 union de littéraux incompatibles entre langues). ⚠️⚠️ **La page DOIT vivre sous
+    `/app/exportateur/*`** : `RouteGuard` a une allow-list `EXPORTER_ALLOWED` (exportateur/paramètres)
+    et **renvoie tout autre `/app/*` vers `/app/exportateur`** → un `/app/marketplace` était
+    silencieusement bloqué (« le clic ne fait rien »). Corrigé en déplaçant sous exportateur.
+  - **Guide interactif** : étape `sidebar-marketplace` ajoutée dans `ETAPES_EXPORT`
+    (`onboarding-tour.tsx`) entre `sidebar-expeditions` et `sidebar-rapports` ; ancre `data-tour`
+    posée via le champ `tour` de la sidebar.
   - `/marketplace` (page publique) : positionnement, « comment ça marche » 3 étapes, double verrou,
     « la coop possède sa donnée », CTA membres fondateurs.
 - 📝 **Repositionnement contenu** : `MarketplaceSection` sur l'accueil (après Cartographie) ; section

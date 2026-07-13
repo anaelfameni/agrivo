@@ -69,7 +69,7 @@ export default function MarketplacePublicPage() {
       <PageHero eyebrow={t.eyebrow} title={t.title} sub={t.sub}>
         <div className="mt-8 flex flex-wrap gap-3">
           <Link
-            href="/app/marketplace"
+            href="/app/exportateur/marketplace"
             className="inline-flex items-center gap-2 rounded-full bg-green-signal px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-green-signal/90"
           >
             <Store size={16} /> {t.cta}
