@@ -10,10 +10,10 @@ import { LanguageSwitcher } from "@/components/ui/language-switcher";
 import { useAuth } from "@/components/auth-provider";
 import { useLanguage } from "@/components/language-provider";
 
-const NAV_HREFS = ["/", "/methodologie", "/a-propos", "/tarifs", "/faq"] as const;
+const NAV_HREFS = ["/", "/marketplace", "/methodologie", "/a-propos", "/tarifs", "/faq"] as const;
 const NAV_LABELS = {
-  fr: ["Accueil", "Méthodologie", "À propos", "Tarifs", "FAQ"],
-  en: ["Home", "Method", "About", "Pricing", "FAQ"],
+  fr: ["Accueil", "Marketplace", "Méthodologie", "À propos", "Tarifs", "FAQ"],
+  en: ["Home", "Marketplace", "Method", "About", "Pricing", "FAQ"],
 } as const;
 
 /**

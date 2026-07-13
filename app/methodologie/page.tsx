@@ -243,6 +243,46 @@ export default function Methodologie() {
         </section>
 
         {/* CTA */}
+        <section className="bg-ivory">
+          <div className="mx-auto max-w-5xl px-6 py-20 md:px-8">
+            <Reveal>
+              <span className="eyebrow text-green-signal">{en ? "Anti-fraud" : "Anti-fraude"}</span>
+              <h2 className="mt-3 font-display text-3xl text-forest-950">
+                {en ? "The double lock behind the AGRIVO seal" : "Le double verrou derrière le sceau AGRIVO"}
+              </h2>
+              <p className="mt-3 max-w-2xl text-stone-600">
+                {en
+                  ? "A lot can only be sold on the marketplace if it is sealed. The seal is the anti-laundering guarantee — and it takes two independent locks."
+                  : "Un lot n'est vendable sur la marketplace que s'il est scellé. Le sceau est la garantie anti-blanchiment — et il faut deux verrous indépendants."}
+              </p>
+            </Reveal>
+            <div className="mt-8 grid gap-5 md:grid-cols-2">
+              <Reveal>
+                <div className="h-full rounded-2xl border border-green-signal/20 bg-white p-6">
+                  <p className="text-xs font-semibold uppercase tracking-wide text-green-signal">{en ? "Lock 1 · The State" : "Verrou 1 · l'État"}</p>
+                  <h3 className="mt-2 font-premium text-lg text-forest-950">{en ? "Producer card" : "Carte producteur"}</h3>
+                  <p className="mt-1.5 text-sm leading-relaxed text-stone-600">
+                    {en
+                      ? "AGRIVO only analyses carded producers: the card proves an identity and a plot already declared and verified by the State (Coffee-Cocoa Council). No ghost producers, no inflated volumes."
+                      : "AGRIVO n'analyse que des producteurs cartés : la carte prouve une identité et une parcelle déjà déclarées et vérifiées par l'État (Conseil Café-Cacao). Aucun producteur fantôme, aucun volume gonflé."}
+                  </p>
+                </div>
+              </Reveal>
+              <Reveal delay={0.08}>
+                <div className="h-full rounded-2xl border border-green-signal/20 bg-white p-6">
+                  <p className="text-xs font-semibold uppercase tracking-wide text-green-signal">{en ? "Lock 2 · AGRIVO" : "Verrou 2 · AGRIVO"}</p>
+                  <h3 className="mt-2 font-premium text-lg text-forest-950">{en ? "Polygon + volume" : "Polygone + volume"}</h3>
+                  <p className="mt-1.5 text-sm leading-relaxed text-stone-600">
+                    {en
+                      ? "A card is not compliance: AGRIVO turns the point into a verified polygon, checks it is deforestation-free by satellite, and reconciles the declared volume against the area × yield cap."
+                      : "Une carte ne vaut pas conformité : AGRIVO transforme le point en polygone vérifié, contrôle par satellite qu'il est hors-déforestation, et réconcilie le volume déclaré au plafond superficie × rendement."}
+                  </p>
+                </div>
+              </Reveal>
+            </div>
+          </div>
+        </section>
+
         <section className="bg-forest-950 text-white">
           <div className="mx-auto flex max-w-4xl flex-col items-center gap-6 px-6 py-20 text-center md:px-8">
             <Reveal>

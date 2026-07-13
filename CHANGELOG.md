@@ -3,6 +3,32 @@
 Versioning sémantique (MAJOR.MINOR.PATCH). Chaque release liste ce qui est ajouté, corrigé et
 vérifié, conformément à l'étape 8 du pipeline « Du besoin à la Release ».
 
+## v2.0.0 — 2026-07-13 — Marketplace du cacao conforme + sceau AGRIVO (double verrou)
+
+Repositionnement stratégique v2 (phase investisseur) : la traçabilité est le produit, la conformité
+son livrable, et la **marketplace des lots vérifiés** l'endgame. Client = l'exportateur.
+
+### Ajouté
+- **Marketplace MVP fonctionnel** : `data/mock-marketplace.ts` (module pur — `evaluerSceau`,
+  `estProducteurCarte`, `takeRate`, `lotsMarche`, dérivé des expéditions déjà tracées) ;
+  page publique `/marketplace` (positionnement + double verrou + membres fondateurs) ;
+  module `/app/marketplace` (vue **Offre** vendeur : publier/retirer un lot vérifié + take-rate
+  estimé ; vue **Demande** acheteur : parcourir, réserver, lien de vérification publique) ;
+  composant `components/marketplace/sceau-agrivo.tsx` (badge + détail des 4 critères).
+- **Sceau AGRIVO = double verrou anti-fraude** (calculé, jamais affirmé) : ① ségrégation (toutes
+  parcelles « Conforme ») ② **carte producteur** (tous les producteurs cartés — ancre d'identité de
+  l'État) ③ intégrité (contrôle pré-embarquement « Prêt », réutilise `controleEmbarquement()`)
+  ④ références DDR. Gate carte **souple** : un producteur non carté n'est pas supprimé, il exclut
+  le lot du sceau jusqu'à régularisation.
+- **Take-rate marketplace 1-3 %** ajouté comme 3ᵉ couche de revenu (`/tarifs`) — jamais de frais au
+  producteur, jamais de crédit (frontière Nanti maintenue).
+- **Repositionnement contenu** : section Marketplace sur l'accueil ; section « double verrou » sur
+  `/methodologie` ; entrée Marketplace dans la nav publique et la sidebar exportateur.
+
+### Vérifié
+- **138 tests Vitest** (+9 `tests/marketplace.test.ts` : carte CCC, sceau 4 critères + jamais de
+  faux sceau, take-rate borné 1-3 %, lots dérivés/vendables) · `tsc` ✓ · `next build` ✓.
+
 ## v1.24.0 — 2026-07-11 — Espace exportateur complet (vision client) : assistant d'expédition 3 étapes, jalons déclarables, documents
 
 ### Ajouté

@@ -330,6 +330,7 @@ export default function Landing() {
         <FonctionnalitesSection />
         <FilieresSection />
         <CartographieSection />
+        <MarketplaceSection />
         <ChiffresSection />
         <EnjeuSection />
         <CalendrierSection />
@@ -651,6 +652,59 @@ function CartographieSection() {
           </Reveal>
         </div>
       </CursorGlow>
+    </section>
+  );
+}
+
+/* ------------------------------------------------------------------ Marketplace du cacao conforme */
+function MarketplaceSection() {
+  const { lang } = useLanguage();
+  const en = lang === "en";
+  const items = en
+    ? [
+        { Icon: ShieldCheck, t: "The AGRIVO seal", d: "A lot is only sellable if it carries the seal: compliance, producer card, volume integrity." },
+        { Icon: Boxes, t: "Sell in direct", d: "The exporter lists already-traced lots; the premium buyer buys verified-compliant." },
+        { Icon: Percent, t: "Take-rate 1–3%", d: "A commission on the trade — revenue that grows with volume, never a fee to the producer." },
+      ]
+    : [
+        { Icon: ShieldCheck, t: "Le sceau AGRIVO", d: "Un lot n'est vendable que s'il porte le sceau : conformité, carte producteur, intégrité de volume." },
+        { Icon: Boxes, t: "Vendre en direct", d: "L'exportateur publie ses lots déjà tracés ; l'acheteur premium achète du conforme vérifié." },
+        { Icon: Percent, t: "Take-rate 1–3 %", d: "Une commission sur le négoce — un revenu qui monte avec le volume, jamais de frais au producteur." },
+      ];
+  return (
+    <section className="bg-ivory">
+      <div className="mx-auto max-w-7xl px-6 py-24 md:px-8 lg:px-12">
+        <Reveal className="max-w-2xl">
+          <Eyebrow>{en ? "Compliant cocoa marketplace" : "Marketplace du cacao conforme"}</Eyebrow>
+          <h2 className="mt-3 font-premium text-4xl text-forest-950">
+            {en ? "The compliance is the door. The marketplace is the house." : "La conformité est la porte. La marketplace est la maison."}
+          </h2>
+          <p className="mt-4 text-lg leading-relaxed text-stone-600">
+            {en
+              ? "Once a lot is traced and sealed, the exporter sells it in direct to premium buyers — and the cooperative owns its data instead of being disintermediated."
+              : "Une fois le lot tracé et scellé, l'exportateur le vend en direct aux acheteurs premium — et la coopérative possède sa donnée au lieu d'être désintermédiée."}
+          </p>
+        </Reveal>
+        <motion.div variants={container} initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.15 }} className="mt-12 grid gap-5 sm:grid-cols-3">
+          {items.map((f) => (
+            <motion.div key={f.t} variants={rise} className="h-full rounded-2xl border border-green-signal/15 bg-white p-6 shadow-[0_1px_0_rgba(0,0,0,0.02)]">
+              <div className="grid h-11 w-11 place-items-center rounded-xl bg-gradient-to-br from-green-signal/15 to-green-signal/5 text-green-signal ring-1 ring-green-signal/15">
+                <f.Icon size={22} />
+              </div>
+              <h3 className="mt-4 font-premium text-lg text-forest-950">{f.t}</h3>
+              <p className="mt-1.5 text-sm leading-relaxed text-stone-600">{f.d}</p>
+            </motion.div>
+          ))}
+        </motion.div>
+        <Reveal delay={0.1}>
+          <Link
+            href="/marketplace"
+            className="mt-10 inline-flex items-center gap-2 rounded-full bg-green-signal px-6 py-3 text-sm font-semibold text-white transition-transform hover:scale-[1.02] active:scale-95"
+          >
+            {en ? "Discover the marketplace" : "Découvrir la marketplace"} <ArrowRight size={15} />
+          </Link>
+        </Reveal>
+      </div>
     </section>
   );
 }

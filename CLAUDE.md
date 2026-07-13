@@ -4,11 +4,22 @@
 > Il condense la charte de marque, les règles de contenu, les faits produit et l'avancement.
 > En cas de doute, ce fichier prime sur mes souvenirs. Il reflète l'état au dernier prompt traité.
 
-> 🟢 **ÉTAT ACTUEL — v1.18.1+, 11 juillet 2026 (CE BLOC FAIT FOI sur toute mention contraire
+> 🟢 **ÉTAT ACTUEL — v2.0.0, 13 juillet 2026 (CE BLOC FAIT FOI sur toute mention contraire
 > plus bas, qui relève de l'historique de construction).**
+> - **REPOSITIONNEMENT v2 (13/07, phase investisseur)** : la **traçabilité est le produit**, la
+>   conformité + le **sceau AGRIVO** en sont les livrables ; l'**endgame = la MARKETPLACE du cacao
+>   conforme** (l'exportateur publie ses lots vérifiés, l'acheteur premium achète du conforme, AGRIVO
+>   prélève un **take-rate 1-3 %**). **Client payeur/utilisateur = l'EXPORTATEUR** (les coops =
+>   villageois majoritairement illettrés = bénéficiaires, pas opérateurs du logiciel). **Sceau =
+>   DOUBLE VERROU** : ① carte producteur (ancre d'identité de l'État) ② polygone vérifié +
+>   non-déforestation + volume plausible. Multi-filière par conception (7 RDUE). **Frontière Nanti =
+>   par métier** (AGRIVO = commerce/traçabilité ; Nanti = finance). Détail : `data/mock-marketplace.ts`,
+>   `/marketplace`, `/app/marketplace`. Docs stratégie : `Bureau/AGRIVO DOCUMENTS/AGRIVO_Plan_Marketplace.md`.
 > - **Modèle économique** : Coopérative **100 000 FCFA/mois** (≈ 1 200 FCFA/producteur/an) ·
->   **Exportateur Essentiel 500 000** · **Exportateur Pro 1 000 000 FCFA/mois**. **AUCUN crédit,
->   prêt ni financement — jamais** (pivot Valorisation : primes + acheteurs premium).
+>   **Exportateur Essentiel 500 000** · **Exportateur Pro 1 000 000 FCFA/mois** · **+ take-rate
+>   marketplace 1-3 % sur les ventes de lots + sceau de vérification par expédition**. **AUCUN crédit,
+>   prêt ni financement — jamais** (la marketplace est la productisation de la valorisation, PAS de la
+>   finance : primes + acheteurs premium + commission de mise en relation).
 > - **Comptes démo** : coop `coop@test.com`/`123TestCoop123` · exportateur
 >   `export@test.com`/`123TestExport123` · admin `admin@agrivo.com`/`123admin123`.
 > - **Espaces multi-pages** : coop (Vue d'ensemble · Producteurs · Parcelles · Certificats ·
@@ -27,7 +38,7 @@
 >   `agrivo:tour:v2:*`) ; comptes inscrits = une seule fois ; bouton « ? » = relance manuelle.
 > - **App mobile de Christ** : dossier `Desktop/Agrivo (2)/Agrivo` (Flutter) analysé et corrigé le
 >   11/07 — voir `ANALYSE_ET_CHANGEMENTS.md` dans ce dossier ; Christ doit recompiler l'APK.
-> - **Qualité** : 110 tests Vitest, CI verte, tags jusqu'à v1.21.0, prod `agrivo-io.vercel.app`
+> - **Qualité** : **138 tests Vitest**, CI verte, tags jusqu'à v1.25.0, prod `agrivo-io.vercel.app`
 >   (réassigner l'alias à chaque deploy). Polices réelles : Space Grotesk / Geist / Geist Mono.
 > - Interface **FR/EN uniquement** (dioula/baoulé retirés). Statuts verbatim, « évaluation »
 >   jamais « garantie », zéro % inventé. Docs de construction archivés dans `docs/archives/`.
@@ -364,6 +375,43 @@ variables CSS dans `app/globals.css`.
 ---
 
 ## 📓 Journal de build (le plus récent en haut)
+
+### Session 28 — 2026-07-13 — v2.0.0 : REPOSITIONNEMENT « Marketplace du cacao conforme » + sceau AGRIVO (double verrou)
+- 🎯 **Repositionnement stratégique v2 (phase investisseur, RDV Insatta)** décidé/validé par Anael :
+  la **traçabilité est le produit**, conformité + **sceau AGRIVO** = ses livrables, **marketplace =
+  l'endgame** ; **client = l'exportateur** (coops = villageois illettrés = bénéficiaires, pas
+  opérateurs) ; **sceau = double verrou** (① carte producteur CCC = ancre d'identité de l'État ②
+  polygone vérifié + non-déforestation + volume plausible) ; **frontière Nanti = par métier**
+  (AGRIVO = commerce/traçabilité, Nanti = finance). Recherche carte producteur vérifiée en ligne
+  (SNT obligatoire 01/09/2026 ; 1,1 M enrôlés, ~900 k cartes, 3 M ha ; MAIS souvent point GPS pas
+  polygone + ~15 % en forêt classée → d'où le 2ᵉ verrou AGRIVO).
+- 🏪 **Marketplace MVP fonctionnel** (branche `feat/v2-marketplace`) :
+  - `data/mock-marketplace.ts` (module PUR) : `estProducteurCarte` (format `CI-CCC-######`),
+    `evaluerSceau` (4 critères calculés, jamais affirmés — **résout les parcelles depuis le
+    référentiel PASSÉ**, pas la constante globale, pour rester testable ; réutilise
+    `controleEmbarquement()`), `takeRate` (borné 1-3 %), `valeurLotFcfa`, `lotsMarche` (dérive les
+    lots des EXPÉDITIONS seedées + prix indicatif), `estVendable`.
+  - `components/marketplace/sceau-agrivo.tsx` : badge « vérifié / en préparation » + détail des
+    4 critères (FR/EN). ⚠️ token texte = `forest-950` (PAS `neutral-ink`, qui n'existe pas depuis S2).
+  - `/app/marketplace` (module) : vue **Offre** (publier/retirer un lot vérifié, take-rate estimé,
+    état de session — constantes jamais mutées) + vue **Demande** (parcourir lots vendables,
+    réserver → lien `/verifier-expedition?ref=`). ⚠️ `COPY` typé `Record<"fr"|"en", Copy>` (sinon
+    TS2719 union de littéraux incompatibles entre langues).
+  - `/marketplace` (page publique) : positionnement, « comment ça marche » 3 étapes, double verrou,
+    « la coop possède sa donnée », CTA membres fondateurs.
+- 📝 **Repositionnement contenu** : `MarketplaceSection` sur l'accueil (après Cartographie) ; section
+  « double verrou » sur `/methodologie` ; **take-rate 1-3 % en 3ᵉ couche de revenu** sur `/tarifs`
+  (jamais de frais producteur, jamais de crédit) ; entrées Marketplace dans `site-header.tsx` (nav
+  publique) et sidebar exportateur (`app-sidebar.tsx`, icône `Store`).
+- 🚫 **Frontière Nanti tenue** : AGRIVO ne fait AUCUN crédit/financement ; la marketplace est la
+  productisation de la valorisation (mise en relation + sceau + commission), pas de la finance.
+- ✅ **GATES** : `tsc` ✓ · **`next build` ✓** (routes `/marketplace` + `/app/marketplace` statiques) ·
+  **138 tests Vitest** (+9 `tests/marketplace.test.ts` : carte CCC valide/invalide, sceau 4 critères,
+  jamais de faux sceau si producteur non carté, take-rate borné 1-3 %, lots dérivés/vendables).
+  Version **2.0.0** + CHANGELOG v2.0.0. **Push/deploy/alias = action Anael** (go-live).
+- 📄 **Docs stratégie (Bureau/AGRIVO DOCUMENTS)** régénérés en v2 : `AGRIVO_Plan_Marketplace` (+PDF),
+  `AGRIVO_Etude_de_Marche` (+PDF, endgame marketplace, TAM négoce 9 Md$, double verrou, mangue phase 2),
+  `AGRIVO_Memo_Investissement_Insatta` (+PDF, cible exportateur, jalons marketplace).
 
 ### Session 27 — 2026-07-11 (JOUR DU JURY) — v1.21.0 : guide à chaque connexion démo (EN PROD) + app mobile de Christ analysée et corrigée
 - 🎓 **v1.21.0 EN PROD (commit `fdda8f7`, deploy `agrivo-kqh8nj98y…` aliasé, tag)** : le guide

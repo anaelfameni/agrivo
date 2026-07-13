@@ -209,6 +209,26 @@ export default function Tarifs() {
               </Link>
             </div>
           </Reveal>
+          <Reveal delay={0.14}>
+            <div className="mt-6 flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-green-signal/25 bg-green-signal/[0.06] p-6">
+              <div>
+                <p className="text-sm font-semibold text-forest-950">
+                  {en ? "Marketplace — commission on sales" : "Marketplace — commission sur les ventes"}
+                </p>
+                <p className="mt-1 max-w-xl text-sm text-stone-600">
+                  {en
+                    ? "Beyond subscriptions, the marketplace takes a commission of 1 to 3% on each verified compliant lot sold, plus a verification seal per shipment. Revenue that grows with the traded volume — never a fee to the producer, never credit."
+                    : "Au-delà des abonnements, la marketplace prélève une commission de 1 à 3 % sur chaque lot conforme vendu, plus un sceau de vérification par expédition. Un revenu qui monte avec le volume échangé — jamais de frais au producteur, jamais de crédit."}
+                </p>
+              </div>
+              <Link
+                href="/marketplace"
+                className="inline-flex items-center gap-2 rounded-full bg-green-signal px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-green-signal/90"
+              >
+                {en ? "See the marketplace" : "Voir la marketplace"} <ArrowRight size={15} />
+              </Link>
+            </div>
+          </Reveal>
           <Reveal delay={0.15}>
             <div className="mt-6 rounded-2xl border border-black/[0.06] bg-white p-6 text-center">
               <p className="mx-auto max-w-2xl text-sm text-stone-600">
