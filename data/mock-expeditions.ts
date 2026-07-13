@@ -331,7 +331,8 @@ export const EXPEDITIONS: Expedition[] = [
     codeSH: "0901",
     filiere: "cafe",
     parcelleIds: ["p11", "p43", "p44"],
-    tonnages: { p11: 0.7, p43: 0.9, p44: 1.2 },
+    // Prélèvements sous 90 % des plafonds anti-fraude (café 0,5 t/ha) → contrôle « Prêt », sceau vérifié.
+    tonnages: { p11: 0.7, p43: 0.8, p44: 0.9 },
     jalons: [
       { code: "compose", date: "2026-06-28" },
       { code: "depart-coop", date: "2026-07-01", note: { fr: "UCACO Man", en: "UCACO Man" } },

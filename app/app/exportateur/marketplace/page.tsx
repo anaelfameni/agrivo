@@ -2,40 +2,42 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
-import { Store, Tag, MapPin, Boxes, ArrowRight, Check, Ship, ExternalLink } from "lucide-react";
+import { Store, Tag, MapPin, Boxes, ArrowRight, Check, ExternalLink, Ship } from "lucide-react";
 import { useLanguage } from "@/components/language-provider";
 import { SceauAgrivo } from "@/components/marketplace/sceau-agrivo";
 import { PARCELLES } from "@/data/mock-parcelles";
 import {
   lotsMarche,
   takeRate,
-  estVendable,
   TAUX_COMMISSION_MIN,
   TAUX_COMMISSION_MAX,
   type MarketLot,
 } from "@/data/mock-marketplace";
 
-type Vue = "offre" | "demande";
-
+/**
+ * « Mes lots » — le COCKPIT VENDEUR de l'exportateur (côté OFFRE uniquement).
+ * La découverte et la réservation côté acheteur vivent désormais sur la VITRINE PUBLIQUE
+ * AGRIVO Market (/marketplace). Ici, l'exportateur publie / retire / suit ses lots scellés,
+ * et bascule vers la fiche publique de chacun. AGRIVO fait le commerce des fèves, jamais le
+ * financement : aucune donnée de crédit ici.
+ */
 const fcfa = (n: number) => new Intl.NumberFormat("fr-FR").format(n);
 const pct = (t: number) => `${Math.round(t * 100)} %`;
 
 type Copy = Record<
-  | "eyebrow" | "title" | "lead" | "demo" | "offre" | "demande" | "tonnage" | "prix" | "valeur"
-  | "commission" | "parcelles" | "publier" | "retirer" | "nonVendable" | "publie" | "reserver"
-  | "reserve" | "reserveNote" | "verifier" | "aucun" | "tauxNote",
+  | "eyebrow" | "title" | "lead" | "demo" | "vitrine" | "tonnage" | "prix" | "valeur" | "commission"
+  | "parcelles" | "publier" | "retirer" | "publie" | "nonVendable" | "reserve" | "reserveBy"
+  | "fiche" | "tauxNote",
   string
 >;
 
 const COPY: Record<"fr" | "en", Copy> = {
   fr: {
-    eyebrow: "Marketplace du cacao conforme",
-    title: "La place de marché des lots vérifiés",
-    lead:
-      "L'exportateur publie ses lots déjà tracés ; l'acheteur premium ne voit que des lots portant le sceau AGRIVO. AGRIVO fait le commerce des fèves, jamais le financement.",
-    demo: "Lots de démonstration (dérivés de vos expéditions). Aucune transaction réelle.",
-    offre: "Offre · vendeur",
-    demande: "Demande · acheteur",
+    eyebrow: "Espace exportateur · AGRIVO Market",
+    title: "Mes lots",
+    lead: "Publiez vos lots scellés sur la vitrine publique, suivez-les, retirez-les. Un lot n'est publiable que s'il porte le sceau AGRIVO (double verrou).",
+    demo: "Lots de démonstration dérivés de vos expéditions. Aucune transaction réelle.",
+    vitrine: "Voir la vitrine publique",
     tonnage: "Tonnage",
     prix: "Prix indicatif",
     valeur: "Valeur du lot",
@@ -43,23 +45,19 @@ const COPY: Record<"fr" | "en", Copy> = {
     parcelles: "parcelles d'origine",
     publier: "Publier sur la marketplace",
     retirer: "Retirer de la marketplace",
-    nonVendable: "Sceau en préparation — non publiable tant que le double verrou n'est pas vérifié.",
     publie: "Publié",
-    reserver: "Réserver ce lot",
-    reserve: "Lot réservé",
-    reserveNote: "Demande d'achat enregistrée. La commission est prélevée sur la transaction, jamais sur le producteur.",
-    verifier: "Vérifier le dossier public",
-    aucun: "Aucun lot vérifié n'est publié pour le moment.",
+    nonVendable: "Sceau en préparation — non publiable tant que le double verrou n'est pas vérifié.",
+    reserve: "Réservé",
+    reserveBy: "Réservé par",
+    fiche: "Voir la fiche publique",
     tauxNote: `Take-rate ${pct(TAUX_COMMISSION_MIN)}–${pct(TAUX_COMMISSION_MAX)} selon le lot ; estimation à ${pct(0.02)}.`,
   },
   en: {
-    eyebrow: "Compliant cocoa marketplace",
-    title: "The marketplace of verified lots",
-    lead:
-      "Exporters list their already-traced lots; premium buyers only see lots carrying the AGRIVO seal. AGRIVO handles the bean trade, never financing.",
-    demo: "Demonstration lots (derived from your shipments). No real transaction.",
-    offre: "Supply · seller",
-    demande: "Demand · buyer",
+    eyebrow: "Exporter space · AGRIVO Market",
+    title: "My lots",
+    lead: "List your sealed lots on the public marketplace, track them, remove them. A lot can only be listed if it carries the AGRIVO seal (double lock).",
+    demo: "Demonstration lots derived from your shipments. No real transaction.",
+    vitrine: "See the public marketplace",
     tonnage: "Tonnage",
     prix: "Indicative price",
     valeur: "Lot value",
@@ -67,89 +65,58 @@ const COPY: Record<"fr" | "en", Copy> = {
     parcelles: "source plots",
     publier: "List on the marketplace",
     retirer: "Remove from the marketplace",
-    nonVendable: "Seal in preparation — cannot be listed until the double lock is verified.",
     publie: "Listed",
-    reserver: "Reserve this lot",
-    reserve: "Lot reserved",
-    reserveNote: "Purchase request recorded. The commission is taken on the transaction, never on the producer.",
-    verifier: "Verify the public file",
-    aucun: "No verified lot is listed at the moment.",
+    nonVendable: "Seal in preparation — cannot be listed until the double lock is verified.",
+    reserve: "Reserved",
+    reserveBy: "Reserved by",
+    fiche: "View public file",
     tauxNote: `Take-rate ${pct(TAUX_COMMISSION_MIN)}–${pct(TAUX_COMMISSION_MAX)} per lot; estimate at ${pct(0.02)}.`,
   },
 } as const;
 
-export default function MarketplacePage() {
+export default function MesLotsPage() {
   const { lang } = useLanguage();
   const t = COPY[lang === "en" ? "en" : "fr"];
-  const [vue, setVue] = useState<Vue>("offre");
-  // État de session : lots retirés du marché + lots réservés (les constantes ne sont jamais mutées).
-  const [retires, setRetires] = useState<Set<string>>(new Set());
-  const [reserves, setReserves] = useState<Set<string>>(new Set());
-
   const lots = useMemo(() => lotsMarche(PARCELLES), []);
-  const enVente = lots.filter((l) => estVendable(l) && !retires.has(l.ref));
+  // État de session : lots retirés du marché (les constantes ne sont jamais mutées).
+  const [retires, setRetires] = useState<Set<string>>(new Set());
 
   return (
     <div className="mx-auto max-w-6xl px-1 py-2">
-      <header className="mb-6">
-        <p className="text-xs font-semibold uppercase tracking-wide text-green-signal">{t.eyebrow}</p>
-        <h1 className="mt-1 text-2xl font-semibold text-forest-950 md:text-3xl">{t.title}</h1>
-        <p className="mt-2 max-w-3xl text-sm text-forest-950/70">{t.lead}</p>
-        <p className="mt-2 text-xs text-amber-cacao">{t.demo}</p>
+      <header className="mb-6 flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-wide text-green-signal">{t.eyebrow}</p>
+          <h1 className="mt-1 text-2xl font-semibold text-forest-950 md:text-3xl">{t.title}</h1>
+          <p className="mt-2 max-w-2xl text-sm text-forest-950/70">{t.lead}</p>
+          <p className="mt-2 text-xs text-amber-cacao">{t.demo}</p>
+        </div>
+        <Link
+          href="/marketplace"
+          className="inline-flex shrink-0 items-center gap-2 rounded-full bg-forest-950 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-forest-900"
+        >
+          <Store size={15} /> {t.vitrine} <ArrowRight size={14} />
+        </Link>
       </header>
 
-      <div className="mb-6 inline-flex rounded-full border border-green-signal/30 bg-green-signal/5 p-1 text-sm">
-        {(["offre", "demande"] as Vue[]).map((v) => (
-          <button
-            key={v}
-            onClick={() => setVue(v)}
-            className={`rounded-full px-4 py-1.5 font-medium transition ${
-              vue === v ? "bg-green-signal text-white" : "text-forest-950/70 hover:text-forest-950"
-            }`}
-          >
-            {v === "offre" ? t.offre : t.demande}
-          </button>
+      <div className="grid gap-4 md:grid-cols-2">
+        {lots.map((lot) => (
+          <LotCard
+            key={lot.ref}
+            lot={lot}
+            lang={lang === "en" ? "en" : "fr"}
+            t={t}
+            retire={retires.has(lot.ref)}
+            onToggle={() =>
+              setRetires((prev) => {
+                const next = new Set(prev);
+                if (next.has(lot.ref)) next.delete(lot.ref);
+                else next.add(lot.ref);
+                return next;
+              })
+            }
+          />
         ))}
       </div>
-
-      {vue === "offre" ? (
-        <div className="grid gap-4 md:grid-cols-2">
-          {lots.map((lot) => (
-            <LotCard key={lot.ref} lot={lot} lang={lang} t={t}>
-              <OffreActions
-                lot={lot}
-                retire={retires.has(lot.ref)}
-                onToggle={() =>
-                  setRetires((prev) => {
-                    const next = new Set(prev);
-                    if (next.has(lot.ref)) next.delete(lot.ref);
-                    else next.add(lot.ref);
-                    return next;
-                  })
-                }
-                t={t}
-              />
-            </LotCard>
-          ))}
-        </div>
-      ) : enVente.length === 0 ? (
-        <p className="rounded-xl border border-green-signal/20 bg-green-signal/5 p-6 text-sm text-forest-950/70">
-          {t.aucun}
-        </p>
-      ) : (
-        <div className="grid gap-4 md:grid-cols-2">
-          {enVente.map((lot) => (
-            <LotCard key={lot.ref} lot={lot} lang={lang} t={t}>
-              <DemandeActions
-                lot={lot}
-                reserve={reserves.has(lot.ref)}
-                onReserve={() => setReserves((prev) => new Set(prev).add(lot.ref))}
-                t={t}
-              />
-            </LotCard>
-          ))}
-        </div>
-      )}
     </div>
   );
 }
@@ -158,13 +125,19 @@ function LotCard({
   lot,
   lang,
   t,
-  children,
+  retire,
+  onToggle,
 }: {
   lot: MarketLot;
-  lang: string;
+  lang: "fr" | "en";
   t: Copy;
-  children: React.ReactNode;
+  retire: boolean;
+  onToggle: () => void;
 }) {
+  const vendable = lot.sceau.statut === "verifie";
+  const isReserved = lot.statutMarche === "reserve";
+  const publie = !retire;
+
   return (
     <article className="flex flex-col rounded-2xl border border-green-signal/15 bg-white p-5 shadow-sm">
       <div className="mb-3">
@@ -176,7 +149,7 @@ function LotCard({
         </p>
       </div>
 
-      <SceauAgrivo sceau={lot.sceau} lang={lang as "fr" | "en"} detaille />
+      <SceauAgrivo sceau={lot.sceau} lang={lang} detaille />
 
       <dl className="mt-4 grid grid-cols-2 gap-3 text-sm">
         <div>
@@ -200,76 +173,35 @@ function LotCard({
         <Boxes size={11} /> {lot.nbParcelles} {t.parcelles} · {t.tauxNote}
       </p>
 
-      <div className="mt-4">{children}</div>
-    </article>
-  );
-}
+      <div className="mt-4 flex flex-wrap items-center gap-3">
+        {isReserved ? (
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-forest-950/15 bg-forest-950/[0.04] px-3 py-2 text-sm font-medium text-forest-950/70">
+            <Ship size={15} /> {t.reserve}{lot.acheteur ? ` · ${t.reserveBy} ${lot.acheteur}` : ""}
+          </span>
+        ) : !vendable ? (
+          <p className="text-xs text-amber-cacao">{t.nonVendable}</p>
+        ) : (
+          <button
+            onClick={onToggle}
+            className={`inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition ${
+              publie
+                ? "border border-green-signal/40 bg-green-signal/10 text-green-signal hover:bg-green-signal/15"
+                : "bg-green-signal text-white hover:bg-green-signal/90"
+            }`}
+          >
+            {publie ? <Check size={15} /> : <Store size={15} />}
+            {publie ? t.publie : t.publier}
+            {!publie && <ArrowRight size={15} />}
+          </button>
+        )}
 
-function OffreActions({
-  lot,
-  retire,
-  onToggle,
-  t,
-}: {
-  lot: MarketLot;
-  retire: boolean;
-  onToggle: () => void;
-  t: Copy;
-}) {
-  const vendable = lot.sceau.statut === "verifie";
-  if (!vendable) {
-    return <p className="text-xs text-amber-cacao">{t.nonVendable}</p>;
-  }
-  const publie = !retire;
-  return (
-    <button
-      onClick={onToggle}
-      className={`inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition ${
-        publie
-          ? "border border-green-signal/40 bg-green-signal/10 text-green-signal hover:bg-green-signal/15"
-          : "bg-green-signal text-white hover:bg-green-signal/90"
-      }`}
-    >
-      {publie ? <Check size={15} /> : <Store size={15} />}
-      {publie ? t.publie : t.publier}
-      {!publie && <ArrowRight size={15} />}
-    </button>
-  );
-}
-
-function DemandeActions({
-  lot,
-  reserve,
-  onReserve,
-  t,
-}: {
-  lot: MarketLot;
-  reserve: boolean;
-  onReserve: () => void;
-  t: Copy;
-}) {
-  if (reserve) {
-    return (
-      <div className="rounded-xl border border-green-signal/30 bg-green-signal/5 p-3">
-        <p className="flex items-center gap-1.5 text-sm font-semibold text-green-signal">
-          <Check size={15} /> {t.reserve}
-        </p>
-        <p className="mt-1 text-xs text-forest-950/70">{t.reserveNote}</p>
         <Link
-          href={`/verifier-expedition?ref=${encodeURIComponent(lot.ref)}`}
-          className="mt-2 inline-flex items-center gap-1.5 text-xs font-medium text-green-signal hover:underline"
+          href={`/marketplace/lot/${lot.ref}`}
+          className="inline-flex items-center gap-1.5 text-xs font-medium text-forest-950/60 transition hover:text-forest-950"
         >
-          <ExternalLink size={13} /> {t.verifier}
+          <ExternalLink size={13} /> {t.fiche}
         </Link>
       </div>
-    );
-  }
-  return (
-    <button
-      onClick={onReserve}
-      className="inline-flex items-center gap-2 rounded-full bg-green-signal px-4 py-2 text-sm font-medium text-white transition hover:bg-green-signal/90"
-    >
-      <Ship size={15} /> {t.reserver} <ArrowRight size={15} />
-    </button>
+    </article>
   );
 }

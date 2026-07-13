@@ -4,7 +4,7 @@
 > Il condense la charte de marque, les règles de contenu, les faits produit et l'avancement.
 > En cas de doute, ce fichier prime sur mes souvenirs. Il reflète l'état au dernier prompt traité.
 
-> 🟢 **ÉTAT ACTUEL — v2.0.0, 13 juillet 2026 (CE BLOC FAIT FOI sur toute mention contraire
+> 🟢 **ÉTAT ACTUEL — v2.1.0, 13 juillet 2026 (CE BLOC FAIT FOI sur toute mention contraire
 > plus bas, qui relève de l'historique de construction).**
 > - **REPOSITIONNEMENT v2 (13/07, phase investisseur)** : la **traçabilité est le produit**, la
 >   conformité + le **sceau AGRIVO** en sont les livrables ; l'**endgame = la MARKETPLACE du cacao
@@ -13,8 +13,21 @@
 >   villageois majoritairement illettrés = bénéficiaires, pas opérateurs du logiciel). **Sceau =
 >   DOUBLE VERROU** : ① carte producteur (ancre d'identité de l'État) ② polygone vérifié +
 >   non-déforestation + volume plausible. Multi-filière par conception (7 RDUE). **Frontière Nanti =
->   par métier** (AGRIVO = commerce/traçabilité ; Nanti = finance). Détail : `data/mock-marketplace.ts`,
->   `/marketplace` (public), `/app/exportateur/marketplace` (module). Docs stratégie : `Bureau/AGRIVO DOCUMENTS/AGRIVO_Plan_Marketplace.md`.
+>   par métier** (AGRIVO = commerce/traçabilité ; Nanti = finance).
+> - **AGRIVO MARKET — vitrine publique autonome (v2.1, 13/07)** : la marketplace est désormais un
+>   **produit à part entière, visuellement détaché** (décisions Anael : marque dédiée « AGRIVO
+>   Market », direction **premium sombre & éditorial**, entrée **acheteur-first**, **vitrine publique
+>   + actions gatées**, **rôles séparés**). Chrome propre = `app/marketplace/layout.tsx` +
+>   `components/marketplace/{market-header,market-footer}.tsx` (≠ `SiteHeader`). Routes :
+>   **`/marketplace`** (accueil catalogue filtrable, `market-catalog.tsx` + `lot-card.tsx`) ·
+>   **`/marketplace/lot/[ref]`** (fiche publique : sceau 4 critères, mini-carte Leaflet, dossier de
+>   confiance carte/certificat/DDR, contrôle d'intégrité, **PDF fiche + bon de réservation QR**
+>   `lot-pdf.tsx`, réservation gatée → connexion) · **`/marketplace/vendre`** (landing vendeur).
+>   Le module in-app **`/app/exportateur/marketplace` = cockpit « Mes lots »** (publier/retirer/suivre,
+>   lien vers chaque fiche publique) ; la découverte/réservation vit sur la vitrine.
+>   Données : `data/mock-marketplace.ts` (6 lots réels : EXP-2026-0001/0002 + 0004..0007 dérivés du
+>   portefeuille ; `findMarketLot`/`findMarketExpedition`/`parcellesDuLot`/`MARKET_LOT_REFS`).
+>   Docs stratégie : `Bureau/AGRIVO DOCUMENTS/AGRIVO_Plan_Marketplace.md`.
 > - **Modèle économique** : Coopérative **100 000 FCFA/mois** (≈ 1 200 FCFA/producteur/an) ·
 >   **Exportateur Essentiel 500 000** · **Exportateur Pro 1 000 000 FCFA/mois** · **+ take-rate
 >   marketplace 1-3 % sur les ventes de lots + sceau de vérification par expédition**. **AUCUN crédit,
@@ -38,7 +51,7 @@
 >   `agrivo:tour:v2:*`) ; comptes inscrits = une seule fois ; bouton « ? » = relance manuelle.
 > - **App mobile de Christ** : dossier `Desktop/Agrivo (2)/Agrivo` (Flutter) analysé et corrigé le
 >   11/07 — voir `ANALYSE_ET_CHANGEMENTS.md` dans ce dossier ; Christ doit recompiler l'APK.
-> - **Qualité** : **138 tests Vitest**, CI verte, tags jusqu'à v1.25.0, prod `agrivo-io.vercel.app`
+> - **Qualité** : **142 tests Vitest**, CI verte, tags jusqu'à v1.25.0, prod `agrivo-io.vercel.app`
 >   (réassigner l'alias à chaque deploy). Polices réelles : Space Grotesk / Geist / Geist Mono.
 > - Interface **FR/EN uniquement** (dioula/baoulé retirés). Statuts verbatim, « évaluation »
 >   jamais « garantie », zéro % inventé. Docs de construction archivés dans `docs/archives/`.
@@ -375,6 +388,44 @@ variables CSS dans `app/globals.css`.
 ---
 
 ## 📓 Journal de build (le plus récent en haut)
+
+### Session 29 — 2026-07-13 — v2.1.0 : AGRIVO MARKET, la vitrine publique autonome (place de marché pro)
+- 🎯 **Demande Anael** : « Je veux que la marketplace soit comme une nouvelle page détachée de
+  l'interface client, comme un site de marketplace professionnel, joli visuellement. » + recherche
+  avancée sur les plus grandes marketplaces agri (Agri Marketplace, Koltiva, SourceTrace, TraceX) →
+  principe **« Match → Trust → Transact »** : le sceau doit être la colonne vertébrale visuelle.
+- ❓ **8 questions posées avant de coder** (2 salves AskUserQuestion). Décisions : marque dédiée
+  **« AGRIVO Market »** (chrome propre) · direction **premium sombre & éditorial** · entrée
+  **acheteur-first** (galerie) · **vitrine publique + actions gatées** (réserver → connexion) ·
+  **rôles séparés** (vitrine publique ↔ cockpit in-app « Mes lots ») · fiche lot = sceau+4 critères
+  **+ mini-carte + certificats/DDR + PDF/QR** · réservation = **bon PDF + mise en relation** ·
+  catalogue **focus cacao/café** (~6 lots dérivés du réel).
+- 🏗️ **Construit** :
+  - **Chrome dédié** : `app/marketplace/layout.tsx` + `components/marketplace/{market-header,
+    market-footer}.tsx` (marque « AGRIVO Market », fond forêt, nav Parcourir/Vendre, lien discret
+    agrivo.io) — détaché du `SiteHeader`. `SceauAgrivo` gagne un `tone="dark"`.
+  - **Accueil** `/marketplace` (`app/marketplace/page.tsx`) : hero éditorial + stats de crédibilité
+    + **catalogue vivant** `market-catalog.tsx` (filtres filière · région · sceau · recherche) de
+    `lot-card.tsx` + section double verrou + « comment ça marche » + CTA vendeur.
+  - **Fiche lot** `/marketplace/lot/[ref]` (SSG) : `page.tsx` (server, `generateStaticParams` +
+    `generateMetadata`) → `lot-detail.tsx` (client) : sceau détaillé, **mini-carte `PortfolioMap`
+    (Leaflet, ssr:false)**, dossier de confiance (tableau), **contrôle d'intégrité** (réutilise
+    `controleEmbarquement`), origine/logistique, carte transaction, **`lot-pdf.tsx`** (fiche +
+    bon de réservation, QR → `/marketplace/lot/[ref]`), **réservation gatée** (public → login).
+  - **Landing vendeur** `/marketplace/vendre` + **cockpit in-app recentré** `/app/exportateur/
+    marketplace` = « Mes lots » (offre seule ; la demande a migré sur la vitrine).
+  - **Données** : `mock-marketplace.ts` +4 lots (EXP-2026-0004..0007) dérivés d'autres parcelles
+    conformes (Méagui/San-Pédro/Daloa vérifiés ; **Gagnoa « en préparation »** via le verrou
+    d'intégrité = démonstration honnête) + `findMarketLot`/`findMarketExpedition`/`parcellesDuLot`/
+    `MARKET_LOT_REFS`. Café réservé (Nordic Roasters AB) rendu scellé (tonnages ajustés sous 90 %).
+- ⚠️ **Leçon reconduite** : les lots « en préparation » ne peuvent PAS entrer dans le registre global
+  `EXPEDITIONS` (les tests d'expédition exigent que tout lot du registre soit irréprochable) → les 4
+  lots marketplace vivent dans un seed LOCAL de `mock-marketplace.ts` ; leur dossier public est la
+  fiche `/marketplace/lot/[ref]` (self-contained), pas `findExpedition`.
+- ✅ **GATES** : `tsc` ✓ (après purge `.next/dev/types` périmés) · `eslint` **0 erreur** ·
+  **`next build` ✓** (6 fiches lot en SSG) · **142 tests Vitest** (+4 marketplace) · smoke SSR
+  `next start` : `/marketplace`, `/marketplace/vendre`, 3 états de fiche (vérifié / en préparation
+  gaté / réservé) OK. Version **2.1.0** + CHANGELOG v2.1.0. **Push/deploy/alias = action Anael**.
 
 ### Session 28 — 2026-07-13 — v2.0.0 : REPOSITIONNEMENT « Marketplace du cacao conforme » + sceau AGRIVO (double verrou)
 - 🎯 **Repositionnement stratégique v2 (phase investisseur, RDV Insatta)** décidé/validé par Anael :

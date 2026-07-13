@@ -8,6 +8,10 @@ import {
   valeurLotFcfa,
   lotsMarche,
   estVendable,
+  findMarketLot,
+  findMarketExpedition,
+  parcellesDuLot,
+  MARKET_LOT_REFS,
   TAUX_COMMISSION_DEFAUT,
   TAUX_COMMISSION_MAX,
 } from "@/data/mock-marketplace";
@@ -79,5 +83,46 @@ describe("lots du marché", () => {
         expect(lot.statutMarche).toBe("liste");
       }
     }
+  });
+
+  it("le catalogue est vivant : ≥ 5 lots, dont ≥ 1 réservé et ≥ 1 en préparation", () => {
+    const lots = lotsMarche(PARCELLES);
+    expect(lots.length).toBeGreaterThanOrEqual(5);
+    expect(lots.some((l) => l.statutMarche === "reserve")).toBe(true);
+    expect(lots.some((l) => l.sceau.statut === "en-preparation")).toBe(true);
+    // Au moins un lot pleinement vendable pour animer la vitrine.
+    expect(lots.some((l) => estVendable(l))).toBe(true);
+  });
+
+  it("un lot réservé expose son acheteur ; un lot en préparation n'est pas vendable", () => {
+    const lots = lotsMarche(PARCELLES);
+    const reserve = lots.find((l) => l.statutMarche === "reserve")!;
+    expect(reserve.acheteur).toBeTruthy();
+    expect(estVendable(reserve)).toBe(false);
+    const prep = lots.find((l) => l.sceau.statut === "en-preparation")!;
+    expect(estVendable(prep)).toBe(false);
+  });
+});
+
+describe("fiche lot publique (findMarketLot / findMarketExpedition)", () => {
+  it("chaque référence du catalogue résout un lot ET son expédition source", () => {
+    expect(MARKET_LOT_REFS.length).toBeGreaterThanOrEqual(5);
+    for (const ref of MARKET_LOT_REFS) {
+      const lot = findMarketLot(ref, PARCELLES);
+      const exp = findMarketExpedition(ref);
+      expect(lot, ref).toBeDefined();
+      expect(exp, ref).toBeDefined();
+      expect(lot!.ref).toBe(ref);
+      // Les parcelles du lot se résolvent toutes (aucun id fantôme).
+      expect(parcellesDuLot(lot!)).toHaveLength(lot!.nbParcelles);
+      expect(parcellesDuLot(lot!).length).toBe(exp!.parcelleIds.length);
+    }
+  });
+
+  it("rejette une référence inconnue (casse/espaces tolérés)", () => {
+    expect(findMarketLot("EXP-9999-0000", PARCELLES)).toBeUndefined();
+    expect(findMarketLot("", PARCELLES)).toBeUndefined();
+    const first = MARKET_LOT_REFS[0];
+    expect(findMarketLot(`  ${first.toLowerCase()} `, PARCELLES)?.ref).toBe(first);
   });
 });

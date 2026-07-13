@@ -3,6 +3,44 @@
 Versioning sémantique (MAJOR.MINOR.PATCH). Chaque release liste ce qui est ajouté, corrigé et
 vérifié, conformément à l'étape 8 du pipeline « Du besoin à la Release ».
 
+## v2.1.0 — 2026-07-13 — AGRIVO Market : vitrine publique autonome (place de marché pro)
+
+Refonte de la marketplace en **produit à part entière**, visuellement détaché de l'app cliente
+(décisions Anael : marque dédiée « AGRIVO Market », direction premium sombre & éditorial, entrée
+acheteur-first, vitrine publique avec actions gatées, rôles séparés vitrine ↔ cockpit). Inspiration :
+Agri Marketplace, Koltiva, SourceTrace, TraceX (principe « Match → Trust → Transact »).
+
+### Ajouté
+- **Chrome dédié** : `app/marketplace/layout.tsx` + `components/marketplace/market-header.tsx` /
+  `market-footer.tsx` (marque « AGRIVO Market », fond forêt profond, nav Parcourir/Vendre, lien
+  discret vers agrivo.io) — détaché du `SiteHeader` du site vitrine et de l'espace applicatif.
+- **Accueil acheteur-first** `/marketplace` : hero éditorial + bandeau de crédibilité (lots scellés,
+  tonnes, coops, régions) + **catalogue vivant filtrable** (`market-catalog.tsx` : filière · région ·
+  sceau · recherche) de `lot-card.tsx` — la confiance avant le prix.
+- **Fiche lot publique** `/marketplace/lot/[ref]` (`lot-detail.tsx`) : sceau + 4 critères détaillés,
+  **mini-carte des parcelles** (réutilise `PortfolioMap`/Leaflet), **dossier de confiance** (tableau
+  producteur · carte · certificat · DDR · superficie · statut), **contrôle d'intégrité pré-embarquement**,
+  origine & logistique, carte transaction (prix · valeur · commission estimée), **PDF fiche lot +
+  bon de réservation avec QR** (`lot-pdf.tsx`), et **réservation gatée** (parcours public, action →
+  connexion). SSG des 6 lots.
+- **Landing vendeur** `/marketplace/vendre` : pourquoi/comment publier, take-rate transparent, CTA cockpit.
+- **Rôles séparés** : `/app/exportateur/marketplace` recentré en cockpit **« Mes lots »** (publier /
+  retirer / suivre + lien vers chaque fiche publique) ; la découverte/réservation vit sur la vitrine.
+- **Catalogue enrichi** : `mock-marketplace.ts` gagne 4 lots marketplace (EXP-2026-0004..0007) dérivés
+  d'autres parcelles conformes du portefeuille (Méagui, San-Pédro, Daloa vérifiés ; Gagnoa
+  volontairement « en préparation » via le verrou d'intégrité) + `findMarketLot`, `findMarketExpedition`,
+  `parcellesDuLot`, `MARKET_LOT_REFS`. Le lot café réservé (Nordic Roasters AB) est désormais scellé.
+
+### Vérifié
+- **142 tests Vitest** verts (4 nouveaux : catalogue vivant, lot réservé/en préparation, `findMarketLot`).
+- `tsc --noEmit` propre ; `eslint` 0 erreur ; `next build` OK (6 fiches lot en SSG).
+- Smoke test SSR (`next start`) : `/marketplace`, `/marketplace/vendre` et les 3 états de fiche lot
+  (vérifié / en préparation gaté / réservé avec acheteur) rendent correctement.
+
+### Frontière (inchangée)
+- AGRIVO Market fait le **commerce** des fèves conformes — jamais le financement/crédit (frontière
+  Nanti). La commission porte sur la transaction, **jamais sur le producteur**.
+
 ## v2.0.0 — 2026-07-13 — Marketplace du cacao conforme + sceau AGRIVO (double verrou)
 
 Repositionnement stratégique v2 (phase investisseur) : la traçabilité est le produit, la conformité

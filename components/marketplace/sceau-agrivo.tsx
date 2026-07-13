@@ -13,13 +13,17 @@ export function SceauAgrivo({
   sceau,
   lang = "fr",
   detaille = false,
+  tone = "light",
 }: {
   sceau: Sceau;
   lang?: Language;
   detaille?: boolean;
+  /** "dark" : posé sur un fond forêt (AGRIVO Market). */
+  tone?: "light" | "dark";
 }) {
   const verifie = sceau.statut === "verifie";
   const en = lang === "en";
+  const dark = tone === "dark";
 
   const titre = verifie
     ? en
@@ -35,7 +39,9 @@ export function SceauAgrivo({
         className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-semibold ${
           verifie
             ? "border-green-signal/40 bg-green-signal/10 text-green-signal"
-            : "border-amber-cacao/40 bg-amber-cacao/10 text-amber-cacao"
+            : dark
+              ? "border-amber-cacao/40 bg-amber-cacao/10 text-amber-soft"
+              : "border-amber-cacao/40 bg-amber-cacao/10 text-amber-cacao"
         }`}
       >
         {verifie ? <ShieldCheck size={14} /> : <ShieldAlert size={14} />}
@@ -46,10 +52,10 @@ export function SceauAgrivo({
         <ul className="mt-3 space-y-2">
           {sceau.criteres.map((c) => (
             <li key={c.code} className="flex items-start gap-2 text-sm">
-              <span className={`mt-0.5 shrink-0 ${c.ok ? "text-green-signal" : "text-amber-cacao"}`}>
+              <span className={`mt-0.5 shrink-0 ${c.ok ? "text-green-signal" : dark ? "text-amber-soft" : "text-amber-cacao"}`}>
                 {c.ok ? <Check size={16} /> : <AlertTriangle size={16} />}
               </span>
-              <span className="text-forest-950/85">{en ? c.en : c.fr}</span>
+              <span className={dark ? "text-white/80" : "text-forest-950/85"}>{en ? c.en : c.fr}</span>
             </li>
           ))}
         </ul>

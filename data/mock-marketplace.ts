@@ -28,6 +28,7 @@ import {
 } from "@/data/mock-expeditions";
 import {
   FILIERE_LABEL,
+  getParcelle,
   type Filiere,
   type Parcelle,
 } from "@/data/mock-parcelles";
@@ -155,11 +156,18 @@ export function takeRate(valeurFcfa: number, taux: number = TAUX_COMMISSION_DEFA
  * Les lots du marché — dérivés des expéditions déjà tracées (offre de l'exportateur).
  * On n'invente aucune parcelle : un lot de marché EST une expédition + un prix indicatif + un
  * état de marché. Le sceau est recalculé à la lecture.
+ *
+ * AGRIVO Market (vitrine publique) affiche un catalogue de LOTS RÉELS dérivés du portefeuille :
+ *   • 2 lots des expéditions du site (EXP-2026-0001 cacao, 0002 café) ;
+ *   • 4 lots MARKETPLACE (EXP-2026-0004..0007) composés d'autres parcelles conformes du
+ *     portefeuille (Méagui, San-Pédro, Daloa, Gagnoa).
+ * Ces 4 lots ne sont PAS ajoutés au registre global des expéditions (mock-expeditions) :
+ *   ils vivent ici, leur dossier public est la page /marketplace/lot/[ref].
  * ------------------------------------------------------------------------------------------ */
 export type StatutMarche = "liste" | "reserve";
 
 export interface MarketLot {
-  /** Référence publique = celle de l'expédition d'origine (QR, page de vérification). */
+  /** Référence publique du lot (QR, page /marketplace/lot/[ref]). */
   ref: string;
   nomLot: string;
   filiere: Filiere;
@@ -174,14 +182,120 @@ export interface MarketLot {
   statutMarche: StatutMarche;
   /** Nombre de parcelles d'origine (transparence de l'offre). */
   nbParcelles: number;
+  /** Ids des parcelles d'origine (mini-carte, tableau certificats/DDR de la fiche lot). */
+  parcelleIds: string[];
+  /** Campagne / millésime de récolte. */
+  campagne: string;
+  portDepart: string;
+  /** Acheteur (seulement pour un lot déjà réservé). */
+  acheteur?: string;
+  paysAcheteur?: string;
 }
 
-/** Prix indicatifs de démonstration par expédition (FCFA/kg) — au-dessus du prix bord champ. */
-const PRIX_INDICATIF_SEED: Record<string, { prixFcfaKg: number; statutMarche: StatutMarche }> = {
+/**
+ * Lots MARKETPLACE supplémentaires (EXP-2026-0004..0007) — expéditions composées d'autres
+ * parcelles CONFORMES du portefeuille. Tonnages sous les plafonds anti-fraude et vérifications
+ * satellites fraîches à la composition, pour que le sceau sorte « vérifié » — SAUF 0007,
+ * volontairement « en préparation » (une pesée > 90 % du plafond → réconciliation à finir) :
+ * la vitrine montre honnêtement qu'un lot conforme n'est pas scellé tant que le verrou d'intégrité
+ * n'est pas levé. Non ajoutées au registre global EXPEDITIONS (les tests d'expédition exigent que
+ * TOUT lot du registre soit irréprochable ; ici on veut justement un cas « en préparation »).
+ */
+const LOTS_SUPPLEMENTAIRES: Expedition[] = [
+  {
+    id: "mkt4",
+    ref: "EXP-2026-0004",
+    nomLot: "Cacao Nawa · Méagui, récolte principale 2025-26",
+    acheteur: "— (à vendre)",
+    paysAcheteur: "—",
+    portDepart: "San Pédro",
+    portArrivee: "—",
+    navire: "MSC Lorette",
+    numeroConteneur: "MSCU-771208-4",
+    codeSH: "1801",
+    filiere: "cacao",
+    parcelleIds: ["p18", "p21", "p22"],
+    tonnages: { p18: 2.0, p21: 0.9, p22: 1.6 },
+    jalons: [
+      { code: "compose", date: "2026-07-08" },
+      { code: "depart-coop", date: "2026-07-09", note: { fr: "Coopérative de Méagui", en: "Méagui Cooperative" } },
+    ],
+    creeLe: "2026-07-08",
+  },
+  {
+    id: "mkt5",
+    ref: "EXP-2026-0005",
+    nomLot: "Cacao San-Pédro · lot littoral 2025-26",
+    acheteur: "— (à vendre)",
+    paysAcheteur: "—",
+    portDepart: "San Pédro",
+    portArrivee: "—",
+    navire: "Maersk Sètte",
+    numeroConteneur: "MRKU-559034-2",
+    codeSH: "1801",
+    filiere: "cacao",
+    parcelleIds: ["p33", "p36", "p38"],
+    tonnages: { p33: 2.2, p36: 1.4, p38: 2.6 },
+    jalons: [
+      { code: "compose", date: "2026-07-03" },
+      { code: "depart-coop", date: "2026-07-04", note: { fr: "COOP-SP San Pédro", en: "COOP-SP San Pédro" } },
+    ],
+    creeLe: "2026-07-03",
+  },
+  {
+    id: "mkt6",
+    ref: "EXP-2026-0006",
+    nomLot: "Cacao Haut-Sassandra · Daloa 2025-26",
+    acheteur: "— (à vendre)",
+    paysAcheteur: "—",
+    portDepart: "San Pédro",
+    portArrivee: "—",
+    navire: "CMA CGM Sassandra",
+    numeroConteneur: "CMAU-330871-9",
+    codeSH: "1801",
+    filiere: "cacao",
+    parcelleIds: ["p39", "p40", "p42"],
+    tonnages: { p39: 1.9, p40: 1.2, p42: 1.6 },
+    jalons: [
+      { code: "compose", date: "2026-07-08" },
+      { code: "depart-coop", date: "2026-07-09", note: { fr: "COOP Daloa", en: "COOP Daloa" } },
+    ],
+    creeLe: "2026-07-08",
+  },
+  {
+    id: "mkt7",
+    ref: "EXP-2026-0007",
+    nomLot: "Cacao Gôh · Gagnoa (réconciliation en cours)",
+    acheteur: "— (à vendre)",
+    paysAcheteur: "—",
+    portDepart: "San Pédro",
+    portArrivee: "—",
+    codeSH: "1801",
+    filiere: "cacao",
+    parcelleIds: ["p28", "p30"],
+    // p28 volontairement à ~96 % de son plafond → le contrôle d'intégrité reste « attention »,
+    // donc sceau « en préparation » (démonstration honnête du verrou de réconciliation).
+    tonnages: { p28: 2.25, p30: 1.5 },
+    jalons: [{ code: "compose", date: "2026-06-30" }],
+    creeLe: "2026-06-30",
+  },
+];
+
+/** Toutes les expéditions adressables par la marketplace (registre du site + lots marketplace). */
+const EXPEDITIONS_MARCHE: Expedition[] = [...EXPEDITIONS, ...LOTS_SUPPLEMENTAIRES];
+
+/** Prix indicatif + état de marché par référence de lot (FCFA/kg) — au-dessus du prix bord champ. */
+const MARKET_SEED: Record<string, { prixFcfaKg: number; statutMarche: StatutMarche }> = {
   "EXP-2026-0001": { prixFcfaKg: 3100, statutMarche: "liste" },
-  "EXP-2026-0002": { prixFcfaKg: 3400, statutMarche: "reserve" },
-  "EXP-2026-0003": { prixFcfaKg: 2950, statutMarche: "liste" },
+  "EXP-2026-0002": { prixFcfaKg: 2650, statutMarche: "reserve" },
+  "EXP-2026-0004": { prixFcfaKg: 2950, statutMarche: "liste" },
+  "EXP-2026-0005": { prixFcfaKg: 3050, statutMarche: "liste" },
+  "EXP-2026-0006": { prixFcfaKg: 2900, statutMarche: "liste" },
+  "EXP-2026-0007": { prixFcfaKg: 3000, statutMarche: "liste" },
 };
+
+/** Références de tous les lots du catalogue (generateStaticParams de la fiche lot). */
+export const MARKET_LOT_REFS: string[] = Object.keys(MARKET_SEED);
 
 /** Construit un lot de marché à partir d'une expédition + un prix indicatif. */
 export function lotDepuisExpedition(
@@ -194,6 +308,9 @@ export function lotDepuisExpedition(
   const tonnage = tonnageExpedition(exp);
   const cooperatives = [...new Set(parcelles.map((p) => p.cooperative))];
   const regions = [...new Set(parcelles.map((p) => p.region))];
+  // La campagne est dérivée de la date de composition (millésime de récolte).
+  const annee = new Date(exp.creeLe).getFullYear();
+  const reserve = statutMarche === "reserve" && exp.acheteur && !exp.acheteur.startsWith("—");
   return {
     ref: exp.ref,
     nomLot: exp.nomLot,
@@ -207,18 +324,43 @@ export function lotDepuisExpedition(
     sceau: evaluerSceau(exp, toutesParcelles),
     statutMarche,
     nbParcelles: parcelles.length,
+    parcelleIds: parcelles.map((p) => p.id),
+    campagne: `${annee - 1}-${String(annee).slice(2)}`,
+    portDepart: exp.portDepart,
+    acheteur: reserve ? exp.acheteur : undefined,
+    paysAcheteur: reserve ? exp.paysAcheteur : undefined,
   };
 }
 
 /**
- * Les lots publiés sur la marketplace de démonstration (dérivés des expéditions seedées).
+ * Le catalogue de la marketplace (dérivé des expéditions du site + lots marketplace).
  * `toutesParcelles` = le référentiel (PARCELLES) passé par l'appelant pour rester pur/testable.
  */
 export function lotsMarche(toutesParcelles: Parcelle[]): MarketLot[] {
-  return EXPEDITIONS.filter((e) => PRIX_INDICATIF_SEED[e.ref]).map((e) => {
-    const seed = PRIX_INDICATIF_SEED[e.ref];
+  return EXPEDITIONS_MARCHE.filter((e) => MARKET_SEED[e.ref]).map((e) => {
+    const seed = MARKET_SEED[e.ref];
     return lotDepuisExpedition(e, seed.prixFcfaKg, seed.statutMarche, toutesParcelles);
   });
+}
+
+/** L'expédition source d'un lot de marché (pour la fiche lot : logistique, jalons, PDF, mini-carte). */
+export function findMarketExpedition(ref: string): Expedition | undefined {
+  const q = ref.trim().toUpperCase();
+  if (!q || !MARKET_SEED[q]) return undefined;
+  return EXPEDITIONS_MARCHE.find((e) => e.ref.toUpperCase() === q);
+}
+
+/** Un lot de marché par référence, ou undefined (vérification publique de la fiche lot). */
+export function findMarketLot(ref: string, toutesParcelles: Parcelle[]): MarketLot | undefined {
+  const exp = findMarketExpedition(ref);
+  if (!exp) return undefined;
+  const seed = MARKET_SEED[exp.ref];
+  return lotDepuisExpedition(exp, seed.prixFcfaKg, seed.statutMarche, toutesParcelles);
+}
+
+/** Les parcelles d'origine d'un lot (mini-carte + tableau certificats/DDR de la fiche lot). */
+export function parcellesDuLot(lot: MarketLot): Parcelle[] {
+  return lot.parcelleIds.map((id) => getParcelle(id)).filter((p): p is Parcelle => Boolean(p));
 }
 
 /** Un lot est-il vendable (sceau vérifié ET encore listé) ? */
