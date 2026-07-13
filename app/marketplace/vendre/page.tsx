@@ -6,13 +6,13 @@ import {
 } from "lucide-react";
 import { useLanguage } from "@/components/language-provider";
 import { useAuth } from "@/components/auth-provider";
+import { Reveal } from "@/components/landing/reveal";
 import { TAUX_COMMISSION_MIN, TAUX_COMMISSION_MAX } from "@/data/mock-marketplace";
 
 const pct = (t: number) => `${Math.round(t * 100)} %`;
 
 const TR = {
   fr: {
-    eyebrow: "Espace vendeur · exportateur",
     title: "Vendez vos lots conformes,\nscellés, en direct.",
     sub: "Publiez sur AGRIVO Market les lots que vous avez déjà tracés. Touchez des acheteurs premium qui paient la conformité — sans intermédiaire opaque, sans céder votre donnée.",
     cockpit: "Ouvrir « Mes lots »", browse: "Voir la marketplace",
@@ -35,7 +35,6 @@ const TR = {
     cta: "Accéder à mon espace",
   },
   en: {
-    eyebrow: "Seller space · exporter",
     title: "Sell your compliant lots,\nsealed, directly.",
     sub: "List on AGRIVO Market the lots you have already traced. Reach premium buyers who pay for compliance — without opaque middlemen, without giving up your data.",
     cockpit: "Open “My lots”", browse: "See the marketplace",
@@ -68,19 +67,16 @@ export default function VendrePage() {
 
   return (
     <>
-      <section className="relative overflow-hidden">
-        <div aria-hidden className="glow-radial absolute inset-x-0 top-0 h-[380px]" />
-        <div className="relative mx-auto max-w-7xl px-5 pb-14 pt-20 md:px-8 md:pb-16 md:pt-28">
-          <span className="eyebrow inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3 py-1.5 text-white/70">
-            <Store size={13} className="text-amber-soft" /> {t.eyebrow}
-          </span>
-          <h1 className="mt-6 max-w-3xl whitespace-pre-line font-display text-4xl font-semibold leading-[1.06] tracking-tight text-white md:text-5xl">{t.title}</h1>
-          <p className="mt-6 max-w-2xl text-base leading-relaxed text-white/65">{t.sub}</p>
+      <section className="relative overflow-hidden border-b border-black/[0.06] bg-white">
+        <div aria-hidden className="glow-radial absolute inset-x-0 top-0 h-[360px] opacity-70" />
+        <div className="relative mx-auto max-w-7xl px-5 pb-14 pt-16 md:px-8 md:pb-16 md:pt-24">
+          <h1 className="max-w-3xl whitespace-pre-line font-display text-4xl font-semibold leading-[1.06] tracking-tight text-forest-950 md:text-5xl">{t.title}</h1>
+          <p className="mt-6 max-w-2xl text-base leading-relaxed text-forest-950/65">{t.sub}</p>
           <div className="mt-9 flex flex-wrap items-center gap-3">
             <Link href={cockpitHref} className="inline-flex items-center gap-2 rounded-full bg-green-signal px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-green-signal/20 transition hover:bg-green-signal/90">
               <Store size={16} /> {t.cockpit}
             </Link>
-            <Link href="/marketplace" className="inline-flex items-center gap-2 rounded-full border border-white/20 px-6 py-3 text-sm font-semibold text-white transition hover:bg-white/10">
+            <Link href="/marketplace" className="inline-flex items-center gap-2 rounded-full border border-black/10 px-6 py-3 text-sm font-semibold text-forest-950 transition hover:bg-black/[0.03]">
               {t.browse} <ArrowRight size={16} />
             </Link>
           </div>
@@ -89,30 +85,34 @@ export default function VendrePage() {
 
       {/* Pourquoi */}
       <section className="mx-auto max-w-7xl px-5 py-14 md:px-8">
-        <h2 className="font-display text-2xl font-semibold text-white md:text-3xl">{t.whyTitle}</h2>
+        <Reveal><h2 className="font-display text-2xl font-semibold text-forest-950 md:text-3xl">{t.whyTitle}</h2></Reveal>
         <div className="mt-8 grid gap-5 md:grid-cols-3">
-          {t.why.map((w) => (
-            <div key={w.t} className="rounded-2xl border border-white/10 bg-white/[0.03] p-6">
-              <span className="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-green-signal/15 text-green-signal"><w.Icon size={22} /></span>
-              <h3 className="mt-4 font-display text-lg font-semibold text-white">{w.t}</h3>
-              <p className="mt-2 text-sm leading-relaxed text-white/60">{w.b}</p>
-            </div>
+          {t.why.map((w, i) => (
+            <Reveal key={w.t} delay={i * 0.08}>
+              <div className="h-full rounded-2xl border border-black/[0.06] bg-white p-6 shadow-sm">
+                <span className="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-green-signal/12 text-green-signal"><w.Icon size={22} /></span>
+                <h3 className="mt-4 font-display text-lg font-semibold text-forest-950">{w.t}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-forest-950/60">{w.b}</p>
+              </div>
+            </Reveal>
           ))}
         </div>
       </section>
 
       {/* Comment publier */}
-      <section className="border-y border-white/10 bg-white/[0.02]">
+      <section className="border-y border-black/[0.06] bg-white">
         <div className="mx-auto max-w-7xl px-5 py-14 md:px-8">
-          <h2 className="font-display text-2xl font-semibold text-white md:text-3xl">{t.howTitle}</h2>
+          <Reveal><h2 className="font-display text-2xl font-semibold text-forest-950 md:text-3xl">{t.howTitle}</h2></Reveal>
           <div className="mt-8 grid gap-6 md:grid-cols-3">
             {t.how.map((s, i) => (
-              <div key={s.t} className="rounded-2xl border border-white/10 bg-forest-950 p-6">
-                <span className="num text-sm font-bold text-amber-soft">0{i + 1}</span>
-                <s.Icon size={22} className="mt-3 text-green-signal" />
-                <h3 className="mt-3 font-display text-lg font-semibold text-white">{s.t}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-white/60">{s.b}</p>
-              </div>
+              <Reveal key={s.t} delay={i * 0.08}>
+                <div className="h-full rounded-2xl border border-black/[0.06] bg-ivory p-6">
+                  <span className="num text-sm font-bold text-amber-cacao">0{i + 1}</span>
+                  <s.Icon size={22} className="mt-3 text-green-signal" />
+                  <h3 className="mt-3 font-display text-lg font-semibold text-forest-950">{s.t}</h3>
+                  <p className="mt-2 text-sm leading-relaxed text-forest-950/60">{s.b}</p>
+                </div>
+              </Reveal>
             ))}
           </div>
         </div>
@@ -120,30 +120,34 @@ export default function VendrePage() {
 
       {/* Modèle / commission */}
       <section className="mx-auto max-w-7xl px-5 py-14 md:px-8">
-        <div className="flex flex-col gap-5 rounded-2xl border border-green-signal/25 bg-green-signal/[0.07] p-6 md:flex-row md:items-center md:p-8">
-          <span className="inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-green-signal/20 text-green-signal"><Percent size={24} /></span>
-          <div>
-            <h2 className="font-display text-xl font-semibold text-white">{t.feeTitle}</h2>
-            <p className="mt-2 max-w-2xl text-sm leading-relaxed text-white/65">{t.feeBody}</p>
+        <Reveal>
+          <div className="flex flex-col gap-5 rounded-2xl border border-green-signal/25 bg-green-signal/[0.06] p-6 md:flex-row md:items-center md:p-8">
+            <span className="inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-green-signal/15 text-green-signal"><Percent size={24} /></span>
+            <div>
+              <h2 className="font-display text-xl font-semibold text-forest-950">{t.feeTitle}</h2>
+              <p className="mt-2 max-w-2xl text-sm leading-relaxed text-forest-950/65">{t.feeBody}</p>
+            </div>
           </div>
-        </div>
+        </Reveal>
       </section>
 
       {/* CTA final */}
       <section className="mx-auto max-w-7xl px-5 pb-20 md:px-8">
-        <div className="relative overflow-hidden rounded-3xl border border-white/12 bg-gradient-to-br from-white/[0.06] via-forest-900 to-forest-950 p-8 md:p-12">
-          <div aria-hidden className="glow-radial absolute -left-16 bottom-0 h-56 w-96" />
-          <div className="relative flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
-            <div>
-              <div className="flex items-center gap-2 text-green-signal"><ShieldCheck size={18} /><span className="eyebrow text-green-signal">AGRIVO Market</span></div>
-              <h2 className="mt-3 font-display text-2xl font-semibold text-white md:text-3xl">{t.ctaTitle}</h2>
-              <p className="mt-2 text-sm text-white/60">{t.ctaSub}</p>
+        <Reveal>
+          <div className="relative overflow-hidden rounded-3xl border border-forest-950/10 bg-forest-950 p-8 md:p-12">
+            <div aria-hidden className="glow-radial absolute -left-16 bottom-0 h-56 w-96" />
+            <div className="relative flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
+              <div>
+                <div className="flex items-center gap-2 text-green-signal"><ShieldCheck size={18} /><span className="eyebrow text-green-signal">AGRIVO Market</span></div>
+                <h2 className="mt-3 font-display text-2xl font-semibold text-white md:text-3xl">{t.ctaTitle}</h2>
+                <p className="mt-2 text-sm text-white/60">{t.ctaSub}</p>
+              </div>
+              <Link href={cockpitHref} className="inline-flex shrink-0 items-center gap-2 rounded-full bg-white px-6 py-3 text-sm font-semibold text-forest-950 transition hover:scale-105">
+                {t.cta} <ArrowRight size={16} />
+              </Link>
             </div>
-            <Link href={cockpitHref} className="inline-flex shrink-0 items-center gap-2 rounded-full bg-white px-6 py-3 text-sm font-semibold text-forest-950 transition hover:scale-105">
-              {t.cta} <ArrowRight size={16} />
-            </Link>
           </div>
-        </div>
+        </Reveal>
       </section>
     </>
   );

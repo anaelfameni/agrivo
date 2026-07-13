@@ -3,6 +3,48 @@
 Versioning sémantique (MAJOR.MINOR.PATCH). Chaque release liste ce qui est ajouté, corrigé et
 vérifié, conformément à l'étape 8 du pipeline « Du besoin à la Release ».
 
+## v2.2.0 — 2026-07-13 — AGRIVO Market : refonte pro « B2B clair », cours cacao ICE live & animations
+
+Refonte visuelle et fonctionnelle profonde de la marketplace (demande Anael : « trop basique »,
+la rendre « totalement professionnelle, belle, animée »). Skills employés : `/ui-ux-pro-max`
+(pattern Marketplace : recherche-héros → filières → lots vedettes → confiance) + `/motion-framer`.
+
+### Changé
+- **Thème B2B clair** : bascule de toute l'expérience `/marketplace` du sombre au **fond ivoire/blanc,
+  accents verts** (layout, header, footer, cartes, catalogue, fiche lot, page vendre). Suppression des
+  deux eyebrows « Place de marché · matières premières RDUE » et « Espace vendeur · exportateur ».
+- **Accueil recomposé (recherche en héros)** : barre de recherche proéminente (la recherche est le
+  CTA, `market-search.tsx`) + **ruban de cours cacao** ; compteurs animés (`StatNumber`) ; puis
+  navigateur par filière, lots vedettes, graphique de marché, catalogue, confiance, origines, FAQ,
+  fondateurs. Recherche du héros pilotant le catalogue (défilement + filtre).
+
+### Ajouté
+- **Cours cacao ICE US (New York) réel & différé** : `lib/market/cocoa.ts` (module pur —
+  `normaliseCocoa`, `snapshotFallback`, `primeVsIce`) + route cache `app/api/market/cocoa`
+  (Yahoo `CC=F`, revalidate 300 s, repli « dernier cours connu »). Composants `cocoa-price.tsx` :
+  **`CocoaChart`** (graphique SVG custom animé — tracé `pathLength`, aire dégradée, plages
+  1J/1S/1M/1A, tooltip au survol, skeleton, source libellée) + **`CocoaTicker`** (ruban héros) +
+  **`VsIceChip`** (prime/décote d'un lot vs cours ICE, hypothèse FX affichée). Jamais « temps réel ».
+- **Sections d'accueil animées** : `filiere-browser.tsx` (7 filières RDUE + compteur de lots),
+  `featured-lots.tsx` (lots vedettes en cascade), `trust-strip.tsx` (Whisp·FAO, carte CCC, RDUE,
+  Sentinel-2 — méthodes/régulateurs, **aucun faux témoignage**), `origins-map.tsx` (carte Leaflet
+  des origines), `activity-ticker.tsx` (ruban défilant **illustratif**), `market-faq.tsx` (accordéon
+  `AnimatePresence`), `founding-signup.tsx` (capture email locale + animation de succès).
+- **Catalogue** : **tri** (pertinence/prix/tonnage), entrée en **cascade** (stagger), puce
+  **« vs ICE »** sur les prix, recherche contrôlée depuis le héros.
+- **Motion** (skill `/motion-framer`) : reveals staggerés, hover-lift, tracé de graphique, ruban et
+  ticker en boucle — le tout `transform/opacity` et **sous `prefers-reduced-motion`**.
+
+### Vérifié
+- **148 tests Vitest** verts (+6 `tests/cocoa.test.ts` : normalisation Yahoo, repli, prime/décote).
+- `tsc --noEmit` propre ; `eslint` **0 erreur** ; `next build` OK.
+- Route `curl /api/market/cocoa?range=1mo` → JSON normalisé (ou repli `stale:true`).
+
+### Frontière (inchangée)
+- Cours **réel mais différé + source libellée** ; ticker **illustratif** ; le % « vs ICE » est
+  **calculé** (hypothèse FX affichée), jamais inventé. Commerce jamais financement ; le producteur ne
+  paie jamais.
+
 ## v2.1.0 — 2026-07-13 — AGRIVO Market : vitrine publique autonome (place de marché pro)
 
 Refonte de la marketplace en **produit à part entière**, visuellement détaché de l'app cliente

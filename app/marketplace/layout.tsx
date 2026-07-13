@@ -4,9 +4,9 @@ import { MarketFooter } from "@/components/marketplace/market-footer";
 
 /**
  * Layout dédié de AGRIVO MARKET.
- * Chrome PROPRE (en-tête + pied sombres, marque « AGRIVO Market »), détaché du site vitrine et de
- * l'espace applicatif : la place de marché se présente comme un produit à part entière. Fond forêt
- * profond sur toute l'expérience — direction « premium sombre & éditorial ».
+ * Chrome PROPRE (en-tête + pied dédiés, marque « AGRIVO Market »), détaché du site vitrine et de
+ * l'espace applicatif : la place de marché se présente comme un produit à part entière. Thème B2B
+ * clair (fond ivoire, accents verts) sur toute l'expérience.
  */
 export const metadata: Metadata = {
   title: {
@@ -19,7 +19,7 @@ export const metadata: Metadata = {
 
 export default function MarketLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="flex min-h-screen flex-col bg-forest-950 text-white">
+    <div className="flex min-h-screen flex-col bg-ivory text-forest-950">
       <MarketHeader />
       <main className="flex-1">{children}</main>
       <MarketFooter />

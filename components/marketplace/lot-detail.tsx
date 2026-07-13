@@ -16,10 +16,11 @@ import {
   findMarketLot, findMarketExpedition, parcellesDuLot, takeRate, estVendable,
 } from "@/data/mock-marketplace";
 import { SceauAgrivo } from "@/components/marketplace/sceau-agrivo";
+import { VsIceChip, useCocoaSpot } from "@/components/marketplace/cocoa-price";
 
 const LotMap = dynamic(() => import("@/components/exportateur/portfolio-map"), {
   ssr: false,
-  loading: () => <div className="h-full w-full animate-pulse rounded-2xl bg-white/5" aria-hidden />,
+  loading: () => <div className="h-full w-full animate-pulse rounded-2xl bg-ivory" aria-hidden />,
 });
 
 const STATUT_LABEL_EN: Record<Statut, string> = { conforme: "Compliant", anomalie: "Anomaly detected", insuffisant: "Insufficient data" };
@@ -70,6 +71,7 @@ export function LotDetail({ refLot }: { refLot: string }) {
   const { user } = useAuth();
   const l = lang === "en" ? "en" : "fr";
   const t = TR[l];
+  const iceUsdT = useCocoaSpot();
 
   const lot = useMemo(() => findMarketLot(refLot, PARCELLES), [refLot]);
   const exp = useMemo(() => findMarketExpedition(refLot), [refLot]);
@@ -82,8 +84,8 @@ export function LotDetail({ refLot }: { refLot: string }) {
   if (!lot || !exp) {
     return (
       <div className="mx-auto max-w-3xl px-5 py-24 text-center">
-        <h1 className="font-display text-2xl font-semibold text-white">{t.notFound}</h1>
-        <p className="mt-3 text-white/60">{t.notFoundBody}</p>
+        <h1 className="font-display text-2xl font-semibold text-forest-950">{t.notFound}</h1>
+        <p className="mt-3 text-forest-950/60">{t.notFoundBody}</p>
         <Link href="/marketplace" className="mt-6 inline-flex items-center gap-2 rounded-full bg-green-signal px-5 py-2.5 text-sm font-semibold text-white">
           <ArrowLeft size={16} /> {t.back}
         </Link>
@@ -101,62 +103,59 @@ export function LotDetail({ refLot }: { refLot: string }) {
     await telechargerLotPdf(exp, lot, l, kind, kind === "reservation" ? buyerName : undefined);
   };
 
+  const cardCls = "rounded-2xl border border-black/[0.06] bg-white p-6 shadow-sm";
+
   return (
     <div className="mx-auto max-w-7xl px-5 py-10 md:px-8 md:py-14">
-      <Link href="/marketplace" className="inline-flex items-center gap-2 text-sm font-medium text-white/55 transition hover:text-white">
+      <Link href="/marketplace" className="inline-flex items-center gap-2 text-sm font-medium text-forest-950/55 transition hover:text-forest-950">
         <ArrowLeft size={16} /> {t.back}
       </Link>
 
-      {/* En-tête du lot */}
       <div className="mt-6 flex flex-wrap items-center gap-3">
-        <span className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold" style={{ background: `${f.couleur}22`, color: f.couleur }}>
+        <span className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold" style={{ background: `${f.couleur}1a`, color: f.couleur }}>
           <f.icone size={14} /> {lot.filiereLabel}
         </span>
-        <SceauAgrivo sceau={lot.sceau} lang={l} tone="dark" />
-        {isReserved && <span className="rounded-full border border-white/20 bg-white/5 px-3 py-1 text-xs font-semibold text-white/70">{t.reserved}</span>}
+        <SceauAgrivo sceau={lot.sceau} lang={l} tone="light" />
+        {isReserved && <span className="rounded-full border border-black/10 bg-black/[0.03] px-3 py-1 text-xs font-semibold text-forest-950/60">{t.reserved}</span>}
       </div>
-      <h1 className="mt-4 font-display text-3xl font-semibold leading-tight text-white md:text-4xl">{lot.nomLot}</h1>
-      <p className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-white/55">
+      <h1 className="mt-4 font-display text-3xl font-semibold leading-tight text-forest-950 md:text-4xl">{lot.nomLot}</h1>
+      <p className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-forest-950/55">
         <span className="inline-flex items-center gap-1.5"><MapPin size={14} /> {lot.regions.join(" · ")}</span>
         <span className="inline-flex items-center gap-1.5"><CalendarDays size={14} /> {t.campagne} {lot.campagne}</span>
         <span className="inline-flex items-center gap-1.5"><Boxes size={14} /> {lot.nbParcelles} {l === "en" ? "plots" : "parcelles"}</span>
       </p>
 
       <div className="mt-10 grid gap-8 lg:grid-cols-[1fr_360px]">
-        {/* ------------------------------ COLONNE PRINCIPALE ------------------------------ */}
         <div className="space-y-8">
-          {/* Sceau détaillé */}
-          <section className="rounded-2xl border border-white/10 bg-white/[0.03] p-6">
+          <section className={cardCls}>
             <div className="flex items-center gap-2 text-green-signal">
               <ShieldCheck size={18} />
-              <h2 className="font-display text-lg font-semibold text-white">{l === "en" ? "The AGRIVO seal" : "Le sceau AGRIVO"}</h2>
+              <h2 className="font-display text-lg font-semibold text-forest-950">{l === "en" ? "The AGRIVO seal" : "Le sceau AGRIVO"}</h2>
             </div>
-            <div className="mt-4"><SceauAgrivo sceau={lot.sceau} lang={l} tone="dark" detaille /></div>
+            <div className="mt-4"><SceauAgrivo sceau={lot.sceau} lang={l} tone="light" detaille /></div>
           </section>
 
-          {/* Mini-carte */}
-          <section className="rounded-2xl border border-white/10 bg-white/[0.03] p-6">
+          <section className={cardCls}>
             <div className="flex items-center gap-2 text-green-signal">
               <MapPin size={18} />
-              <h2 className="font-display text-lg font-semibold text-white">{t.mapTitle}</h2>
+              <h2 className="font-display text-lg font-semibold text-forest-950">{t.mapTitle}</h2>
             </div>
-            <p className="mt-1.5 text-sm text-white/55">{t.mapSub}</p>
-            <div className="mt-4 h-[340px] w-full overflow-hidden rounded-2xl border border-white/10">
+            <p className="mt-1.5 text-sm text-forest-950/55">{t.mapSub}</p>
+            <div className="mt-4 h-[340px] w-full overflow-hidden rounded-2xl border border-black/[0.06]">
               <LotMap parcelles={parcelles} selectedId={null} hoveredId={null} onSelect={() => {}} onHover={() => {}} />
             </div>
           </section>
 
-          {/* Dossier de confiance — tableau parcelles */}
-          <section className="rounded-2xl border border-white/10 bg-white/[0.03] p-6">
+          <section className={cardCls}>
             <div className="flex items-center gap-2 text-green-signal">
               <ScanLine size={18} />
-              <h2 className="font-display text-lg font-semibold text-white">{t.dossierTitle}</h2>
+              <h2 className="font-display text-lg font-semibold text-forest-950">{t.dossierTitle}</h2>
             </div>
-            <p className="mt-1.5 text-sm text-white/55">{t.dossierSub}</p>
+            <p className="mt-1.5 text-sm text-forest-950/55">{t.dossierSub}</p>
             <div className="mt-4 overflow-x-auto">
               <table className="w-full min-w-[560px] text-left text-sm">
                 <thead>
-                  <tr className="border-b border-white/10 text-[0.68rem] uppercase tracking-wide text-white/45">
+                  <tr className="border-b border-black/[0.06] text-[0.68rem] uppercase tracking-wide text-forest-950/45">
                     <th className="py-2 pr-3 font-semibold">{t.farmer}</th>
                     <th className="py-2 pr-3 font-semibold">{t.card}</th>
                     <th className="py-2 pr-3 font-semibold">{t.cert}</th>
@@ -167,14 +166,14 @@ export function LotDetail({ refLot }: { refLot: string }) {
                 </thead>
                 <tbody>
                   {parcelles.map((p) => (
-                    <tr key={p.id} className="border-b border-white/[0.06] last:border-0">
-                      <td className="py-2.5 pr-3 text-white/90">{p.producteurNom}</td>
-                      <td className="num py-2.5 pr-3 text-white/70">{p.numeroCartePro}</td>
-                      <td className="num py-2.5 pr-3 text-white/70">{p.numeroCertificat}</td>
-                      <td className="num py-2.5 pr-3 text-white/70">{p.referenceDDR ?? "—"}</td>
-                      <td className="num py-2.5 pr-3 text-white/70">{fmtHa(p.superficieHa)}</td>
+                    <tr key={p.id} className="border-b border-black/[0.04] last:border-0">
+                      <td className="py-2.5 pr-3 text-forest-950/90">{p.producteurNom}</td>
+                      <td className="num py-2.5 pr-3 text-forest-950/70">{p.numeroCartePro}</td>
+                      <td className="num py-2.5 pr-3 text-forest-950/70">{p.numeroCertificat}</td>
+                      <td className="num py-2.5 pr-3 text-forest-950/70">{p.referenceDDR ?? "—"}</td>
+                      <td className="num py-2.5 pr-3 text-forest-950/70">{fmtHa(p.superficieHa)}</td>
                       <td className="py-2.5">
-                        <span className={`inline-flex items-center gap-1 text-xs font-semibold ${p.statut === "conforme" ? "text-green-signal" : p.statut === "anomalie" ? "text-red-block" : "text-amber-soft"}`}>
+                        <span className={`inline-flex items-center gap-1 text-xs font-semibold ${p.statut === "conforme" ? "text-green-signal" : p.statut === "anomalie" ? "text-red-block" : "text-amber-cacao"}`}>
                           {p.statut === "conforme" ? <Check size={13} /> : <AlertTriangle size={13} />}
                           {(l === "en" ? STATUT_LABEL_EN : STATUT_LABEL)[p.statut]}
                         </span>
@@ -184,35 +183,31 @@ export function LotDetail({ refLot }: { refLot: string }) {
                 </tbody>
               </table>
             </div>
-            <p className="mt-3 text-xs text-white/45">
-              {l === "en" ? STATUT_PHRASE_EN.conforme : STATUT_PHRASE.conforme}
-            </p>
+            <p className="mt-3 text-xs text-forest-950/45">{l === "en" ? STATUT_PHRASE_EN.conforme : STATUT_PHRASE.conforme}</p>
           </section>
 
-          {/* Contrôle d'intégrité */}
           {controle && (
-            <section className="rounded-2xl border border-white/10 bg-white/[0.03] p-6">
+            <section className={cardCls}>
               <div className="flex items-center gap-2 text-green-signal">
                 <ClipboardCheck size={18} />
-                <h2 className="font-display text-lg font-semibold text-white">{t.controlTitle}</h2>
+                <h2 className="font-display text-lg font-semibold text-forest-950">{t.controlTitle}</h2>
               </div>
-              <p className="mt-1.5 text-sm text-white/55">{t.controlSub}</p>
+              <p className="mt-1.5 text-sm text-forest-950/55">{t.controlSub}</p>
               <ul className="mt-4 space-y-2.5">
                 {controle.points.map((pt) => (
                   <li key={pt.code} className="flex items-start gap-2.5 text-sm">
-                    <span className={`mt-0.5 shrink-0 ${pt.niveau === "ok" ? "text-green-signal" : "text-amber-soft"}`}>
+                    <span className={`mt-0.5 shrink-0 ${pt.niveau === "ok" ? "text-green-signal" : "text-amber-cacao"}`}>
                       {pt.niveau === "ok" ? <Check size={16} /> : <AlertTriangle size={16} />}
                     </span>
-                    <span className="text-white/75">{l === "en" ? pt.en : pt.fr}</span>
+                    <span className="text-forest-950/75">{l === "en" ? pt.en : pt.fr}</span>
                   </li>
                 ))}
               </ul>
             </section>
           )}
 
-          {/* Origine & logistique */}
-          <section className="rounded-2xl border border-white/10 bg-white/[0.03] p-6">
-            <h2 className="font-display text-lg font-semibold text-white">{t.logisticsTitle}</h2>
+          <section className={cardCls}>
+            <h2 className="font-display text-lg font-semibold text-forest-950">{t.logisticsTitle}</h2>
             <dl className="mt-4 grid grid-cols-2 gap-x-6 gap-y-4 text-sm sm:grid-cols-3">
               <Field icon={<Building2 size={14} />} label={t.coops} value={lot.cooperatives.join(", ")} />
               <Field icon={<MapPin size={14} />} label={t.regions} value={lot.regions.join(", ")} />
@@ -224,75 +219,74 @@ export function LotDetail({ refLot }: { refLot: string }) {
           </section>
         </div>
 
-        {/* ------------------------------ COLONNE TRANSACTION ------------------------------ */}
         <aside className="lg:sticky lg:top-24 lg:self-start">
-          <div className="rounded-2xl border border-white/12 bg-gradient-to-b from-white/[0.06] to-white/[0.02] p-6">
-            <span className="eyebrow text-white/45">{t.txTitle}</span>
+          <div className="rounded-2xl border border-black/[0.07] bg-white p-6 shadow-sm">
+            <span className="eyebrow text-forest-950/45">{t.txTitle}</span>
 
             <div className="mt-4 space-y-3">
-              <Line label={t.price} value={`${fcfa(lot.prixIndicatifFcfaKg, l)} FCFA/kg`} />
-              <Line label={t.tonnage} value={`${lot.tonnage.toFixed(1)} t`} />
-              <div className="border-t border-white/10 pt-3">
-                <p className="text-[0.66rem] uppercase tracking-wide text-white/45">{t.value}</p>
-                <p className="num mt-1 text-2xl font-bold text-amber-soft">{fcfa(lot.valeurFcfa, l)}<span className="text-base font-semibold text-white/50"> FCFA</span></p>
+              <div className="flex items-center justify-between text-sm">
+                <span className="text-forest-950/60">{t.price}</span>
+                <span className="num font-semibold text-forest-950">{fcfa(lot.prixIndicatifFcfaKg, l)} FCFA/kg</span>
               </div>
-              <div className="rounded-xl border border-green-signal/25 bg-green-signal/[0.08] p-3">
+              <div className="flex justify-end"><VsIceChip prixFcfaKg={lot.prixIndicatifFcfaKg} iceUsdT={iceUsdT} /></div>
+              <Line label={t.tonnage} value={`${lot.tonnage.toFixed(1)} t`} />
+              <div className="border-t border-black/[0.06] pt-3">
+                <p className="text-[0.66rem] uppercase tracking-wide text-forest-950/45">{t.value}</p>
+                <p className="num mt-1 text-2xl font-bold text-amber-cacao">{fcfa(lot.valeurFcfa, l)}<span className="text-base font-semibold text-forest-950/45"> FCFA</span></p>
+              </div>
+              <div className="rounded-xl border border-green-signal/25 bg-green-signal/[0.06] p-3">
                 <p className="flex items-center justify-between text-sm">
-                  <span className="text-white/70">{t.commission}</span>
+                  <span className="text-forest-950/70">{t.commission}</span>
                   <span className="num font-semibold text-green-signal">{fcfa(takeRate(lot.valeurFcfa), l)} F</span>
                 </p>
-                <p className="mt-1.5 text-[0.7rem] leading-relaxed text-white/45">{t.commissionNote}</p>
+                <p className="mt-1.5 text-[0.7rem] leading-relaxed text-forest-950/50">{t.commissionNote}</p>
               </div>
             </div>
 
-            {/* Action de réservation (gatée) */}
             <div className="mt-5">
               {isReserved ? (
-                <div className="rounded-xl border border-white/15 bg-white/5 p-4 text-sm">
-                  <p className="font-semibold text-white/80">{t.reserved}</p>
-                  {lot.acheteur && <p className="mt-1 text-white/55">{t.reservedBy} {lot.acheteur}{lot.paysAcheteur && lot.paysAcheteur !== "—" ? ` · ${lot.paysAcheteur}` : ""}</p>}
+                <div className="rounded-xl border border-black/10 bg-black/[0.02] p-4 text-sm">
+                  <p className="font-semibold text-forest-950/80">{t.reserved}</p>
+                  {lot.acheteur && <p className="mt-1 text-forest-950/55">{t.reservedBy} {lot.acheteur}{lot.paysAcheteur && lot.paysAcheteur !== "—" ? ` · ${lot.paysAcheteur}` : ""}</p>}
                 </div>
               ) : !vendable ? (
-                <p className="rounded-xl border border-amber-cacao/30 bg-amber-cacao/10 p-4 text-xs leading-relaxed text-amber-soft">{t.prep}</p>
+                <p className="rounded-xl border border-amber-cacao/30 bg-amber-cacao/10 p-4 text-xs leading-relaxed text-amber-cacao">{t.prep}</p>
               ) : reserved ? (
                 <div className="rounded-xl border border-green-signal/30 bg-green-signal/10 p-4">
                   <p className="flex items-center gap-1.5 text-sm font-semibold text-green-signal"><Check size={16} /> {t.doneTitle}</p>
-                  <p className="mt-1.5 text-xs leading-relaxed text-white/60">{t.doneBody}</p>
+                  <p className="mt-1.5 text-xs leading-relaxed text-forest-950/60">{t.doneBody}</p>
                   <button onClick={() => onPdf("reservation")} className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-full bg-green-signal px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-green-signal/90">
                     <FileDown size={15} /> {t.pdfReserve}
                   </button>
                 </div>
               ) : showLogin && !user ? (
-                <div className="rounded-xl border border-white/15 bg-white/5 p-4">
-                  <p className="flex items-center gap-1.5 text-sm font-semibold text-white"><Lock size={15} /> {t.loginTitle}</p>
-                  <p className="mt-1.5 text-xs leading-relaxed text-white/60">{t.loginBody}</p>
+                <div className="rounded-xl border border-black/10 bg-black/[0.02] p-4">
+                  <p className="flex items-center gap-1.5 text-sm font-semibold text-forest-950"><Lock size={15} /> {t.loginTitle}</p>
+                  <p className="mt-1.5 text-xs leading-relaxed text-forest-950/60">{t.loginBody}</p>
                   <div className="mt-3 flex flex-col gap-2">
                     <Link href={`/connexion?next=${encodeURIComponent(`/marketplace/lot/${lot.ref}`)}`} className="inline-flex items-center justify-center gap-2 rounded-full bg-green-signal px-4 py-2.5 text-sm font-semibold text-white">
                       {t.login} <ArrowRight size={15} />
                     </Link>
-                    <Link href="/inscription" className="inline-flex items-center justify-center rounded-full border border-white/20 px-4 py-2.5 text-sm font-semibold text-white/80 hover:bg-white/5">
+                    <Link href="/inscription" className="inline-flex items-center justify-center rounded-full border border-black/10 px-4 py-2.5 text-sm font-semibold text-forest-950/80 hover:bg-black/[0.03]">
                       {t.createAccount}
                     </Link>
                   </div>
                 </div>
               ) : (
-                <button
-                  onClick={() => (user ? setReserved(true) : setShowLogin(true))}
-                  className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-green-signal px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-green-signal/20 transition hover:bg-green-signal/90"
-                >
+                <button onClick={() => (user ? setReserved(true) : setShowLogin(true))}
+                  className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-green-signal px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-green-signal/20 transition hover:bg-green-signal/90">
                   <Handshake size={16} /> {t.reserve}
                 </button>
               )}
             </div>
 
-            <p className="mt-3 text-center text-[0.7rem] font-medium text-white/40">{t.producerNeverPays}</p>
+            <p className="mt-3 text-center text-[0.7rem] font-medium text-forest-950/40">{t.producerNeverPays}</p>
 
-            {/* Documents publics */}
-            <div className="mt-5 space-y-2 border-t border-white/10 pt-5">
-              <button onClick={() => onPdf("fiche")} className="inline-flex w-full items-center justify-center gap-2 rounded-full border border-white/20 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-white/5">
+            <div className="mt-5 space-y-2 border-t border-black/[0.06] pt-5">
+              <button onClick={() => onPdf("fiche")} className="inline-flex w-full items-center justify-center gap-2 rounded-full border border-black/10 px-4 py-2.5 text-sm font-semibold text-forest-950 transition hover:bg-black/[0.03]">
                 <FileDown size={15} /> {t.pdfFiche}
               </button>
-              <Link href={`/verifier-expedition?ref=${encodeURIComponent(lot.ref)}`} className="inline-flex w-full items-center justify-center gap-1.5 py-1 text-xs font-medium text-white/50 transition hover:text-white">
+              <Link href={`/verifier-expedition?ref=${encodeURIComponent(lot.ref)}`} className="inline-flex w-full items-center justify-center gap-1.5 py-1 text-xs font-medium text-forest-950/50 transition hover:text-forest-950">
                 <ExternalLink size={13} /> {t.verify}
               </Link>
             </div>
@@ -306,8 +300,8 @@ export function LotDetail({ refLot }: { refLot: string }) {
 function Field({ icon, label, value, mono }: { icon?: React.ReactNode; label: string; value: string; mono?: boolean }) {
   return (
     <div>
-      <dt className="flex items-center gap-1.5 text-[0.66rem] uppercase tracking-wide text-white/45">{icon}{label}</dt>
-      <dd className={`mt-1 text-white/85 ${mono ? "num text-xs" : ""}`}>{value}</dd>
+      <dt className="flex items-center gap-1.5 text-[0.66rem] uppercase tracking-wide text-forest-950/45">{icon}{label}</dt>
+      <dd className={`mt-1 text-forest-950/85 ${mono ? "num text-xs" : ""}`}>{value}</dd>
     </div>
   );
 }
@@ -315,8 +309,8 @@ function Field({ icon, label, value, mono }: { icon?: React.ReactNode; label: st
 function Line({ label, value }: { label: string; value: string }) {
   return (
     <p className="flex items-center justify-between text-sm">
-      <span className="text-white/60">{label}</span>
-      <span className="num font-semibold text-white">{value}</span>
+      <span className="text-forest-950/60">{label}</span>
+      <span className="num font-semibold text-forest-950">{value}</span>
     </p>
   );
 }

@@ -4,7 +4,7 @@
 > Il condense la charte de marque, les règles de contenu, les faits produit et l'avancement.
 > En cas de doute, ce fichier prime sur mes souvenirs. Il reflète l'état au dernier prompt traité.
 
-> 🟢 **ÉTAT ACTUEL — v2.1.0, 13 juillet 2026 (CE BLOC FAIT FOI sur toute mention contraire
+> 🟢 **ÉTAT ACTUEL — v2.2.0, 13 juillet 2026 (CE BLOC FAIT FOI sur toute mention contraire
 > plus bas, qui relève de l'historique de construction).**
 > - **REPOSITIONNEMENT v2 (13/07, phase investisseur)** : la **traçabilité est le produit**, la
 >   conformité + le **sceau AGRIVO** en sont les livrables ; l'**endgame = la MARKETPLACE du cacao
@@ -28,6 +28,16 @@
 >   Données : `data/mock-marketplace.ts` (6 lots réels : EXP-2026-0001/0002 + 0004..0007 dérivés du
 >   portefeuille ; `findMarketLot`/`findMarketExpedition`/`parcellesDuLot`/`MARKET_LOT_REFS`).
 >   Docs stratégie : `Bureau/AGRIVO DOCUMENTS/AGRIVO_Plan_Marketplace.md`.
+> - **AGRIVO MARKET v2.2 (13/07) — thème B2B CLAIR + cours cacao ICE + animations** : la vitrine est
+>   passée au **fond clair (ivoire/blanc, accents verts)** ; les 2 eyebrows retirés ; accueil recomposé
+>   en **recherche-héros** (`market-search.tsx`) + **ruban de cours** + compteurs animés + navigateur
+>   par filière + lots vedettes + graphique de marché + catalogue (tri, puce « vs ICE ») + bandeau
+>   confiance + carte des origines + ticker illustratif + FAQ + capture fondateurs. **Cours du cacao
+>   ICE US (New York, `CC=F`, USD/t) RÉEL mais DIFFÉRÉ (~15 min)** : module pur `lib/market/cocoa.ts`
+>   + route cache `app/api/market/cocoa` (Yahoo Finance, revalidate 300 s, **repli « dernier cours
+>   connu »**) + `components/marketplace/cocoa-price.tsx` (`CocoaChart` SVG animé, `CocoaTicker`,
+>   `VsIceChip` prime/décote). ⚠️ JAMAIS présenté « temps réel » ; le % « vs ICE » est calculé
+>   (hypothèse FX 1 USD ≈ 605 FCFA affichée), jamais inventé. Animations sous `prefers-reduced-motion`.
 > - **Modèle économique** : Coopérative **100 000 FCFA/mois** (≈ 1 200 FCFA/producteur/an) ·
 >   **Exportateur Essentiel 500 000** · **Exportateur Pro 1 000 000 FCFA/mois** · **+ take-rate
 >   marketplace 1-3 % sur les ventes de lots + sceau de vérification par expédition**. **AUCUN crédit,
@@ -51,7 +61,7 @@
 >   `agrivo:tour:v2:*`) ; comptes inscrits = une seule fois ; bouton « ? » = relance manuelle.
 > - **App mobile de Christ** : dossier `Desktop/Agrivo (2)/Agrivo` (Flutter) analysé et corrigé le
 >   11/07 — voir `ANALYSE_ET_CHANGEMENTS.md` dans ce dossier ; Christ doit recompiler l'APK.
-> - **Qualité** : **142 tests Vitest**, CI verte, tags jusqu'à v1.25.0, prod `agrivo-io.vercel.app`
+> - **Qualité** : **148 tests Vitest**, CI verte, tags jusqu'à v1.25.0, prod `agrivo-io.vercel.app`
 >   (réassigner l'alias à chaque deploy). Polices réelles : Space Grotesk / Geist / Geist Mono.
 > - Interface **FR/EN uniquement** (dioula/baoulé retirés). Statuts verbatim, « évaluation »
 >   jamais « garantie », zéro % inventé. Docs de construction archivés dans `docs/archives/`.
@@ -388,6 +398,33 @@ variables CSS dans `app/globals.css`.
 ---
 
 ## 📓 Journal de build (le plus récent en haut)
+
+### Session 30 — 2026-07-13 — v2.2.0 : AGRIVO MARKET « pro » — thème B2B clair, cours cacao ICE live, animations
+- 🎯 **Demande Anael** : la marketplace est « trop basique », la rendre « totalement professionnelle,
+  belle visuellement, avec plusieurs éléments en animation » ; **thème B2B fond blanc + détails verts**
+  (nom « AGRIVO Market » gardé) ; **retirer les 2 eyebrows** ; **intégrer un graphique du cours du
+  cacao ICE New York** ; enrichir de nombreux éléments. Skills : `/ui-ux-pro-max` (pattern Marketplace
+  recherche-héros) + `/motion-framer`.
+- 🏗️ **Construit** :
+  - **Cours cacao ICE US** (RÉEL, différé ~15 min) : `lib/market/cocoa.ts` (pur : `normaliseCocoa`,
+    `snapshotFallback`, `primeVsIce`, `rangeParams`) + route `app/api/market/cocoa/route.ts`
+    (`revalidate=300`, Yahoo `CC=F` query1→query2, **repli `stale:true`**) + `cocoa-price.tsx`
+    (`CocoaChart` SVG animé `pathLength`/aire/tooltip/plages, `CocoaTicker`, `useCocoaSpot`,
+    `VsIceChip`). *(Feed vérifié : `ICE Futures`/NYB, USD/t.)*
+  - **Thème B2B clair** partout : `layout` (bg-ivory), `market-header`/`market-footer` (blanc),
+    `lot-card` (+ puce vs ICE), `market-catalog` (+ tri, recherche contrôlée, stagger), `lot-detail`
+    (+ vs ICE), `vendre` (eyebrow retiré). `SceauAgrivo` gardé `tone="light"`.
+  - **Accueil recomposé** (`app/marketplace/page.tsx`) : héros recherche (`market-search`) + ticker
+    cours + `StatNumber` ; `activity-ticker` (illustratif) ; `filiere-browser` ; `featured-lots` ;
+    section `CocoaChart` ; `MarketCatalog` (ancre `catalogueRef` pilotée par le héros) ; sceau/double
+    verrou ; `trust-strip` (méthodes/régulateurs, **zéro faux témoignage**) ; `origins-map` (Leaflet) ;
+    `market-faq` (accordéon `AnimatePresence`) ; `founding-signup` (email local + succès animé).
+  - **Motion** : reuse `Reveal`/`StatNumber`, variants staggerés, hover-lift, ruban/ticker en boucle
+    (pause au survol), tracé de chart — `transform/opacity`, tout sous `useReducedMotion`.
+- ⚠️ **Lint React 19** : `setState` synchrone dans un effet (fetch cours) → `loading` rendu **dérivé**
+  (`state.range === range`), plus de setState synchrone. Warning `alt` de react-pdf = faux positif connu.
+- ✅ **GATES** : `tsc` ✓ · `eslint` **0 erreur** · `next build` ✓ · **148 tests** (+6 `tests/cocoa.test.ts`).
+  Version **2.2.0** + CHANGELOG v2.2.0. **Push/deploy/alias = action Anael.**
 
 ### Session 29 — 2026-07-13 — v2.1.0 : AGRIVO MARKET, la vitrine publique autonome (place de marché pro)
 - 🎯 **Demande Anael** : « Je veux que la marketplace soit comme une nouvelle page détachée de

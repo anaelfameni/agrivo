@@ -11,9 +11,8 @@ import { useLanguage } from "@/components/language-provider";
 import { useAuth } from "@/components/auth-provider";
 
 /**
- * En-tête de AGRIVO MARKET — la marque dédiée de la place de marché des lots conformes.
- * Chrome PROPRE (fond forêt profond, ADN premium sombre), volontairement distinct du site vitrine
- * agrivo.io : on entre dans un produit à part entière. Un lien discret ramène au site principal.
+ * En-tête de AGRIVO MARKET — thème B2B clair (fond ivoire, accents verts). Chrome PROPRE, dédié à
+ * la place de marché (≠ site vitrine et ≠ espace applicatif). Un lien discret ramène au site principal.
  */
 
 const NAV = [
@@ -26,7 +25,7 @@ const TR = {
   en: { home: "AGRIVO Market — home", nav: "AGRIVO Market navigation", login: "Log in", cockpit: "My lots", site: "agrivo.io", open: "Open menu", close: "Close menu" },
 } as const;
 
-/** Lockup de marque « AGRIVO Market » : le pin AGRIVO + le wordmark, décliné pour la marketplace. */
+/** Lockup de marque « AGRIVO Market » (pin AGRIVO + wordmark), version claire. */
 function MarketWordmark() {
   return (
     <span className="inline-flex items-center gap-2.5">
@@ -41,14 +40,14 @@ function MarketWordmark() {
             <stop offset="1" stopColor="#c8861d" />
           </linearGradient>
         </defs>
-        <circle cx="12" cy="12" r="11" fill="#16a34a" opacity="0.2" />
+        <circle cx="12" cy="12" r="11" fill="#16a34a" opacity="0.14" />
         <path d={AGRIVO_PIN_PATH} fill="url(#mkt-pin)" />
         <path d={AGRIVO_GLOSS_PATH} stroke="#eafff2" strokeWidth="1.1" strokeLinecap="round" fill="none" opacity="0.5" />
         <path d={AGRIVO_LEAF_PATH} fill="url(#mkt-leaf)" />
         <path d={AGRIVO_VEIN_PATH} stroke="#fff7e6" strokeWidth="0.7" strokeLinecap="round" fill="none" opacity="0.6" />
       </svg>
-      <span className="font-brand-serif text-xl not-italic text-white" style={{ fontWeight: 600 }}>
-        Agrivo <span className="font-display text-[0.95rem] font-semibold uppercase tracking-[0.22em] text-amber-soft align-middle">Market</span>
+      <span className="font-brand-serif text-xl not-italic text-forest-950" style={{ fontWeight: 600 }}>
+        Agrivo <span className="font-display text-[0.95rem] font-semibold uppercase tracking-[0.22em] text-green-signal align-middle">Market</span>
       </span>
     </span>
   );
@@ -64,9 +63,9 @@ export function MarketHeader() {
   const isActive = (href: string) => (href === "/marketplace" ? pathname === href : pathname.startsWith(href));
 
   return (
-    <header className="sticky top-0 z-50 border-b border-white/10 bg-forest-950/85 backdrop-blur-xl">
+    <header className="sticky top-0 z-50 border-b border-black/[0.06] bg-ivory/85 backdrop-blur-md">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-5 md:px-8">
-        <Link href="/marketplace" aria-label={t.home} className="rounded-full outline-none focus-visible:ring-2 focus-visible:ring-green-signal/70">
+        <Link href="/marketplace" aria-label={t.home} className="rounded-full outline-none focus-visible:ring-2 focus-visible:ring-green-signal/60">
           <MarketWordmark />
         </Link>
 
@@ -76,34 +75,25 @@ export function MarketHeader() {
               key={item.href}
               href={item.href}
               aria-current={isActive(item.href) ? "page" : undefined}
-              className={`relative transition-colors ${isActive(item.href) ? "text-white" : "text-white/60 hover:text-white"}`}
+              className={`relative transition-colors ${isActive(item.href) ? "text-forest-950" : "text-stone-500 hover:text-forest-950"}`}
             >
               {item[lang === "en" ? "en" : "fr"]}
-              {isActive(item.href) && <span className="absolute -bottom-[21px] left-0 h-px w-full bg-green-signal" aria-hidden />}
+              {isActive(item.href) && <span className="absolute -bottom-[21px] left-0 h-0.5 w-full rounded-full bg-green-signal" aria-hidden />}
             </Link>
           ))}
         </nav>
 
         <div className="flex items-center gap-3">
-          <Link
-            href="/"
-            className="hidden items-center gap-1 text-xs font-medium text-white/45 transition-colors hover:text-white/80 lg:inline-flex"
-          >
+          <Link href="/" className="hidden items-center gap-1 text-xs font-medium text-stone-400 transition-colors hover:text-forest-950 lg:inline-flex">
             {t.site} <ArrowUpRight size={12} />
           </Link>
-          <LanguageSwitcher tone="light" />
+          <LanguageSwitcher tone="dark" />
           {user ? (
-            <Link
-              href="/app/exportateur/marketplace"
-              className="hidden items-center gap-2 rounded-full bg-green-signal px-4 py-2 text-sm font-semibold text-white transition hover:bg-green-signal/90 md:inline-flex"
-            >
+            <Link href="/app/exportateur/marketplace" className="hidden items-center gap-2 rounded-full bg-green-signal px-4 py-2 text-sm font-semibold text-white transition hover:bg-green-signal/90 md:inline-flex">
               <Store size={15} /> {t.cockpit}
             </Link>
           ) : (
-            <Link
-              href="/connexion"
-              className="hidden items-center gap-2 rounded-full border border-white/20 px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/10 md:inline-flex"
-            >
+            <Link href="/connexion" className="hidden items-center gap-2 rounded-full border border-black/10 px-4 py-2 text-sm font-semibold text-forest-950 transition hover:bg-black/[0.04] md:inline-flex">
               <ShoppingBag size={15} /> {t.login}
             </Link>
           )}
@@ -112,7 +102,7 @@ export function MarketHeader() {
             aria-label={open ? t.close : t.open}
             aria-expanded={open}
             onClick={() => setOpen((o) => !o)}
-            className="inline-flex h-9 w-9 items-center justify-center rounded-full text-white transition-colors hover:bg-white/10 md:hidden"
+            className="inline-flex h-9 w-9 items-center justify-center rounded-full text-forest-950 transition-colors hover:bg-black/5 md:hidden"
           >
             {open ? <X size={22} strokeWidth={1.75} /> : <Menu size={22} strokeWidth={1.75} />}
           </button>
@@ -127,7 +117,7 @@ export function MarketHeader() {
             animate={reduce ? { opacity: 1 } : { opacity: 1, height: "auto" }}
             exit={reduce ? { opacity: 0 } : { opacity: 0, height: 0 }}
             transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
-            className="overflow-hidden border-t border-white/10 bg-forest-950 md:hidden"
+            className="overflow-hidden border-t border-black/[0.06] bg-ivory md:hidden"
           >
             <div className="flex flex-col gap-1 px-5 py-4">
               {NAV.map((item) => (
@@ -135,7 +125,7 @@ export function MarketHeader() {
                   key={item.href}
                   href={item.href}
                   onClick={() => setOpen(false)}
-                  className="rounded-lg px-3 py-2.5 text-sm font-medium text-white/70 transition-colors hover:bg-white/5 hover:text-white"
+                  className="rounded-lg px-3 py-2.5 text-sm font-medium text-stone-600 transition-colors hover:bg-black/[0.03] hover:text-forest-950"
                 >
                   {item[lang === "en" ? "en" : "fr"]}
                 </Link>
@@ -147,7 +137,7 @@ export function MarketHeader() {
               >
                 {user ? <><Store size={15} /> {t.cockpit}</> : <><ShoppingBag size={15} /> {t.login}</>}
               </Link>
-              <Link href="/" onClick={() => setOpen(false)} className="mt-1 inline-flex items-center justify-center gap-1 px-3 py-2 text-xs font-medium text-white/45">
+              <Link href="/" onClick={() => setOpen(false)} className="mt-1 inline-flex items-center justify-center gap-1 px-3 py-2 text-xs font-medium text-stone-400">
                 {t.site} <ArrowUpRight size={12} />
               </Link>
             </div>

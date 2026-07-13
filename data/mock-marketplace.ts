@@ -367,3 +367,18 @@ export function parcellesDuLot(lot: MarketLot): Parcelle[] {
 export function estVendable(lot: MarketLot): boolean {
   return lot.sceau.statut === "verifie" && lot.statutMarche === "liste";
 }
+
+/** Lots « à la une » : vendables, triés par valeur décroissante (vitrine d'accueil). */
+export function lotsVedette(toutesParcelles: Parcelle[], n = 3): MarketLot[] {
+  return lotsMarche(toutesParcelles)
+    .filter(estVendable)
+    .sort((a, b) => b.valeurFcfa - a.valeurFcfa)
+    .slice(0, n);
+}
+
+/** Répartition du nombre de lots par filière (navigateur par filière de l'accueil). */
+export function comptageParFiliere(toutesParcelles: Parcelle[]): Record<string, number> {
+  const out: Record<string, number> = {};
+  for (const lot of lotsMarche(toutesParcelles)) out[lot.filiere] = (out[lot.filiere] ?? 0) + 1;
+  return out;
+}
