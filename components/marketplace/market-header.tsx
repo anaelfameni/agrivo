@@ -11,7 +11,7 @@ import { useLanguage } from "@/components/language-provider";
 import { useAuth } from "@/components/auth-provider";
 
 /**
- * En-tête de AGRIVO MARKET — thème B2B clair (fond ivoire, accents verts). Chrome PROPRE, dédié à
+ * En-tête de AGRIVO MARKET,thème B2B clair (fond ivoire, accents verts). Chrome PROPRE, dédié à
  * la place de marché (≠ site vitrine et ≠ espace applicatif). Un lien discret ramène au site principal.
  */
 
@@ -21,8 +21,8 @@ const NAV = [
 ] as const;
 
 const TR = {
-  fr: { home: "AGRIVO Market — accueil", nav: "Navigation AGRIVO Market", login: "Connexion", cockpit: "Mes lots", site: "agrivo.io", open: "Ouvrir le menu", close: "Fermer le menu" },
-  en: { home: "AGRIVO Market — home", nav: "AGRIVO Market navigation", login: "Log in", cockpit: "My lots", site: "agrivo.io", open: "Open menu", close: "Close menu" },
+  fr: { home: "AGRIVO Market,accueil", nav: "Navigation AGRIVO Market", login: "Connexion", cockpit: "Mes lots", site: "agrivo.io", open: "Ouvrir le menu", close: "Fermer le menu" },
+  en: { home: "AGRIVO Market,home", nav: "AGRIVO Market navigation", login: "Log in", cockpit: "My lots", site: "agrivo.io", open: "Open menu", close: "Close menu" },
 } as const;
 
 /** Lockup de marque « AGRIVO Market » (pin AGRIVO + wordmark), version claire. */
@@ -64,7 +64,7 @@ export function MarketHeader() {
 
   return (
     <header className="sticky top-0 z-50 border-b border-black/[0.06] bg-ivory/85 backdrop-blur-md">
-      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-5 md:px-8">
+      <div className="mx-auto flex h-16 w-full max-w-[1760px] items-center justify-between gap-4 px-5 sm:px-8 lg:px-12">
         <Link href="/marketplace" aria-label={t.home} className="rounded-full outline-none focus-visible:ring-2 focus-visible:ring-green-signal/60">
           <MarketWordmark />
         </Link>

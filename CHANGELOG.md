@@ -3,6 +3,33 @@
 Versioning sémantique (MAJOR.MINOR.PATCH). Chaque release liste ce qui est ajouté, corrigé et
 vérifié, conformément à l'étape 8 du pipeline « Du besoin à la Release ».
 
+## v2.3.0 — 2026-07-13 — AGRIVO Market : héros vert, pleine largeur, ruban collant & finition premium
+
+Passe de finition demandée par Anael sur la vitrine.
+
+### Changé
+- **Héros vert** (fond forest-950 + image macro de cacao `filieres/cacao-v2.webp` + halo/grain),
+  texte blanc, sur DEUX colonnes : à gauche titre + recherche + statistiques ; **à droite l'aperçu du
+  cours du cacao** (le graphique ICE déplacé dans le héros). La section « Le marché en direct »
+  autonome est supprimée (le graphique vit dans le héros).
+- **Chaque page de lot** reçoit le **même héros vert** (bandeau) pour le titre/sceau/méta.
+- **Pleine largeur** : conteneurs élargis (`max-w-[1760px]`, gouttières généreuses) ; catalogue en
+  **4 colonnes** sur très grand écran.
+- **Ruban d'activité collant en bas** (sticky) : toujours visible pendant le défilement, il se range
+  sous le pied de page tout en bas.
+- **Fusion** des sections « Match · Trust · Transact » (double verrou) et « prouvée par la méthode »
+  en **une seule section confiance** (`trust-section.tsx`, remplace `trust-strip.tsx`).
+- **Section « Parcourir par filière » supprimée** (`filiere-browser.tsx` retiré).
+- **Cartes de lots premium** : bandeau d'origine coloré par filière, sceau en pastille pleine,
+  hiérarchie prix/valeur, hover-lift renforcé, bouton d'action révélé au survol.
+- **Suppression des tirets cadratins « — »** dans tout le texte visible (rendu « trop IA »),
+  remplacés par des virgules / « · ».
+- Animations enrichies (entrées en cascade, hover-lift, apparition du héros), toujours sous
+  `prefers-reduced-motion`.
+
+### Vérifié
+- `tsc` ✓ · `eslint` 0 erreur · `next build` ✓ · **148 tests** verts · smoke SSR.
+
 ## v2.2.0 — 2026-07-13 — AGRIVO Market : refonte pro « B2B clair », cours cacao ICE live & animations
 
 Refonte visuelle et fonctionnelle profonde de la marketplace (demande Anael : « trop basique »,

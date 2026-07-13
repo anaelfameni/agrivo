@@ -11,7 +11,7 @@ import { takeRate, type MarketLot } from "@/data/mock-marketplace";
  *  - "fiche"       : dossier de confiance PUBLIC d'un lot (téléchargeable par tout acheteur) ;
  *  - "reservation" : bon de réservation émis quand un acheteur connecté réserve un lot scellé.
  * Module « lourd » (@react-pdf/renderer) chargé UNIQUEMENT à la demande (import dynamique au clic).
- * Charte : « évaluation » jamais « garantie », commerce des fèves — jamais de financement/crédit,
+ * Charte : « évaluation » jamais « garantie », commerce des fèves,jamais de financement/crédit,
  * la commission porte sur la TRANSACTION, jamais sur le producteur.
  */
 const C = {
@@ -138,14 +138,14 @@ function LotDocument({
           </View>
           <View style={[styles.cell, { width: "66.66%" }]}>
             <Text style={styles.cellLabel}>{en ? "Cooperatives · regions" : "Coopératives · régions"}</Text>
-            <Text style={styles.cellValue}>{lot.cooperatives.join(", ")} — {lot.regions.join(", ")}</Text>
+            <Text style={styles.cellValue}>{lot.cooperatives.join(", ")} · {lot.regions.join(", ")}</Text>
           </View>
         </View>
 
         {kind === "reservation" && (
           <View style={styles.reserveBox}>
             <Text style={{ fontFamily: "Helvetica-Bold", fontSize: 10, color: C.green }}>
-              {en ? "Reservation recorded" : "Réservation enregistrée"}{acheteur ? ` — ${acheteur}` : ""}
+              {en ? "Reservation recorded" : "Réservation enregistrée"}{acheteur ? ` · ${acheteur}` : ""}
             </Text>
             <Text style={{ fontSize: 8.5, color: C.stone, marginTop: 3, lineHeight: 1.5 }}>
               {en
@@ -182,8 +182,8 @@ function LotDocument({
         <View style={styles.note}>
           <Text>
             {en
-              ? "AGRIVO Market lists compliant lots and connects buyers and exporters. This document reflects an assessment from public satellite data (Whisp method, FAO) and does not constitute a guarantee, nor does it replace the operator's due diligence statement (DDS) under Regulation (EU) 2023/1115. AGRIVO trades compliant beans — never financing or credit."
-              : "AGRIVO Market référence des lots conformes et met en relation acheteurs et exportateurs. Ce document reflète une évaluation issue de données satellites publiques (méthode Whisp, FAO) ; il ne constitue pas une garantie et ne remplace pas la déclaration de diligence raisonnée (DDS) de l'opérateur au sens du règlement (UE) 2023/1115. AGRIVO fait le commerce des fèves conformes — jamais le financement ni le crédit."}
+              ? "AGRIVO Market lists compliant lots and connects buyers and exporters. This document reflects an assessment from public satellite data (Whisp method, FAO) and does not constitute a guarantee, nor does it replace the operator's due diligence statement (DDS) under Regulation (EU) 2023/1115. AGRIVO trades compliant beans,never financing or credit."
+              : "AGRIVO Market référence des lots conformes et met en relation acheteurs et exportateurs. Ce document reflète une évaluation issue de données satellites publiques (méthode Whisp, FAO) ; il ne constitue pas une garantie et ne remplace pas la déclaration de diligence raisonnée (DDS) de l'opérateur au sens du règlement (UE) 2023/1115. AGRIVO fait le commerce des fèves conformes,jamais le financement ni le crédit."}
           </Text>
         </View>
 

@@ -23,7 +23,7 @@ const TR = {
   en: { title: "Origin, on the map", sub: "Every lot in the catalog is tied to geolocated plots assessed by satellite, spread across Côte d'Ivoire's production basins.", plots: "plots", regions: "regions" },
 } as const;
 
-export function OriginsMap() {
+export function OriginsMap({ wrap = "mx-auto w-full max-w-[1760px] px-5 sm:px-8 lg:px-12" }: { wrap?: string }) {
   const { lang } = useLanguage();
   const l = lang === "en" ? "en" : "fr";
   const t = TR[l];
@@ -41,8 +41,8 @@ export function OriginsMap() {
   }, []);
 
   return (
-    <section className="mx-auto max-w-7xl px-5 py-16 md:px-8">
-      <div className="grid gap-8 lg:grid-cols-[minmax(0,380px)_1fr] lg:items-center">
+    <section className={`${wrap} py-20`}>
+      <div className="grid gap-8 lg:grid-cols-[minmax(0,420px)_1fr] lg:items-center">
         <Reveal>
           <div>
             <div className="flex items-center gap-2 text-green-signal">

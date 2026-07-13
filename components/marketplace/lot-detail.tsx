@@ -24,6 +24,7 @@ const LotMap = dynamic(() => import("@/components/exportateur/portfolio-map"), {
 });
 
 const STATUT_LABEL_EN: Record<Statut, string> = { conforme: "Compliant", anomalie: "Anomaly detected", insuffisant: "Insufficient data" };
+const WRAP = "mx-auto w-full max-w-[1760px] px-5 sm:px-8 lg:px-12";
 
 const TR = {
   fr: {
@@ -31,12 +32,12 @@ const TR = {
     mapTitle: "Parcelles d'origine", mapSub: "Chaque polygone est une parcelle géolocalisée et évaluée par satellite.",
     dossierTitle: "Dossier de confiance", dossierSub: "Le double verrou, parcelle par parcelle : carte producteur (État) + polygone hors-déforestation.",
     farmer: "Producteur", card: "Carte producteur", cert: "Certificat", area: "Superficie", status: "Statut",
-    controlTitle: "Contrôle d'intégrité (pré-embarquement)", controlSub: "Faits recalculés depuis les données du lot — jamais un score inventé.",
+    controlTitle: "Contrôle d'intégrité (pré-embarquement)", controlSub: "Faits recalculés depuis les données du lot,jamais un score inventé.",
     logisticsTitle: "Origine & logistique", coops: "Coopératives", regions: "Régions", sh: "Code SH",
     txTitle: "Transaction", price: "Prix indicatif", tonnage: "Tonnage", value: "Valeur du lot",
     commission: "Commission AGRIVO estimée", commissionNote: "Take-rate 1–3 % selon le lot · estimation à 2 %. La commission porte sur la transaction, jamais sur le producteur.",
     reserve: "Réserver ce lot", reserved: "Lot déjà réservé", reservedBy: "Réservé par",
-    prep: "Sceau en préparation — ce lot n'est pas réservable tant que le double verrou n'est pas vérifié.",
+    prep: "Sceau en préparation,ce lot n'est pas réservable tant que le double verrou n'est pas vérifié.",
     loginTitle: "Connectez-vous pour réserver", loginBody: "Parcourir la marketplace est libre. La réservation d'un lot demande un compte, pour vous mettre en relation avec l'exportateur.",
     login: "Se connecter", createAccount: "Créer un compte",
     doneTitle: "Réservation enregistrée", doneBody: "AGRIVO vous met en relation avec l'exportateur pour finaliser la transaction en direct. Aucun paiement n'a lieu sur la plateforme.",
@@ -49,12 +50,12 @@ const TR = {
     mapTitle: "Plots of origin", mapSub: "Each polygon is a geolocated plot assessed by satellite.",
     dossierTitle: "Trust dossier", dossierSub: "The double lock, plot by plot: producer card (State) + deforestation-free polygon.",
     farmer: "Farmer", card: "Producer card", cert: "Certificate", area: "Area", status: "Status",
-    controlTitle: "Integrity control (pre-shipment)", controlSub: "Facts recomputed from the lot's data — never an invented score.",
+    controlTitle: "Integrity control (pre-shipment)", controlSub: "Facts recomputed from the lot's data,never an invented score.",
     logisticsTitle: "Origin & logistics", coops: "Cooperatives", regions: "Regions", sh: "HS code",
     txTitle: "Transaction", price: "Indicative price", tonnage: "Tonnage", value: "Lot value",
     commission: "Estimated AGRIVO commission", commissionNote: "Take-rate 1–3% per lot · estimate at 2%. The commission applies to the transaction, never to the producer.",
     reserve: "Reserve this lot", reserved: "Lot already reserved", reservedBy: "Reserved by",
-    prep: "Seal in preparation — this lot cannot be reserved until the double lock is verified.",
+    prep: "Seal in preparation,this lot cannot be reserved until the double lock is verified.",
     loginTitle: "Log in to reserve", loginBody: "Browsing the marketplace is free. Reserving a lot requires an account, to connect you with the exporter.",
     login: "Log in", createAccount: "Create account",
     doneTitle: "Reservation recorded", doneBody: "AGRIVO connects you with the exporter to finalise the transaction directly. No payment takes place on the platform.",
@@ -106,26 +107,35 @@ export function LotDetail({ refLot }: { refLot: string }) {
   const cardCls = "rounded-2xl border border-black/[0.06] bg-white p-6 shadow-sm";
 
   return (
-    <div className="mx-auto max-w-7xl px-5 py-10 md:px-8 md:py-14">
-      <Link href="/marketplace" className="inline-flex items-center gap-2 text-sm font-medium text-forest-950/55 transition hover:text-forest-950">
-        <ArrowLeft size={16} /> {t.back}
-      </Link>
+    <>
+      {/* Héros vert (même fond que l'accueil) */}
+      <section className="relative overflow-hidden bg-forest-950 text-white">
+        <div aria-hidden className="absolute inset-0 bg-cover bg-center opacity-[0.20]" style={{ backgroundImage: "url('/filieres/cacao-v2.webp')" }} />
+        <div aria-hidden className="absolute inset-0 bg-gradient-to-br from-forest-950 via-forest-950/92 to-forest-900/80" />
+        <div aria-hidden className="glow-radial absolute -right-24 -top-16 h-[420px] w-[560px]" />
+        <div className={`relative ${WRAP} py-10 md:py-14`}>
+          <Link href="/marketplace" className="inline-flex items-center gap-2 text-sm font-medium text-white/60 transition hover:text-white">
+            <ArrowLeft size={16} /> {t.back}
+          </Link>
 
-      <div className="mt-6 flex flex-wrap items-center gap-3">
-        <span className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold" style={{ background: `${f.couleur}1a`, color: f.couleur }}>
-          <f.icone size={14} /> {lot.filiereLabel}
-        </span>
-        <SceauAgrivo sceau={lot.sceau} lang={l} tone="light" />
-        {isReserved && <span className="rounded-full border border-black/10 bg-black/[0.03] px-3 py-1 text-xs font-semibold text-forest-950/60">{t.reserved}</span>}
-      </div>
-      <h1 className="mt-4 font-display text-3xl font-semibold leading-tight text-forest-950 md:text-4xl">{lot.nomLot}</h1>
-      <p className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-forest-950/55">
-        <span className="inline-flex items-center gap-1.5"><MapPin size={14} /> {lot.regions.join(" · ")}</span>
-        <span className="inline-flex items-center gap-1.5"><CalendarDays size={14} /> {t.campagne} {lot.campagne}</span>
-        <span className="inline-flex items-center gap-1.5"><Boxes size={14} /> {lot.nbParcelles} {l === "en" ? "plots" : "parcelles"}</span>
-      </p>
+          <div className="mt-6 flex flex-wrap items-center gap-3">
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1 text-xs font-semibold text-white backdrop-blur-sm">
+              <f.icone size={14} /> {lot.filiereLabel}
+            </span>
+            <SceauAgrivo sceau={lot.sceau} lang={l} tone="dark" />
+            {isReserved && <span className="rounded-full border border-white/20 bg-white/10 px-3 py-1 text-xs font-semibold text-white/80">{t.reserved}</span>}
+          </div>
+          <h1 className="mt-4 font-display text-3xl font-semibold leading-tight text-white md:text-4xl">{lot.nomLot}</h1>
+          <p className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-white/65">
+            <span className="inline-flex items-center gap-1.5"><MapPin size={14} /> {lot.regions.join(" · ")}</span>
+            <span className="inline-flex items-center gap-1.5"><CalendarDays size={14} /> {t.campagne} {lot.campagne}</span>
+            <span className="inline-flex items-center gap-1.5"><Boxes size={14} /> {lot.nbParcelles} {l === "en" ? "plots" : "parcelles"}</span>
+          </p>
+        </div>
+      </section>
 
-      <div className="mt-10 grid gap-8 lg:grid-cols-[1fr_360px]">
+      <div className={`${WRAP} py-10 md:py-14`}>
+        <div className="grid gap-8 lg:grid-cols-[1fr_380px]">
         <div className="space-y-8">
           <section className={cardCls}>
             <div className="flex items-center gap-2 text-green-signal">
@@ -292,8 +302,9 @@ export function LotDetail({ refLot }: { refLot: string }) {
             </div>
           </div>
         </aside>
+        </div>
       </div>
-    </div>
+    </>
   );
 }
 

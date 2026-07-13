@@ -16,7 +16,7 @@ const TR = {
   en: { eyebrow: "Featured", title: "Featured sealed lots", all: "See the full catalog" },
 } as const;
 
-export function FeaturedLots() {
+export function FeaturedLots({ wrap = "mx-auto w-full max-w-[1760px] px-5 sm:px-8 lg:px-12" }: { wrap?: string }) {
   const { lang } = useLanguage();
   const l = lang === "en" ? "en" : "fr";
   const t = TR[l];
@@ -26,8 +26,8 @@ export function FeaturedLots() {
   if (lots.length === 0) return null;
 
   return (
-    <section className="border-y border-black/[0.06] bg-white">
-      <div className="mx-auto max-w-7xl px-5 py-16 md:px-8">
+    <section className="border-b border-black/[0.06] bg-white">
+      <div className={`${wrap} py-16`}>
         <div className="flex flex-wrap items-end justify-between gap-3">
           <div>
             <span className="eyebrow inline-flex items-center gap-1.5 text-green-signal"><Sparkles size={13} /> {t.eyebrow}</span>

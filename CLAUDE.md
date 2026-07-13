@@ -4,7 +4,7 @@
 > Il condense la charte de marque, les règles de contenu, les faits produit et l'avancement.
 > En cas de doute, ce fichier prime sur mes souvenirs. Il reflète l'état au dernier prompt traité.
 
-> 🟢 **ÉTAT ACTUEL — v2.2.0, 13 juillet 2026 (CE BLOC FAIT FOI sur toute mention contraire
+> 🟢 **ÉTAT ACTUEL — v2.3.0, 13 juillet 2026 (CE BLOC FAIT FOI sur toute mention contraire
 > plus bas, qui relève de l'historique de construction).**
 > - **REPOSITIONNEMENT v2 (13/07, phase investisseur)** : la **traçabilité est le produit**, la
 >   conformité + le **sceau AGRIVO** en sont les livrables ; l'**endgame = la MARKETPLACE du cacao
@@ -65,6 +65,8 @@
 >   (réassigner l'alias à chaque deploy). Polices réelles : Space Grotesk / Geist / Geist Mono.
 > - Interface **FR/EN uniquement** (dioula/baoulé retirés). Statuts verbatim, « évaluation »
 >   jamais « garantie », zéro % inventé. Docs de construction archivés dans `docs/archives/`.
+> - ✍️ **RÈGLE RÉDACTION (Anael, 13/07)** : ne JAMAIS utiliser le tiret cadratin « — » dans le texte
+>   visible du site (ça « fait trop IA »). Employer virgule, deux-points, parenthèses ou « · ».
 
 ---
 
@@ -398,6 +400,29 @@ variables CSS dans `app/globals.css`.
 ---
 
 ## 📓 Journal de build (le plus récent en haut)
+
+### Session 31 — 2026-07-13 — v2.3.0 : AGRIVO MARKET finition — héros vert, pleine largeur, ruban collant
+- 🎯 **Retours Anael** : pleine largeur (bords vides gênants) ; **héros vert** (même fond que
+  l'appli) ; **aperçu du prix cacao dans le héros à droite** ; **ruban défilant collant en bas**,
+  toujours visible, rangé sous le footer tout en bas ; **supprimer « Parcourir par filière »** ;
+  **fusionner** « Match·Trust·Transact » et « prouvée par la méthode » ; **cartes de lots plus
+  premium** ; **image de cacao dans le héros** ; **plus de tirets « — »** (trop IA) ; meilleures
+  animations. Skills : `/ui-ux-pro-max` + `/motion-framer`.
+- 🏗️ **Fait** :
+  - Héros vert (`bg-forest-950` + `filieres/cacao-v2.webp` + halo/grain) à 2 colonnes : gauche
+    titre/recherche/stats, **droite `CocoaChart`** (aperçu du cours déplacé ici) ; section « marché
+    en direct » autonome supprimée. **Fiche lot** = même bandeau héros vert (`lot-detail.tsx`).
+  - **Ruban collant** : `ActivityTicker` déplacé dans `app/marketplace/layout.tsx`, `sticky bottom-0`
+    après le footer (visible au scroll, se range sous le footer en fin de page).
+  - **Fusion confiance** : `trust-section.tsx` (piliers double verrou + référentiels/méthodes),
+    remplace `trust-strip.tsx` (supprimé) ; `filiere-browser.tsx` supprimé.
+  - **Cartes premium** (`lot-card.tsx`) : bandeau d'origine coloré par filière, sceau pastille pleine,
+    hover-lift + CTA révélé.
+  - **Pleine largeur** : conteneurs `max-w-[1760px]` (prop `wrap` passée aux sections), catalogue
+    `xl:grid-cols-4`, header/footer/ticker alignés.
+  - **Purge des « — »** : tout le texte visible de la marketplace (virgule / « · ») ; règle notée
+    dans le bloc ÉTAT + mémoire. Commentaires de code laissés tels quels.
+- ✅ **GATES** : `tsc` ✓ · `eslint` 0 erreur · `next build` ✓ · **148 tests** · smoke SSR. Version 2.3.0.
 
 ### Session 30 — 2026-07-13 — v2.2.0 : AGRIVO MARKET « pro » — thème B2B clair, cours cacao ICE live, animations
 - 🎯 **Demande Anael** : la marketplace est « trop basique », la rendre « totalement professionnelle,

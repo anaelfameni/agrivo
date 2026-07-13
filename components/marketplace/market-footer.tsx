@@ -5,13 +5,13 @@ import { ArrowUpRight, ShieldCheck } from "lucide-react";
 import { useLanguage } from "@/components/language-provider";
 
 /**
- * Pied de page de AGRIVO MARKET — thème clair, cohérent avec l'en-tête dédié.
+ * Pied de page de AGRIVO MARKET,thème clair, cohérent avec l'en-tête dédié.
  * Rappelle la frontière : AGRIVO fait le COMMERCE des fèves conformes, jamais le financement.
  */
 const TR = {
   fr: {
     tagline: "La place de marché des lots agricoles conformes vérifiés.",
-    frontier: "AGRIVO Market fait le commerce des fèves conformes — jamais le financement ni le crédit.",
+    frontier: "AGRIVO Market fait le commerce des fèves conformes,jamais le financement ni le crédit.",
     demo: "Lots de démonstration dérivés de dossiers réels. Cours ICE réel mais différé. Aucune transaction financière n'a lieu sur cette version.",
     navTitle: "Marketplace",
     browse: "Parcourir les lots",
@@ -23,7 +23,7 @@ const TR = {
   },
   en: {
     tagline: "The marketplace of verified-compliant agricultural lots.",
-    frontier: "AGRIVO Market trades compliant beans — never financing or credit.",
+    frontier: "AGRIVO Market trades compliant beans,never financing or credit.",
     demo: "Demonstration lots derived from real files. Real but delayed ICE price. No financial transaction takes place on this version.",
     navTitle: "Marketplace",
     browse: "Browse lots",
@@ -41,7 +41,7 @@ export function MarketFooter() {
   const year = new Date().getFullYear();
   return (
     <footer className="border-t border-black/[0.06] bg-white">
-      <div className="mx-auto max-w-7xl px-5 py-12 md:px-8">
+      <div className="mx-auto w-full max-w-[1760px] px-5 py-12 sm:px-8 lg:px-12">
         <div className="grid gap-10 md:grid-cols-[1.4fr_1fr_1fr]">
           <div className="max-w-md">
             <p className="font-brand-serif text-xl not-italic text-forest-950" style={{ fontWeight: 600 }}>

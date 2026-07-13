@@ -34,7 +34,7 @@ const TR = {
   },
 } as const;
 
-export function FoundingSignup() {
+export function FoundingSignup({ wrap = "mx-auto w-full max-w-[1760px] px-5 sm:px-8 lg:px-12" }: { wrap?: string }) {
   const { lang } = useLanguage();
   const t = TR[lang === "en" ? "en" : "fr"];
   const [email, setEmail] = useState("");
@@ -49,7 +49,7 @@ export function FoundingSignup() {
   };
 
   return (
-    <section className="mx-auto max-w-7xl px-5 pb-20 md:px-8">
+    <section className={`${wrap} pb-24 pt-4`}>
       <Reveal>
         <div className="relative overflow-hidden rounded-3xl border border-green-signal/20 bg-gradient-to-br from-green-signal/[0.10] via-white to-white p-8 md:p-12">
           <div aria-hidden className="glow-radial absolute -right-16 top-0 h-56 w-96 opacity-60" />

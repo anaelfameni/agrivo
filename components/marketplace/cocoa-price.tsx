@@ -55,7 +55,7 @@ export function VsIceChip({ prixFcfaKg, iceUsdT, className = "" }: { prixFcfaKg:
 /* ------------------------------------------------------------------ data hook ------------------------------------------------------------------ */
 
 /** Récupère le cours (via la route API cache/repli). Ne jette jamais : en dernier recours, `null`.
- *  `loading` est DÉRIVÉ (la donnée en main correspond-elle à la plage demandée ?) — pas de setState
+ *  `loading` est DÉRIVÉ (la donnée en main correspond-elle à la plage demandée ?),pas de setState
  *  synchrone dans l'effet. */
 function useCocoa(range: RangeCode) {
   const [state, setState] = useState<{ range: RangeCode; data: CocoaQuote | null } | null>(null);
@@ -143,11 +143,11 @@ function fmtDate(t: number, range: RangeCode, lang: "fr" | "en") {
 }
 
 const TR = {
-  fr: { title: "Cacao · ICE US (New York)", sub: "Cours du contrat à terme CC=F, en dollars par tonne.", srcLive: "ICE US · CC=F · différé ~15 min · Yahoo Finance", srcStale: "Dernier cours connu (indicatif) — flux momentanément indisponible.", loading: "Chargement du cours…" },
-  en: { title: "Cocoa · ICE US (New York)", sub: "CC=F futures price, in US dollars per tonne.", srcLive: "ICE US · CC=F · delayed ~15 min · Yahoo Finance", srcStale: "Last known price (indicative) — feed momentarily unavailable.", loading: "Loading price…" },
+  fr: { title: "Cacao · ICE US (New York)", sub: "Cours du contrat à terme CC=F, en dollars par tonne.", srcLive: "ICE US · CC=F · différé ~15 min · Yahoo Finance", srcStale: "Dernier cours connu (indicatif),flux momentanément indisponible.", loading: "Chargement du cours…" },
+  en: { title: "Cocoa · ICE US (New York)", sub: "CC=F futures price, in US dollars per tonne.", srcLive: "ICE US · CC=F · delayed ~15 min · Yahoo Finance", srcStale: "Last known price (indicative),feed momentarily unavailable.", loading: "Loading price…" },
 } as const;
 
-/** Graphique du cours cacao ICE — SVG custom animé (tracé qui se dessine + survol). */
+/** Graphique du cours cacao ICE,SVG custom animé (tracé qui se dessine + survol). */
 export function CocoaChart({ className = "" }: { className?: string }) {
   const { lang } = useLanguage();
   const l = lang === "en" ? "en" : "fr";
@@ -223,7 +223,7 @@ export function CocoaChart({ className = "" }: { className?: string }) {
           <div className="h-[200px] w-full animate-pulse rounded-2xl bg-ivory md:h-[240px]" aria-hidden />
         ) : (
           <>
-            <svg viewBox={`0 0 ${W} ${H}`} className="h-auto w-full overflow-visible" role="img" aria-label={`${t.title} — ${nf(data!.price, l)} USD/t`}>
+            <svg viewBox={`0 0 ${W} ${H}`} className="h-auto w-full overflow-visible" role="img" aria-label={`${t.title},${nf(data!.price, l)} USD/t`}>
               <defs>
                 <linearGradient id="cocoa-fill" x1="0" y1="0" x2="0" y2="1">
                   <stop offset="0%" stopColor={stroke} stopOpacity="0.20" />

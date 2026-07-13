@@ -11,7 +11,7 @@ import { LotCard } from "@/components/marketplace/lot-card";
 import { useCocoaSpot } from "@/components/marketplace/cocoa-price";
 
 /**
- * Catalogue vivant de AGRIVO Market (thème clair) — l'acheteur est le héros. Grille filtrable
+ * Catalogue vivant de AGRIVO Market (thème clair),l'acheteur est le héros. Grille filtrable
  * (filière · région · sceau · recherche) + tri, entrée en cascade (stagger). Recherche pilotable
  * depuis le héros via les props contrôlées `query`/`onQueryChange`.
  */
@@ -20,7 +20,7 @@ type SortKey = "pertinence" | "prix-asc" | "prix-desc" | "tonnage";
 const TR = {
   fr: {
     title: "Lots disponibles",
-    lead: "Chaque lot est dérivé d'un dossier de traçabilité réel. Le sceau AGRIVO est recalculé à l'affichage — jamais affirmé sans preuve.",
+    lead: "Chaque lot est dérivé d'un dossier de traçabilité réel. Le sceau AGRIVO est recalculé à l'affichage,jamais affirmé sans preuve.",
     search: "Rechercher un lot, une coopérative, une région…",
     all: "Toutes filières", allRegions: "Toutes régions", sealedOnly: "Scellés uniquement",
     results: (n: number) => `${n} lot${n > 1 ? "s" : ""}`,
@@ -29,7 +29,7 @@ const TR = {
   },
   en: {
     title: "Available lots",
-    lead: "Every lot is derived from a real traceability file. The AGRIVO seal is recomputed on display — never asserted without proof.",
+    lead: "Every lot is derived from a real traceability file. The AGRIVO seal is recomputed on display,never asserted without proof.",
     search: "Search a lot, a cooperative, a region…",
     all: "All commodities", allRegions: "All regions", sealedOnly: "Sealed only",
     results: (n: number) => `${n} lot${n > 1 ? "s" : ""}`,
@@ -47,9 +47,11 @@ function rank(lot: MarketLot): number {
 export function MarketCatalog({
   query,
   onQueryChange,
+  wrap = "mx-auto w-full max-w-[1760px] px-5 sm:px-8 lg:px-12",
 }: {
   query?: string;
   onQueryChange?: (q: string) => void;
+  wrap?: string;
 }) {
   const { lang } = useLanguage();
   const l = lang === "en" ? "en" : "fr";
@@ -93,7 +95,7 @@ export function MarketCatalog({
   const active = Boolean(filiere || region || sealedOnly || q);
 
   return (
-    <section id="catalogue" className="mx-auto max-w-7xl scroll-mt-20 px-5 py-16 md:px-8 md:py-20">
+    <section id="catalogue" className={`${wrap} scroll-mt-20 py-16 md:py-20`}>
       <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
         <div>
           <h2 className="font-display text-2xl font-semibold text-forest-950 md:text-3xl">{t.title}</h2>
@@ -169,7 +171,7 @@ export function MarketCatalog({
       ) : (
         <motion.div
           key={`${filiere}-${region}-${sealedOnly}-${sort}-${q}`}
-          className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3"
+          className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
           initial={reduce ? false : "hidden"}
           animate="show"
           variants={{ show: { transition: { staggerChildren: 0.05 } } }}
