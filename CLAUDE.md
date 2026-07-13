@@ -4,8 +4,17 @@
 > Il condense la charte de marque, les règles de contenu, les faits produit et l'avancement.
 > En cas de doute, ce fichier prime sur mes souvenirs. Il reflète l'état au dernier prompt traité.
 
-> 🟢 **ÉTAT ACTUEL — v2.4.0, 13 juillet 2026 (CE BLOC FAIT FOI sur toute mention contraire
+> 🟢 **ÉTAT ACTUEL — v2.5.0, 13 juillet 2026 (CE BLOC FAIT FOI sur toute mention contraire
 > plus bas, qui relève de l'historique de construction).**
+> - **AGRIVO MARKET v2.5 (13/07) — polish signature** : terminal cacao refait (prix rolling,
+>   pilule glissante layoutId, sparkline point pulsant, chips haut/bas, tilt 3D) ; **header = UN
+>   SEUL état `.liquid-glass-light`** (plus d'état transparent) ; confiance = **séquence du
+>   scellage** animée + piliers Tilt ; timeline sombre sur `HeroBg` ; carte des origines
+>   pleine largeur avec panneau glass ; **ordre : héros → catalogue (vedettes épinglées +
+>   badge « À la une », `featured-lots.tsx` SUPPRIMÉ) → stats bento → marché → confiance →
+>   timeline → origines → FAQ → CTA**. Doc levée :
+>   `AGRIVO DOCUMENTS/AGRIVO_Marketplace_Concurrence_et_Unicite.md` (3 familles de concurrents,
+>   personne ne conditionne la vente à une preuve calculée ; roadmap RFQ/KYB/alertes/data-room).
 > - **AGRIVO MARKET v2.4 (13/07) — refonte « SIGNATURE HYBRIDE »** : le héros de `/marketplace`,
 >   de chaque **page de lot** et de `/vendre` reprend **EXACTEMENT le fond animé de l'accueil du
 >   site** (`components/landing/hero-bg.tsx` : orbes mesh + grille masquée + grain) ; corps en
@@ -412,6 +421,43 @@ variables CSS dans `app/globals.css`.
 ---
 
 ## 📓 Journal de build (le plus récent en haut)
+
+### Session 33 — 2026-07-13 — v2.5.0 : AGRIVO MARKET polish signature + fusion vedettes + doc concurrence
+- 🎯 **Retours Anael sur v2.4** : terminal héros pas assez design ; header « couleurs bizarres »
+  en haut de page → un seul état avec **liquid glass** ; sections confiance/timeline/origines trop
+  basiques (plus d'animations + interactions, carte trop petite) ; **catalogue juste sous le
+  héros** ; vedettes fusionnées au catalogue « intelligemment » ; fond timeline = HeroBg ;
+  recherche concurrence « marketplace cacao » + recommandations (investissement Insatta).
+- 🏗️ **Fait** :
+  - **`cocoa-terminal.tsx`** : hook `useRollingNumber` (prix qui glisse, ease-out cubic 700 ms),
+    pastille variation bordée colorée, `Sparkline` enrichie (props `showEndDot` : point terminal
+    HTML superposé avec onde pulsante ; `grid`), chips Plus haut/Plus bas, toggle pilule
+    glissante `layoutId="cocoa-range-pill"` (spring 400/30), tilt 3D springs (±5°/±7°, coupé
+    touch/reduced).
+  - **`.liquid-glass-light`** (globals.css, sans overflow:hidden ni ::before pour laisser vivre
+    le dropdown mobile) ; `market-header.tsx` : suppression du scroll-aware, `liquid-glass-light`
+    permanent.
+  - **`trust-section.tsx`** : rail du scellage (nœuds/segments/badge « Scellé » en cascade,
+    variants `custom` avec délais explicites STEP=0.55s, masqué mobile), piliers `Tilt` +
+    balayage lumineux (span skew translate-x au group-hover) + icône hover verte pleine, ghost
+    number text-7xl, chips référentiels hover lift.
+  - **`journey-timeline.tsx`** : section sombre + `HeroBg`, cartes `liquid-glass-strong`,
+    ligne 2 px dégradée avec glow, nœuds variants off/on (backgroundColor + boxShadow + ring
+    forest-950), reduce = nœuds verts statiques.
+  - **`origins-map.tsx`** : en-tête centré, carte pleine largeur h-380/520/560 + ombre, panneau
+    glass superposé `z-[500]` (au-dessus des tuiles Leaflet) avec `StatNumber` + chips régions,
+    slide-in ; stats sous la carte en mobile (panneau masqué < sm).
+  - **Fusion vedettes** : `market-catalog.tsx` calcule `vedetteRefs` (lotsVedette ×3),
+    `pinFeatured` = tri pertinence sans filtre → épinglées en tête + mention « À la une en
+    tête » ; `lot-card.tsx` prop `vedette` → badge ambre Sparkles sur la photo.
+    **`featured-lots.tsx` supprimé** ; ordre page : héros → catalogue → stats → marché →
+    confiance → timeline → origines → FAQ → CTA.
+  - **Doc levée** : `AGRIVO_Marketplace_Concurrence_et_Unicite.md` (Bureau/AGRIVO DOCUMENTS) :
+    3 familles (annuaires B2B / conformité osapiens-Meridia-ICE CoT / direct trade
+    Almacena-Beyco), 4 verrous d'unicité, roadmap H1-H3 (RFQ, KYB, alertes, data-room, offres
+    sans escrow), interdits (paiement/enchères/temps réel), sources.
+- ✅ **GATES** : `tsc` ✓ · `eslint` 0 erreur · `next build` ✓ · **148 tests** · smoke SSR.
+  Version 2.5.0. Push/deploy = décision Anael.
 
 ### Session 32 — 2026-07-13 — v2.4.0 : AGRIVO MARKET refonte « signature hybride »
 - 🎯 **Retour Anael sur la v2.3** : « vraiment basique », le chart du héros « ne marche même pas

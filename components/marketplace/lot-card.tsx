@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowUpRight, MapPin, ShieldCheck, ShieldAlert, Boxes, Building2 } from "lucide-react";
+import { ArrowUpRight, MapPin, ShieldCheck, ShieldAlert, Boxes, Building2, Sparkles } from "lucide-react";
 import { getFiliere } from "@/config/filieres";
 import { type MarketLot } from "@/data/mock-marketplace";
 import { VsIceChip } from "@/components/marketplace/cocoa-price";
@@ -20,7 +20,7 @@ const fcfa = (n: number, lang: "fr" | "en") => n.toLocaleString(lang === "en" ? 
  * sceau), régions lisibles sur le voile sombre, puis les données en clair dessous.
  * Le sceau reste l'élément dominant (Match → Trust → Transact).
  */
-export function LotCard({ lot, lang, iceUsdT = null }: { lot: MarketLot; lang: "fr" | "en"; iceUsdT?: number | null }) {
+export function LotCard({ lot, lang, iceUsdT = null, vedette = false }: { lot: MarketLot; lang: "fr" | "en"; iceUsdT?: number | null; vedette?: boolean }) {
   const en = lang === "en";
   const f = getFiliere(lot.filiere);
   const verifie = lot.sceau.statut === "verifie";
@@ -45,8 +45,15 @@ export function LotCard({ lot, lang, iceUsdT = null }: { lot: MarketLot; lang: "
         <div aria-hidden className="absolute inset-0 opacity-25 mix-blend-overlay" style={{ background: f.couleur }} />
 
         <div className="absolute inset-x-4 top-4 flex items-start justify-between gap-2">
-          <span className="inline-flex items-center gap-1.5 rounded-full border border-white/25 bg-white/15 px-2.5 py-1 text-xs font-semibold text-white backdrop-blur-md">
-            <f.icone size={13} /> {lot.filiereLabel}
+          <span className="flex flex-wrap items-center gap-1.5">
+            {vedette && (
+              <span className="inline-flex items-center gap-1 rounded-full border border-amber-soft/50 bg-amber-cacao/90 px-2.5 py-1 text-[0.68rem] font-bold text-white shadow-[0_8px_20px_-8px_rgba(200,134,29,0.9)] backdrop-blur-md">
+                <Sparkles size={11} /> {lang === "en" ? "Featured" : "À la une"}
+              </span>
+            )}
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-white/25 bg-white/15 px-2.5 py-1 text-xs font-semibold text-white backdrop-blur-md">
+              <f.icone size={13} /> {lot.filiereLabel}
+            </span>
           </span>
           {verifie ? (
             <span className="inline-flex items-center gap-1 rounded-full border border-green-signal/40 bg-green-signal/90 px-2.5 py-1 text-[0.68rem] font-semibold text-white shadow-[0_8px_20px_-8px_rgba(22,163,74,0.9)] backdrop-blur-md">

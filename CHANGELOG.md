@@ -3,6 +3,33 @@
 Versioning sémantique (MAJOR.MINOR.PATCH). Chaque release liste ce qui est ajouté, corrigé et
 vérifié, conformément à l'étape 8 du pipeline « Du besoin à la Release ».
 
+## v2.5.0 — 2026-07-13 — AGRIVO Market : polish signature (terminal, header glass, sections wow) + vedettes fusionnées
+
+### Changé
+- **Terminal cacao du héros refait** : prix « rolling » (glisse vers la nouvelle valeur au
+  changement de plage), pastille de variation colorée, sparkline avec **point terminal pulsant**
+  + grille fine, chips **Plus haut / Plus bas**, toggle à **pilule glissante** (layoutId + spring),
+  **inclinaison 3D au curseur** (springs, coupée tactile/reduced-motion).
+- **Header : UN SEUL état LIQUID GLASS** (`.liquid-glass-light`, nouveau tier clair dans
+  globals.css : ivoire translucide + blur 20 px saturé + highlight), identique en haut de page et
+  au défilement (fin de l'état transparent jugé « bizarre »).
+- **Section confiance interactive** : **séquence du scellage** (3 verrous qui s'allument en
+  cascade, segments qui se remplissent, badge « Scellé » qui claque en spring), piliers en cartes
+  **Tilt** avec balayage lumineux au survol et icône qui s'allume, chips référentiels en hover lift.
+- **Timeline « parcours d'un lot » en SOMBRE signature** : même fond animé que le héros
+  (`HeroBg`), cartes glass, ligne lumineuse (glow) qui se dessine au scroll, nœuds qui s'allument
+  en vert plein avec halo.
+- **Carte des origines AGRANDIE** : pleine largeur (`h-520/560`), en-tête centré, panneau glass
+  superposé (stats animées + chips des régions), stats sous la carte en mobile.
+- **Réordonnancement** : le **catalogue passe juste sous le héros** ; **« Lots scellés en
+  vedette » fusionnée dans le catalogue** (épinglées en tête en vue neutre, badge ambre
+  « À la une » partout, mention « À la une en tête ») ; `featured-lots.tsx` supprimé.
+- **Doc stratégie** : `AGRIVO DOCUMENTS/AGRIVO_Marketplace_Concurrence_et_Unicite.md` (paysage
+  3 familles, unicité, roadmap features, sources) pour la levée Insatta.
+
+### Vérifié
+- `tsc` ✓ · `eslint` 0 erreur · `next build` ✓ · **148 tests** verts · smoke SSR.
+
 ## v2.4.0 — 2026-07-13 — AGRIVO Market : refonte « signature hybride » (héros de l'accueil, glass, bento, timeline)
 
 Refonte totale demandée par Anael (« vraiment basique ») : décisions verrouillées par

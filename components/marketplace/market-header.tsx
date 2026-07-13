@@ -11,9 +11,9 @@ import { useLanguage } from "@/components/language-provider";
 import { useAuth } from "@/components/auth-provider";
 
 /**
- * En-tête de AGRIVO MARKET, SCROLL-AWARE (v2.4) : transparent sur le héros sombre au sommet de la
- * page, puis ivoire flouté dès qu'on défile. Chrome PROPRE, dédié à la place de marché (≠ site
- * vitrine et ≠ espace applicatif). Un lien discret ramène au site principal.
+ * En-tête de AGRIVO MARKET (v2.5) : UN SEUL état, LIQUID GLASS clair (`.liquid-glass-light`),
+ * identique en haut de page et au défilement. Chrome PROPRE, dédié à la place de marché
+ * (≠ site vitrine et ≠ espace applicatif). Un lien discret ramène au site principal.
  */
 
 const NAV = [
@@ -26,8 +26,8 @@ const TR = {
   en: { home: "AGRIVO Market · home", nav: "AGRIVO Market navigation", login: "Log in", cockpit: "My lots", site: "agrivo.io", open: "Open menu", close: "Close menu" },
 } as const;
 
-/** Lockup de marque « AGRIVO Market » (pin AGRIVO + wordmark). `onDark` : wordmark blanc. */
-function MarketWordmark({ onDark }: { onDark: boolean }) {
+/** Lockup de marque « AGRIVO Market » (pin AGRIVO + wordmark), version claire. */
+function MarketWordmark() {
   return (
     <span className="inline-flex items-center gap-2.5">
       <svg width={24} height={24} viewBox="0 0 24 24" fill="none" aria-hidden>
@@ -47,7 +47,7 @@ function MarketWordmark({ onDark }: { onDark: boolean }) {
         <path d={AGRIVO_LEAF_PATH} fill="url(#mkt-leaf)" />
         <path d={AGRIVO_VEIN_PATH} stroke="#fff7e6" strokeWidth="0.7" strokeLinecap="round" fill="none" opacity="0.6" />
       </svg>
-      <span className={`font-brand-serif text-xl not-italic transition-colors duration-300 ${onDark ? "text-white" : "text-forest-950"}`} style={{ fontWeight: 600 }}>
+      <span className="font-brand-serif text-xl not-italic text-forest-950" style={{ fontWeight: 600 }}>
         Agrivo <span className="font-display text-[0.95rem] font-semibold uppercase tracking-[0.22em] text-green-signal align-middle">Market</span>
       </span>
     </span>
@@ -59,30 +59,15 @@ export function MarketHeader() {
   const { lang } = useLanguage();
   const { user } = useAuth();
   const [open, setOpen] = React.useState(false);
-  const [scrolled, setScrolled] = React.useState(false);
   const reduce = useReducedMotion();
   const t = TR[lang === "en" ? "en" : "fr"];
   const isActive = (href: string) => (href === "/marketplace" ? pathname === href : pathname.startsWith(href));
 
-  React.useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 24);
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-
-  // Au sommet, l'en-tête flotte sur le héros sombre ; le menu mobile ouvert force le fond clair.
-  const onDark = !scrolled && !open;
-
   return (
-    <header
-      className={`sticky top-0 z-50 border-b transition-colors duration-300 ${
-        onDark ? "border-transparent bg-transparent" : "border-black/[0.06] bg-ivory/85 backdrop-blur-md"
-      }`}
-    >
+    <header className="liquid-glass-light sticky top-0 z-50">
       <div className="mx-auto flex h-16 w-full max-w-[1760px] items-center justify-between gap-4 px-5 sm:px-8 lg:px-12">
         <Link href="/marketplace" aria-label={t.home} className="rounded-full outline-none focus-visible:ring-2 focus-visible:ring-green-signal/60">
-          <MarketWordmark onDark={onDark} />
+          <MarketWordmark />
         </Link>
 
         <nav aria-label={t.nav} className="hidden items-center gap-8 text-sm md:flex">
@@ -91,11 +76,7 @@ export function MarketHeader() {
               key={item.href}
               href={item.href}
               aria-current={isActive(item.href) ? "page" : undefined}
-              className={`relative transition-colors ${
-                isActive(item.href)
-                  ? onDark ? "text-white" : "text-forest-950"
-                  : onDark ? "text-white/60 hover:text-white" : "text-stone-500 hover:text-forest-950"
-              }`}
+              className={`relative transition-colors ${isActive(item.href) ? "text-forest-950" : "text-stone-500 hover:text-forest-950"}`}
             >
               {item[lang === "en" ? "en" : "fr"]}
               {isActive(item.href) && <span className="absolute -bottom-[21px] left-0 h-0.5 w-full rounded-full bg-green-signal" aria-hidden />}
@@ -104,26 +85,16 @@ export function MarketHeader() {
         </nav>
 
         <div className="flex items-center gap-3">
-          <Link
-            href="/"
-            className={`hidden items-center gap-1 text-xs font-medium transition-colors lg:inline-flex ${
-              onDark ? "text-white/50 hover:text-white" : "text-stone-400 hover:text-forest-950"
-            }`}
-          >
+          <Link href="/" className="hidden items-center gap-1 text-xs font-medium text-stone-400 transition-colors hover:text-forest-950 lg:inline-flex">
             {t.site} <ArrowUpRight size={12} />
           </Link>
-          <LanguageSwitcher tone={onDark ? "light" : "dark"} />
+          <LanguageSwitcher tone="dark" />
           {user ? (
             <Link href="/app/exportateur/marketplace" className="hidden items-center gap-2 rounded-full bg-green-signal px-4 py-2 text-sm font-semibold text-white transition hover:bg-green-signal/90 md:inline-flex">
               <Store size={15} /> {t.cockpit}
             </Link>
           ) : (
-            <Link
-              href="/connexion"
-              className={`hidden items-center gap-2 rounded-full border px-4 py-2 text-sm font-semibold transition md:inline-flex ${
-                onDark ? "border-white/25 text-white hover:bg-white/10" : "border-black/10 text-forest-950 hover:bg-black/[0.04]"
-              }`}
-            >
+            <Link href="/connexion" className="hidden items-center gap-2 rounded-full border border-black/10 px-4 py-2 text-sm font-semibold text-forest-950 transition hover:bg-black/[0.04] md:inline-flex">
               <ShoppingBag size={15} /> {t.login}
             </Link>
           )}
@@ -132,9 +103,7 @@ export function MarketHeader() {
             aria-label={open ? t.close : t.open}
             aria-expanded={open}
             onClick={() => setOpen((o) => !o)}
-            className={`inline-flex h-9 w-9 items-center justify-center rounded-full transition-colors md:hidden ${
-              onDark ? "text-white hover:bg-white/10" : "text-forest-950 hover:bg-black/5"
-            }`}
+            className="inline-flex h-9 w-9 items-center justify-center rounded-full text-forest-950 transition-colors hover:bg-black/5 md:hidden"
           >
             {open ? <X size={22} strokeWidth={1.75} /> : <Menu size={22} strokeWidth={1.75} />}
           </button>

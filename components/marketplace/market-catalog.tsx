@@ -2,11 +2,11 @@
 
 import { useMemo, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
-import { Search, SlidersHorizontal, ShieldCheck, X, ArrowDownWideNarrow } from "lucide-react";
+import { Search, SlidersHorizontal, ShieldCheck, X, ArrowDownWideNarrow, Sparkles } from "lucide-react";
 import { useLanguage } from "@/components/language-provider";
 import { getFiliere } from "@/config/filieres";
 import { PARCELLES } from "@/data/mock-parcelles";
-import { lotsMarche, type MarketLot } from "@/data/mock-marketplace";
+import { lotsMarche, lotsVedette, type MarketLot } from "@/data/mock-marketplace";
 import { LotCard } from "@/components/marketplace/lot-card";
 import { useCocoaSpot } from "@/components/marketplace/cocoa-price";
 
@@ -15,6 +15,10 @@ import { useCocoaSpot } from "@/components/marketplace/cocoa-price";
  * (filière · région · sceau · recherche) + tri, entrée en cascade (stagger), barre de filtres
  * COLLANTE sous l'en-tête pendant qu'on parcourt la grille. Recherche pilotable depuis le héros
  * via les props contrôlées `query`/`onQueryChange`.
+ *
+ * Vedettes intégrées (v2.5) : les 3 lots « à la une » (scellés, plus forte valeur) sont
+ * ÉPINGLÉS en tête quand la vue est neutre (tri pertinence, aucun filtre) et portent un badge
+ * ambre partout ; dès qu'un filtre/tri/recherche est actif, l'ordre demandé prime.
  */
 type SortKey = "pertinence" | "prix-asc" | "prix-desc" | "tonnage";
 
@@ -22,6 +26,7 @@ const TR = {
   fr: {
     title: "Lots disponibles",
     lead: "Chaque lot est dérivé d'un dossier de traçabilité réel. Le sceau AGRIVO est recalculé à l'affichage, jamais affirmé sans preuve.",
+    featuredFirst: "À la une en tête",
     search: "Rechercher un lot, une coopérative, une région…",
     all: "Toutes filières", allRegions: "Toutes régions", sealedOnly: "Scellés uniquement",
     results: (n: number) => `${n} lot${n > 1 ? "s" : ""}`,
@@ -31,6 +36,7 @@ const TR = {
   en: {
     title: "Available lots",
     lead: "Every lot is derived from a real traceability file. The AGRIVO seal is recomputed on display, never asserted without proof.",
+    featuredFirst: "Featured first",
     search: "Search a lot, a cooperative, a region…",
     all: "All commodities", allRegions: "All regions", sealedOnly: "Sealed only",
     results: (n: number) => `${n} lot${n > 1 ? "s" : ""}`,
@@ -63,6 +69,7 @@ export function MarketCatalog({
   const all = useMemo(() => lotsMarche(PARCELLES), []);
   const filieres = useMemo(() => [...new Set(all.map((x) => x.filiere))], [all]);
   const regions = useMemo(() => [...new Set(all.flatMap((x) => x.regions))].sort(), [all]);
+  const vedetteRefs = useMemo(() => new Set(lotsVedette(PARCELLES, 3).map((x) => x.ref)), []);
 
   const [filiere, setFiliere] = useState("");
   const [region, setRegion] = useState("");
@@ -71,6 +78,10 @@ export function MarketCatalog({
   const [innerQ, setInnerQ] = useState("");
   const q = query !== undefined ? query : innerQ;
   const setQ = (v: string) => (onQueryChange ? onQueryChange(v) : setInnerQ(v));
+
+  const active = Boolean(filiere || region || sealedOnly || q);
+  // Vue neutre (pertinence, aucun filtre) : les vedettes ouvrent la grille.
+  const pinFeatured = sort === "pertinence" && !active;
 
   const lots = useMemo(() => {
     const needle = q.trim().toLowerCase();
@@ -85,15 +96,16 @@ export function MarketCatalog({
       return true;
     });
     const by: Record<SortKey, (a: MarketLot, b: MarketLot) => number> = {
-      pertinence: (a, b) => rank(a) - rank(b) || b.valeurFcfa - a.valeurFcfa,
+      pertinence: (a, b) =>
+        (pinFeatured ? Number(vedetteRefs.has(b.ref)) - Number(vedetteRefs.has(a.ref)) : 0) ||
+        rank(a) - rank(b) ||
+        b.valeurFcfa - a.valeurFcfa,
       "prix-asc": (a, b) => a.prixIndicatifFcfaKg - b.prixIndicatifFcfaKg,
       "prix-desc": (a, b) => b.prixIndicatifFcfaKg - a.prixIndicatifFcfaKg,
       tonnage: (a, b) => b.tonnage - a.tonnage,
     };
     return [...filtered].sort(by[sort]);
-  }, [all, filiere, region, sealedOnly, q, sort]);
-
-  const active = Boolean(filiere || region || sealedOnly || q);
+  }, [all, filiere, region, sealedOnly, q, sort, pinFeatured, vedetteRefs]);
 
   return (
     <section id="catalogue" className={`${wrap} scroll-mt-20 py-16 md:py-20`}>
@@ -102,8 +114,15 @@ export function MarketCatalog({
           <h2 className="font-display text-2xl font-semibold text-forest-950 md:text-3xl">{t.title}</h2>
           <p className="mt-2 max-w-2xl text-sm leading-relaxed text-forest-950/55">{t.lead}</p>
         </div>
-        <span className="shrink-0 rounded-full border border-black/[0.06] bg-white px-3 py-1.5 text-xs font-semibold text-forest-950/70">
-          {t.results(lots.length)}
+        <span className="flex shrink-0 items-center gap-2">
+          {pinFeatured && (
+            <span className="inline-flex items-center gap-1 rounded-full border border-amber-cacao/25 bg-amber-cacao/[0.08] px-3 py-1.5 text-xs font-semibold text-amber-cacao">
+              <Sparkles size={12} /> {t.featuredFirst}
+            </span>
+          )}
+          <span className="rounded-full border border-black/[0.06] bg-white px-3 py-1.5 text-xs font-semibold text-forest-950/70">
+            {t.results(lots.length)}
+          </span>
         </span>
       </div>
 
@@ -180,7 +199,7 @@ export function MarketCatalog({
         >
           {lots.map((lot) => (
             <motion.div key={lot.ref} variants={{ hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0, transition: { duration: 0.4, ease: [0.16, 1, 0.3, 1] } } }}>
-              <LotCard lot={lot} lang={l} iceUsdT={iceUsdT} />
+              <LotCard lot={lot} lang={l} iceUsdT={iceUsdT} vedette={vedetteRefs.has(lot.ref)} />
             </motion.div>
           ))}
         </motion.div>

@@ -20,7 +20,6 @@ import { MarketSearch } from "@/components/marketplace/market-search";
 import { CocoaTerminal } from "@/components/marketplace/cocoa-terminal";
 import { MarketStats } from "@/components/marketplace/market-stats";
 import { MarketLive } from "@/components/marketplace/market-live";
-import { FeaturedLots } from "@/components/marketplace/featured-lots";
 import { MarketCatalog } from "@/components/marketplace/market-catalog";
 import { TrustSection } from "@/components/marketplace/trust-section";
 import { JourneyTimeline } from "@/components/marketplace/journey-timeline";
@@ -154,19 +153,16 @@ export default function MarketHomePage() {
         <ScrollHint reduced={reduce ?? false} />
       </section>
 
-      {/* Bandeau stats bento */}
-      <MarketStats wrap={WRAP} />
-
-      {/* Lots en vedette */}
-      <FeaturedLots wrap={WRAP} />
-
-      {/* Marché en direct (section sombre, grand graphique) */}
-      <MarketLive wrap={WRAP} />
-
-      {/* Catalogue complet (recherche pilotée par le héros) */}
+      {/* Catalogue complet, vedettes en tête (recherche pilotée par le héros) */}
       <div ref={catalogueRef}>
         <MarketCatalog query={query} onQueryChange={setQuery} wrap={WRAP} />
       </div>
+
+      {/* Bandeau stats bento */}
+      <MarketStats wrap={WRAP} />
+
+      {/* Marché en direct (section sombre, grand graphique) */}
+      <MarketLive wrap={WRAP} />
 
       {/* Confiance : double verrou + méthodes (section unifiée) */}
       <TrustSection />

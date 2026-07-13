@@ -139,18 +139,23 @@ function buildPaths(points: { t: number; c: number }[]) {
 
 /** Sparkline fluide pour le terminal du héros : le SVG s'étire dans son conteneur
  *  (`preserveAspectRatio="none"`), la hauteur est donnée par la classe (ex. `h-24`).
- *  Aire dégradée + tracé qui se dessine + halo doux. Pas de crosshair : la lecture
- *  détaillée vit dans le grand graphique de la section « Marché en direct ». */
+ *  Aire dégradée + tracé qui se dessine + halo doux ; en option, fine grille et point
+ *  terminal pulsant (rendu en HTML superposé pour ne pas être déformé par l'étirement
+ *  du viewBox). Pas de crosshair : la lecture détaillée vit dans le grand graphique. */
 export function Sparkline({
   points,
   up,
   className = "",
   id = "spark",
+  showEndDot = false,
+  grid = false,
 }: {
   points: { t: number; c: number }[];
   up: boolean;
   className?: string;
   id?: string;
+  showEndDot?: boolean;
+  grid?: boolean;
 }) {
   const reduce = useReducedMotion();
   const stroke = up ? "var(--color-green-signal)" : "var(--color-red-block)";
@@ -163,54 +168,80 @@ export function Sparkline({
     const n = points.length;
     const coords = points.map((p, i) => ({
       x: (i / (n - 1)) * 100,
-      y: 6 + (1 - (p.c - min) / span) * 88,
+      y: 8 + (1 - (p.c - min) / span) * 84,
     }));
     const line = coords.map((c, i) => `${i === 0 ? "M" : "L"} ${c.x.toFixed(2)} ${c.y.toFixed(2)}`).join(" ");
-    return { line, area: `${line} L 100 100 L 0 100 Z` };
+    return { line, area: `${line} L 100 100 L 0 100 Z`, last: coords[coords.length - 1] };
   }, [points]);
   if (!d) return null;
   return (
-    <svg viewBox="0 0 100 100" preserveAspectRatio="none" className={`w-full ${className}`} aria-hidden>
-      <defs>
-        <linearGradient id={`${id}-fill`} x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor={stroke} stopOpacity="0.30" />
-          <stop offset="100%" stopColor={stroke} stopOpacity="0" />
-        </linearGradient>
-      </defs>
-      <motion.path
-        d={d.area}
-        fill={`url(#${id}-fill)`}
-        initial={reduce ? false : { opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.7, ease: "easeOut" }}
-      />
-      {/* halo : même tracé, plus épais et translucide, sous la ligne nette */}
-      <motion.path
-        d={d.line}
-        fill="none"
-        stroke={stroke}
-        strokeOpacity="0.35"
-        strokeWidth="4.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        vectorEffect="non-scaling-stroke"
-        initial={reduce ? false : { pathLength: 0 }}
-        animate={{ pathLength: 1 }}
-        transition={{ duration: 1.1, ease: "easeOut" }}
-      />
-      <motion.path
-        d={d.line}
-        fill="none"
-        stroke={stroke}
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        vectorEffect="non-scaling-stroke"
-        initial={reduce ? false : { pathLength: 0 }}
-        animate={{ pathLength: 1 }}
-        transition={{ duration: 1.1, ease: "easeOut" }}
-      />
-    </svg>
+    <div className={`relative ${className}`} aria-hidden>
+      <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="h-full w-full">
+        <defs>
+          <linearGradient id={`${id}-fill`} x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor={stroke} stopOpacity="0.32" />
+            <stop offset="100%" stopColor={stroke} stopOpacity="0" />
+          </linearGradient>
+        </defs>
+        {grid &&
+          [30, 62].map((y) => (
+            <line key={y} x1="0" x2="100" y1={y} y2={y} stroke="rgba(255,255,255,0.07)" strokeWidth="1" vectorEffect="non-scaling-stroke" />
+          ))}
+        <motion.path
+          d={d.area}
+          fill={`url(#${id}-fill)`}
+          initial={reduce ? false : { opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.7, ease: "easeOut" }}
+        />
+        {/* halo : même tracé, plus épais et translucide, sous la ligne nette */}
+        <motion.path
+          d={d.line}
+          fill="none"
+          stroke={stroke}
+          strokeOpacity="0.35"
+          strokeWidth="4.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          vectorEffect="non-scaling-stroke"
+          initial={reduce ? false : { pathLength: 0 }}
+          animate={{ pathLength: 1 }}
+          transition={{ duration: 1.1, ease: "easeOut" }}
+        />
+        <motion.path
+          d={d.line}
+          fill="none"
+          stroke={stroke}
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          vectorEffect="non-scaling-stroke"
+          initial={reduce ? false : { pathLength: 0 }}
+          animate={{ pathLength: 1 }}
+          transition={{ duration: 1.1, ease: "easeOut" }}
+        />
+      </svg>
+      {/* Point terminal « live » : HTML superposé (un cercle SVG serait déformé par l'étirement) */}
+      {showEndDot && (
+        <motion.span
+          className="absolute -translate-x-1/2 -translate-y-1/2"
+          style={{ left: `${d.last.x}%`, top: `${d.last.y}%` }}
+          initial={reduce ? false : { opacity: 0, scale: 0 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: reduce ? 0 : 1.0, duration: 0.3, ease: "easeOut" }}
+        >
+          {!reduce && (
+            <motion.span
+              className="absolute inset-0 rounded-full"
+              style={{ background: stroke }}
+              animate={{ scale: [1, 3], opacity: [0.5, 0] }}
+              transition={{ duration: 1.8, repeat: Infinity, ease: "easeOut" }}
+            />
+          )}
+          <span className="relative block h-2 w-2 rounded-full ring-2 ring-white/30" style={{ background: stroke }} />
+        </motion.span>
+      )}
+    </div>
   );
 }
 
