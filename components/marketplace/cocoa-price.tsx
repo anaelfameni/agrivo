@@ -137,25 +137,55 @@ function buildPaths(points: { t: number; c: number }[]) {
 
 /* ------------------------------------------------------------------ sparkline ------------------------------------------------------------------ */
 
+/** Fractions verticales du tracé Sparkline : y = SPARK_TOP + f * SPARK_BAND (f∈[0,1]).
+ *  Exportées pour que le parent aligne ses labels d'axe Y sur les lignes de grille. */
+export const SPARK_TOP = 8;
+export const SPARK_BAND = 84;
+
+/** Chemin lissé (Catmull-Rom → Bézier cubique) : courbe uniforme qui passe par tous les
+ *  points, sans angles. `k` module la tension (1/6 ≈ Catmull-Rom standard). */
+function smoothPath(coords: { x: number; y: number }[]): string {
+  const n = coords.length;
+  if (n < 3) return coords.map((c, i) => `${i === 0 ? "M" : "L"} ${c.x.toFixed(2)} ${c.y.toFixed(2)}`).join(" ");
+  const k = 1 / 6;
+  let d = `M ${coords[0].x.toFixed(2)} ${coords[0].y.toFixed(2)}`;
+  for (let i = 0; i < n - 1; i++) {
+    const p0 = coords[Math.max(0, i - 1)];
+    const p1 = coords[i];
+    const p2 = coords[i + 1];
+    const p3 = coords[Math.min(n - 1, i + 2)];
+    const c1x = p1.x + (p2.x - p0.x) * k;
+    const c1y = p1.y + (p2.y - p0.y) * k;
+    const c2x = p2.x - (p3.x - p1.x) * k;
+    const c2y = p2.y - (p3.y - p1.y) * k;
+    d += ` C ${c1x.toFixed(2)} ${c1y.toFixed(2)}, ${c2x.toFixed(2)} ${c2y.toFixed(2)}, ${p2.x.toFixed(2)} ${p2.y.toFixed(2)}`;
+  }
+  return d;
+}
+
 /** Sparkline fluide pour le terminal du héros : le SVG s'étire dans son conteneur
  *  (`preserveAspectRatio="none"`), la hauteur est donnée par la classe (ex. `h-24`).
- *  Aire dégradée + tracé qui se dessine + halo doux ; en option, fine grille et point
- *  terminal pulsant (rendu en HTML superposé pour ne pas être déformé par l'étirement
- *  du viewBox). Pas de crosshair : la lecture détaillée vit dans le grand graphique. */
+ *  Courbe LISSÉE (Catmull-Rom, uniforme), aire dégradée, tracé qui se dessine, halo doux ;
+ *  en option, lignes de grille aux fractions `yTicks` (alignées avec l'axe Y du parent) et
+ *  point terminal pulsant (HTML superposé pour ne pas être déformé par l'étirement du
+ *  viewBox). Pas de crosshair : la lecture détaillée vit dans le grand graphique. */
 export function Sparkline({
   points,
   up,
   className = "",
   id = "spark",
   showEndDot = false,
-  grid = false,
+  yTicks,
+  smooth = true,
 }: {
   points: { t: number; c: number }[];
   up: boolean;
   className?: string;
   id?: string;
   showEndDot?: boolean;
-  grid?: boolean;
+  /** Fractions 0..1 de la bande du tracé où poser une ligne de grille. */
+  yTicks?: number[];
+  smooth?: boolean;
 }) {
   const reduce = useReducedMotion();
   const stroke = up ? "var(--color-green-signal)" : "var(--color-red-block)";
@@ -168,11 +198,13 @@ export function Sparkline({
     const n = points.length;
     const coords = points.map((p, i) => ({
       x: (i / (n - 1)) * 100,
-      y: 8 + (1 - (p.c - min) / span) * 84,
+      y: SPARK_TOP + (1 - (p.c - min) / span) * SPARK_BAND,
     }));
-    const line = coords.map((c, i) => `${i === 0 ? "M" : "L"} ${c.x.toFixed(2)} ${c.y.toFixed(2)}`).join(" ");
+    const line = smooth
+      ? smoothPath(coords)
+      : coords.map((c, i) => `${i === 0 ? "M" : "L"} ${c.x.toFixed(2)} ${c.y.toFixed(2)}`).join(" ");
     return { line, area: `${line} L 100 100 L 0 100 Z`, last: coords[coords.length - 1] };
-  }, [points]);
+  }, [points, smooth]);
   if (!d) return null;
   return (
     <div className={`relative ${className}`} aria-hidden>
@@ -183,10 +215,10 @@ export function Sparkline({
             <stop offset="100%" stopColor={stroke} stopOpacity="0" />
           </linearGradient>
         </defs>
-        {grid &&
-          [30, 62].map((y) => (
-            <line key={y} x1="0" x2="100" y1={y} y2={y} stroke="rgba(255,255,255,0.07)" strokeWidth="1" vectorEffect="non-scaling-stroke" />
-          ))}
+        {yTicks?.map((f) => {
+          const y = SPARK_TOP + f * SPARK_BAND;
+          return <line key={f} x1="0" x2="100" y1={y} y2={y} stroke="rgba(255,255,255,0.08)" strokeWidth="1" strokeDasharray="3 4" vectorEffect="non-scaling-stroke" />;
+        })}
         <motion.path
           d={d.area}
           fill={`url(#${id}-fill)`}
@@ -245,7 +277,7 @@ export function Sparkline({
   );
 }
 
-function fmtDate(t: number, range: RangeCode, lang: "fr" | "en") {
+export function fmtDate(t: number, range: RangeCode, lang: "fr" | "en") {
   const d = new Date(t * 1000);
   const loc = lang === "en" ? "en-GB" : "fr-FR";
   if (range === "1J") return d.toLocaleTimeString(loc, { hour: "2-digit", minute: "2-digit" });

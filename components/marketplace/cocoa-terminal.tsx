@@ -14,10 +14,10 @@
 
 import { useEffect, useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
 import { motion, useMotionValue, useSpring, useReducedMotion } from "framer-motion";
-import { TrendingUp, TrendingDown, ArrowDown, ArrowUpRight, ArrowDownRight } from "lucide-react";
+import { TrendingUp, TrendingDown, ArrowDown } from "lucide-react";
 import { useLanguage } from "@/components/language-provider";
 import { FX_USD_FCFA_DEFAUT, type RangeCode } from "@/lib/market/cocoa";
-import { useCocoa, Sparkline } from "./cocoa-price";
+import { useCocoa, Sparkline, fmtDate, SPARK_TOP, SPARK_BAND } from "./cocoa-price";
 
 const RANGES: RangeCode[] = ["1J", "1S", "1M", "1A"];
 
@@ -28,8 +28,6 @@ const TR = {
     stale: "dernier cours connu",
     ranges: { "1J": "1J", "1S": "1S", "1M": "1M", "1A": "1A" } as Record<RangeCode, string>,
     onRange: { "1J": "sur 1 jour", "1S": "sur 1 semaine", "1M": "sur 1 mois", "1A": "sur 1 an" } as Record<RangeCode, string>,
-    high: "Plus haut",
-    low: "Plus bas",
     approx: (v: string, fx: number) => `≈ ${v} FCFA/t (hypothèse 1 USD ≈ ${fx} FCFA)`,
     source: "Contrat CC=F · Yahoo Finance",
     more: "Voir le marché en détail",
@@ -41,8 +39,6 @@ const TR = {
     stale: "last known price",
     ranges: { "1J": "1D", "1S": "1W", "1M": "1M", "1A": "1Y" } as Record<RangeCode, string>,
     onRange: { "1J": "over 1 day", "1S": "over 1 week", "1M": "over 1 month", "1A": "over 1 year" } as Record<RangeCode, string>,
-    high: "High",
-    low: "Low",
     approx: (v: string, fx: number) => `≈ ${v} FCFA/t (assumption 1 USD ≈ ${fx} FCFA)`,
     source: "CC=F contract · Yahoo Finance",
     more: "See the market in detail",
@@ -158,19 +154,49 @@ export function CocoaTerminal({ className = "" }: { className?: string }) {
             </div>
           </div>
 
-          {/* Sparkline glow + point terminal pulsant + grille */}
+          {/* Graphe : courbe lissée + axe Y (prix) à droite + axe X (temps) dessous.
+              Les labels sont en HTML : le SVG étiré (preserveAspectRatio none) déformerait
+              du texte. Les lignes de grille et les labels partagent SPARK_TOP/SPARK_BAND. */}
           <div className="mt-4">
-            <Sparkline key={`spark-${range}`} points={data.points} up={up} id={`terminal-${range}`} className="h-24 md:h-28" showEndDot grid />
-          </div>
-
-          {/* Plus haut / Plus bas sur la plage */}
-          <div className="mt-3 flex flex-wrap gap-2">
-            <span className="num inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.05] px-2.5 py-1 text-[0.7rem] font-semibold text-white/70">
-              <ArrowUpRight size={12} className="text-emerald-400" /> {t.high} {hi != null && Math.round(hi).toLocaleString(loc)}
-            </span>
-            <span className="num inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.05] px-2.5 py-1 text-[0.7rem] font-semibold text-white/70">
-              <ArrowDownRight size={12} className="text-red-300" /> {t.low} {lo != null && Math.round(lo).toLocaleString(loc)}
-            </span>
+            <div className="grid grid-cols-[1fr_auto] gap-x-2">
+              <div className="border-b border-white/10 pb-px">
+                <Sparkline
+                  key={`spark-${range}`}
+                  points={data.points}
+                  up={up}
+                  id={`terminal-${range}`}
+                  className="h-24 md:h-28"
+                  showEndDot
+                  yTicks={[0, 0.5, 1]}
+                />
+              </div>
+              {/* Axe Y : max · milieu · min */}
+              <div className="relative h-24 w-11 md:h-28" aria-hidden>
+                {hi != null && lo != null &&
+                  [
+                    { f: 0, v: hi },
+                    { f: 0.5, v: (hi + lo) / 2 },
+                    { f: 1, v: lo },
+                  ].map(({ f, v }) => (
+                    <span
+                      key={f}
+                      className="num absolute right-0 -translate-y-1/2 text-[0.62rem] font-medium text-white/40"
+                      style={{ top: `${SPARK_TOP + f * SPARK_BAND}%` }}
+                    >
+                      {Math.round(v).toLocaleString(loc)}
+                    </span>
+                  ))}
+              </div>
+            </div>
+            {/* Axe X : début · milieu · fin de la plage */}
+            <div className="mt-1.5 grid grid-cols-[1fr_auto]">
+              <div className="flex justify-between text-[0.62rem] font-medium text-white/40" aria-hidden>
+                <span>{fmtDate(data.points[0].t, range, l)}</span>
+                <span>{fmtDate(data.points[Math.floor((data.points.length - 1) / 2)].t, range, l)}</span>
+                <span>{fmtDate(data.points[data.points.length - 1].t, range, l)}</span>
+              </div>
+              <div className="w-11" />
+            </div>
           </div>
         </>
       )}

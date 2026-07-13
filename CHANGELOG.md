@@ -3,6 +3,29 @@
 Versioning sémantique (MAJOR.MINOR.PATCH). Chaque release liste ce qui est ajouté, corrigé et
 vérifié, conformément à l'étape 8 du pipeline « Du besoin à la Release ».
 
+## v2.6.0 — 2026-07-13 — AGRIVO Market : ruban opaque, chart héros avec axes + courbe lissée, cockpit « Mes lots » refondu
+
+### Changé
+- **Ruban d'activité du bas OPAQUE** (`bg-forest-950`, plus de backdrop-blur/transparence),
+  fondus latéraux pleins.
+- **Chart du héros amélioré** : **courbe lissée uniforme** (Catmull-Rom → Bézier cubique,
+  `smoothPath` dans `Sparkline`, prop `smooth`), **axe des ordonnées** (3 niveaux de prix :
+  max · milieu · min, labels HTML alignés sur les lignes de grille `yTicks`, constantes
+  partagées `SPARK_TOP`/`SPARK_BAND`) et **axe des abscisses** (début · milieu · fin de plage,
+  `fmtDate` exporté). Chips « Plus haut / Plus bas » retirés (l'axe Y les remplace). Point
+  terminal pulsant, tilt et pilule glissante conservés.
+- **Cockpit exportateur « Mes lots » refondu** (`/app/exportateur/marketplace`) : en-tête
+  canonique de l'app (`.eyebrow` + `font-display`), CTA `.btn-green`, **bandeau KPI
+  `.panel-forest`** (4 compteurs `StatNumber` recalculés en direct : lots en ligne, valeur
+  publiée, commission estimée, scellés), **filtres à pilule glissante** (Tous/Publiés/Retirés/
+  Réservés avec compteurs, `layoutId`), cartes **`.card-premium`** staggerées avec liseré
+  couleur filière, chip d'état (« En ligne » pulsant / « Retiré » / « Réservé » / « En
+  prépa. »), **confirmation de retrait inline avec Annuler** (AnimatePresence), état vide par
+  filtre, `estVendable` du module réutilisé. Tiret cadratin restant purgé.
+
+### Vérifié
+- `tsc` ✓ · `eslint` 0 erreur · `next build` ✓ · **148 tests** verts · smoke SSR.
+
 ## v2.5.0 — 2026-07-13 — AGRIVO Market : polish signature (terminal, header glass, sections wow) + vedettes fusionnées
 
 ### Changé

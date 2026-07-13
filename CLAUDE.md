@@ -4,8 +4,15 @@
 > Il condense la charte de marque, les règles de contenu, les faits produit et l'avancement.
 > En cas de doute, ce fichier prime sur mes souvenirs. Il reflète l'état au dernier prompt traité.
 
-> 🟢 **ÉTAT ACTUEL — v2.5.0, 13 juillet 2026 (CE BLOC FAIT FOI sur toute mention contraire
+> 🟢 **ÉTAT ACTUEL — v2.6.0, 13 juillet 2026 (CE BLOC FAIT FOI sur toute mention contraire
 > plus bas, qui relève de l'historique de construction).**
+> - **AGRIVO MARKET v2.6 (13/07)** : ruban d'activité du bas **opaque** (plus de glass) ; chart
+>   héros = **courbe lissée** (Catmull-Rom, `smoothPath`/`smooth` dans `Sparkline`) + **axes X/Y
+>   en HTML** (`SPARK_TOP`/`SPARK_BAND` partagés, `fmtDate` exporté), chips haut/bas retirés ;
+>   **cockpit « Mes lots » refondu** au design system app (`.eyebrow`/`font-display`,
+>   `.btn-green`, KPI `.panel-forest` avec `StatNumber` en direct, filtres pilule `layoutId`
+>   Tous/Publiés/Retirés/Réservés, cartes `.card-premium` staggerées + liseré filière, chip
+>   d'état, retrait avec Annuler inline, `estVendable` réutilisé).
 > - **AGRIVO MARKET v2.5 (13/07) — polish signature** : terminal cacao refait (prix rolling,
 >   pilule glissante layoutId, sparkline point pulsant, chips haut/bas, tilt 3D) ; **header = UN
 >   SEUL état `.liquid-glass-light`** (plus d'état transparent) ; confiance = **séquence du
@@ -421,6 +428,29 @@ variables CSS dans `app/globals.css`.
 ---
 
 ## 📓 Journal de build (le plus récent en haut)
+
+### Session 34 — 2026-07-13 — v2.6.0 : ruban opaque, chart héros axes + lissage, cockpit « Mes lots »
+- 🎯 **Retours Anael** : enlever le liquid glass « du footer » (= le ruban collant du bas, seul
+  élément glass en bas) ; améliorer totalement l'aperçu du chart héros (courbe **uniforme** +
+  **abscisses/ordonnées**) ; refondre totalement la section marketplace de l'interface client
+  (= cockpit exportateur `/app/exportateur/marketplace`).
+- 🏗️ **Fait** :
+  - `activity-ticker.tsx` : `bg-forest-950` opaque (sans backdrop-blur), fondus pleins.
+  - `cocoa-price.tsx` : `smoothPath` (Catmull-Rom → Bézier, k=1/6), props `smooth` (défaut true)
+    + `yTicks` (fractions), constantes exportées `SPARK_TOP=8`/`SPARK_BAND=84`, `fmtDate`
+    exporté. Le grand `CocoaChart` garde son buildPaths anguleux (lecture fine au crosshair).
+  - `cocoa-terminal.tsx` : grille `1fr_auto` (graphe | axe Y 3 labels max/mid/min alignés sur
+    les ticks), axe X 3 labels (début/milieu/fin, format par plage), bordure basse d'ancrage,
+    chips Plus haut/Plus bas retirés (redondants avec l'axe Y).
+  - **Cockpit réécrit** : header canonique + `.btn-green` ; KPI `.panel-forest` (lots en ligne,
+    valeur publiée compacte, commission estimée, scellés) recalculés de `retires` ; segmented
+    control pilule `layoutId="mkt-filter-pill"` avec compteurs ; cartes `.card-premium` +
+    `inset 3px` couleur filière, chip d'état 4 cas, stats `.num` sur fond ivoire, confirmation
+    retrait inline (`AnimatePresence` height) avec Annuler, état vide par filtre. Fix type
+    `Copy = (typeof COPY)[keyof typeof COPY]` (union, pas le littéral fr). « — » restant purgé
+    (nonVendable).
+- ✅ **GATES** : `tsc` ✓ · `eslint` 0 erreur · `next build` ✓ · **148 tests** · smoke SSR.
+  Version 2.6.0. Push/deploy = décision Anael.
 
 ### Session 33 — 2026-07-13 — v2.5.0 : AGRIVO MARKET polish signature + fusion vedettes + doc concurrence
 - 🎯 **Retours Anael sur v2.4** : terminal héros pas assez design ; header « couleurs bizarres »
