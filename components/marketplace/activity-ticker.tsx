@@ -53,16 +53,16 @@ export function ActivityTicker() {
   }, [t]);
 
   const Chip = ({ it }: { it: Item }) => (
-    <span className="mx-4 inline-flex items-center gap-2 whitespace-nowrap text-sm text-forest-950/75">
+    <span className="mx-4 inline-flex items-center gap-2 whitespace-nowrap text-sm text-white/75">
       <it.Icon size={14} className="text-green-signal" /> {it.text}
-      <span className="ml-4 h-1 w-1 rounded-full bg-forest-950/20" />
+      <span className="ml-4 h-1 w-1 rounded-full bg-white/25" />
     </span>
   );
 
   return (
-    <div className="sticky bottom-0 z-40 border-t border-black/[0.07] bg-white/90 backdrop-blur-md">
+    <div className="sticky bottom-0 z-40 border-t border-white/10 bg-forest-950/90 text-white backdrop-blur-md">
       <div className="flex items-center gap-4 px-5 py-2.5 sm:px-8 lg:px-12">
-        <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-green-signal/10 px-2.5 py-1 text-[0.68rem] font-semibold uppercase tracking-wide text-green-signal">
+        <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-green-signal/30 bg-green-signal/15 px-2.5 py-1 text-[0.68rem] font-semibold uppercase tracking-wide text-green-signal">
           <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-green-signal" /> {t.label}
         </span>
         <div className="relative flex-1 overflow-hidden">
@@ -78,8 +78,8 @@ export function ActivityTicker() {
               {[...items, ...items].map((it, i) => <Chip key={i} it={it} />)}
             </motion.div>
           )}
-          <div aria-hidden className="pointer-events-none absolute inset-y-0 left-0 w-10 bg-gradient-to-r from-white to-transparent" />
-          <div aria-hidden className="pointer-events-none absolute inset-y-0 right-0 w-10 bg-gradient-to-l from-white to-transparent" />
+          <div aria-hidden className="pointer-events-none absolute inset-y-0 left-0 w-10 bg-gradient-to-r from-forest-950/90 to-transparent" />
+          <div aria-hidden className="pointer-events-none absolute inset-y-0 right-0 w-10 bg-gradient-to-l from-forest-950/90 to-transparent" />
         </div>
       </div>
     </div>

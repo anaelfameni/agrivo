@@ -55,9 +55,9 @@ export function VsIceChip({ prixFcfaKg, iceUsdT, className = "" }: { prixFcfaKg:
 /* ------------------------------------------------------------------ data hook ------------------------------------------------------------------ */
 
 /** Récupère le cours (via la route API cache/repli). Ne jette jamais : en dernier recours, `null`.
- *  `loading` est DÉRIVÉ (la donnée en main correspond-elle à la plage demandée ?),pas de setState
- *  synchrone dans l'effet. */
-function useCocoa(range: RangeCode) {
+ *  `loading` est DÉRIVÉ (la donnée en main correspond-elle à la plage demandée ?), pas de setState
+ *  synchrone dans l'effet. Exporté : le terminal du héros (cocoa-terminal) le réutilise. */
+export function useCocoa(range: RangeCode) {
   const [state, setState] = useState<{ range: RangeCode; data: CocoaQuote | null } | null>(null);
   useEffect(() => {
     let alive = true;
@@ -135,6 +135,85 @@ function buildPaths(points: { t: number; c: number }[]) {
   return { line, area, coords, min, max };
 }
 
+/* ------------------------------------------------------------------ sparkline ------------------------------------------------------------------ */
+
+/** Sparkline fluide pour le terminal du héros : le SVG s'étire dans son conteneur
+ *  (`preserveAspectRatio="none"`), la hauteur est donnée par la classe (ex. `h-24`).
+ *  Aire dégradée + tracé qui se dessine + halo doux. Pas de crosshair : la lecture
+ *  détaillée vit dans le grand graphique de la section « Marché en direct ». */
+export function Sparkline({
+  points,
+  up,
+  className = "",
+  id = "spark",
+}: {
+  points: { t: number; c: number }[];
+  up: boolean;
+  className?: string;
+  id?: string;
+}) {
+  const reduce = useReducedMotion();
+  const stroke = up ? "var(--color-green-signal)" : "var(--color-red-block)";
+  const d = useMemo(() => {
+    if (points.length < 2) return null;
+    const values = points.map((p) => p.c);
+    const min = Math.min(...values);
+    const max = Math.max(...values);
+    const span = max - min || 1;
+    const n = points.length;
+    const coords = points.map((p, i) => ({
+      x: (i / (n - 1)) * 100,
+      y: 6 + (1 - (p.c - min) / span) * 88,
+    }));
+    const line = coords.map((c, i) => `${i === 0 ? "M" : "L"} ${c.x.toFixed(2)} ${c.y.toFixed(2)}`).join(" ");
+    return { line, area: `${line} L 100 100 L 0 100 Z` };
+  }, [points]);
+  if (!d) return null;
+  return (
+    <svg viewBox="0 0 100 100" preserveAspectRatio="none" className={`w-full ${className}`} aria-hidden>
+      <defs>
+        <linearGradient id={`${id}-fill`} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor={stroke} stopOpacity="0.30" />
+          <stop offset="100%" stopColor={stroke} stopOpacity="0" />
+        </linearGradient>
+      </defs>
+      <motion.path
+        d={d.area}
+        fill={`url(#${id}-fill)`}
+        initial={reduce ? false : { opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.7, ease: "easeOut" }}
+      />
+      {/* halo : même tracé, plus épais et translucide, sous la ligne nette */}
+      <motion.path
+        d={d.line}
+        fill="none"
+        stroke={stroke}
+        strokeOpacity="0.35"
+        strokeWidth="4.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        vectorEffect="non-scaling-stroke"
+        initial={reduce ? false : { pathLength: 0 }}
+        animate={{ pathLength: 1 }}
+        transition={{ duration: 1.1, ease: "easeOut" }}
+      />
+      <motion.path
+        d={d.line}
+        fill="none"
+        stroke={stroke}
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        vectorEffect="non-scaling-stroke"
+        initial={reduce ? false : { pathLength: 0 }}
+        animate={{ pathLength: 1 }}
+        transition={{ duration: 1.1, ease: "easeOut" }}
+      />
+    </svg>
+  );
+}
+
 function fmtDate(t: number, range: RangeCode, lang: "fr" | "en") {
   const d = new Date(t * 1000);
   const loc = lang === "en" ? "en-GB" : "fr-FR";
@@ -143,15 +222,17 @@ function fmtDate(t: number, range: RangeCode, lang: "fr" | "en") {
 }
 
 const TR = {
-  fr: { title: "Cacao · ICE US (New York)", sub: "Cours du contrat à terme CC=F, en dollars par tonne.", srcLive: "ICE US · CC=F · différé ~15 min · Yahoo Finance", srcStale: "Dernier cours connu (indicatif),flux momentanément indisponible.", loading: "Chargement du cours…" },
-  en: { title: "Cocoa · ICE US (New York)", sub: "CC=F futures price, in US dollars per tonne.", srcLive: "ICE US · CC=F · delayed ~15 min · Yahoo Finance", srcStale: "Last known price (indicative),feed momentarily unavailable.", loading: "Loading price…" },
+  fr: { title: "Cacao · ICE US (New York)", sub: "Cours du contrat à terme CC=F, en dollars par tonne.", srcLive: "ICE US · CC=F · différé ~15 min · Yahoo Finance", srcStale: "Dernier cours connu (indicatif) : flux momentanément indisponible.", loading: "Chargement du cours…" },
+  en: { title: "Cocoa · ICE US (New York)", sub: "CC=F futures price, in US dollars per tonne.", srcLive: "ICE US · CC=F · delayed ~15 min · Yahoo Finance", srcStale: "Last known price (indicative): feed momentarily unavailable.", loading: "Loading price…" },
 } as const;
 
-/** Graphique du cours cacao ICE,SVG custom animé (tracé qui se dessine + survol). */
-export function CocoaChart({ className = "" }: { className?: string }) {
+/** Graphique du cours cacao ICE : SVG custom animé (tracé qui se dessine + survol).
+ *  `tone="dark"` : version panneau glass pour les sections sombres. */
+export function CocoaChart({ className = "", tone = "light" }: { className?: string; tone?: "light" | "dark" }) {
   const { lang } = useLanguage();
   const l = lang === "en" ? "en" : "fr";
   const t = TR[l];
+  const dark = tone === "dark";
   const reduce = useReducedMotion();
   const [range, setRange] = useState<RangeCode>("1M");
   const { data, loading } = useCocoa(range);
@@ -161,6 +242,7 @@ export function CocoaChart({ className = "" }: { className?: string }) {
   const paths = useMemo(() => (data && data.points.length > 1 ? buildPaths(data.points) : null), [data]);
   const up = (data?.changePct ?? 0) >= 0;
   const stroke = up ? "var(--color-green-signal)" : "var(--color-red-block)";
+  const upTxt = up ? (dark ? "text-emerald-400" : "text-green-signal") : (dark ? "text-red-400" : "text-red-block");
 
   const onMove = (clientX: number) => {
     if (!wrapRef.current || !data) return;
@@ -174,20 +256,20 @@ export function CocoaChart({ className = "" }: { className?: string }) {
   const hoverY = hover != null && paths ? (paths.coords[hover].y / H) * 100 : 0;
 
   return (
-    <div className={`rounded-3xl border border-black/[0.07] bg-white p-6 shadow-sm md:p-8 ${className}`}>
+    <div className={`${dark ? "liquid-glass-strong rounded-3xl" : "rounded-3xl border border-black/[0.07] bg-white shadow-sm"} p-6 md:p-8 ${className}`}>
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <div className="flex items-center gap-2 text-green-signal">
             <Activity size={18} />
-            <h3 className="font-display text-lg font-semibold text-forest-950">{t.title}</h3>
+            <h3 className={`font-display text-lg font-semibold ${dark ? "text-white" : "text-forest-950"}`}>{t.title}</h3>
           </div>
-          <p className="mt-1 text-sm text-forest-950/55">{t.sub}</p>
+          <p className={`mt-1 text-sm ${dark ? "text-white/55" : "text-forest-950/55"}`}>{t.sub}</p>
         </div>
         <div className="flex items-center gap-4">
           {data && (
             <div className="text-right">
-              <p className="num text-2xl font-bold text-forest-950">{nf(data.price, l)} <span className="text-base font-semibold text-forest-950/45">$/t</span></p>
-              <p className={`num inline-flex items-center gap-1 text-sm font-semibold ${up ? "text-green-signal" : "text-red-block"}`}>
+              <p className={`num text-2xl font-bold ${dark ? "text-white" : "text-forest-950"}`}>{nf(data.price, l)} <span className={`text-base font-semibold ${dark ? "text-white/45" : "text-forest-950/45"}`}>$/t</span></p>
+              <p className={`num inline-flex items-center gap-1 text-sm font-semibold ${upTxt}`}>
                 {up ? <TrendingUp size={14} /> : <TrendingDown size={14} />}
                 {sign(data.changeAbs)}{nf(data.changeAbs, l)} ({sign(data.changePct)}{data.changePct.toLocaleString(l === "en" ? "en" : "fr-FR")} %)
               </p>
@@ -197,13 +279,17 @@ export function CocoaChart({ className = "" }: { className?: string }) {
       </div>
 
       {/* Toggle de plage */}
-      <div className="mt-5 inline-flex rounded-full border border-black/[0.07] bg-ivory p-1">
+      <div className={`mt-5 inline-flex rounded-full p-1 ${dark ? "border border-white/10 bg-white/[0.06]" : "border border-black/[0.07] bg-ivory"}`}>
         {RANGES.map((r) => (
           <button
             key={r}
             onClick={() => { setRange(r); setHover(null); }}
             aria-pressed={range === r}
-            className={`rounded-full px-3.5 py-1.5 text-xs font-semibold transition-colors ${range === r ? "bg-forest-950 text-white" : "text-forest-950/60 hover:text-forest-950"}`}
+            className={`rounded-full px-3.5 py-1.5 text-xs font-semibold transition-colors ${
+              range === r
+                ? dark ? "bg-green-signal text-white" : "bg-forest-950 text-white"
+                : dark ? "text-white/60 hover:text-white" : "text-forest-950/60 hover:text-forest-950"
+            }`}
           >
             {RANGE_LABEL[r][l]}
           </button>
@@ -220,19 +306,19 @@ export function CocoaChart({ className = "" }: { className?: string }) {
         onTouchMove={(e) => onMove(e.touches[0].clientX)}
       >
         {loading || !paths ? (
-          <div className="h-[200px] w-full animate-pulse rounded-2xl bg-ivory md:h-[240px]" aria-hidden />
+          <div className={`h-[200px] w-full animate-pulse rounded-2xl md:h-[240px] ${dark ? "bg-white/[0.06]" : "bg-ivory"}`} aria-hidden />
         ) : (
           <>
-            <svg viewBox={`0 0 ${W} ${H}`} className="h-auto w-full overflow-visible" role="img" aria-label={`${t.title},${nf(data!.price, l)} USD/t`}>
+            <svg viewBox={`0 0 ${W} ${H}`} className="h-auto w-full overflow-visible" role="img" aria-label={`${t.title} : ${nf(data!.price, l)} USD/t`}>
               <defs>
                 <linearGradient id="cocoa-fill" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor={stroke} stopOpacity="0.20" />
+                  <stop offset="0%" stopColor={stroke} stopOpacity={dark ? "0.28" : "0.20"} />
                   <stop offset="100%" stopColor={stroke} stopOpacity="0" />
                 </linearGradient>
               </defs>
               {/* lignes de repère horizontales discrètes */}
               {[0.25, 0.5, 0.75].map((f) => (
-                <line key={f} x1="0" x2={W} y1={PAD_TOP + f * (H - PAD_TOP - PAD_BOTTOM)} y2={PAD_TOP + f * (H - PAD_TOP - PAD_BOTTOM)} stroke="var(--color-stone-100)" strokeWidth="1" />
+                <line key={f} x1="0" x2={W} y1={PAD_TOP + f * (H - PAD_TOP - PAD_BOTTOM)} y2={PAD_TOP + f * (H - PAD_TOP - PAD_BOTTOM)} stroke={dark ? "rgba(255,255,255,0.08)" : "var(--color-stone-100)"} strokeWidth="1" />
               ))}
               <motion.path
                 key={`area-${range}-${data!.stale}`}
@@ -257,14 +343,14 @@ export function CocoaChart({ className = "" }: { className?: string }) {
               {/* crosshair + point survolé */}
               {hover != null && (
                 <>
-                  <line x1={paths.coords[hover].x} x2={paths.coords[hover].x} y1={PAD_TOP} y2={H - PAD_BOTTOM} stroke="var(--color-stone-400)" strokeWidth="1" strokeDasharray="4 4" />
-                  <circle cx={paths.coords[hover].x} cy={paths.coords[hover].y} r="5" fill={stroke} stroke="#fff" strokeWidth="2" />
+                  <line x1={paths.coords[hover].x} x2={paths.coords[hover].x} y1={PAD_TOP} y2={H - PAD_BOTTOM} stroke={dark ? "rgba(255,255,255,0.35)" : "var(--color-stone-400)"} strokeWidth="1" strokeDasharray="4 4" />
+                  <circle cx={paths.coords[hover].x} cy={paths.coords[hover].y} r="5" fill={stroke} stroke={dark ? "#0a1f14" : "#fff"} strokeWidth="2" />
                 </>
               )}
             </svg>
 
             {/* Bornes de date */}
-            <div className="mt-1 flex justify-between px-0.5 text-[0.68rem] text-forest-950/40">
+            <div className={`mt-1 flex justify-between px-0.5 text-[0.68rem] ${dark ? "text-white/40" : "text-forest-950/40"}`}>
               <span>{fmtDate(data!.points[0].t, range, l)}</span>
               <span>{fmtDate(data!.points[data!.points.length - 1].t, range, l)}</span>
             </div>
@@ -274,11 +360,11 @@ export function CocoaChart({ className = "" }: { className?: string }) {
               <>
                 <div className="pointer-events-none absolute z-10 h-2.5 w-2.5 -translate-x-1/2 -translate-y-1/2 rounded-full" style={{ left: `${hoverX}%`, top: `${hoverY}%`, background: stroke }} />
                 <div
-                  className="pointer-events-none absolute z-20 -translate-x-1/2 -translate-y-full rounded-lg border border-black/[0.08] bg-white px-2.5 py-1.5 text-center shadow-md"
+                  className={`pointer-events-none absolute z-20 -translate-x-1/2 -translate-y-full rounded-lg px-2.5 py-1.5 text-center shadow-md ${dark ? "border border-white/15 bg-forest-900/95" : "border border-black/[0.08] bg-white"}`}
                   style={{ left: `${Math.min(92, Math.max(8, hoverX))}%`, top: `${Math.max(6, hoverY - 4)}%` }}
                 >
-                  <p className="num text-sm font-bold text-forest-950">{nf(hoverPoint.c, l)} $/t</p>
-                  <p className="text-[0.66rem] text-forest-950/50">{fmtDate(hoverPoint.t, range, l)}</p>
+                  <p className={`num text-sm font-bold ${dark ? "text-white" : "text-forest-950"}`}>{nf(hoverPoint.c, l)} $/t</p>
+                  <p className={`text-[0.66rem] ${dark ? "text-white/55" : "text-forest-950/50"}`}>{fmtDate(hoverPoint.t, range, l)}</p>
                 </div>
               </>
             )}
@@ -287,7 +373,7 @@ export function CocoaChart({ className = "" }: { className?: string }) {
       </div>
 
       {/* Source / honnêteté */}
-      <p className="mt-4 flex items-center gap-1.5 text-[0.72rem] leading-relaxed text-forest-950/45">
+      <p className={`mt-4 flex items-center gap-1.5 text-[0.72rem] leading-relaxed ${dark ? "text-white/45" : "text-forest-950/45"}`}>
         <Info size={12} className="shrink-0" />
         {data?.stale ? t.srcStale : t.srcLive}
       </p>

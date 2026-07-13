@@ -11,7 +11,7 @@ import { useLanguage } from "@/components/language-provider";
 const TR = {
   fr: {
     tagline: "La place de marché des lots agricoles conformes vérifiés.",
-    frontier: "AGRIVO Market fait le commerce des fèves conformes,jamais le financement ni le crédit.",
+    frontier: "AGRIVO Market fait le commerce des fèves conformes, jamais le financement ni le crédit.",
     demo: "Lots de démonstration dérivés de dossiers réels. Cours ICE réel mais différé. Aucune transaction financière n'a lieu sur cette version.",
     navTitle: "Marketplace",
     browse: "Parcourir les lots",
@@ -23,7 +23,7 @@ const TR = {
   },
   en: {
     tagline: "The marketplace of verified-compliant agricultural lots.",
-    frontier: "AGRIVO Market trades compliant beans,never financing or credit.",
+    frontier: "AGRIVO Market trades compliant beans, never financing or credit.",
     demo: "Demonstration lots derived from real files. Real but delayed ICE price. No financial transaction takes place on this version.",
     navTitle: "Marketplace",
     browse: "Browse lots",

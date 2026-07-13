@@ -1,19 +1,29 @@
 "use client";
 
+/**
+ * Accueil AGRIVO Market — v2.4 « signature hybride ».
+ *
+ * Héros : EXACTEMENT le fond animé de la page d'accueil du site (HeroBg : orbes mesh +
+ * grille masquée + grain) + glow curseur + mot rotatif ; à droite, le terminal glass du
+ * cours cacao. Le corps alterne sections claires (stats bento, vedettes, catalogue,
+ * confiance, timeline, origines, FAQ) et sombres (« Marché en direct », CTA final).
+ */
+
 import Link from "next/link";
-import { useMemo, useRef, useState } from "react";
-import { motion, useReducedMotion } from "framer-motion";
-import { Store, ShieldCheck, Handshake } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { motion, AnimatePresence, useReducedMotion, useScroll, useMotionValueEvent } from "framer-motion";
+import { Store, ChevronDown, ScanLine, Landmark, Activity } from "lucide-react";
 import { useLanguage } from "@/components/language-provider";
-import { StatNumber } from "@/components/ui/stat-number";
-import { Reveal } from "@/components/landing/reveal";
-import { PARCELLES } from "@/data/mock-parcelles";
-import { lotsMarche } from "@/data/mock-marketplace";
+import { HeroBg } from "@/components/landing/hero-bg";
+import { CursorGlow } from "@/components/ui/motion-primitives";
 import { MarketSearch } from "@/components/marketplace/market-search";
-import { CocoaChart } from "@/components/marketplace/cocoa-price";
+import { CocoaTerminal } from "@/components/marketplace/cocoa-terminal";
+import { MarketStats } from "@/components/marketplace/market-stats";
+import { MarketLive } from "@/components/marketplace/market-live";
 import { FeaturedLots } from "@/components/marketplace/featured-lots";
 import { MarketCatalog } from "@/components/marketplace/market-catalog";
 import { TrustSection } from "@/components/marketplace/trust-section";
+import { JourneyTimeline } from "@/components/marketplace/journey-timeline";
 import { OriginsMap } from "@/components/marketplace/origins-map";
 import { MarketFaq } from "@/components/marketplace/market-faq";
 import { FoundingSignup } from "@/components/marketplace/founding-signup";
@@ -23,27 +33,27 @@ const EASE = [0.16, 1, 0.3, 1] as const;
 
 const TR = {
   fr: {
-    title: "Le cacao conforme,\nvérifié à la source.",
+    line1: "Le cacao conforme,",
+    words: ["vérifié", "scellé", "tracé", "prouvé"],
+    line2: "à la source.",
     sub: "AGRIVO Market est la place de marché où l'exportateur publie ses lots déjà tracés et où l'acheteur premium n'achète que du conforme scellé. La confiance d'abord, le prix ensuite.",
     sell: "Vendre un lot",
-    statLots: "lots scellés", statTonnes: "tonnes conformes", statCoops: "coopératives", statRegions: "régions",
-    howEyebrow: "Comment ça marche",
-    steps: [
-      { Icon: Store, t: "L'exportateur publie", b: "Depuis un dossier de traçabilité déjà constitué (parcelle → conteneur), le vendeur met un lot en vente avec son prix indicatif." },
-      { Icon: ShieldCheck, t: "AGRIVO scelle", b: "Le lot n'est vendable que s'il porte le sceau : conformité, carte producteur, intégrité, dossier complet." },
-      { Icon: Handshake, t: "L'acheteur réserve en direct", b: "L'acheteur premium réserve le lot scellé ; AGRIVO prélève une commission sur la transaction, jamais sur le producteur." },
+    proofs: [
+      { Icon: Landmark, t: "RDUE · UE 2023/1115" },
+      { Icon: ScanLine, t: "Sceau AGRIVO double verrou" },
+      { Icon: Activity, t: "Cours ICE différé, source affichée" },
     ],
   },
   en: {
-    title: "Compliant cocoa,\nverified at the source.",
+    line1: "Compliant cocoa,",
+    words: ["verified", "sealed", "traced", "proven"],
+    line2: "at the source.",
     sub: "AGRIVO Market is the marketplace where exporters list already-traced lots and premium buyers only buy sealed-compliant. Trust first, price second.",
     sell: "Sell a lot",
-    statLots: "sealed lots", statTonnes: "compliant tonnes", statCoops: "cooperatives", statRegions: "regions",
-    howEyebrow: "How it works",
-    steps: [
-      { Icon: Store, t: "The exporter lists", b: "From an existing traceability file (plot → container), the seller lists a lot with an indicative price." },
-      { Icon: ShieldCheck, t: "AGRIVO seals", b: "A lot can only be sold if it carries the seal: compliance, producer card, integrity, complete file." },
-      { Icon: Handshake, t: "The buyer reserves directly", b: "The premium buyer reserves the sealed lot; AGRIVO takes a commission on the transaction, never on the producer." },
+    proofs: [
+      { Icon: Landmark, t: "EUDR · EU 2023/1115" },
+      { Icon: ScanLine, t: "AGRIVO double-lock seal" },
+      { Icon: Activity, t: "Delayed ICE price, source shown" },
     ],
   },
 } as const;
@@ -56,94 +66,102 @@ export default function MarketHomePage() {
   const catalogueRef = useRef<HTMLDivElement>(null);
   const [query, setQuery] = useState("");
 
-  const stats = useMemo(() => {
-    const lots = lotsMarche(PARCELLES);
-    const scelles = lots.filter((x) => x.sceau.statut === "verifie");
-    return {
-      lots: scelles.length,
-      tonnes: Math.round(scelles.reduce((s, x) => s + x.tonnage, 0)),
-      coops: new Set(lots.flatMap((x) => x.cooperatives)).size,
-      regions: new Set(lots.flatMap((x) => x.regions)).size,
-    };
-  }, []);
-
   const goCatalogue = (q: string) => {
     setQuery(q);
     requestAnimationFrame(() => catalogueRef.current?.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" }));
   };
 
-  const stat = [
-    { v: stats.lots, k: t.statLots },
-    { v: stats.tonnes, k: t.statTonnes },
-    { v: stats.coops, k: t.statCoops },
-    { v: stats.regions, k: t.statRegions },
-  ];
-
   return (
     <>
-      {/* ---------------------------------- HERO (fond vert + cacao) ---------------------------------- */}
-      <section className="relative overflow-hidden bg-forest-950 text-white">
-        <div aria-hidden className="absolute inset-0 bg-cover bg-center opacity-[0.22]" style={{ backgroundImage: "url('/filieres/cacao-v2.webp')" }} />
-        <div aria-hidden className="absolute inset-0 bg-gradient-to-br from-forest-950 via-forest-950/92 to-forest-900/80" />
-        <div aria-hidden className="glow-radial absolute -right-24 -top-16 h-[520px] w-[620px]" />
-        <div aria-hidden className="grain absolute inset-0 opacity-[0.06]" />
+      {/* -------------------- HÉROS signature (fond identique à l'accueil du site) -------------------- */}
+      <section className="relative isolate overflow-hidden bg-forest-950 text-white">
+        <HeroBg />
 
-        <div className={`relative grid items-center gap-10 py-16 md:py-20 lg:grid-cols-[1.05fr_0.95fr] lg:gap-14 ${WRAP}`}>
-          {/* Colonne gauche : titre + recherche + stats */}
-          <div>
-            <motion.h1
-              initial={reduce ? false : { opacity: 0, y: 22 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, ease: EASE }}
-              className="max-w-2xl whitespace-pre-line font-display text-4xl font-semibold leading-[1.04] tracking-tight md:text-6xl"
-            >
-              {t.title}
-            </motion.h1>
-            <motion.p
-              initial={reduce ? false : { opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 0.08, ease: EASE }}
-              className="mt-5 max-w-xl text-base leading-relaxed text-white/70 md:text-lg"
-            >
-              {t.sub}
-            </motion.p>
+        <CursorGlow className="relative z-10">
+          <div className={`grid items-center gap-12 pb-20 pt-14 md:pt-20 lg:grid-cols-[1.1fr_0.9fr] lg:gap-14 lg:pb-24 ${WRAP}`}>
+            {/* Colonne gauche : discours + recherche */}
+            <div>
+              <motion.h1
+                initial={reduce ? false : { opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.65, ease: EASE }}
+                className="font-brand-serif max-w-2xl text-4xl leading-[1.06] tracking-[-0.03em] md:text-6xl"
+                style={{ fontWeight: 700 }}
+              >
+                <span className="block">{t.line1}</span>
+                <span className="block">
+                  <RotatingWord reduced={reduce ?? false} words={t.words} /> {t.line2}
+                </span>
+              </motion.h1>
 
+              <motion.p
+                initial={reduce ? false : { opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.65, delay: 0.08, ease: EASE }}
+                className="mt-5 max-w-xl text-base leading-relaxed text-white/70 md:text-lg"
+              >
+                {t.sub}
+              </motion.p>
+
+              <motion.div
+                initial={reduce ? false : { opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.65, delay: 0.16, ease: EASE }}
+                className="mt-8 flex flex-col items-start gap-4"
+              >
+                <MarketSearch onSubmit={goCatalogue} tone="dark" />
+                <Link
+                  href="/marketplace/vendre"
+                  className="inline-flex items-center gap-2 rounded-full border border-white/20 px-5 py-2.5 text-sm font-semibold text-white transition hover:border-white/40 hover:bg-white/10"
+                >
+                  <Store size={15} /> {t.sell}
+                </Link>
+              </motion.div>
+
+              {/* Micro-preuves */}
+              <motion.ul
+                initial={reduce ? false : { opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.65, delay: 0.24, ease: EASE }}
+                className="mt-9 flex flex-wrap items-center gap-2"
+              >
+                {t.proofs.map((p) => (
+                  <li key={p.t} className="inline-flex items-center gap-1.5 rounded-full border border-white/12 bg-white/[0.06] px-3 py-1.5 text-[0.7rem] font-medium text-white/70">
+                    <p.Icon size={12} className="text-green-signal" /> {p.t}
+                  </li>
+                ))}
+              </motion.ul>
+            </div>
+
+            {/* Colonne droite : terminal du cours cacao (flottaison douce) */}
             <motion.div
-              initial={reduce ? false : { opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 0.16, ease: EASE }}
-              className="mt-8 flex flex-col items-start gap-4"
+              initial={reduce ? false : { opacity: 0, y: 26, scale: 0.98 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              transition={{ duration: 0.75, delay: 0.18, ease: EASE }}
+              className="relative w-full"
             >
-              <MarketSearch onSubmit={goCatalogue} />
-              <Link href="/marketplace/vendre" className="inline-flex items-center gap-2 rounded-full border border-white/20 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-white/10">
-                <Store size={15} /> {t.sell}
-              </Link>
+              <div aria-hidden className="pointer-events-none absolute -inset-6 -z-10 rounded-[2.4rem] bg-green-signal/20 blur-3xl" />
+              <motion.div
+                animate={reduce ? undefined : { y: [0, -8, 0] }}
+                transition={reduce ? undefined : { duration: 6, repeat: Infinity, ease: "easeInOut" }}
+              >
+                <CocoaTerminal />
+              </motion.div>
             </motion.div>
-
-            <dl className="mt-12 grid max-w-lg grid-cols-2 gap-x-8 gap-y-6 border-t border-white/12 pt-8 sm:grid-cols-4">
-              {stat.map((s) => (
-                <div key={s.k}>
-                  <StatNumber value={s.v} className="num text-3xl font-bold text-white" />
-                  <dd className="mt-1 text-[0.68rem] uppercase tracking-wide text-white/45">{s.k}</dd>
-                </div>
-              ))}
-            </dl>
           </div>
+        </CursorGlow>
 
-          {/* Colonne droite : aperçu du cours du cacao */}
-          <motion.div
-            initial={reduce ? false : { opacity: 0, y: 26, scale: 0.98 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            transition={{ duration: 0.8, delay: 0.2, ease: EASE }}
-            className="w-full"
-          >
-            <CocoaChart className="shadow-[0_40px_80px_-40px_rgba(0,0,0,0.7)]" />
-          </motion.div>
-        </div>
+        <ScrollHint reduced={reduce ?? false} />
       </section>
+
+      {/* Bandeau stats bento */}
+      <MarketStats wrap={WRAP} />
 
       {/* Lots en vedette */}
       <FeaturedLots wrap={WRAP} />
+
+      {/* Marché en direct (section sombre, grand graphique) */}
+      <MarketLive wrap={WRAP} />
 
       {/* Catalogue complet (recherche pilotée par le héros) */}
       <div ref={catalogueRef}>
@@ -153,22 +171,8 @@ export default function MarketHomePage() {
       {/* Confiance : double verrou + méthodes (section unifiée) */}
       <TrustSection />
 
-      {/* Comment ça marche */}
-      <section className={`${WRAP} py-20`}>
-        <Reveal><span className="eyebrow text-forest-950/45">{t.howEyebrow}</span></Reveal>
-        <div className="mt-8 grid gap-6 md:grid-cols-3">
-          {t.steps.map((s, i) => (
-            <Reveal key={s.t} delay={i * 0.08}>
-              <div className="relative h-full overflow-hidden rounded-3xl border border-black/[0.06] bg-white p-7 shadow-sm transition-all hover:-translate-y-1 hover:shadow-[0_24px_50px_-30px_rgba(10,31,20,0.5)]">
-                <span className="num text-sm font-bold text-amber-cacao">0{i + 1}</span>
-                <s.Icon size={24} className="mt-3 text-green-signal" />
-                <h3 className="mt-3 font-display text-lg font-semibold text-forest-950">{s.t}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-forest-950/60">{s.b}</p>
-              </div>
-            </Reveal>
-          ))}
-        </div>
-      </section>
+      {/* Le parcours d'un lot (timeline animée) */}
+      <JourneyTimeline wrap={WRAP} />
 
       {/* Carte des origines */}
       <OriginsMap wrap={WRAP} />
@@ -176,8 +180,62 @@ export default function MarketHomePage() {
       {/* FAQ */}
       <MarketFaq />
 
-      {/* Membres fondateurs */}
+      {/* Membres fondateurs (CTA final sombre) */}
       <FoundingSignup wrap={WRAP} />
     </>
+  );
+}
+
+/* ------------------- Mot rotatif (même effet que l'accueil du site) ------------------- */
+function RotatingWord({ reduced, words }: { reduced: boolean; words: readonly string[] }) {
+  const [i, setI] = useState(0);
+  useEffect(() => {
+    if (reduced) return;
+    const timer = setInterval(() => setI((p) => (p + 1) % words.length), 2200);
+    return () => clearInterval(timer);
+  }, [reduced, words.length]);
+
+  if (reduced) return <span className="text-green-signal">{words[0]}</span>;
+
+  return (
+    <span className="relative inline-flex align-baseline">
+      <AnimatePresence mode="wait" initial={false}>
+        <motion.span
+          key={words[i]}
+          initial={{ y: 20, opacity: 0, filter: "blur(8px)" }}
+          animate={{ y: 0, opacity: 1, filter: "blur(0px)" }}
+          exit={{ y: -20, opacity: 0, filter: "blur(8px)" }}
+          transition={{ duration: 0.42, ease: EASE }}
+          className="text-green-signal"
+        >
+          {words[i]}
+        </motion.span>
+      </AnimatePresence>
+    </span>
+  );
+}
+
+/* ------------------- Indicateur de scroll (même effet que l'accueil) ------------------- */
+function ScrollHint({ reduced }: { reduced: boolean }) {
+  const { scrollY } = useScroll();
+  const [hidden, setHidden] = useState(false);
+  useMotionValueEvent(scrollY, "change", (v) => setHidden(v > 100));
+
+  return (
+    <motion.div
+      aria-hidden
+      initial={{ opacity: 0 }}
+      animate={{ opacity: hidden ? 0 : 1 }}
+      transition={{ duration: 0.4 }}
+      className="pointer-events-none absolute bottom-5 left-1/2 z-10 -translate-x-1/2"
+    >
+      <motion.div
+        animate={reduced ? undefined : { y: [0, 6, 0] }}
+        transition={reduced ? undefined : { duration: 2, repeat: Infinity, ease: "easeInOut" }}
+        className="text-white/40"
+      >
+        <ChevronDown size={22} />
+      </motion.div>
+    </motion.div>
   );
 }

@@ -4,8 +4,20 @@
 > Il condense la charte de marque, les règles de contenu, les faits produit et l'avancement.
 > En cas de doute, ce fichier prime sur mes souvenirs. Il reflète l'état au dernier prompt traité.
 
-> 🟢 **ÉTAT ACTUEL — v2.3.0, 13 juillet 2026 (CE BLOC FAIT FOI sur toute mention contraire
+> 🟢 **ÉTAT ACTUEL — v2.4.0, 13 juillet 2026 (CE BLOC FAIT FOI sur toute mention contraire
 > plus bas, qui relève de l'historique de construction).**
+> - **AGRIVO MARKET v2.4 (13/07) — refonte « SIGNATURE HYBRIDE »** : le héros de `/marketplace`,
+>   de chaque **page de lot** et de `/vendre` reprend **EXACTEMENT le fond animé de l'accueil du
+>   site** (`components/landing/hero-bg.tsx` : orbes mesh + grille masquée + grain) ; corps en
+>   alternance clair/sombre. Héros : mot rotatif + `CursorGlow` + recherche glass
+>   (`MarketSearch tone="dark"`) + **terminal cacao glass** (`cocoa-terminal.tsx` : prix géant,
+>   sparkline fluide `Sparkline`, toggle, FCFA/t). Sections : **bandeau stats bento**
+>   (`market-stats.tsx`) · vedettes · **« Marché en direct » sombre** (`market-live.tsx`, ancre
+>   `#marche`, `CocoaChart tone="dark"` + prime/décote des lots) · catalogue (toolbar collante,
+>   **cartes photo immersive** `lot-card.tsx` avec image filière + badges glass) · confiance ·
+>   **timeline animée** (`journey-timeline.tsx`) · origines · FAQ · **CTA fondateurs sombre**.
+>   **Header scroll-aware** (transparent sombre au sommet → ivoire flouté) ; **ticker sombre glass**
+>   collant en bas.
 > - **REPOSITIONNEMENT v2 (13/07, phase investisseur)** : la **traçabilité est le produit**, la
 >   conformité + le **sceau AGRIVO** en sont les livrables ; l'**endgame = la MARKETPLACE du cacao
 >   conforme** (l'exportateur publie ses lots vérifiés, l'acheteur premium achète du conforme, AGRIVO
@@ -400,6 +412,43 @@ variables CSS dans `app/globals.css`.
 ---
 
 ## 📓 Journal de build (le plus récent en haut)
+
+### Session 32 — 2026-07-13 — v2.4.0 : AGRIVO MARKET refonte « signature hybride »
+- 🎯 **Retour Anael sur la v2.3** : « vraiment basique », le chart du héros « ne marche même pas
+  bien », **mettre le MÊME fond de héros que la page d'accueil du site** (même effet + animation),
+  cartes basiques, **refonte totale** (éléments + design), recherche en ligne + questions.
+  **Décisions AskUserQuestion** : ① corps **hybride signature** (héros/marché/CTA sombres, reste
+  clair) ② chart héros → **panneau glass terminal** + grand chart dans une section dédiée ③ cartes
+  **photo immersive** ④ tous les ajouts (bento, marché en direct, timeline, mot rotatif + glow
+  curseur) + initiatives.
+- 🏗️ **Fait** :
+  - **Héros signature partagé** : `HeroBg` (orbes mesh + grille + grain de l'accueil) sur
+    `/marketplace`, `lot-detail.tsx` et `/vendre` (héros vendre passé au sombre, indispensable au
+    header transparent). Mot rotatif local (AnimatePresence y+blur), `CursorGlow`, chips
+    micro-preuves, `ScrollHint`.
+  - **`cocoa-terminal.tsx`** (glass `liquid-glass-strong`) : prix géant `.num`, variation sur la
+    plage, **`Sparkline`** (nouveau, exporté par `cocoa-price.tsx` : `preserveAspectRatio="none"`,
+    hauteur fixe h-24/28, halo + tracé animé) → fin du SVG 3:1 écrasé du héros v2.3 ; toggle
+    1J/1S/1M/1A (`useCocoa` exporté), conversion FCFA/t (FX 605), repli « dernier cours connu ».
+  - **`market-live.tsx`** (sombre, `#marche`) : `CocoaChart` avec **nouvelle prop
+    `tone="dark"`** (glass, guides white/10, tooltip sombre) + panneau prime/décote par lot cacao
+    (`VsIceChip`), note d'honnêteté FX.
+  - **`market-stats.tsx`** : bandeau bento clair (4 tuiles `StatNumber` + tuile spot FCFA/kg via
+    `useCocoaSpot`), stagger + hover lift. Les stats quittent le héros.
+  - **`lot-card.tsx` réécrite** : photo filière `next/image fill` (webp `config/filieres.ts`),
+    zoom lent 700 ms au survol, voile gradient + teinte filière, pills glass (filière, sceau),
+    régions sur la photo, corps stats inchangé, CTA révélé.
+  - **`journey-timeline.tsx`** : remplace « Comment ça marche » ; ligne qui se dessine
+    (`useScroll`+`scaleY`), 4 étapes alternées (ajout « Le lot embarque, la preuve suit »),
+    nœuds qui s'allument. Reduced-motion : ligne pleine.
+  - **Chrome** : `market-header.tsx` **scroll-aware** (transparent sombre < 24 px → ivoire flouté ;
+    wordmark/nav/CTA/burger adaptatifs, menu mobile force le clair) ; `activity-ticker.tsx` sombre
+    glass (`bg-forest-950/90`) ; `founding-signup.tsx` **CTA final sombre** (orbes mesh + form
+    glass) ; toolbar catalogue **collante** (`sticky top-16`).
+  - Ponctuation : virgules collées (héritage purge « — ») corrigées dans lot-detail, vendre,
+    market-footer, lot-pdf, market-catalog, cocoa-price.
+- ✅ **GATES** : `tsc` ✓ · `eslint` 0 erreur (1 warning connu react-pdf) · `next build` ✓ ·
+  **148 tests** · smoke SSR. Version 2.4.0. Push/deploy = décision Anael.
 
 ### Session 31 — 2026-07-13 — v2.3.0 : AGRIVO MARKET finition — héros vert, pleine largeur, ruban collant
 - 🎯 **Retours Anael** : pleine largeur (bords vides gênants) ; **héros vert** (même fond que

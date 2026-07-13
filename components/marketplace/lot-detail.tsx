@@ -17,6 +17,7 @@ import {
 } from "@/data/mock-marketplace";
 import { SceauAgrivo } from "@/components/marketplace/sceau-agrivo";
 import { VsIceChip, useCocoaSpot } from "@/components/marketplace/cocoa-price";
+import { HeroBg } from "@/components/landing/hero-bg";
 
 const LotMap = dynamic(() => import("@/components/exportateur/portfolio-map"), {
   ssr: false,
@@ -32,12 +33,12 @@ const TR = {
     mapTitle: "Parcelles d'origine", mapSub: "Chaque polygone est une parcelle géolocalisée et évaluée par satellite.",
     dossierTitle: "Dossier de confiance", dossierSub: "Le double verrou, parcelle par parcelle : carte producteur (État) + polygone hors-déforestation.",
     farmer: "Producteur", card: "Carte producteur", cert: "Certificat", area: "Superficie", status: "Statut",
-    controlTitle: "Contrôle d'intégrité (pré-embarquement)", controlSub: "Faits recalculés depuis les données du lot,jamais un score inventé.",
+    controlTitle: "Contrôle d'intégrité (pré-embarquement)", controlSub: "Faits recalculés depuis les données du lot, jamais un score inventé.",
     logisticsTitle: "Origine & logistique", coops: "Coopératives", regions: "Régions", sh: "Code SH",
     txTitle: "Transaction", price: "Prix indicatif", tonnage: "Tonnage", value: "Valeur du lot",
     commission: "Commission AGRIVO estimée", commissionNote: "Take-rate 1–3 % selon le lot · estimation à 2 %. La commission porte sur la transaction, jamais sur le producteur.",
     reserve: "Réserver ce lot", reserved: "Lot déjà réservé", reservedBy: "Réservé par",
-    prep: "Sceau en préparation,ce lot n'est pas réservable tant que le double verrou n'est pas vérifié.",
+    prep: "Sceau en préparation : ce lot n'est pas réservable tant que le double verrou n'est pas vérifié.",
     loginTitle: "Connectez-vous pour réserver", loginBody: "Parcourir la marketplace est libre. La réservation d'un lot demande un compte, pour vous mettre en relation avec l'exportateur.",
     login: "Se connecter", createAccount: "Créer un compte",
     doneTitle: "Réservation enregistrée", doneBody: "AGRIVO vous met en relation avec l'exportateur pour finaliser la transaction en direct. Aucun paiement n'a lieu sur la plateforme.",
@@ -50,12 +51,12 @@ const TR = {
     mapTitle: "Plots of origin", mapSub: "Each polygon is a geolocated plot assessed by satellite.",
     dossierTitle: "Trust dossier", dossierSub: "The double lock, plot by plot: producer card (State) + deforestation-free polygon.",
     farmer: "Farmer", card: "Producer card", cert: "Certificate", area: "Area", status: "Status",
-    controlTitle: "Integrity control (pre-shipment)", controlSub: "Facts recomputed from the lot's data,never an invented score.",
+    controlTitle: "Integrity control (pre-shipment)", controlSub: "Facts recomputed from the lot's data, never an invented score.",
     logisticsTitle: "Origin & logistics", coops: "Cooperatives", regions: "Regions", sh: "HS code",
     txTitle: "Transaction", price: "Indicative price", tonnage: "Tonnage", value: "Lot value",
     commission: "Estimated AGRIVO commission", commissionNote: "Take-rate 1–3% per lot · estimate at 2%. The commission applies to the transaction, never to the producer.",
     reserve: "Reserve this lot", reserved: "Lot already reserved", reservedBy: "Reserved by",
-    prep: "Seal in preparation,this lot cannot be reserved until the double lock is verified.",
+    prep: "Seal in preparation: this lot cannot be reserved until the double lock is verified.",
     loginTitle: "Log in to reserve", loginBody: "Browsing the marketplace is free. Reserving a lot requires an account, to connect you with the exporter.",
     login: "Log in", createAccount: "Create account",
     doneTitle: "Reservation recorded", doneBody: "AGRIVO connects you with the exporter to finalise the transaction directly. No payment takes place on the platform.",
@@ -108,11 +109,9 @@ export function LotDetail({ refLot }: { refLot: string }) {
 
   return (
     <>
-      {/* Héros vert (même fond que l'accueil) */}
-      <section className="relative overflow-hidden bg-forest-950 text-white">
-        <div aria-hidden className="absolute inset-0 bg-cover bg-center opacity-[0.20]" style={{ backgroundImage: "url('/filieres/cacao-v2.webp')" }} />
-        <div aria-hidden className="absolute inset-0 bg-gradient-to-br from-forest-950 via-forest-950/92 to-forest-900/80" />
-        <div aria-hidden className="glow-radial absolute -right-24 -top-16 h-[420px] w-[560px]" />
+      {/* Héros signature (exactement le fond animé de l'accueil du site) */}
+      <section className="relative isolate overflow-hidden bg-forest-950 text-white">
+        <HeroBg />
         <div className={`relative ${WRAP} py-10 md:py-14`}>
           <Link href="/marketplace" className="inline-flex items-center gap-2 text-sm font-medium text-white/60 transition hover:text-white">
             <ArrowLeft size={16} /> {t.back}

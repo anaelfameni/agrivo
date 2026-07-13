@@ -182,8 +182,8 @@ function LotDocument({
         <View style={styles.note}>
           <Text>
             {en
-              ? "AGRIVO Market lists compliant lots and connects buyers and exporters. This document reflects an assessment from public satellite data (Whisp method, FAO) and does not constitute a guarantee, nor does it replace the operator's due diligence statement (DDS) under Regulation (EU) 2023/1115. AGRIVO trades compliant beans,never financing or credit."
-              : "AGRIVO Market référence des lots conformes et met en relation acheteurs et exportateurs. Ce document reflète une évaluation issue de données satellites publiques (méthode Whisp, FAO) ; il ne constitue pas une garantie et ne remplace pas la déclaration de diligence raisonnée (DDS) de l'opérateur au sens du règlement (UE) 2023/1115. AGRIVO fait le commerce des fèves conformes,jamais le financement ni le crédit."}
+              ? "AGRIVO Market lists compliant lots and connects buyers and exporters. This document reflects an assessment from public satellite data (Whisp method, FAO) and does not constitute a guarantee, nor does it replace the operator's due diligence statement (DDS) under Regulation (EU) 2023/1115. AGRIVO trades compliant beans, never financing or credit."
+              : "AGRIVO Market référence des lots conformes et met en relation acheteurs et exportateurs. Ce document reflète une évaluation issue de données satellites publiques (méthode Whisp, FAO) ; il ne constitue pas une garantie et ne remplace pas la déclaration de diligence raisonnée (DDS) de l'opérateur au sens du règlement (UE) 2023/1115. AGRIVO fait le commerce des fèves conformes, jamais le financement ni le crédit."}
           </Text>
         </View>
 

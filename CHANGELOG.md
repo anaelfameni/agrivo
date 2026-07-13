@@ -3,6 +3,39 @@
 Versioning sémantique (MAJOR.MINOR.PATCH). Chaque release liste ce qui est ajouté, corrigé et
 vérifié, conformément à l'étape 8 du pipeline « Du besoin à la Release ».
 
+## v2.4.0 — 2026-07-13 — AGRIVO Market : refonte « signature hybride » (héros de l'accueil, glass, bento, timeline)
+
+Refonte totale demandée par Anael (« vraiment basique ») : décisions verrouillées par
+AskUserQuestion (thème hybride, terminal glass, cartes photo, tous les ajouts).
+
+### Changé
+- **Héros = EXACTEMENT le fond animé de l'accueil du site** (`HeroBg` réutilisé : 3 orbes mesh
+  animés + grille masquée + grain) sur `/marketplace`, **chaque page de lot** et `/vendre`.
+  Dans le héros : **mot rotatif** (« vérifié / scellé / tracé / prouvé »), glow curseur
+  (`CursorGlow`), recherche en version **glass**, chips micro-preuves, indicateur de scroll.
+- **Terminal cacao glass** (`cocoa-terminal.tsx`) à droite du héros : prix géant, variation
+  colorée sur la plage, **sparkline fluide** (fin du ratio 3:1 écrasé,
+  `preserveAspectRatio="none"` + hauteur fixe), toggle 1J/1S/1M/1A, conversion FCFA/t (FX 605
+  affiché), flottaison douce. Toujours « différé », jamais « temps réel ».
+- **Section sombre « Marché en direct »** (`market-live.tsx`, ancre `#marche`) : le grand
+  graphique ICE interactif en **variante glass sombre** (`CocoaChart tone="dark"`) + panneau
+  « ce que ça change pour un lot » (prime/décote de chaque lot cacao vs ICE).
+- **Bandeau stats bento** (`market-stats.tsx`) sous le héros : tuiles compartimentées animées
+  (lots scellés, tonnes, coops, régions) + tuile spot cacao convertie en FCFA/kg.
+- **Cartes de lots photo immersive** : macro de la filière en tête (`next/image`, zoom lent au
+  survol), badges glass (filière + sceau) sur la photo, régions sur voile sombre, stats en clair.
+- **Timeline animée « Le parcours d'un lot »** (`journey-timeline.tsx`) : ligne qui se dessine au
+  scroll, 4 étapes alternées qui s'allument (Sourcing → Sceau → Réservation → Embarquement).
+- **Header scroll-aware** : transparent sur le héros sombre au sommet, ivoire flouté au scroll.
+- **Ruban d'activité sombre glass** (collant en bas) et **CTA final « membres fondateurs » sombre**
+  (orbes mesh + formulaire glass) pour fermer la page sur la signature.
+- **Barre de filtres du catalogue collante** sous l'en-tête ; page `/vendre` passée au héros
+  signature ; derniers artefacts de ponctuation purgés (virgules collées).
+
+### Vérifié
+- `tsc` ✓ · `eslint` 0 erreur · `next build` ✓ · **148 tests** verts · smoke SSR (héros mesh,
+  terminal, #marche, cartes photo, timeline, ticker sombre, pages lot/vendre).
+
 ## v2.3.0 — 2026-07-13 — AGRIVO Market : héros vert, pleine largeur, ruban collant & finition premium
 
 Passe de finition demandée par Anael sur la vitrine.

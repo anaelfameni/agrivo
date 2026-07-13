@@ -11,16 +11,17 @@ import { LotCard } from "@/components/marketplace/lot-card";
 import { useCocoaSpot } from "@/components/marketplace/cocoa-price";
 
 /**
- * Catalogue vivant de AGRIVO Market (thème clair),l'acheteur est le héros. Grille filtrable
- * (filière · région · sceau · recherche) + tri, entrée en cascade (stagger). Recherche pilotable
- * depuis le héros via les props contrôlées `query`/`onQueryChange`.
+ * Catalogue vivant de AGRIVO Market (thème clair) : l'acheteur est le héros. Grille filtrable
+ * (filière · région · sceau · recherche) + tri, entrée en cascade (stagger), barre de filtres
+ * COLLANTE sous l'en-tête pendant qu'on parcourt la grille. Recherche pilotable depuis le héros
+ * via les props contrôlées `query`/`onQueryChange`.
  */
 type SortKey = "pertinence" | "prix-asc" | "prix-desc" | "tonnage";
 
 const TR = {
   fr: {
     title: "Lots disponibles",
-    lead: "Chaque lot est dérivé d'un dossier de traçabilité réel. Le sceau AGRIVO est recalculé à l'affichage,jamais affirmé sans preuve.",
+    lead: "Chaque lot est dérivé d'un dossier de traçabilité réel. Le sceau AGRIVO est recalculé à l'affichage, jamais affirmé sans preuve.",
     search: "Rechercher un lot, une coopérative, une région…",
     all: "Toutes filières", allRegions: "Toutes régions", sealedOnly: "Scellés uniquement",
     results: (n: number) => `${n} lot${n > 1 ? "s" : ""}`,
@@ -29,7 +30,7 @@ const TR = {
   },
   en: {
     title: "Available lots",
-    lead: "Every lot is derived from a real traceability file. The AGRIVO seal is recomputed on display,never asserted without proof.",
+    lead: "Every lot is derived from a real traceability file. The AGRIVO seal is recomputed on display, never asserted without proof.",
     search: "Search a lot, a cooperative, a region…",
     all: "All commodities", allRegions: "All regions", sealedOnly: "Sealed only",
     results: (n: number) => `${n} lot${n > 1 ? "s" : ""}`,
@@ -106,7 +107,8 @@ export function MarketCatalog({
         </span>
       </div>
 
-      <div className="mt-8 flex flex-col gap-4">
+      {/* Toolbar collante : reste visible pendant le parcours de la grille */}
+      <div className="sticky top-16 z-30 mt-8 flex flex-col gap-4 rounded-2xl border border-black/[0.05] bg-ivory/90 p-3 backdrop-blur-md md:p-4">
         <div className="relative">
           <Search size={16} className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-forest-950/35" />
           <input

@@ -7,6 +7,7 @@ import {
 import { useLanguage } from "@/components/language-provider";
 import { useAuth } from "@/components/auth-provider";
 import { Reveal } from "@/components/landing/reveal";
+import { HeroBg } from "@/components/landing/hero-bg";
 import { TAUX_COMMISSION_MIN, TAUX_COMMISSION_MAX } from "@/data/mock-marketplace";
 
 const pct = (t: number) => `${Math.round(t * 100)} %`;
@@ -14,12 +15,12 @@ const pct = (t: number) => `${Math.round(t * 100)} %`;
 const TR = {
   fr: {
     title: "Vendez vos lots conformes,\nscellés, en direct.",
-    sub: "Publiez sur AGRIVO Market les lots que vous avez déjà tracés. Touchez des acheteurs premium qui paient la conformité,sans intermédiaire opaque, sans céder votre donnée.",
+    sub: "Publiez sur AGRIVO Market les lots que vous avez déjà tracés. Touchez des acheteurs premium qui paient la conformité, sans intermédiaire opaque, sans céder votre donnée.",
     cockpit: "Ouvrir « Mes lots »", browse: "Voir la marketplace",
     whyTitle: "Pourquoi vendre sur AGRIVO Market",
     why: [
       { Icon: TrendingUp, t: "Valorisez la conformité", b: "Le sceau AGRIVO transforme votre travail de traçabilité en argument commercial : un lot scellé se distingue et se négocie mieux." },
-      { Icon: Handshake, t: "Vendez en direct", b: "Mise en relation directe avec l'acheteur premium. AGRIVO fait le commerce des fèves,jamais le financement ni le crédit." },
+      { Icon: Handshake, t: "Vendez en direct", b: "Mise en relation directe avec l'acheteur premium. AGRIVO fait le commerce des fèves, jamais le financement ni le crédit." },
       { Icon: Database, t: "Gardez votre donnée", b: "Vous restez propriétaire de votre registre vérifié. Pas de désintermédiation par des data-brokers étrangers." },
     ],
     howTitle: "Publier un lot en 3 étapes",
@@ -29,19 +30,19 @@ const TR = {
       { Icon: Store, t: "Publiez sur le marché", b: "Un lot scellé devient visible des acheteurs. Vous fixez le prix indicatif ; vous retirez le lot quand vous voulez." },
     ],
     feeTitle: "Un modèle simple et aligné",
-    feeBody: `AGRIVO prélève une commission de ${pct(TAUX_COMMISSION_MIN)} à ${pct(TAUX_COMMISSION_MAX)} sur la transaction,uniquement quand la vente se conclut. Le producteur ne paie jamais.`,
+    feeBody: `AGRIVO prélève une commission de ${pct(TAUX_COMMISSION_MIN)} à ${pct(TAUX_COMMISSION_MAX)} sur la transaction, uniquement quand la vente se conclut. Le producteur ne paie jamais.`,
     ctaTitle: "Prêt à publier votre premier lot ?",
     ctaSub: "L'espace « Mes lots » vit dans votre tableau de bord exportateur.",
     cta: "Accéder à mon espace",
   },
   en: {
     title: "Sell your compliant lots,\nsealed, directly.",
-    sub: "List on AGRIVO Market the lots you have already traced. Reach premium buyers who pay for compliance,without opaque middlemen, without giving up your data.",
+    sub: "List on AGRIVO Market the lots you have already traced. Reach premium buyers who pay for compliance, without opaque middlemen, without giving up your data.",
     cockpit: "Open “My lots”", browse: "See the marketplace",
     whyTitle: "Why sell on AGRIVO Market",
     why: [
       { Icon: TrendingUp, t: "Monetise compliance", b: "The AGRIVO seal turns your traceability work into a selling point: a sealed lot stands out and negotiates better." },
-      { Icon: Handshake, t: "Sell directly", b: "Direct connection with the premium buyer. AGRIVO trades beans,never financing or credit." },
+      { Icon: Handshake, t: "Sell directly", b: "Direct connection with the premium buyer. AGRIVO trades beans, never financing or credit." },
       { Icon: Database, t: "Keep your data", b: "You remain the owner of your verified registry. No disintermediation by foreign data-brokers." },
     ],
     howTitle: "List a lot in 3 steps",
@@ -51,7 +52,7 @@ const TR = {
       { Icon: Store, t: "List on the market", b: "A sealed lot becomes visible to buyers. You set the indicative price; you remove the lot whenever you want." },
     ],
     feeTitle: "A simple, aligned model",
-    feeBody: `AGRIVO takes a ${pct(TAUX_COMMISSION_MIN)}–${pct(TAUX_COMMISSION_MAX)} commission on the transaction,only when the sale closes. The producer never pays.`,
+    feeBody: `AGRIVO takes a ${pct(TAUX_COMMISSION_MIN)} to ${pct(TAUX_COMMISSION_MAX)} commission on the transaction, only when the sale closes. The producer never pays.`,
     ctaTitle: "Ready to list your first lot?",
     ctaSub: "The “My lots” space lives in your exporter dashboard.",
     cta: "Go to my space",
@@ -67,16 +68,17 @@ export default function VendrePage() {
 
   return (
     <>
-      <section className="relative overflow-hidden border-b border-black/[0.06] bg-white">
-        <div aria-hidden className="glow-radial absolute inset-x-0 top-0 h-[360px] opacity-70" />
-        <div className="relative mx-auto max-w-7xl px-5 pb-14 pt-16 md:px-8 md:pb-16 md:pt-24">
-          <h1 className="max-w-3xl whitespace-pre-line font-display text-4xl font-semibold leading-[1.06] tracking-tight text-forest-950 md:text-5xl">{t.title}</h1>
-          <p className="mt-6 max-w-2xl text-base leading-relaxed text-forest-950/65">{t.sub}</p>
+      {/* Héros signature (exactement le fond animé de l'accueil du site) */}
+      <section className="relative isolate overflow-hidden bg-forest-950 text-white">
+        <HeroBg />
+        <div className="relative mx-auto max-w-7xl px-5 pb-16 pt-14 md:px-8 md:pb-20 md:pt-20">
+          <h1 className="font-brand-serif max-w-3xl whitespace-pre-line text-4xl leading-[1.06] tracking-[-0.03em] md:text-5xl" style={{ fontWeight: 700 }}>{t.title}</h1>
+          <p className="mt-6 max-w-2xl text-base leading-relaxed text-white/70">{t.sub}</p>
           <div className="mt-9 flex flex-wrap items-center gap-3">
-            <Link href={cockpitHref} className="inline-flex items-center gap-2 rounded-full bg-green-signal px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-green-signal/20 transition hover:bg-green-signal/90">
+            <Link href={cockpitHref} className="inline-flex items-center gap-2 rounded-full bg-green-signal px-6 py-3 text-sm font-semibold text-white shadow-[0_14px_44px_-12px_rgba(22,163,74,0.85)] transition hover:brightness-110">
               <Store size={16} /> {t.cockpit}
             </Link>
-            <Link href="/marketplace" className="inline-flex items-center gap-2 rounded-full border border-black/10 px-6 py-3 text-sm font-semibold text-forest-950 transition hover:bg-black/[0.03]">
+            <Link href="/marketplace" className="inline-flex items-center gap-2 rounded-full border border-white/20 px-6 py-3 text-sm font-semibold text-white transition hover:border-white/40 hover:bg-white/10">
               {t.browse} <ArrowRight size={16} />
             </Link>
           </div>
