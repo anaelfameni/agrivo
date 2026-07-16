@@ -14,8 +14,8 @@ const QA: { q: { fr: string; en: string }; a: { fr: string; en: string } }[] = [
   {
     q: { fr: "Suivez-vous physiquement les camions et les sacs ?", en: "Do you physically track trucks and bags?" },
     a: {
-      fr: "Non, et c'est un choix. Agrivo assure la traçabilité DOCUMENTAIRE de la parcelle au conteneur : chaque expédition est composée exclusivement de parcelles évaluées « Conforme », ses volumes sont réconciliés parcelle par parcelle, et son dossier (GeoJSON des parcelles d'origine, prêt pour TRACES NT) est vérifiable par QR code. Les jalons — départ coopérative, port, navire, arrivée UE — sont déclarés à chaque étape par vos équipes. Le suivi physique des sacs relève du Système National de Traçabilité : Agrivo s'y adosse, il ne le remplace pas.",
-      en: "No, by design. Agrivo provides DOCUMENTARY traceability from plot to container: every shipment is composed exclusively of plots assessed \"Compliant\", its volumes are reconciled plot by plot, and its file (GeoJSON of the plots of origin, ready for TRACES NT) is verifiable by QR code. Milestones — cooperative departure, port, vessel, EU arrival — are declared at each step by your teams. Physical bag tracking belongs to the National Traceability System: Agrivo builds on it, it does not replace it.",
+      fr: "Non, et c'est un choix. Agrivo assure la traçabilité DOCUMENTAIRE de la parcelle au conteneur : chaque expédition est composée exclusivement de parcelles évaluées « Conforme », ses volumes sont réconciliés parcelle par parcelle, et son dossier (GeoJSON des parcelles d'origine, prêt pour TRACES NT) est vérifiable par QR code. Les jalons, départ coopérative, port, navire, arrivée UE, sont déclarés à chaque étape par vos équipes. Le suivi physique des sacs relève du Système National de Traçabilité : Agrivo s'y adosse, il ne le remplace pas.",
+      en: "No, by design. Agrivo provides DOCUMENTARY traceability from plot to container: every shipment is composed exclusively of plots assessed \"Compliant\", its volumes are reconciled plot by plot, and its file (GeoJSON of the plots of origin, ready for TRACES NT) is verifiable by QR code. Milestones, cooperative departure, port, vessel, EU arrival, are declared at each step by your teams. Physical bag tracking belongs to the National Traceability System: Agrivo builds on it, it does not replace it.",
     },
   },
   {
@@ -49,8 +49,8 @@ const QA: { q: { fr: string; en: string }; a: { fr: string; en: string } }[] = [
   {
     q: { fr: "La conformité rapporte-t-elle vraiment à la coopérative ?", en: "Does compliance really pay off for the cooperative?" },
     a: {
-      fr: "Oui, par la valorisation — jamais par du crédit. En Côte d'Ivoire le prix bord champ est fixé à 1 200 FCFA/kg, quand le prix de référence pour un revenu vital atteint 1 758 FCFA/kg (+47 %). Une parcelle conforme est l'argument pour négocier primes de durabilité et acheteurs premium au-dessus du prix garanti.",
-      en: "Yes, through valorisation — never through credit. In Côte d'Ivoire the farmgate price is set at 1,200 FCFA/kg while the living-income reference price reaches 1,758 FCFA/kg (+47%). A compliant plot is the argument to negotiate sustainability premiums and premium buyers above the guaranteed price.",
+      fr: "Oui, par la valorisation, jamais par du crédit. En Côte d'Ivoire le prix bord champ est fixé à 1 200 FCFA/kg, quand le prix de référence pour un revenu vital atteint 1 758 FCFA/kg (+47 %). Une parcelle conforme est l'argument pour négocier primes de durabilité et acheteurs premium au-dessus du prix garanti.",
+      en: "Yes, through valorisation, never through credit. In Côte d'Ivoire the farmgate price is set at 1,200 FCFA/kg while the living-income reference price reaches 1,758 FCFA/kg (+47%). A compliant plot is the argument to negotiate sustainability premiums and premium buyers above the guaranteed price.",
     },
   },
   {

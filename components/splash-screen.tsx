@@ -480,7 +480,7 @@ export function SplashScreen() {
                 ))}
               </h1>
 
-              {/* Ligne 2 : mots révélés au fil de la progression (B) + survol — tout en blanc */}
+              {/* Ligne 2 : mots révélés au fil de la progression (B) + survol, tout en blanc */}
               <p className="mt-4 max-w-xl text-base leading-relaxed sm:text-lg">
                 {LINE2.map((word, i) => {
                   const lit =

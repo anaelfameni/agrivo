@@ -8,6 +8,7 @@ import { OnboardingTour } from "@/components/app/onboarding-tour";
 import { AppHomeLink } from "@/components/app/app-home-link";
 import { CopiloteRdue } from "@/components/app/copilote-rdue";
 import { BackToSiteLink } from "@/components/app/back-to-site-link";
+import { BandeauHorsLigne } from "@/components/app/bandeau-hors-ligne";
 import { AppEyebrow } from "@/components/app/app-eyebrow";
 import { BRAND_NAME } from "@/config/brand";
 
@@ -25,7 +26,9 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   return (
     <RouteGuard>
     <div className="relative min-h-dvh bg-ivory text-forest-950">
-      {/* Aurore de marque : halos vert/or + grille discrète — le fond n'est plus jamais plat. */}
+      {/* Bandeau hors connexion : le travail terrain est enregistré sur l'appareil. */}
+      <BandeauHorsLigne />
+      {/* Aurore de marque : halos vert/or + grille discrète, le fond n'est plus jamais plat. */}
       <div aria-hidden className="app-aurora pointer-events-none fixed inset-0 -z-10" />
 
       <header className="sticky top-0 z-40 border-b border-black/[0.06] bg-ivory/75 backdrop-blur-xl">

@@ -2,7 +2,8 @@
 
 import { Document, Page, Text, View, StyleSheet, Image, pdf } from "@react-pdf/renderer";
 import QRCode from "qrcode";
-import { parcellesExpedition, type Expedition } from "@/data/mock-expeditions";
+import { parcellesExpedition, POSSESSION_LABEL, type Expedition } from "@/data/mock-expeditions";
+import { DDS_MAPPING, DDS_DISCLAIMER, GAGE_LABEL } from "@/lib/marketplace/dds-mapping";
 import { FILIERE_LABEL, fmtHa } from "@/data/mock-parcelles";
 import { estVendable, takeRate, type MarketLot } from "@/data/mock-marketplace";
 
@@ -169,7 +170,7 @@ function LotDocument({
             <Text style={[styles.tCell, { width: "27%" }]}>{p.producteurNom}</Text>
             <Text style={[styles.tCell, styles.mono, { width: "21%" }]}>{p.numeroCartePro}</Text>
             <Text style={[styles.tCell, styles.mono, { width: "20%" }]}>{p.numeroCertificat}</Text>
-            <Text style={[styles.tCell, styles.mono, { width: "20%" }]}>{p.referenceDDR ?? "—"}</Text>
+            <Text style={[styles.tCell, styles.mono, { width: "20%" }]}>{p.referenceDDR ?? "·"}</Text>
             <Text style={[styles.tCell, styles.mono, { width: "12%" }]}>{fmtHa(p.superficieHa)}</Text>
           </View>
         ))}
@@ -178,6 +179,43 @@ function LotDocument({
             ? `Volume integrity: each draw stays under the anti-fraud cap (area × regional yield). Total ${lot.tonnage.toFixed(1)} t over ${parcelles.length} plots.`
             : `Intégrité de volume : chaque prélèvement reste sous le plafond anti-fraude (superficie × rendement régional). Total ${lot.tonnage.toFixed(1)} t sur ${parcelles.length} parcelles.`}
         </Text>
+
+        {kind === "fiche" && (
+          <>
+            {/* Registre de possession (chaîne amont) */}
+            <Text style={styles.sectionTitle}>{en ? "Chain of custody register (farm gate → composition)" : "Registre de possession (bord champ → composition)"}</Text>
+            {lot.journalPossession.length === 0 ? (
+              <Text style={{ fontSize: 8.5, color: C.stone }}>
+                {en ? "Upstream journal to be documented." : "Journal amont à documenter."}
+              </Text>
+            ) : (
+              lot.journalPossession.map((j, i) => (
+                <View key={`${j.code}-${i}`} style={styles.tRow}>
+                  <Text style={[styles.tCell, { width: "30%" }]}>{POSSESSION_LABEL[j.code][lang]}</Text>
+                  <Text style={[styles.tCell, styles.mono, { width: "18%" }]}>{j.date}</Text>
+                  <Text style={[styles.tCell, { width: "30%" }]}>{j.acteur ?? "·"}</Text>
+                  <Text style={[styles.tCell, styles.mono, { width: "22%" }]}>
+                    {j.connaissement ?? (j.tonnes != null ? `${j.tonnes.toFixed(1)} t` : "·")}
+                  </Text>
+                </View>
+              ))
+            )}
+
+            {/* Correspondance sceau ↔ diligence raisonnée */}
+            <Text style={styles.sectionTitle}>{en ? "What each seal lock brings to the buyer's due diligence" : "Ce que chaque gage du sceau apporte à la diligence raisonnée de l'acheteur"}</Text>
+            {lot.sceau.criteres.map((c) => {
+              const m = DDS_MAPPING[c.code];
+              return (
+                <View key={c.code} style={styles.tRow}>
+                  <Text style={[styles.tCell, { width: "22%", fontFamily: "Helvetica-Bold", fontSize: 8.5 }]}>{GAGE_LABEL[c.code][lang]}</Text>
+                  <Text style={[styles.tCell, { width: "56%", fontSize: 8, color: C.stone }]}>{m.exigence[lang]}</Text>
+                  <Text style={[styles.tCell, { width: "22%", fontSize: 7.5, color: C.stoneLight }]}>{m.reference}</Text>
+                </View>
+              );
+            })}
+            <Text style={{ fontSize: 7.5, color: C.stoneLight, marginTop: 4 }}>{DDS_DISCLAIMER[lang]}</Text>
+          </>
+        )}
 
         <View style={styles.note}>
           <Text>

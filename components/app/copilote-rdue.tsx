@@ -33,7 +33,7 @@ const UI = {
     base: "Base vérifiée",
     source: "Source",
     erreur: "Connexion indisponible. Réessayez dans un instant.",
-    avert: "Évaluation et information réglementaire — ne remplace pas un conseil juridique.",
+    avert: "Évaluation et information réglementaire, ne remplace pas un conseil juridique.",
   },
   en: {
     ouvrir: "Open the AGRIVO assistant",
@@ -47,7 +47,7 @@ const UI = {
     base: "Verified base",
     source: "Source",
     erreur: "Connection unavailable. Please try again shortly.",
-    avert: "Assessment and regulatory information — not a substitute for legal advice.",
+    avert: "Assessment and regulatory information, not a substitute for legal advice.",
   },
 } as const;
 

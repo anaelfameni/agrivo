@@ -32,7 +32,7 @@ export async function POST(req: Request) {
           {
             text:
               `Tu reçois la photo prise par un agent de coopérative au bord d'un champ. ` +
-              `SI — et seulement si — c'est une carte de producteur agricole ivoirien LISIBLE, extrais ses champs. ` +
+              `SI, et seulement si, c'est une carte de producteur agricole ivoirien LISIBLE, extrais ses champs. ` +
               `Réponds en JSON strict : {"producteurNom": string, "numeroCartePro": string, "localite": string, "filiere": une valeur parmi ${JSON.stringify(FILIERE_IDS)}}. ` +
               `Mets une chaîne vide pour tout champ illisible. ` +
               `Si la photo n'est PAS une carte producteur lisible (floue, vide, autre document, main, décor), renvoie TOUS les champs vides. ` +

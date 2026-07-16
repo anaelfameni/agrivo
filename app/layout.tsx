@@ -80,6 +80,23 @@ export default function RootLayout({
       className={`${display.variable} ${brandSerif.variable} ${sans.variable} ${mono.variable} antialiased`}
     >
       <head>
+        {/* Données structurées Organization : identité de marque pour moteurs et IA génératives. */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Organization",
+              name: "Agrivo",
+              url: "https://agrivo-io.vercel.app",
+              description:
+                "La place de marché des lots agricoles conformes vérifiés (RDUE). Le SNT identifie, Agrivo rend vendable : preuve satellite par parcelle, sceau du lot, dossier prêt pour la diligence raisonnée de l'acheteur européen.",
+              areaServed: "Côte d'Ivoire",
+              knowsAbout: ["RDUE", "EUDR", "traçabilité cacao", "Système national de traçabilité", "carte producteur", "TRACES NT"],
+              email: "support@agrivo.ci",
+            }),
+          }}
+        />
         {/* Anti-flash : pose un masque forest sur « / » AVANT le premier paint.
             Retiré par <SplashScreen> dès qu'il prend le relai à l'écran. */}
         <script

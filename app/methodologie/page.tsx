@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { Satellite, Layers, CloudOff, CheckCircle2, AlertTriangle, ArrowRight, ArrowDown, Database, BadgeCheck, CalendarClock, Ruler, FileCheck2 } from "lucide-react";
+import { Satellite, Layers, CloudOff, CheckCircle2, AlertTriangle, ArrowRight, ArrowDown, Database, BadgeCheck, CalendarClock, Ruler, FileCheck2, Landmark, Store } from "lucide-react";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { Reveal } from "@/components/landing/reveal";
@@ -43,8 +43,8 @@ const ALIGN = [
     icon: <CalendarClock size={20} className="text-green-signal" />,
     title: { fr: "La bonne date de référence", en: "The right reference date" },
     body: {
-      fr: "Chaque parcelle est comparée à la date pivot du 31 décembre 2020 — celle fixée par le règlement européen. Pas une autre.",
-      en: "Every plot is compared against the 31 December 2020 cut-off date — the one set by the European regulation. No other.",
+      fr: "Chaque parcelle est comparée à la date pivot du 31 décembre 2020, celle fixée par le règlement européen. Pas une autre.",
+      en: "Every plot is compared against the 31 December 2020 cut-off date, the one set by the European regulation. No other.",
     },
   },
   {
@@ -77,8 +77,8 @@ export default function Methodologie() {
           title={en ? "How Agrivo assesses a plot, with no black box." : "Comment Agrivo évalue une parcelle, sans boîte noire."}
           sub={
             en
-              ? "Agrivo assesses every plot from recognised satellite references and delivers a clear, explained and verifiable result — aligned directly with the requirements of European Regulation (EU) 2023/1115. Here, simply, is how."
-              : "Agrivo évalue chaque parcelle à partir de références satellites reconnues et livre un résultat clair, expliqué et vérifiable — aligné directement sur les exigences du règlement européen (UE) 2023/1115. Voici, simplement, comment."
+              ? "Agrivo assesses every plot from recognised satellite references and delivers a clear, explained and verifiable result, aligned directly with the requirements of European Regulation (EU) 2023/1115. Here, simply, is how."
+              : "Agrivo évalue chaque parcelle à partir de références satellites reconnues et livre un résultat clair, expliqué et vérifiable, aligné directement sur les exigences du règlement européen (UE) 2023/1115. Voici, simplement, comment."
           }
         />
 
@@ -141,6 +141,48 @@ export default function Methodologie() {
           </Reveal>
         </section>
 
+        {/* Le SNT identifie, AGRIVO rend vendable */}
+        <section className="mx-auto max-w-6xl px-6 pb-4 pt-10 md:px-8">
+          <Reveal>
+            <div className="rounded-2xl border border-black/[0.06] bg-white p-8 md:p-10">
+              <span className="eyebrow text-green-signal">{en ? "Above the National Traceability System" : "Au-dessus du Système national de traçabilité"}</span>
+              <h2 className="mt-3 font-display text-2xl text-forest-950 sm:text-3xl">
+                {en ? "The SNT identifies. Agrivo makes it sellable." : "Le SNT identifie. Agrivo rend vendable."}
+              </h2>
+              <p className="mt-3 max-w-3xl text-sm leading-relaxed text-stone-600">
+                {en
+                  ? "From 1 September 2026, the producer card and the National Traceability System (Conseil du Café-Cacao) become mandatory. Agrivo is not their competitor: it is the layer on top."
+                  : "Dès le 1er septembre 2026, la carte producteur et le Système national de traçabilité (Conseil du Café-Cacao) deviennent obligatoires. Agrivo n'est pas leur concurrent : c'est la couche au-dessus."}
+              </p>
+              <div className="mt-8 grid gap-4 md:grid-cols-2">
+                <div className="rounded-xl bg-ivory p-6">
+                  <div className="flex items-center gap-3">
+                    <div className="grid h-10 w-10 place-items-center rounded-lg bg-forest-950/[0.06] text-forest-950"><Landmark size={20} /></div>
+                    <h3 className="font-display text-lg text-forest-950">{en ? "What the SNT provides" : "Ce que le SNT fournit"}</h3>
+                  </div>
+                  <ul className="mt-4 space-y-2 text-sm leading-relaxed text-stone-600">
+                    <li>· {en ? "The farmer's identity (producer card)" : "L'identité du producteur (carte producteur)"}</li>
+                    <li>· {en ? "Base geolocation of plots" : "La géolocalisation de base des parcelles"}</li>
+                    <li>· {en ? "Secured payment of the farm-gate price" : "La sécurisation du paiement bord champ"}</li>
+                  </ul>
+                </div>
+                <div className="rounded-xl border border-green-signal/25 bg-green-signal/[0.05] p-6">
+                  <div className="flex items-center gap-3">
+                    <div className="grid h-10 w-10 place-items-center rounded-lg bg-green-signal/12 text-green-signal"><Store size={20} /></div>
+                    <h3 className="font-display text-lg text-forest-950">{en ? "What Agrivo adds" : "Ce qu'Agrivo ajoute"}</h3>
+                  </div>
+                  <ul className="mt-4 space-y-2 text-sm leading-relaxed text-stone-600">
+                    <li>· {en ? "Per-plot deforestation assessment (FAO satellite analysis)" : "L'évaluation de non-déforestation par parcelle (analyse satellite FAO)"}</li>
+                    <li>· {en ? "The lot seal: segregation, volumes, chain of custody" : "Le sceau du lot : ségrégation, volumes, chaîne de possession"}</li>
+                    <li>· {en ? "The DDR-ready file for the European buyer" : "Le dossier prêt pour la diligence raisonnée de l'acheteur européen"}</li>
+                    <li>· {en ? "The marketplace where sealed lots get picked first" : "La place de marché où les lots scellés sont choisis en premier"}</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </Reveal>
+        </section>
+
         {/* Directement aligné sur les normes européennes */}
         <section className="divide-fluid bg-ivory">
           <div className="mx-auto max-w-6xl px-6 py-20 md:px-8">
@@ -169,7 +211,7 @@ export default function Methodologie() {
           </div>
         </section>
 
-        {/* Convergence de preuves — fond animé signature du hero */}
+        {/* Convergence de preuves, fond animé signature du hero */}
         <section className="relative isolate overflow-hidden bg-forest-950 text-white">
           <HeroBg />
           <div className="relative mx-auto max-w-3xl px-6 py-20 md:px-8">
@@ -235,8 +277,8 @@ export default function Methodologie() {
               </h2>
               <p className="mt-4 max-w-3xl leading-relaxed text-stone-600">
                 {en
-                  ? "For every shipment, Regulation (EU) 2023/1115 requires the due diligence statement (DDS) to carry the geolocation of ALL plots of origin — and mass balance is not allowed. Agrivo therefore composes each lot exclusively from plots assessed \"Compliant\" (strict segregation), reconciles every tonnage against the plot's cap (area × regional yield, the same anti-fraud lock used at verification), and generates the lot's GeoJSON (RFC 7946) ready for TRACES NT. Milestones (departure, port, vessel, EU arrival) are documentary: declared at each step by your teams — Agrivo traces the compliance file, it does not physically track bags."
-                  : "Pour chaque expédition, le règlement (UE) 2023/1115 exige que la déclaration de diligence raisonnée (DDS) porte la géolocalisation de TOUTES les parcelles d'origine — et le bilan de masse n'est pas admis. Agrivo compose donc chaque lot exclusivement à partir de parcelles évaluées « Conforme » (ségrégation stricte), réconcilie chaque tonnage contre le plafond de la parcelle (superficie × rendement régional, le même verrou anti-fraude qu'à la vérification), et génère le GeoJSON du lot (RFC 7946) prêt pour TRACES NT. Les jalons (départ, port, navire, arrivée UE) sont documentaires : déclarés à chaque étape par vos équipes — Agrivo trace le dossier de conformité, il ne suit pas physiquement les sacs."}
+                  ? "For every shipment, Regulation (EU) 2023/1115 requires the due diligence statement (DDS) to carry the geolocation of ALL plots of origin, and mass balance is not allowed. Agrivo therefore composes each lot exclusively from plots assessed \"Compliant\" (strict segregation), reconciles every tonnage against the plot's cap (area × regional yield, the same anti-fraud lock used at verification), and generates the lot's GeoJSON (RFC 7946) ready for TRACES NT. Milestones (departure, port, vessel, EU arrival) are documentary: declared at each step by your teams, Agrivo traces the compliance file, it does not physically track bags."
+                  : "Pour chaque expédition, le règlement (UE) 2023/1115 exige que la déclaration de diligence raisonnée (DDS) porte la géolocalisation de TOUTES les parcelles d'origine, et le bilan de masse n'est pas admis. Agrivo compose donc chaque lot exclusivement à partir de parcelles évaluées « Conforme » (ségrégation stricte), réconcilie chaque tonnage contre le plafond de la parcelle (superficie × rendement régional, le même verrou anti-fraude qu'à la vérification), et génère le GeoJSON du lot (RFC 7946) prêt pour TRACES NT. Les jalons (départ, port, navire, arrivée UE) sont documentaires : déclarés à chaque étape par vos équipes, Agrivo trace le dossier de conformité, il ne suit pas physiquement les sacs."}
               </p>
             </Reveal>
           </div>
@@ -252,8 +294,8 @@ export default function Methodologie() {
               </h2>
               <p className="mt-3 max-w-2xl text-stone-600">
                 {en
-                  ? "A lot can only be sold on the marketplace if it is sealed. The seal is the anti-laundering guarantee — and it takes two independent locks."
-                  : "Un lot n'est vendable sur la marketplace que s'il est scellé. Le sceau est la garantie anti-blanchiment — et il faut deux verrous indépendants."}
+                  ? "A lot can only be sold on the marketplace if it is sealed. The seal is the anti-laundering guarantee, and it takes two independent locks."
+                  : "Un lot n'est vendable sur la marketplace que s'il est scellé. Le sceau est la garantie anti-blanchiment, et il faut deux verrous indépendants."}
               </p>
             </Reveal>
             <div className="mt-8 grid gap-5 md:grid-cols-2">

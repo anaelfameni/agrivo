@@ -84,8 +84,8 @@ function convergenceLive(live: WhispLiveVerdict, lang: "fr" | "en"): string[] {
         : null;
     lignes.push(
       lang === "fr"
-        ? `Localisation confirmée par l'API : ${lieu || "—"}${surface ? ` · ${surface} analysés` : ""}.`
-        : `Location confirmed by the API: ${lieu || "—"}${surface ? ` · ${surface} analysed` : ""}.`,
+        ? `Localisation confirmée par l'API : ${lieu || "·"}${surface ? ` · ${surface} analysés` : ""}.`
+        : `Location confirmed by the API: ${lieu || "·"}${surface ? ` · ${surface} analysed` : ""}.`,
     );
   }
 

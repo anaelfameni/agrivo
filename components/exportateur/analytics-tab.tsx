@@ -8,6 +8,7 @@ import { StatNumber } from "@/components/ui/stat-number";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { EmptyState } from "@/components/ui/empty-state";
 import { useLanguage } from "@/components/language-provider";
+import { CampagneConformite } from "@/components/exportateur/campagne-conformite";
 import {
   FILIERE_LABEL,
   fmtHa,
@@ -204,6 +205,9 @@ export function AnalyticsTab({
 
   return (
     <div className="flex flex-col gap-5">
+      {/* Conformité de ma campagne : lots scellés, compte à rebours RDUE, prochaines actions */}
+      <CampagneConformite lang={lang === "en" ? "en" : "fr"} />
+
       {/* 4 KPI officiels */}
       <motion.div
         initial="hidden"

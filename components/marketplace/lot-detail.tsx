@@ -17,6 +17,7 @@ import {
 } from "@/data/mock-marketplace";
 import { SceauAgrivo } from "@/components/marketplace/sceau-agrivo";
 import { JournalLot } from "@/components/marketplace/journal-lot";
+import { DDS_MAPPING, DDS_DISCLAIMER, GAGE_LABEL } from "@/lib/marketplace/dds-mapping";
 import { VsIceChip, useCocoaSpot } from "@/components/marketplace/cocoa-price";
 import { HeroBg } from "@/components/landing/hero-bg";
 
@@ -153,6 +154,37 @@ export function LotDetail({ refLot }: { refLot: string }) {
               <h2 className="font-display text-lg font-semibold text-forest-950">{l === "en" ? "The AGRIVO seal" : "Le sceau AGRIVO"}</h2>
             </div>
             <div className="mt-4"><SceauAgrivo sceau={lot.sceau} lang={l} tone="light" detaille /></div>
+
+            {/* Correspondance gage par gage avec la diligence raisonnée de l'acheteur */}
+            <div className="mt-6 border-t border-black/[0.06] pt-5">
+              <h3 className="text-sm font-semibold text-forest-950">
+                {l === "en" ? "What each lock brings to your due diligence (DDS)" : "Ce que chaque gage apporte à votre diligence raisonnée (DDS)"}
+              </h3>
+              <div className="mt-3 overflow-x-auto">
+                <table className="w-full min-w-[540px] text-left text-sm">
+                  <thead>
+                    <tr className="border-b border-black/[0.06] text-[0.68rem] uppercase tracking-wide text-forest-950/45">
+                      <th className="py-2 pr-3 font-semibold">{l === "en" ? "Seal lock" : "Gage du sceau"}</th>
+                      <th className="py-2 pr-3 font-semibold">{l === "en" ? "Due diligence requirement" : "Exigence de diligence raisonnée"}</th>
+                      <th className="py-2 font-semibold">{l === "en" ? "Reference" : "Référence"}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {lot.sceau.criteres.map((c) => {
+                      const m = DDS_MAPPING[c.code];
+                      return (
+                        <tr key={c.code} className="border-b border-black/[0.04] align-top last:border-0">
+                          <td className="py-2.5 pr-3 font-medium text-forest-950">{GAGE_LABEL[c.code][l]}</td>
+                          <td className="py-2.5 pr-3 text-forest-950/70">{m.exigence[l]}</td>
+                          <td className="num py-2.5 text-xs text-forest-950/55">{m.reference}</td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+              <p className="mt-3 text-xs leading-relaxed text-forest-950/45">{DDS_DISCLAIMER[l]}</p>
+            </div>
           </section>
 
           <section className={cardCls}>
@@ -190,7 +222,7 @@ export function LotDetail({ refLot }: { refLot: string }) {
                       <td className="py-2.5 pr-3 text-forest-950/90">{p.producteurNom}</td>
                       <td className="num py-2.5 pr-3 text-forest-950/70">{p.numeroCartePro}</td>
                       <td className="num py-2.5 pr-3 text-forest-950/70">{p.numeroCertificat}</td>
-                      <td className="num py-2.5 pr-3 text-forest-950/70">{p.referenceDDR ?? "—"}</td>
+                      <td className="num py-2.5 pr-3 text-forest-950/70">{p.referenceDDR ?? "·"}</td>
                       <td className="num py-2.5 pr-3 text-forest-950/70">{fmtHa(p.superficieHa)}</td>
                       <td className="py-2.5">
                         <span className={`inline-flex items-center gap-1 text-xs font-semibold ${p.statut === "conforme" ? "text-green-signal" : p.statut === "anomalie" ? "text-red-block" : "text-amber-cacao"}`}>
@@ -244,7 +276,7 @@ export function LotDetail({ refLot }: { refLot: string }) {
               <Field icon={<MapPin size={14} />} label={t.regions} value={lot.regions.join(", ")} />
               <Field icon={<Anchor size={14} />} label={t.port} value={lot.portDepart} />
               <Field icon={<CalendarDays size={14} />} label={t.campagne} value={lot.campagne} />
-              <Field icon={<Ship size={14} />} label={t.vessel} value={exp.navire ? `${exp.navire}${exp.numeroConteneur ? ` · ${exp.numeroConteneur}` : ""}` : "—"} mono />
+              <Field icon={<Ship size={14} />} label={t.vessel} value={exp.navire ? `${exp.navire}${exp.numeroConteneur ? ` · ${exp.numeroConteneur}` : ""}` : "·"} mono />
               <Field label={t.sh} value={exp.codeSH} mono />
             </dl>
           </section>

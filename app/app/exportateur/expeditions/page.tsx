@@ -61,7 +61,7 @@ const COPY = {
   fr: {
     eyebrow: "Espace exportateur",
     titre: "Expéditions",
-    sous: "Le dossier RDUE de chaque conteneur : parcelles d'origine géolocalisées, volumes réconciliés, jalons documentaires — prêt pour votre déclaration TRACES NT.",
+    sous: "Le dossier RDUE de chaque conteneur : parcelles d'origine géolocalisées, volumes réconciliés, jalons documentaires, prêt pour votre déclaration TRACES NT.",
     segregation: "Ségrégation stricte : seules des parcelles évaluées « Conforme » peuvent composer un lot. Jalons déclaratifs, saisis à chaque étape.",
     lots: "Dossiers d'expédition",
     composer: "Composer une expédition",
@@ -78,7 +78,7 @@ const COPY = {
     exporterGeojson: "GeoJSON du lot (TRACES NT)",
     voirQr: "QR de vérification publique",
     masquerQr: "Masquer le QR",
-    qrLegende: "Scannez : la page publique confirme le dossier — parcelles, tonnage, jalons.",
+    qrLegende: "Scannez : la page publique confirme le dossier, parcelles, tonnage, jalons.",
     resumeIa: "Générer le résumé exécutif (IA)",
     resumeEnCours: "Rédaction du résumé…",
     controleIa: "Contrôle pré-embarquement (IA)",
@@ -97,7 +97,7 @@ const COPY = {
     creeLe: "Composé le",
     carteTitre: "Les parcelles du lot, vues du ciel",
     composerTitre: "Composer une expédition",
-    composerSous: "Sélectionnez des parcelles : la ségrégation se voit — les parcelles non conformes sont refusées d'office, et chaque tonnage est borné par le plafond de sa parcelle.",
+    composerSous: "Sélectionnez des parcelles : la ségrégation se voit, les parcelles non conformes sont refusées d'office, et chaque tonnage est borné par le plafond de sa parcelle.",
     etapes: ["Parcelles & tonnages", "Informations du lot", "Récapitulatif & contrôle"],
     etapeDe: (i: number) => `Étape ${i} sur 3`,
     suivant: "Suivant",
@@ -121,7 +121,7 @@ const COPY = {
     refuse: "Refusée :",
     refusNonConforme: "statut non conforme (ségrégation)",
     creerLot: "Créer le dossier du lot",
-    lotCree: "Dossier créé — il s'ouvre ci-dessous. Déclarez ses jalons au fil de l'expédition.",
+    lotCree: "Dossier créé, il s'ouvre ci-dessous. Déclarez ses jalons au fil de l'expédition.",
     session: "Session",
     t: "t",
     declarerJalon: "Déclarer le jalon suivant",
@@ -133,12 +133,12 @@ const COPY = {
     pdfEnCours: "Génération du PDF…",
     csvParcelles: "Liste des parcelles (CSV)",
     supprimerLot: "Supprimer ce lot (session)",
-    disclaimer: "Suivi documentaire : les jalons sont déclarés par vos équipes. AGRIVO trace le dossier de conformité — l'opérateur reste seul responsable de sa déclaration de diligence raisonnée (DDS).",
+    disclaimer: "Suivi documentaire : les jalons sont déclarés par vos équipes. AGRIVO trace le dossier de conformité, l'opérateur reste seul responsable de sa déclaration de diligence raisonnée (DDS).",
   },
   en: {
     eyebrow: "Exporter workspace",
     titre: "Shipments",
-    sous: "The EUDR file of every container: geolocated plots of origin, reconciled volumes, documentary milestones — ready for your TRACES NT statement.",
+    sous: "The EUDR file of every container: geolocated plots of origin, reconciled volumes, documentary milestones, ready for your TRACES NT statement.",
     segregation: "Strict segregation: only plots assessed \"Compliant\" can compose a lot. Declarative milestones, recorded at each step.",
     lots: "Shipment files",
     composer: "Compose a shipment",
@@ -155,7 +155,7 @@ const COPY = {
     exporterGeojson: "Lot GeoJSON (TRACES NT)",
     voirQr: "Public verification QR",
     masquerQr: "Hide QR",
-    qrLegende: "Scan it: the public page confirms the file — plots, tonnage, milestones.",
+    qrLegende: "Scan it: the public page confirms the file, plots, tonnage, milestones.",
     resumeIa: "Generate the executive summary (AI)",
     resumeEnCours: "Writing the summary…",
     controleIa: "Pre-shipment check (AI)",
@@ -174,7 +174,7 @@ const COPY = {
     creeLe: "Composed on",
     carteTitre: "The lot's plots, seen from above",
     composerTitre: "Compose a shipment",
-    composerSous: "Select plots: segregation is visible — non-compliant plots are rejected outright, and each tonnage is capped by its plot.",
+    composerSous: "Select plots: segregation is visible, non-compliant plots are rejected outright, and each tonnage is capped by its plot.",
     etapes: ["Plots & tonnages", "Lot information", "Summary & check"],
     etapeDe: (i: number) => `Step ${i} of 3`,
     suivant: "Next",
@@ -198,7 +198,7 @@ const COPY = {
     refuse: "Rejected:",
     refusNonConforme: "non-compliant status (segregation)",
     creerLot: "Create the lot file",
-    lotCree: "File created — it opens below. Declare its milestones as the shipment progresses.",
+    lotCree: "File created, it opens below. Declare its milestones as the shipment progresses.",
     session: "Session",
     t: "t",
     declarerJalon: "Declare the next milestone",
@@ -210,7 +210,7 @@ const COPY = {
     pdfEnCours: "Generating the PDF…",
     csvParcelles: "Plot list (CSV)",
     supprimerLot: "Delete this lot (session)",
-    disclaimer: "Documentary tracking: milestones are declared by your teams. AGRIVO traces the compliance file — the operator remains solely responsible for its due diligence statement (DDS).",
+    disclaimer: "Documentary tracking: milestones are declared by your teams. AGRIVO traces the compliance file, the operator remains solely responsible for its due diligence statement (DDS).",
   },
 } as const;
 
@@ -501,7 +501,7 @@ function DetailExpedition({
           <h2 className="mt-0.5 font-display text-xl text-forest-950">{exp.nomLot}</h2>
           <p className="mt-1 text-xs text-stone-500">
             {t.acheteur} : <span className="font-medium text-forest-950">{exp.acheteur}</span>
-            {exp.paysAcheteur !== "—" ? ` · ${exp.paysAcheteur}` : ""} · {t.codeSH} {exp.codeSH} · {t.creeLe}{" "}
+            {exp.paysAcheteur !== "À confirmer" ? ` · ${exp.paysAcheteur}` : ""} · {t.codeSH} {exp.codeSH} · {t.creeLe}{" "}
             {formatDate(exp.creeLe, lang)}
           </p>
           <p className="mt-0.5 text-xs text-stone-500">
@@ -736,7 +736,7 @@ function DetailExpedition({
           {qrVisible && qr && (
             <div className="mt-3 flex items-center gap-3 rounded-xl border border-black/[0.07] bg-ivory/70 p-3">
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={qr} alt={`QR — ${urlPublique}`} className="h-28 w-28 rounded-lg border border-black/[0.06] bg-white" />
+              <img src={qr} alt={`QR, ${urlPublique}`} className="h-28 w-28 rounded-lg border border-black/[0.06] bg-white" />
               <div>
                 <p className="text-xs font-medium text-forest-950">{t.qrLegende}</p>
                 <p className="mt-1 break-all font-mono text-[10px] text-stone-500">{urlPublique}</p>
@@ -860,10 +860,10 @@ function Composer({
       id: "brouillon",
       ref: "EXP-2026-…",
       nomLot: nom.trim() || t.nomLotDefaut,
-      acheteur: acheteur.trim() || "— (en négociation)",
-      paysAcheteur: pays.trim() || "—",
+      acheteur: acheteur.trim() || "En négociation",
+      paysAcheteur: pays.trim() || "À confirmer",
       portDepart,
-      portArrivee: portArrivee.trim() || "—",
+      portArrivee: portArrivee.trim() || "À confirmer",
       navire: navire.trim() || undefined,
       numeroConteneur: conteneur.trim() || undefined,
       codeSH: "1801",
@@ -1042,7 +1042,7 @@ function Composer({
             <p className="text-sm font-semibold text-forest-950">{brouillon.nomLot}</p>
             <p className="mt-1 text-xs text-stone-500">
               {t.acheteurLbl} : {brouillon.acheteur}
-              {brouillon.paysAcheteur !== "—" ? ` · ${brouillon.paysAcheteur}` : ""}
+              {brouillon.paysAcheteur !== "À confirmer" ? ` · ${brouillon.paysAcheteur}` : ""}
             </p>
             <p className="mt-0.5 text-xs text-stone-500">
               {t.ports} : {brouillon.portDepart} → {brouillon.portArrivee}

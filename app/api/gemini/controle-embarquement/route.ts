@@ -25,8 +25,8 @@ export async function POST(req: Request) {
   const verdictEn = controle.niveau === "pret" ? "Ready to load" : "Attention points before loading";
   const base =
     lang === "en"
-      ? `Pre-shipment screening of ${exp.ref} — ${verdictEn}.\n${faits}\nThis is a documentary assessment, not a guarantee: the operator remains responsible for its DDS.`
-      : `Contrôle pré-embarquement de ${exp.ref} — ${verdictFr}.\n${faits}\nIl s'agit d'une évaluation documentaire, non d'une garantie : l'opérateur reste responsable de sa DDS.`;
+      ? `Pre-shipment screening of ${exp.ref}, ${verdictEn}.\n${faits}\nThis is a documentary assessment, not a guarantee: the operator remains responsible for its DDS.`
+      : `Contrôle pré-embarquement de ${exp.ref}, ${verdictFr}.\n${faits}\nIl s'agit d'une évaluation documentaire, non d'une garantie : l'opérateur reste responsable de sa DDS.`;
 
   let note = base;
   let live = false;

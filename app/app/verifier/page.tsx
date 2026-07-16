@@ -13,6 +13,7 @@ import { StepCertificate } from "@/components/verifier/step-certificate";
 import { StepValorisation } from "@/components/verifier/step-valorisation";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { enregistrerMesure } from "@/lib/mesure/onboarding";
+import { lireBrouillon, sauverBrouillon, effacerBrouillon, type BrouillonVerification } from "@/lib/hors-ligne/brouillon";
 import { PinMark } from "@/components/ui/pin-mark";
 import { buildCertificat } from "@/lib/certificat-data";
 import {
@@ -151,6 +152,7 @@ export default function VerifierPage() {
     setStep(1);
     debutRef.current = Date.now();
     mesureFaiteRef.current = false;
+    effacerBrouillon();
   }
 
   // Écran de fin atteint : la mesure d'onboarding est enregistrée UNE fois (durée + étapes).
@@ -161,6 +163,37 @@ export default function VerifierPage() {
       enregistrerMesure({ debut: debutRef.current, fin: Date.now(), etapes: 6 });
     }
   }, [step]);
+
+  // Brouillon hors ligne : proposé à l'ouverture s'il existe (le travail terrain ne se perd pas).
+  const [brouillon, setBrouillon] = useState<BrouillonVerification | null>(null);
+  useEffect(() => {
+    setBrouillon(lireBrouillon());
+  }, []);
+  // Sauvegarde du parcours en cours (étapes 2..6) ; purge à l'écran de fin.
+  useEffect(() => {
+    if (step >= 2 && step <= 6) {
+      sauverBrouillon({ step, parcelleId: parcelle?.id, whisp: whisp ?? undefined, forced: forced ?? undefined });
+    } else if (step === 7) {
+      effacerBrouillon();
+    }
+  }, [step, parcelle, whisp, forced]);
+
+  function reprendreBrouillon() {
+    if (!brouillon) return;
+    if (brouillon.parcelleId) {
+      const p = getParcelle(brouillon.parcelleId);
+      if (p) setParcelle(p);
+    }
+    if (brouillon.whisp) setWhisp(brouillon.whisp as WhispResult);
+    if (brouillon.forced) setForced(brouillon.forced as ForcedVerdict);
+    // Sans parcelle restaurable, on repart du scan (jamais un état incohérent).
+    setStep(brouillon.parcelleId ? brouillon.step : 2);
+    setBrouillon(null);
+  }
+  function abandonnerBrouillon() {
+    effacerBrouillon();
+    setBrouillon(null);
+  }
 
   const stepperCurrent = Math.min(step, 6);
 
@@ -181,6 +214,25 @@ export default function VerifierPage() {
           </h1>
         </div>
         {step <= 6 && <VerifierStepper current={stepperCurrent} />}
+
+        {/* Reprise d'un parcours interrompu (brouillon hors ligne) */}
+        {step === 1 && brouillon && (
+          <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-amber-cacao/30 bg-amber-cacao/[0.07] px-5 py-4">
+            <p className="text-sm text-forest-950/80">
+              {lang === "en"
+                ? `An interrupted verification was saved on this device (step ${brouillon.step} of 6). Resume where you left off?`
+                : `Une vérification interrompue est enregistrée sur cet appareil (étape ${brouillon.step} sur 6). Reprendre là où vous étiez ?`}
+            </p>
+            <div className="flex gap-2">
+              <button onClick={reprendreBrouillon} className="btn-green rounded-full px-4 py-2 text-xs font-semibold">
+                {lang === "en" ? "Resume" : "Reprendre"}
+              </button>
+              <button onClick={abandonnerBrouillon} className="rounded-full border border-black/10 px-4 py-2 text-xs font-medium text-forest-950/65 transition hover:border-black/25">
+                {lang === "en" ? "Discard" : "Abandonner"}
+              </button>
+            </div>
+          </div>
+        )}
       </div>
 
       <AnimatePresence mode="wait">

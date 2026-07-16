@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { motion, useReducedMotion } from "framer-motion";
 import { Activity, KeyRound, Loader2, Lock, Server, ShieldCheck, ShieldAlert, Sparkles } from "lucide-react";
@@ -159,6 +160,12 @@ export default function AdminPage() {
               ? "API keys, demo mode and external service status. Restricted access."
               : "Clés d'API, mode de démonstration et état des services externes. Accès restreint."}
           </p>
+          <Link
+            href="/app/admin/prospection"
+            className="mt-4 inline-flex items-center gap-2 rounded-full bg-green-signal px-5 py-2.5 text-sm font-semibold text-white transition hover:brightness-110"
+          >
+            {en ? "Prospecting pipeline (109 licensees)" : "Pipeline de prospection (109 licenciés)"}
+          </Link>
         </div>
       </motion.div>
 
@@ -363,8 +370,8 @@ function PreVol({ res, mock, en }: { res: ResultatChauffe; mock: boolean | null;
   const Icon = erreur ? ShieldAlert : ShieldCheck;
   const msg = erreur
     ? en
-      ? "Some routes returned a network error — check the connection and retry."
-      : "Certaines routes ont renvoyé une erreur réseau — vérifiez la connexion et relancez."
+      ? "Some routes returned a network error, check the connection and retry."
+      : "Certaines routes ont renvoyé une erreur réseau, vérifiez la connexion et relancez."
     : tousLive
       ? en
         ? `Demo ready: all ${etats.length} AI features respond live.`
@@ -372,7 +379,7 @@ function PreVol({ res, mock, en }: { res: ResultatChauffe; mock: boolean | null;
       : en
         ? `Ready: ${nbLive}/${etats.length} live, the rest on labelled demo fallback.`
         : `Prête : ${nbLive}/${etats.length} en direct, le reste en repli démonstration étiqueté.`;
-  const mockNote = mock === true ? (en ? " (MOCK_MODE on — no key set)" : " (MOCK_MODE actif — aucune clé posée)") : "";
+  const mockNote = mock === true ? (en ? " (MOCK_MODE on, no key set)" : " (MOCK_MODE actif, aucune clé posée)") : "";
   return (
     <div className={`inline-flex w-fit items-center gap-2 rounded-xl border px-3.5 py-2 text-xs font-semibold ${style}`}>
       <Icon size={14} strokeWidth={2} aria-hidden />

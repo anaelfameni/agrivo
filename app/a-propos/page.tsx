@@ -43,8 +43,8 @@ export default function APropos() {
           }
           sub={
             en
-              ? "The new deforestation regulation is not only a threat. It is also the gateway to provable, better-paid agriculture. Agrivo aims to become the reference tool for compliance and its commercial valorisation across West African export commodities."
-              : "La nouvelle réglementation sur la déforestation n'est pas seulement une menace. C'est aussi la porte d'entrée vers une agriculture prouvable et mieux rémunérée. Agrivo veut devenir l'outil de référence de la conformité et de sa valorisation commerciale pour les filières d'exportation d'Afrique de l'Ouest."
+              ? "The new deforestation regulation is not only a threat. It is also the gateway to provable, better-paid agriculture. The National Traceability System identifies farmers; Agrivo builds on top of it to make each lot provable and sellable: the commerce layer for West African export commodities."
+              : "La nouvelle réglementation sur la déforestation n'est pas seulement une menace. C'est aussi la porte d'entrée vers une agriculture prouvable et mieux rémunérée. Le Système national de traçabilité identifie les producteurs ; Agrivo construit au-dessus pour rendre chaque lot prouvable et vendable : la couche commerce des filières d'exportation d'Afrique de l'Ouest."
           }
         />
 
@@ -95,7 +95,7 @@ export default function APropos() {
           </div>
         </section>
 
-        {/* Ce qui arrive ensuite — fond animé signature du hero */}
+        {/* Ce qui arrive ensuite, fond animé signature du hero */}
         <section className="relative isolate overflow-hidden bg-forest-950 text-white">
           <HeroBg />
           <div className="relative mx-auto max-w-6xl px-6 py-20 md:px-8">

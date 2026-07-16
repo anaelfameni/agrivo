@@ -84,8 +84,8 @@ function ExpeditionDocument({ exp, lang, qrDataUrl }: { exp: Expedition; lang: "
         <View style={styles.verdict}>
           <Text style={styles.verdictLabel}>
             {en
-              ? `${parcelles.length} plots of origin — 100% assessed "Compliant" (Whisp satellite method, FAO)`
-              : `${parcelles.length} parcelles d'origine — 100 % évaluées « Conforme » (méthode satellite Whisp, FAO)`}
+              ? `${parcelles.length} plots of origin, 100% assessed "Compliant" (Whisp satellite method, FAO)`
+              : `${parcelles.length} parcelles d'origine, 100 % évaluées « Conforme » (méthode satellite Whisp, FAO)`}
           </Text>
           <Text style={{ fontSize: 9, color: C.stone, marginTop: 3, lineHeight: 1.5 }}>
             {en
@@ -97,7 +97,7 @@ function ExpeditionDocument({ exp, lang, qrDataUrl }: { exp: Expedition; lang: "
         <View style={styles.grid}>
           <View style={styles.cell}>
             <Text style={styles.cellLabel}>{en ? "Buyer" : "Acheteur"}</Text>
-            <Text style={styles.cellValue}>{exp.acheteur}{exp.paysAcheteur !== "—" ? ` · ${exp.paysAcheteur}` : ""}</Text>
+            <Text style={styles.cellValue}>{exp.acheteur}{exp.paysAcheteur !== "À confirmer" ? ` · ${exp.paysAcheteur}` : ""}</Text>
           </View>
           <View style={styles.cell}>
             <Text style={styles.cellLabel}>{en ? "Commodity · HS code" : "Filière · code SH"}</Text>
@@ -113,7 +113,7 @@ function ExpeditionDocument({ exp, lang, qrDataUrl }: { exp: Expedition; lang: "
           </View>
           <View style={styles.cell}>
             <Text style={styles.cellLabel}>{en ? "Vessel · container" : "Navire · conteneur"}</Text>
-            <Text style={[styles.cellValue, styles.mono]}>{exp.navire ?? "—"}{exp.numeroConteneur ? ` · ${exp.numeroConteneur}` : ""}</Text>
+            <Text style={[styles.cellValue, styles.mono]}>{exp.navire ?? "·"}{exp.numeroConteneur ? ` · ${exp.numeroConteneur}` : ""}</Text>
           </View>
           <View style={styles.cell}>
             <Text style={styles.cellLabel}>{en ? "Cooperatives" : "Coopératives"}</Text>
@@ -121,7 +121,7 @@ function ExpeditionDocument({ exp, lang, qrDataUrl }: { exp: Expedition; lang: "
           </View>
         </View>
 
-        <Text style={styles.sectionTitle}>{en ? "Plots of origin (all geolocated — lot GeoJSON available)" : "Parcelles d'origine (toutes géolocalisées — GeoJSON du lot disponible)"}</Text>
+        <Text style={styles.sectionTitle}>{en ? "Plots of origin (all geolocated, lot GeoJSON available)" : "Parcelles d'origine (toutes géolocalisées, GeoJSON du lot disponible)"}</Text>
         <View style={styles.tRow}>
           <Text style={[styles.tHead, { width: "26%" }]}>{en ? "Farmer" : "Producteur"}</Text>
           <Text style={[styles.tHead, { width: "20%" }]}>{en ? "Farmer card" : "Carte producteur"}</Text>

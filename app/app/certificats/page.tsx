@@ -45,7 +45,7 @@ const COPY = {
     ouvrirParcelle: "Open the plot",
     emptyTitle: "No certificate found",
     emptyDesc: (q: string) => `No result for "${q}".`,
-    note: "An AGRIVO certificate is a technical assessment: it does not replace the exporter's due diligence statement (DDS) — the exporter remains solely responsible under Regulation (EU) 2023/1115.",
+    note: "An AGRIVO certificate is a technical assessment: it does not replace the exporter's due diligence statement (DDS), the exporter remains solely responsible under Regulation (EU) 2023/1115.",
   },
 } as const;
 export default function CertificatsPage() {

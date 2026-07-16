@@ -27,7 +27,7 @@ const SERVICES: Service[] = [
   {
     id: "verdicts",
     nom: { fr: "Moteur de verdicts (détection satellite)", en: "Verdict engine (satellite detection)" },
-    detail: { fr: "POST /api/whisp/verify — moteur déterministe", en: "POST /api/whisp/verify — deterministic engine" },
+    detail: { fr: "POST /api/whisp/verify, moteur déterministe", en: "POST /api/whisp/verify, deterministic engine" },
     // Parcelle de scénario (`sc-*`) : vérifie le moteur sans consommer le quota Earth Engine à
     // chaque visite — l'appel RÉEL à l'API FAO a sa propre carte, déclenchée à la demande.
     verifier: async () => {
@@ -90,13 +90,13 @@ const COPY = {
     relancer: "Relancer les vérifications",
     horodatage: (d: string) => `Dernière vérification : ${d}`,
     liveTitre: "API Whisp (FAO) · appel en direct",
-    liveDetail: "POST whisp.openforis.org via /api/whisp/verify — parcelle témoin p01",
+    liveDetail: "POST whisp.openforis.org via /api/whisp/verify, parcelle témoin p01",
     liveDesc: "Soumet la parcelle témoin à l'API officielle de la FAO (Google Earth Engine). Durée : ~10 à 30 s.",
     liveBtn: "Tester l'API FAO en direct",
     liveEnCours: "Analyse en cours sur Earth Engine…",
     liveDirect: (s: string, v: string) => `Réponse EN DIRECT en ${s} s · verdict « ${v} »`,
     liveRepli: "Réponse servie par le moteur de repli (clé absente ou API indisponible).",
-    liveEchec: "Appel échoué — le moteur de repli reste disponible.",
+    liveEchec: "Appel échoué, le moteur de repli reste disponible.",
   },
   en: {
     eyebrow: "Service status",
@@ -108,13 +108,13 @@ const COPY = {
     relancer: "Re-run checks",
     horodatage: (d: string) => `Last check: ${d}`,
     liveTitre: "Whisp API (FAO) · live call",
-    liveDetail: "POST whisp.openforis.org via /api/whisp/verify — reference plot p01",
+    liveDetail: "POST whisp.openforis.org via /api/whisp/verify, reference plot p01",
     liveDesc: "Submits the reference plot to the official FAO API (Google Earth Engine). Takes ~10 to 30 s.",
     liveBtn: "Test the FAO API live",
     liveEnCours: "Analysis running on Earth Engine…",
     liveDirect: (s: string, v: string) => `LIVE response in ${s} s · verdict "${v}"`,
     liveRepli: "Response served by the fallback engine (missing key or API unavailable).",
-    liveEchec: "Call failed — the fallback engine remains available.",
+    liveEchec: "Call failed, the fallback engine remains available.",
   },
 } as const;
 

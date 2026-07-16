@@ -34,7 +34,7 @@ const COPY = {
     eyebrow: "Cartographie · Coordonnées",
     title: "Capture de la parcelle",
     intro:
-      "La coopérative renseigne les coordonnées GPS qu'elle détient déjà pour cette parcelle, sommet par sommet — au minimum 4 points qui forment le contour. Agrivo ne collecte pas la donnée sur le terrain.",
+      "La coopérative renseigne les coordonnées GPS qu'elle détient déjà pour cette parcelle, sommet par sommet, au minimum 4 points qui forment le contour. Agrivo ne collecte pas la donnée sur le terrain.",
     scenariosTitle: "Exemples analysés (démo)",
     scenariosHint: "Chargez une parcelle de démonstration, puis lancez l'analyse pour voir le verdict.",
     scLabel: { conforme: "① Parcelle conforme", insuffisant: "② Données insuffisantes", anomalie: "③ Parcelle non conforme" } as Record<Statut, string>,
@@ -65,7 +65,7 @@ const COPY = {
     eyebrow: "Mapping · Coordinates",
     title: "Plot capture",
     intro:
-      "The cooperative enters the GPS coordinates it already holds for this plot, vertex by vertex — at least 4 points forming the outline. Agrivo does not collect field data itself.",
+      "The cooperative enters the GPS coordinates it already holds for this plot, vertex by vertex, at least 4 points forming the outline. Agrivo does not collect field data itself.",
     scenariosTitle: "Analysed examples (demo)",
     scenariosHint: "Load a demonstration plot, then run the analysis to see the verdict.",
     scLabel: { conforme: "① Compliant plot", insuffisant: "② Insufficient data", anomalie: "③ Non-compliant plot" } as Record<Statut, string>,
@@ -266,7 +266,7 @@ export function StepMapping({
             <div className="flex flex-col gap-4">
               <p className="text-sm leading-relaxed text-stone-500">{t.intro}</p>
 
-              {/* 3 exemples analysés (démo) — chargent une parcelle et son verdict */}
+              {/* 3 exemples analysés (démo), chargent une parcelle et son verdict */}
               {onScenario && (
                 <div className="flex flex-col gap-2">
                   <div className="flex items-center gap-1.5">
@@ -320,7 +320,7 @@ export function StepMapping({
                             onChange={(e) => setCell(i, "lat", e.target.value)}
                             inputMode="decimal"
                             spellCheck={false}
-                            aria-label={`${t.point(i)} — ${t.thLat}`}
+                            aria-label={`${t.point(i)}, ${t.thLat}`}
                             placeholder="5.362140"
                             className="num w-full rounded-lg border border-black/10 bg-white px-2 py-1.5 text-sm outline-none transition-colors placeholder:text-stone-300 focus:border-green-signal focus:ring-2 focus:ring-green-signal/15"
                           />
@@ -331,7 +331,7 @@ export function StepMapping({
                             onChange={(e) => setCell(i, "lon", e.target.value)}
                             inputMode="decimal"
                             spellCheck={false}
-                            aria-label={`${t.point(i)} — ${t.thLon}`}
+                            aria-label={`${t.point(i)}, ${t.thLon}`}
                             placeholder="-3.985620"
                             className="num w-full rounded-lg border border-black/10 bg-white px-2 py-1.5 text-sm outline-none transition-colors placeholder:text-stone-300 focus:border-green-signal focus:ring-2 focus:ring-green-signal/15"
                           />

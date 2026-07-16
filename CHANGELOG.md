@@ -3,6 +3,47 @@
 Versioning sémantique (MAJOR.MINOR.PATCH). Chaque release liste ce qui est ajouté, corrigé et
 vérifié, conformément à l'étape 8 du pipeline « Du besoin à la Release ».
 
+## v2.8.0 — 2026-07-16 — « Vers le 20/20 » : repositionnement SNT, offre service, sceau↔DDS, page données, purge charte, campagne, SEO/GEO, hors ligne, instruments business
+
+### Ajouté
+- **Repositionnement du hero** (décision produit n°1 de l'étude) : « Le SNT identifie. /
+  Agrivo rend [vendable·prouvable·négociable·traçable] votre récolte. », sous-titre réécrit ;
+  section comparative « SNT fournit / Agrivo ajoute » sur /methodologie ; sous-titre /a-propos.
+- **Offre commerciale inversée** sur /tarifs : étage ① service « Dossier lot scellé » (par lot,
+  sur devis, sans abonnement requis, panneau sombre en tête), étage ② abonnements, étage ③
+  commission reformulée en upside ; mention service sur /marketplace/vendre.
+- **Correspondance sceau ↔ diligence raisonnée** (`lib/marketplace/dds-mapping.ts`) : chaque
+  gage mappé sur son exigence DDS (réf. règl. (UE) 2023/1115) + disclaimer d'honnêteté ; table
+  affichée sur la fiche lot ET dans le PDF du lot, qui gagne aussi le registre de possession
+  (le PDF « fiche » devient le vrai dossier DDR 1 clic).
+- **Page « Vos données vous appartiennent »** (/vos-donnees, FR/EN) : 5 engagements de
+  propriété des données + lien footer (réponse à la méfiance documentée par l'étude).
+- **Vue « Conformité de ma campagne »** (`lib/marketplace/campagne.ts` +
+  `campagne-conformite.tsx`, en tête de l'onglet Analytique exportateur) : lots scellés,
+  tonnage scellé, alertes bloquantes, compte à rebours J-RDUE et PROCHAINES ACTIONS lot par lot.
+- **SEO/GEO** : page catégorie serveur `/cacao-rdue-cote-divoire` (guide sourcé + FAQPage
+  JSON-LD), Organization JSON-LD dans le layout racine, sitemap enrichi (marketplace, vendre,
+  vos-donnees, application, guide).
+- **Hors ligne (anti-Farmerline, version simple)** : brouillons du parcours de vérification
+  (`lib/hors-ligne/brouillon.ts`, TTL 7 jours, storage injectable testé) + bannière hors
+  connexion (`bandeau-hors-ligne.tsx`, /app/*) + reprise proposée à l'ouverture du parcours.
+- **Instruments business** : CRM pipeline des 109 licenciés (`/app/admin/prospection`,
+  15 gabarits ANONYMISÉS priorisés selon l'étude, statuts/notes en localStorage, kit
+  d'entretien H4 intégré) ; documents livrés sur le Bureau : Kit_Entretiens_H4,
+  Dossier_FCIAD (+ e-mail type FIRCA), Memo_Partenariat_CCC, OnePager_Investisseur
+  (4 nouveaux PDF) ; deck investisseur mis à jour (slide produit v2.8, 178 tests, sceau
+  5 gages, onboarding instrumenté).
+
+### Corrigé
+- **Purge charte « — »** : 31 fichiers nettoyés dans le texte visible (tarifs, méthodologie,
+  FAQ, accueil, status, tour, expéditions, admin, copilote, routes API fr/en…), commentaires
+  de code intacts ; placeholders « — » remplacés (« À confirmer », « En négociation », « · »)
+  avec comparaisons logiques réalignées (expéditions, PDF).
+
+### Vérifié
+- `tsc` ✓ · `eslint` 0 erreur · **178 tests** (169 + 9 : dds-mapping, campagne, brouillon) ·
+  `next build` ✓ · smoke SSR + prod. Déployé sur agrivo-io.vercel.app (v2.7 puis v2.8).
+
 ## v2.7.0 — 2026-07-15 — Traçabilité Vague 1 : sceau à 5 critères, registre de possession, sentinelle de volume, scan de documents IA
 
 ### Ajouté

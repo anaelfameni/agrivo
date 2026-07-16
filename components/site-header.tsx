@@ -29,8 +29,8 @@ function skipSplash() {
   }
 }
 const HEADER_TR = {
-  fr: { dashboard: "Tableau de bord", login: "Connexion", signup: "Créer un compte", home: "Agrivo — accueil", nav: "Navigation principale", navMobile: "Navigation principale (mobile)", openMenu: "Ouvrir le menu", closeMenu: "Fermer le menu" },
-  en: { dashboard: "Dashboard", login: "Log in", signup: "Create account", home: "Agrivo — home", nav: "Main navigation", navMobile: "Main navigation (mobile)", openMenu: "Open menu", closeMenu: "Close menu" },
+  fr: { dashboard: "Tableau de bord", login: "Connexion", signup: "Créer un compte", home: "Agrivo, accueil", nav: "Navigation principale", navMobile: "Navigation principale (mobile)", openMenu: "Ouvrir le menu", closeMenu: "Fermer le menu" },
+  en: { dashboard: "Dashboard", login: "Log in", signup: "Create account", home: "Agrivo, home", nav: "Main navigation", navMobile: "Main navigation (mobile)", openMenu: "Open menu", closeMenu: "Close menu" },
 } as const;
 
 /**

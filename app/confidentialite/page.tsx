@@ -25,7 +25,7 @@ export default function ConfidentialitePage() {
       </LegalSection>
 
       <LegalSection title="2. Finalités">
-        <p>Ces données servent uniquement à : évaluer la conformité RDUE d&apos;une parcelle, générer un certificat prêt pour une déclaration TRACES NT, et — avec le consentement du producteur — constituer le dossier de conformité que la coopérative partage avec son exportateur.</p>
+        <p>Ces données servent uniquement à : évaluer la conformité RDUE d&apos;une parcelle, générer un certificat prêt pour une déclaration TRACES NT, et, avec le consentement du producteur, constituer le dossier de conformité que la coopérative partage avec son exportateur.</p>
       </LegalSection>
 
       <LegalSection title="3. Base légale et consentement">

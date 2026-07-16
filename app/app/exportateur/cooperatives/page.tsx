@@ -92,8 +92,8 @@ export default function CooperativesPage() {
             region: l.region,
             ville: l.ville ?? l.region,
             siege: l.siege ?? ([6.2, -5.8] as [number, number]),
-            gerant: l.gerant ?? "—",
-            telephone: l.telephone ?? "—",
+            gerant: l.gerant ?? "·",
+            telephone: l.telephone ?? "·",
             producteursDeclares: l.producteursDeclares ?? 0,
             membreDepuis: l.ajouteeLe,
           },
@@ -271,7 +271,7 @@ export default function CooperativesPage() {
                         )}
                       </div>
                       <p className="mt-1 text-xs text-stone-500">
-                        {f.info.ville} · {f.info.region} · <span className="num">{f.info.producteursDeclares || "—"}</span> {t.fiche.declares}
+                        {f.info.ville} · {f.info.region} · <span className="num">{f.info.producteursDeclares || "·"}</span> {t.fiche.declares}
                       </p>
                       <p className="mt-0.5 flex items-center gap-1.5 text-xs text-stone-500">
                         <Phone size={11} strokeWidth={2} aria-hidden className="text-stone-400" />
@@ -301,7 +301,7 @@ export default function CooperativesPage() {
                     </p>
                   )}
 
-                  {/* Pièces jointes au dossier (métadonnées locales — jamais téléversées) */}
+                  {/* Pièces jointes au dossier (métadonnées locales, jamais téléversées) */}
                   {f.locale?.documents && f.locale.documents.length > 0 && (
                     <p className="mt-1.5 text-[0.7rem] text-stone-500">
                       📎 {f.locale.documents.length} {f.locale.documents.length > 1 ? t.piecesPl : t.piecesSg}

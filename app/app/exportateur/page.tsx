@@ -218,7 +218,7 @@ export default function ExportateurPage() {
         })}
       </div>
 
-      {/* Panneau actif — transition d'onglet sobre (180 ms, fondu + léger slide ; reduce = fondu seul) */}
+      {/* Panneau actif, transition d'onglet sobre (180 ms, fondu + léger slide ; reduce = fondu seul) */}
       <AnimatePresence mode="wait" initial={false}>
         <motion.div
           key={tab}

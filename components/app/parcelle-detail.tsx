@@ -111,7 +111,7 @@ export function ParcelleDetail({
                     />
                     <span>
                       <span className="num font-medium text-forest-950">{o.periode}</span>{" "}
-                      <span className="text-stone-500">— {o.note}</span>
+                      <span className="text-stone-500">· {o.note}</span>
                     </span>
                   </li>
                 ))}
@@ -135,7 +135,7 @@ export function ParcelleDetail({
             </div>
           </div>
 
-          {/* Pourquoi ce verdict ? — causes réelles + prochaines étapes (insuffisant / anomalie) */}
+          {/* Pourquoi ce verdict ?, causes réelles + prochaines étapes (insuffisant / anomalie) */}
           <VerdictExplication statut={p.statut} lang={lang} defaultOpen={p.statut === "insuffisant"} />
 
           {/* Analyse de risque RDUE expliquée (feature IA) */}
@@ -186,7 +186,7 @@ export function ParcelleDetail({
             </div>
           )}
 
-          {/* Certificat — généré dans le parcours de vérification (Prompt 4) */}
+          {/* Certificat, généré dans le parcours de vérification (Prompt 4) */}
           <Link
             href="/app/verifier"
             title={
@@ -202,7 +202,7 @@ export function ParcelleDetail({
         </div>
       </div>
 
-      {/* Dossier de diligence (DDS) généré par l'IA — feature IA phare */}
+      {/* Dossier de diligence (DDS) généré par l'IA, feature IA phare */}
       <DdsMemo parcelleId={p.id} />
     </div>
   );

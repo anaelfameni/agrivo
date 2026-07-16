@@ -21,8 +21,8 @@ const PLANS = [
       en: "For cooperative managers who validate lots at the edge of the field. Basis ≈ 1,200 FCFA per verified producer per year (cooperative of about 1,000 producers).",
     },
     features: {
-      fr: ["Vérifications illimitées — analyse satellite FAO (Whisp) en direct", "Certificats d'évaluation vérifiables par QR (PDF)", "Import & audit RDUE du registre", "Mode hors connexion", "Support"],
-      en: ["Unlimited verifications — live FAO (Whisp) satellite analysis", "QR-verifiable assessment certificates (PDF)", "Register import & EUDR audit", "Offline mode", "Support"],
+      fr: ["Vérifications illimitées · analyse satellite FAO (Whisp) en direct", "Certificats d'évaluation vérifiables par QR (PDF)", "Import & audit RDUE du registre", "Mode hors connexion", "Support"],
+      en: ["Unlimited verifications · live FAO (Whisp) satellite analysis", "QR-verifiable assessment certificates (PDF)", "Register import & EUDR audit", "Offline mode", "Support"],
     },
     roi: {
       fr: "Au plus l'équivalent d'un kilo de cacao par producteur et par an.",
@@ -50,8 +50,8 @@ const PLANS = [
       en: ["Multi-cooperative portfolio", "Consolidated cooperatives & farmers", "Satellite register (table ↔ map)", "Buyer files & alerts", "5 shipment files per month (plot → container)", "Priority support"],
     },
     roi: {
-      fr: "Moins qu'un poste de chargé de conformité — pour tout votre réseau.",
-      en: "Less than one compliance officer — for your entire network.",
+      fr: "Moins qu'un poste de chargé de conformité, pour tout votre réseau.",
+      en: "Less than one compliance officer, for your entire network.",
     },
     note: {
       fr: "Abonnement d'1 coopérative de votre réseau inclus.",
@@ -71,8 +71,8 @@ const PLANS = [
       en: "For exporters filing due diligence statements and integrating AGRIVO into their IT systems.",
     },
     features: {
-      fr: ["Tout Essentiel, plus :", "Dossiers d'expédition illimités — GeoJSON TRACES NT par conteneur", "API REST & export en masse", "Déclarations TRACES NT intégrées", "Assistant IA de portefeuille", "Engagement de disponibilité (SLA) — état des services public"],
-      en: ["Everything in Essential, plus:", "Unlimited shipment files — TRACES NT GeoJSON per container", "REST API & batch export", "Built-in TRACES NT declarations", "Portfolio AI assistant", "Availability commitment (SLA) — public service status"],
+      fr: ["Tout Essentiel, plus :", "Dossiers d'expédition illimités · GeoJSON TRACES NT par conteneur", "API REST & export en masse", "Déclarations TRACES NT intégrées", "Assistant IA de portefeuille", "Engagement de disponibilité (SLA) · état des services public"],
+      en: ["Everything in Essential, plus:", "Unlimited shipment files · TRACES NT GeoJSON per container", "REST API & batch export", "Built-in TRACES NT declarations", "Portfolio AI assistant", "Availability commitment (SLA) · public service status"],
     },
     roi: {
       fr: "Une fraction de la valeur d'un seul conteneur sécurisé.",
@@ -142,8 +142,50 @@ export default function Tarifs() {
         <section className="mx-auto max-w-5xl px-6 py-10 md:px-8">
           <p className="mb-6 text-center">
             <span className="inline-flex items-center gap-1.5 rounded-full border border-amber-cacao/25 bg-amber-cacao/[0.07] px-3.5 py-1.5 text-xs font-semibold text-amber-cacao">
-              {en ? "Launch pricing — first partner cooperatives and exporters" : "Tarifs de lancement — premières coopératives et premiers exportateurs partenaires"}
+              {en ? "Launch pricing · first partner cooperatives and exporters" : "Tarifs de lancement · premières coopératives et premiers exportateurs partenaires"}
             </span>
+          </p>
+
+          {/* Étage 1 · Le service par lot (le premier produit commercial, avant l'abonnement) */}
+          <Reveal>
+            <div className="mb-8 rounded-2xl border border-green-signal/35 bg-forest-950 p-8 text-white shadow-[0_40px_90px_-40px_rgba(22,163,74,0.5)] md:p-10">
+              <div className="flex flex-wrap items-start justify-between gap-6">
+                <div className="max-w-2xl">
+                  <span className="inline-flex items-center gap-1.5 rounded-full bg-green-signal/15 px-3 py-1 text-xs font-semibold text-green-signal">
+                    {en ? "Start here · service per lot" : "Commencez ici · service par lot"}
+                  </span>
+                  <h2 className="mt-4 font-display text-2xl text-white md:text-3xl">
+                    {en ? "The Sealed Lot file, prepared for you." : "Le dossier « Lot scellé », préparé pour vous."}
+                  </h2>
+                  <p className="mt-3 text-sm leading-relaxed text-white/70">
+                    {en
+                      ? "Before any subscription: our team prepares, per lot, the complete file your European buyer expects. Producer cards checked, per-plot satellite assessment, chain of custody, reconciled volumes, TRACES NT GeoJSON and the sealed-lot PDF, mapped line by line onto the buyer's due diligence."
+                      : "Avant tout abonnement : notre équipe prépare, lot par lot, le dossier complet que votre acheteur européen attend. Cartes producteur vérifiées, évaluation satellite par parcelle, chaîne de possession, volumes réconciliés, GeoJSON TRACES NT et PDF du lot scellé, mappé ligne à ligne sur la diligence raisonnée de l'acheteur."}
+                  </p>
+                  <ul className="mt-4 grid gap-2 text-sm text-white/80 sm:grid-cols-2">
+                    {(en
+                      ? ["Billed per lot or per season", "No commitment, no subscription required", "Your first sealed lot in days", "The producer never pays"]
+                      : ["Facturé par lot ou par campagne", "Sans engagement, sans abonnement requis", "Votre premier lot scellé en quelques jours", "Le producteur ne paie jamais"]
+                    ).map((f) => (
+                      <li key={f} className="flex items-start gap-2"><Check size={15} className="mt-0.5 shrink-0 text-green-signal" /> {f}</li>
+                    ))}
+                  </ul>
+                </div>
+                <div className="flex flex-col items-start gap-3">
+                  <div>
+                    <p className="num text-3xl font-semibold text-amber-soft">{en ? "On quote" : "Sur devis"}</p>
+                    <p className="mt-1 text-xs text-white/55">{en ? "per lot · price set with the first partners" : "par lot · prix fixé avec les premiers partenaires"}</p>
+                  </div>
+                  <Link href="/contact" className="inline-flex items-center gap-2 rounded-full bg-green-signal px-6 py-3 text-sm font-semibold text-white transition hover:brightness-110">
+                    {en ? "Request a sealed-lot file" : "Demander un dossier lot scellé"} <ArrowRight size={15} />
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </Reveal>
+
+          <p className="mb-5 text-center text-xs font-semibold uppercase tracking-wide text-forest-950/45">
+            {en ? "Then, by subscription: steer your whole network" : "Ensuite, par abonnement : pilotez tout votre réseau"}
           </p>
           <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
             {PLANS.map((p, i) => (
@@ -213,12 +255,12 @@ export default function Tarifs() {
             <div className="mt-6 flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-green-signal/25 bg-green-signal/[0.06] p-6">
               <div>
                 <p className="text-sm font-semibold text-forest-950">
-                  {en ? "Marketplace — commission on sales" : "Marketplace — commission sur les ventes"}
+                  {en ? "And when you sell: marketplace commission" : "Et quand vous vendez : commission marketplace"}
                 </p>
                 <p className="mt-1 max-w-xl text-sm text-stone-600">
                   {en
-                    ? "Beyond subscriptions, the marketplace takes a commission of 1 to 3% on each verified compliant lot sold, plus a verification seal per shipment. Revenue that grows with the traded volume — never a fee to the producer, never credit."
-                    : "Au-delà des abonnements, la marketplace prélève une commission de 1 à 3 % sur chaque lot conforme vendu, plus un sceau de vérification par expédition. Un revenu qui monte avec le volume échangé — jamais de frais au producteur, jamais de crédit."}
+                    ? "When a verified lot is sold on the marketplace, AGRIVO takes a 1 to 3% commission on the transaction, only when the sale closes. Never a fee to the producer, never credit."
+                    : "Quand un lot vérifié se vend sur la marketplace, AGRIVO prélève une commission de 1 à 3 % sur la transaction, uniquement quand la vente se conclut. Jamais de frais au producteur, jamais de crédit."}
                 </p>
               </div>
               <Link
@@ -234,8 +276,8 @@ export default function Tarifs() {
               <p className="mx-auto max-w-2xl text-sm text-stone-600">
                 <span className="font-semibold text-forest-950">{en ? "Is it free for the farmer?" : "Et pour le producteur ?"}</span>{" "}
                 {en
-                  ? "AGRIVO charges the farmer nothing: verification is covered by their cooperative's subscription. Our revenue comes from the cooperative subscription and the exporter plans. No lock-in — and your data remains the property of the cooperative (Ivorian law no. 2013-450, ARTCI)."
-                  : "AGRIVO ne facture rien au producteur : la vérification est prise en charge par l'abonnement de sa coopérative. Notre revenu vient de l'abonnement coopérative et des offres exportateur. Sans engagement — et vos données restent la propriété de la coopérative (loi ivoirienne n° 2013-450, ARTCI)."}
+                  ? "AGRIVO charges the farmer nothing: verification is covered by their cooperative's subscription. Our revenue comes from the cooperative subscription and the exporter plans. No lock-in, and your data remains the property of the cooperative (Ivorian law no. 2013-450, ARTCI)."
+                  : "AGRIVO ne facture rien au producteur : la vérification est prise en charge par l'abonnement de sa coopérative. Notre revenu vient de l'abonnement coopérative et des offres exportateur. Sans engagement, et vos données restent la propriété de la coopérative (loi ivoirienne n° 2013-450, ARTCI)."}
               </p>
             </div>
           </Reveal>

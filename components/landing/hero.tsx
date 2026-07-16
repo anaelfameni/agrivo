@@ -41,9 +41,11 @@ const EASE = [0.16, 1, 0.3, 1] as const;
 /** Contenu bilingue du hero (FR par défaut · EN). */
 const HERO_TR = {
   fr: {
-    verbs: ["vérifie", "prouve", "certifie", "simplifie"],
-    line2: "votre conformité RDUE",
-    sub: "Vérifiez chaque parcelle en quelques secondes, générez le certificat et faites de la conformité prouvée l'argument de vos primes. Toutes vos filières d'exportation, prêtes avant le 30 décembre 2026.",
+    line1: "Le SNT identifie.",
+    verbs: ["vendable", "prouvable", "négociable", "traçable"],
+    line2pre: "Agrivo rend",
+    line2post: "votre récolte.",
+    sub: "La carte producteur et le SNT créent l'identité de vos producteurs. AGRIVO ajoute ce que l'État ne fait pas : la preuve de non-déforestation par parcelle, le sceau du lot et la mise en marché. Vos lots conformes, choisis en premier par les acheteurs européens, avant le 30 décembre 2026.",
     cta1: "Commencer la vérification",
     cta2: "Accéder au tableau de bord",
     meta: ["Les 7 matières premières du RDUE", "Aligné sur le Système national de traçabilité", "Détection satellite (FAO) + IA"],
@@ -59,9 +61,11 @@ const HERO_TR = {
     tags: { ok: "À jour", watch: "À surveiller", action: "Action requise" } as Record<string, string>,
   },
   en: {
-    verbs: ["verifies", "proves", "certifies", "simplifies"],
-    line2: "your EUDR compliance",
-    sub: "Verify every plot in seconds, generate the certificate and turn proven compliance into the argument for your premiums. All your export commodities, ready before 30 December 2026.",
+    line1: "The SNT identifies.",
+    verbs: ["sellable.", "provable.", "tradable.", "traceable."],
+    line2pre: "Agrivo makes your harvest",
+    line2post: "",
+    sub: "The producer card and the SNT create your farmers' identity. AGRIVO adds what the State does not: per-plot deforestation-free proof, the lot seal and the route to market. Your compliant lots, picked first by European buyers, before 30 December 2026.",
     cta1: "Start verification",
     cta2: "Go to the dashboard",
     meta: ["The 7 EUDR raw materials", "Aligned with the National Traceability System", "Satellite detection (FAO) + AI"],
@@ -194,11 +198,12 @@ export function Hero() {
               className="font-brand-serif mt-6 leading-[1.04] tracking-[-0.03em] text-4xl md:text-6xl"
               style={{ fontWeight: 700 }}
             >
-              <motion.span variants={V.line1} initial="hidden" animate={controls} className="block">
-                <span className="text-green-signal">Agrivo</span> <RotatingVerb reduced={reduced} verbs={tr.verbs} />
+              <motion.span variants={V.line1} initial="hidden" animate={controls} className="block text-white/85">
+                {tr.line1}
               </motion.span>
               <motion.span variants={V.line2} initial="hidden" animate={controls} className="block">
-                {tr.line2}
+                {tr.line2pre} <RotatingVerb reduced={reduced} verbs={tr.verbs} />
+                {tr.line2post ? <> {tr.line2post}</> : null}
               </motion.span>
             </h1>
 

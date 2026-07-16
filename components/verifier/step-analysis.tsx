@@ -343,12 +343,12 @@ export function StepAnalysis({
                 ))}
               </ul>
 
-              {/* Détail officiel Whisp v3 — UNIQUEMENT pour les analyses en direct (jamais simulé) */}
+              {/* Détail officiel Whisp v3, UNIQUEMENT pour les analyses en direct (jamais simulé) */}
               {whisp.live && whisp.detail && (
                 <WhispDetailPanel detail={whisp.detail} filiere={parcelle.filiere} lang={lang} />
               )}
 
-              {/* Pourquoi ce verdict ? — causes réelles + prochaines étapes (jamais générique) */}
+              {/* Pourquoi ce verdict ?, causes réelles + prochaines étapes (jamais générique) */}
               <VerdictExplication statut={whisp.statut} lang={lang} defaultOpen={whisp.statut === "insuffisant"} />
 
               {/* Score de résilience des sols (XAI) */}
@@ -397,7 +397,7 @@ export function StepAnalysis({
                 </AnimatePresence>
               </div>
 
-              {/* Diagnostic visuel de la parcelle (IA) — additif, n'affecte pas le verdict satellite. */}
+              {/* Diagnostic visuel de la parcelle (IA), additif, n'affecte pas le verdict satellite. */}
               <PhotoTerrain />
             </motion.div>
           )}
@@ -542,7 +542,7 @@ function WhispDetailPanel({
                 <span
                   className={`num inline-flex rounded-full border px-2 py-0.5 text-[0.65rem] font-semibold ${RISQUE_CLASSES[nivRisque(r.valeur)]}`}
                 >
-                  {r.valeur ?? "—"}
+                  {r.valeur ?? "·"}
                 </span>
               </div>
             ))}

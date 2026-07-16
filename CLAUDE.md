@@ -4,8 +4,24 @@
 > Il condense la charte de marque, les règles de contenu, les faits produit et l'avancement.
 > En cas de doute, ce fichier prime sur mes souvenirs. Il reflète l'état au dernier prompt traité.
 
-> 🟢 **ÉTAT ACTUEL — v2.7.0, 15 juillet 2026 (CE BLOC FAIT FOI sur toute mention contraire
+> 🟢 **ÉTAT ACTUEL — v2.8.0, 16 juillet 2026 (CE BLOC FAIT FOI sur toute mention contraire
 > plus bas, qui relève de l'historique de construction).**
+> - **v2.8 « VERS LE 20/20 » (16/07, déployée agrivo-io)** : **hero repositionné** « Le SNT
+>   identifie. / Agrivo rend [vendable…] votre récolte. » (décision n°1 de l'étude) + section
+>   SNT/Agrivo sur /methodologie ; **/tarifs inversé** (étage ① service « Dossier lot scellé »
+>   par lot SUR DEVIS en tête, ② abonnements, ③ commission en upside) ; **sceau↔DDS**
+>   (`lib/marketplace/dds-mapping.ts`, table sur fiche lot + PDF, disclaimer « n'est pas la
+>   DDS ») et le PDF fiche = dossier DDR 1 clic (registre de possession inclus) ;
+>   **/vos-donnees** (5 engagements propriété des données, lien footer) ; **purge « — »
+>   site-wide** (31 fichiers, texte visible seulement, placeholders → « À confirmer »/« · ») ;
+>   **« Conformité de ma campagne »** (`lib/marketplace/campagne.ts`, panneau en tête de
+>   l'Analytique exportateur : J-RDUE + actions par lot) ; **SEO/GEO** (page serveur
+>   `/cacao-rdue-cote-divoire` + FAQPage JSON-LD, Organization JSON-LD au layout, sitemap) ;
+>   **brouillons HORS LIGNE** du parcours (`lib/hors-ligne/brouillon.ts` + bannière
+>   `bandeau-hors-ligne.tsx` + reprise à l'ouverture) ; **CRM prospection**
+>   `/app/admin/prospection` (109 licenciés, 15 gabarits ANONYMISÉS, kit H4 intégré, état
+>   localStorage `agrivo:prospection`). **178 tests**. Docs Bureau : Kit_Entretiens_H4,
+>   Dossier_FCIAD, Memo_Partenariat_CCC, OnePager_Investisseur (+PDF), deck v2.8.
 > - **TRAÇABILITÉ VAGUE 1 (v2.7, 15/07)** : le **sceau AGRIVO passe à 5 critères** (nouveau
 >   ⑤ « chaîne de possession continue » = journal amont complet + zéro anomalie bloquante de
 >   la sentinelle de volume). **Journal de possession** amont (`PossessionCode` :
@@ -444,6 +460,32 @@ variables CSS dans `app/globals.css`.
 ---
 
 ## 📓 Journal de build (le plus récent en haut)
+
+### Session 36 — 2026-07-16 — v2.8.0 : programme « vers le 20/20 » (repositionnement SNT, offre service, DDS, données, charte, campagne, GEO, offline, business)
+- 🎯 **Demande Anael** : push+deploy v2.7, puis évaluation /20 business (13,5) et site (15,5)
+  sur 15 critères chacun, et exécution SANS S'ARRÊTER de tout ce qui rapproche du 20/20.
+  Décisions validées : hero = promesse centrale SNT ; périmètre complet WP1-8 + WB1-5 ;
+  offline version simple ; deploy v2.7 immédiat puis redéploiement final.
+- 🚀 **Étape 0** : commit v2.7.0 + PUSH GitHub (`feat/v2-marketplace`, 1er push de la branche)
+  + `vercel deploy --prod` (alias agrivo-io posé automatiquement) + smoke prod (frise visible).
+- 🏗️ **WP livrés** : voir CHANGELOG v2.8.0 (hero, tarifs, dds-mapping, vos-donnees, purge,
+  campagne, SEO/GEO, brouillons hors ligne, CRM prospection). Leçons/patterns notables :
+  - Purge « — » : script `purge-emdash.mjs` (scratchpad) qui saute les lignes de commentaire ;
+    ⚠️ les PLACEHOLDERS « — » remplacés doivent garder leurs comparaisons cohérentes
+    (`paysAcheteur !== "À confirmer"` dans expeditions + expedition-pdf).
+  - Page catégorie GEO = composant SERVEUR (texte dans le HTML servi) + `<details>` natifs,
+    FAQPage JSON-LD inline ; Organization JSON-LD dans `<head>` du layout racine.
+  - Brouillon hors ligne : storage INJECTABLE (`StorageLike`) pour tester en node ; reprise
+    sûre (sans parcelleId restaurable → retour étape 2, jamais d'état incohérent).
+  - CRM : gabarits ANONYMISÉS uniquement (jamais de vrai nom d'entreprise seedé = charte
+    preuve sociale) ; éditions en localStorage, constantes jamais mutées.
+  - Fix flake test constaté 2× en suite complète (1 test rouge puis vert au re-run isolé) :
+    à surveiller, probablement parallélisme vitest + import dynamique react-pdf.
+- 📄 **Docs Bureau** : Kit_Entretiens_H4 (script + grille prix + seuils H4), Dossier_FCIAD
+  (+ e-mail type fciad@firca.ci), Memo_Partenariat_CCC (demande de specs SNT), OnePager
+  investisseur v2.8 : 4 nouveaux PDF ; deck slide produit mise à jour (178 tests, 5 gages,
+  onboarding instrumenté) et PDF régénéré.
+- ✅ **GATES** : tsc ✓ · eslint 0 erreur · **178 tests** · build ✓ · déployé + alias + smoke.
 
 ### Session 35 — 2026-07-15 — v2.7.0 : traçabilité Vague 1 (sceau 5 critères, registre de possession, sentinelle de volume, scan IA)
 - 🎯 **Contexte** : suite de l'étude traçabilité exportateurs + audit Gemini de l'étude de

@@ -66,7 +66,7 @@ const COPY = {
         { title: "Complétez les trous", body: "Seules les parcelles manquantes ou rejetées repassent par le terrain : scan de la carte, capture GPS guidée, contrôles d'intégrité." },
         { title: "Le satellite juge", body: "Chaque parcelle est comparée aux images satellites de référence : Conforme, Anomalie détectée ou Données insuffisantes. Chaque verdict est expliqué et certifié." },
         { title: "Valorisez", body: "Certificats vérifiables et dossier DDS prêt pour TRACES NT : la coopérative négocie primes de durabilité et acheteurs premium." },
-        { title: "Expédiez, prouvé", body: "L'exportateur compose ses lots à partir de parcelles conformes uniquement : chaque conteneur part avec son dossier RDUE — parcelles d'origine géolocalisées, volumes réconciliés, GeoJSON prêt pour TRACES NT." },
+        { title: "Expédiez, prouvé", body: "L'exportateur compose ses lots à partir de parcelles conformes uniquement : chaque conteneur part avec son dossier RDUE, parcelles d'origine géolocalisées, volumes réconciliés, GeoJSON prêt pour TRACES NT." },
       ],
     },
     triptyque: {
@@ -196,7 +196,7 @@ const COPY = {
         { title: "Fill the gaps", body: "Only missing or rejected plots go back to the field: card scan, guided GPS capture, integrity checks." },
         { title: "The satellite judges", body: "Every plot is compared against reference satellite imagery: Compliant, Anomaly detected or Insufficient data. Every verdict is explained and certified." },
         { title: "Valorise", body: "Verifiable certificates and a DDS file ready for TRACES NT: the cooperative negotiates sustainability premiums and premium buyers." },
-        { title: "Ship it, proven", body: "The exporter composes lots from compliant plots only: every container leaves with its EUDR file — geolocated plots of origin, reconciled volumes, GeoJSON ready for TRACES NT." },
+        { title: "Ship it, proven", body: "The exporter composes lots from compliant plots only: every container leaves with its EUDR file, geolocated plots of origin, reconciled volumes, GeoJSON ready for TRACES NT." },
       ],
     },
     triptyque: {
@@ -664,12 +664,12 @@ function MarketplaceSection() {
     ? [
         { Icon: ShieldCheck, t: "The AGRIVO seal", d: "A lot is only sellable if it carries the seal: compliance, producer card, volume integrity." },
         { Icon: Boxes, t: "Sell in direct", d: "The exporter lists already-traced lots; the premium buyer buys verified-compliant." },
-        { Icon: Percent, t: "Take-rate 1–3%", d: "A commission on the trade — revenue that grows with volume, never a fee to the producer." },
+        { Icon: Percent, t: "Take-rate 1–3%", d: "A commission on the trade, revenue that grows with volume, never a fee to the producer." },
       ]
     : [
         { Icon: ShieldCheck, t: "Le sceau AGRIVO", d: "Un lot n'est vendable que s'il porte le sceau : conformité, carte producteur, intégrité de volume." },
         { Icon: Boxes, t: "Vendre en direct", d: "L'exportateur publie ses lots déjà tracés ; l'acheteur premium achète du conforme vérifié." },
-        { Icon: Percent, t: "Take-rate 1–3 %", d: "Une commission sur le négoce — un revenu qui monte avec le volume, jamais de frais au producteur." },
+        { Icon: Percent, t: "Take-rate 1–3 %", d: "Une commission sur le négoce, un revenu qui monte avec le volume, jamais de frais au producteur." },
       ];
   return (
     <section className="bg-ivory">
@@ -681,8 +681,8 @@ function MarketplaceSection() {
           </h2>
           <p className="mt-4 text-lg leading-relaxed text-stone-600">
             {en
-              ? "Once a lot is traced and sealed, the exporter sells it in direct to premium buyers — and the cooperative owns its data instead of being disintermediated."
-              : "Une fois le lot tracé et scellé, l'exportateur le vend en direct aux acheteurs premium — et la coopérative possède sa donnée au lieu d'être désintermédiée."}
+              ? "Once a lot is traced and sealed, the exporter sells it in direct to premium buyers, and the cooperative owns its data instead of being disintermediated."
+              : "Une fois le lot tracé et scellé, l'exportateur le vend en direct aux acheteurs premium, et la coopérative possède sa donnée au lieu d'être désintermédiée."}
           </p>
         </Reveal>
         <motion.div variants={container} initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.15 }} className="mt-12 grid gap-5 sm:grid-cols-3">

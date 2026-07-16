@@ -44,7 +44,7 @@ const COPY = {
     filieres: "Filières de la coopérative",
     checklistTitre: "Ce dont AGRIVO a besoin pour bien analyser une coopérative",
     checklist: [
-      "Le registre de parcelles (GeoJSON, CSV ou KML) — audité immédiatement selon la règle RDUE ; c'est la pièce clé.",
+      "Le registre de parcelles (GeoJSON, CSV ou KML), audité immédiatement selon la règle RDUE ; c'est la pièce clé.",
       "L'agrément ou les statuts de la coopérative (PDF).",
       "La liste des producteurs avec leurs numéros de carte (CSV ou Excel).",
       "Les certificats de durabilité en cours (Rainforest Alliance, Fairtrade…).",
@@ -57,7 +57,7 @@ const COPY = {
     ajouterPieces: "Joindre des documents",
     retirerPiece: "Retirer cette pièce",
     registre: "Registre de parcelles partagé (optionnel)",
-    registreAide: "GeoJSON, CSV ou KML. Audité immédiatement selon la règle RDUE — le fichier ne quitte jamais votre navigateur.",
+    registreAide: "GeoJSON, CSV ou KML. Audité immédiatement selon la règle RDUE, le fichier ne quitte jamais votre navigateur.",
     choisir: "Choisir un fichier",
     analyse: "Audit du registre…",
     auditOk: (pct: number, total: number, anomalies: number) =>
@@ -95,7 +95,7 @@ const COPY = {
     filieres: "Cooperative's commodities",
     checklistTitre: "What AGRIVO needs to properly analyse a cooperative",
     checklist: [
-      "The plot register (GeoJSON, CSV or KML) — audited immediately against the EUDR rule; the key document.",
+      "The plot register (GeoJSON, CSV or KML), audited immediately against the EUDR rule; the key document.",
       "The cooperative's licence or statutes (PDF).",
       "The farmer list with card numbers (CSV or Excel).",
       "Current sustainability certificates (Rainforest Alliance, Fairtrade…).",
@@ -108,7 +108,7 @@ const COPY = {
     ajouterPieces: "Attach documents",
     retirerPiece: "Remove this attachment",
     registre: "Shared plot register (optional)",
-    registreAide: "GeoJSON, CSV or KML. Audited immediately against the EUDR rule — the file never leaves your browser.",
+    registreAide: "GeoJSON, CSV or KML. Audited immediately against the EUDR rule, the file never leaves your browser.",
     choisir: "Choose a file",
     analyse: "Auditing the register…",
     auditOk: (pct: number, total: number, anomalies: number) =>

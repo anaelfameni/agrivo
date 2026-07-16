@@ -72,8 +72,8 @@ const ETAPES_COOP: Etape[] = [
     accent: "#16a34a",
     titre: { fr: "Bienvenue sur AGRIVO", en: "Welcome to AGRIVO" },
     corps: {
-      fr: "Visite guidée interactive de 2 minutes : nous surlignons les vrais éléments de votre espace et nous vous montrons où cliquer. Naviguez avec les flèches du clavier, quittez avec Échap — le bouton « ? » en haut de page relance la visite à tout moment.",
-      en: "A 2-minute interactive guided tour: we highlight the real elements of your workspace and show you where to click. Navigate with the arrow keys, leave with Escape — the \"?\" button at the top of the page replays the tour anytime.",
+      fr: "Visite guidée interactive de 2 minutes : nous surlignons les vrais éléments de votre espace et nous vous montrons où cliquer. Naviguez avec les flèches du clavier, quittez avec Échap, le bouton « ? » en haut de page relance la visite à tout moment.",
+      en: "A 2-minute interactive guided tour: we highlight the real elements of your workspace and show you where to click. Navigate with the arrow keys, leave with Escape, the \"?\" button at the top of the page replays the tour anytime.",
     },
   },
   {
@@ -93,8 +93,8 @@ const ETAPES_COOP: Etape[] = [
     accent: "#c8861d",
     titre: { fr: "Tout commence ici", en: "Everything starts here" },
     corps: {
-      fr: "« Nouvelle vérification » lance le parcours complet : consentement du producteur, coordonnées de la parcelle (4 sommets minimum), analyse satellite, verdict expliqué, certificat. Vous pouvez cliquer dès maintenant — ou continuer la visite.",
-      en: "\"New verification\" starts the full journey: farmer consent, plot coordinates (at least 4 vertices), satellite analysis, explained verdict, certificate. You can click right now — or continue the tour.",
+      fr: "« Nouvelle vérification » lance le parcours complet : consentement du producteur, coordonnées de la parcelle (4 sommets minimum), analyse satellite, verdict expliqué, certificat. Vous pouvez cliquer dès maintenant, ou continuer la visite.",
+      en: "\"New verification\" starts the full journey: farmer consent, plot coordinates (at least 4 vertices), satellite analysis, explained verdict, certificate. You can click right now, or continue the tour.",
     },
   },
   {
@@ -103,8 +103,8 @@ const ETAPES_COOP: Etape[] = [
     accent: "#16a34a",
     titre: { fr: "Trois verdicts, jamais de boîte noire", en: "Three verdicts, never a black box" },
     corps: {
-      fr: "« Conforme », « Anomalie détectée » ou « Données insuffisantes » : chaque verdict est expliqué — causes réelles et prochaines étapes comprises. Cette barre montre la santé de votre portefeuille d'un coup d'œil.",
-      en: "\"Compliant\", \"Anomaly detected\" or \"Insufficient data\": every verdict is explained — real causes and next steps included. This bar shows your portfolio's health at a glance.",
+      fr: "« Conforme », « Anomalie détectée » ou « Données insuffisantes » : chaque verdict est expliqué, causes réelles et prochaines étapes comprises. Cette barre montre la santé de votre portefeuille d'un coup d'œil.",
+      en: "\"Compliant\", \"Anomaly detected\" or \"Insufficient data\": every verdict is explained, real causes and next steps included. This bar shows your portfolio's health at a glance.",
     },
   },
   {
@@ -113,8 +113,8 @@ const ETAPES_COOP: Etape[] = [
     accent: "#16a34a",
     titre: { fr: "Vos fichiers existants ont de la valeur", en: "Your existing files have value" },
     corps: {
-      fr: "Importez votre registre (GeoJSON, CSV ou KML) : AGRIVO l'audite selon la règle RDUE et l'IA génère un plan d'action priorisé — quoi corriger au bureau, quoi compléter au champ. Le fichier ne quitte jamais votre navigateur.",
-      en: "Import your register (GeoJSON, CSV or KML): AGRIVO audits it against the EUDR rule and the AI generates a prioritised action plan — what to fix at the office, what to complete in the field. The file never leaves your browser.",
+      fr: "Importez votre registre (GeoJSON, CSV ou KML) : AGRIVO l'audite selon la règle RDUE et l'IA génère un plan d'action priorisé, quoi corriger au bureau, quoi compléter au champ. Le fichier ne quitte jamais votre navigateur.",
+      en: "Import your register (GeoJSON, CSV or KML): AGRIVO audits it against the EUDR rule and the AI generates a prioritised action plan, what to fix at the office, what to complete in the field. The file never leaves your browser.",
     },
   },
   {
@@ -133,8 +133,8 @@ const ETAPES_COOP: Etape[] = [
     accent: "#c8861d",
     titre: { fr: "« À re-vérifier » n'est pas un échec", en: "\"To re-verify\" is not a failure" },
     corps: {
-      fr: "Ces parcelles sont en « Données insuffisantes » : ombrage, nuages ou tracé imprécis. La file est déjà prête — relancez-les en saison sèche, quand les passages satellites redeviennent exploitables.",
-      en: "These plots are \"Insufficient data\": shade, clouds or an imprecise outline. The queue is ready — re-run them in the dry season, when satellite passes become usable again.",
+      fr: "Ces parcelles sont en « Données insuffisantes » : ombrage, nuages ou tracé imprécis. La file est déjà prête, relancez-les en saison sèche, quand les passages satellites redeviennent exploitables.",
+      en: "These plots are \"Insufficient data\": shade, clouds or an imprecise outline. The queue is ready, re-run them in the dry season, when satellite passes become usable again.",
     },
   },
   {
@@ -144,8 +144,8 @@ const ETAPES_COOP: Etape[] = [
     accent: "#c8861d",
     titre: { fr: "Vos certificats, vérifiables par tous", en: "Your certificates, verifiable by anyone" },
     corps: {
-      fr: "La page Certificats liste tous vos certificats émis : numéro, référence DDR et lien de vérification publique — n'importe quel acheteur peut scanner le QR code, sans compte.",
-      en: "The Certificates page lists every issued certificate: number, DDR reference and public verification link — any buyer can scan the QR code, no account needed.",
+      fr: "La page Certificats liste tous vos certificats émis : numéro, référence DDR et lien de vérification publique, n'importe quel acheteur peut scanner le QR code, sans compte.",
+      en: "The Certificates page lists every issued certificate: number, DDR reference and public verification link, any buyer can scan the QR code, no account needed.",
     },
   },
   {
@@ -155,8 +155,8 @@ const ETAPES_COOP: Etape[] = [
     accent: "#16a34a",
     titre: { fr: "L'Assistant AGRIVO, partout", en: "The AGRIVO Assistant, everywhere" },
     corps: {
-      fr: "Cette bulle verte vous suit sur toutes les pages : prix, verdicts, réglementation, où cliquer — elle répond à tout. Pour une demande complexe, notre équipe répond à support@agrivo.ci.",
-      en: "This green bubble follows you on every page: pricing, verdicts, regulation, where to click — it answers everything. For complex requests, our team answers at support@agrivo.ci.",
+      fr: "Cette bulle verte vous suit sur toutes les pages : prix, verdicts, réglementation, où cliquer, elle répond à tout. Pour une demande complexe, notre équipe répond à support@agrivo.ci.",
+      en: "This green bubble follows you on every page: pricing, verdicts, regulation, where to click, it answers everything. For complex requests, our team answers at support@agrivo.ci.",
     },
   },
   {
@@ -164,8 +164,8 @@ const ETAPES_COOP: Etape[] = [
     accent: "#16a34a",
     titre: { fr: "À vous de jouer", en: "Over to you" },
     corps: {
-      fr: "Vous savez l'essentiel. Relancez cette visite à tout moment avec le bouton « ? » en haut de page — bonne vérification !",
-      en: "You know the essentials. Replay this tour anytime with the \"?\" button at the top of the page — happy verifying!",
+      fr: "Vous savez l'essentiel. Relancez cette visite à tout moment avec le bouton « ? » en haut de page, bonne vérification !",
+      en: "You know the essentials. Replay this tour anytime with the \"?\" button at the top of the page, happy verifying!",
     },
   },
 ];
@@ -208,8 +208,8 @@ const ETAPES_EXPORT: Etape[] = [
     accent: "#16a34a",
     titre: { fr: "Vos coopératives, sièges sur carte", en: "Your cooperatives, headquarters on a map" },
     corps: {
-      fr: "Une fiche par coopérative (contact, effectif, conformité) et la position exacte de chaque siège — un point, jamais une superficie. « Ajouter une coopérative » enregistre un partenaire et audite immédiatement le registre qu'il vous a partagé (CSV, GeoJSON, KML).",
-      en: "One card per cooperative (contact, headcount, compliance) and each headquarters' exact position — a point, never an area. \"Add a cooperative\" registers a partner and immediately audits the register it shared with you (CSV, GeoJSON, KML).",
+      fr: "Une fiche par coopérative (contact, effectif, conformité) et la position exacte de chaque siège, un point, jamais une superficie. « Ajouter une coopérative » enregistre un partenaire et audite immédiatement le registre qu'il vous a partagé (CSV, GeoJSON, KML).",
+      en: "One card per cooperative (contact, headcount, compliance) and each headquarters' exact position, a point, never an area. \"Add a cooperative\" registers a partner and immediately audits the register it shared with you (CSV, GeoJSON, KML).",
     },
   },
   {
@@ -294,8 +294,8 @@ const ETAPES_EXPORT: Etape[] = [
     accent: "#16a34a",
     titre: { fr: "À vous de jouer", en: "Over to you" },
     corps: {
-      fr: "Vous savez l'essentiel. Relancez cette visite à tout moment avec le bouton « ? » en haut de page — bonne analyse !",
-      en: "You know the essentials. Replay this tour anytime with the \"?\" button at the top of the page — happy analysing!",
+      fr: "Vous savez l'essentiel. Relancez cette visite à tout moment avec le bouton « ? » en haut de page, bonne analyse !",
+      en: "You know the essentials. Replay this tour anytime with the \"?\" button at the top of the page, happy analysing!",
     },
   },
 ];

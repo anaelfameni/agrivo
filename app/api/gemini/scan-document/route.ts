@@ -46,7 +46,7 @@ export async function POST(req: Request) {
           {
             text:
               `Tu reçois la photo d'un document logistique de la filière cacao ivoirienne. ` +
-              `SI — et seulement si — c'est un document du type « ${label} » LISIBLE, extrais ses champs. ` +
+              `SI, et seulement si, c'est un document du type « ${label} » LISIBLE, extrais ses champs. ` +
               `Réponds en JSON strict : {"numero": string, "date": string (format AAAA-MM-JJ), "acteur": string, "tonnes": number}. ` +
               `Mets une chaîne vide (ou null pour tonnes) pour tout champ illisible ou absent. ` +
               `Si la photo n'est PAS un document de ce type lisible (floue, vide, autre document, main, décor), renvoie TOUS les champs vides. ` +

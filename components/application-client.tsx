@@ -23,14 +23,14 @@ const COPY = {
   fr: {
     eyebrow: "Application mobile",
     titre: "AGRIVO dans votre poche, jusqu'au bord du champ.",
-    sous: "L'application Android officielle : la même plateforme, pensée pour le terrain — cartographie GPS de la parcelle, analyse satellite en direct, certificats et dossiers d'expédition.",
+    sous: "L'application Android officielle : la même plateforme, pensée pour le terrain, cartographie GPS de la parcelle, analyse satellite en direct, certificats et dossiers d'expédition.",
     bouton: "Télécharger l'application mobile",
     boutonSub: "APK Android officiel, signé numériquement · gratuit",
     versionNote: "Compatible avec les téléphones Android récents · installation directe, sans Play Store.",
     featuresTitre: "Tout AGRIVO, optimisé pour le terrain",
     features: [
       { titre: "Cartographie au champ", texte: "Tour de champ GPS réel ou point central : la parcelle se capture avec un simple téléphone, précision affichée en direct." },
-      { titre: "Le satellite juge, en direct", texte: "Chaque parcelle est analysée par Whisp (FAO) sur Google Earth Engine — verdict expliqué en langage clair." },
+      { titre: "Le satellite juge, en direct", texte: "Chaque parcelle est analysée par Whisp (FAO) sur Google Earth Engine, verdict expliqué en langage clair." },
       { titre: "Scan de la carte producteur", texte: "La caméra lit la carte : identité rattachée au dossier, anti-doublon automatique." },
       { titre: "Certificats vérifiables", texte: "Certificat PDF avec QR code : n'importe quel acheteur vérifie publiquement, sans compte." },
       { titre: "Assistant IA intégré", texte: "Prix, verdicts, réglementation : l'assistant répond en direct, en français et en anglais." },
@@ -39,7 +39,7 @@ const COPY = {
     installTitre: "Installation en 3 gestes",
     install: [
       "Téléchargez le fichier AGRIVO_App.apk avec le bouton ci-dessus.",
-      "Ouvrez le fichier : Android vous demande d'autoriser l'installation — acceptez.",
+      "Ouvrez le fichier : Android vous demande d'autoriser l'installation, acceptez.",
       "L'icône AGRIVO apparaît sur votre écran d'accueil. Connectez-vous, c'est prêt.",
     ],
     installNote: "L'application est signée numériquement par AGRIVO. À l'ouverture, elle s'affiche en plein écran, comme n'importe quelle application native.",
@@ -50,14 +50,14 @@ const COPY = {
   en: {
     eyebrow: "Mobile app",
     titre: "AGRIVO in your pocket, all the way to the field.",
-    sous: "The official Android app: the same platform, built for the field — GPS plot mapping, live satellite analysis, certificates and shipment files.",
+    sous: "The official Android app: the same platform, built for the field, GPS plot mapping, live satellite analysis, certificates and shipment files.",
     bouton: "Download the mobile app",
     boutonSub: "Official, digitally signed Android APK · free",
     versionNote: "Compatible with recent Android phones · direct install, no Play Store needed.",
     featuresTitre: "All of AGRIVO, optimised for the field",
     features: [
       { titre: "Field mapping", texte: "Real GPS field walk or centre point: the plot is captured with a simple phone, accuracy displayed live." },
-      { titre: "The satellite judges, live", texte: "Every plot is analysed by Whisp (FAO) on Google Earth Engine — verdict explained in plain language." },
+      { titre: "The satellite judges, live", texte: "Every plot is analysed by Whisp (FAO) on Google Earth Engine, verdict explained in plain language." },
       { titre: "Farmer card scan", texte: "The camera reads the card: identity attached to the file, automatic duplicate check." },
       { titre: "Verifiable certificates", texte: "PDF certificate with QR code: any buyer verifies publicly, no account needed." },
       { titre: "Built-in AI assistant", texte: "Pricing, verdicts, regulation: the assistant answers live, in French and English." },
@@ -66,7 +66,7 @@ const COPY = {
     installTitre: "Install in 3 steps",
     install: [
       "Download the AGRIVO_App.apk file with the button above.",
-      "Open the file: Android asks you to allow the installation — accept.",
+      "Open the file: Android asks you to allow the installation, accept.",
       "The AGRIVO icon appears on your home screen. Sign in, you're ready.",
     ],
     installNote: "The app is digitally signed by AGRIVO. It opens full screen, like any native application.",

@@ -14,7 +14,7 @@ const COPY = {
     title: "Connexion",
     subtitle: "Accédez à votre espace de conformité RDUE.",
     demoTitle: "Comptes de démonstration",
-    demoHint: "Choisissez le profil à explorer, en un clic — données fictives.",
+    demoHint: "Choisissez le profil à explorer, en un clic, données fictives.",
     demoCoop: "Démo Coopérative",
     demoCoopSub: "Amadou · Coop. de Soubré",
     demoExport: "Démo Exportateur",
@@ -32,7 +32,7 @@ const COPY = {
     title: "Sign in",
     subtitle: "Access your EUDR compliance workspace.",
     demoTitle: "Demo accounts",
-    demoHint: "Pick the profile to explore, in one click — fictional data.",
+    demoHint: "Pick the profile to explore, in one click, fictional data.",
     demoCoop: "Cooperative demo",
     demoCoopSub: "Amadou · Soubré coop.",
     demoExport: "Exporter demo",
@@ -118,7 +118,7 @@ export default function ConnexionPage() {
           <h1 className="font-display text-3xl text-forest-950">{t.title}</h1>
           <p className="mt-2 text-sm text-stone-500">{t.subtitle}</p>
 
-          {/* Encart compte de démonstration — identifiants jamais affichés en clair (U-07) :
+          {/* Encart compte de démonstration, identifiants jamais affichés en clair (U-07) :
               le bouton connecte directement, sans exposer le mot de passe. */}
           <div className="mt-7 rounded-2xl border border-green-signal/25 bg-green-signal/[0.06] p-4">
             <div className="flex items-center gap-2 text-sm font-semibold text-forest-950">

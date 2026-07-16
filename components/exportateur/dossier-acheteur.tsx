@@ -35,7 +35,7 @@ const COPY = {
     apiHint: "renvoie le portefeuille complet au format TRACES NT (filtre ?statut=conforme).",
     listTitle: "Parcelles incluses",
     certificate: "Certificat",
-    reportTitle: "RAPPORT CONSOLIDÉ EUDR — AGRIVO",
+    reportTitle: "RAPPORT CONSOLIDÉ EUDR, AGRIVO",
     footer: "Évaluation de conformité, non une garantie. L'opérateur reste responsable de sa déclaration de diligence (TRACES NT).",
   },
   en: {
@@ -57,7 +57,7 @@ const COPY = {
     apiHint: "returns the full portfolio in TRACES NT format (filter ?statut=conforme).",
     listTitle: "Included plots",
     certificate: "Certificate",
-    reportTitle: "EUDR CONSOLIDATED REPORT — AGRIVO",
+    reportTitle: "EUDR CONSOLIDATED REPORT, AGRIVO",
     footer: "Compliance assessment, not a guarantee. The operator remains responsible for its due diligence statement (TRACES NT).",
   },
 } as const;
@@ -255,7 +255,7 @@ export function DossierAcheteur() {
         </ul>
       </div>
 
-      {/* API REST (offre Pro) — démontrable en direct */}
+      {/* API REST (offre Pro), démontrable en direct */}
       <p className="mt-4 flex flex-wrap items-center gap-x-2 gap-y-1 rounded-lg bg-ivory-deep/40 px-3 py-2 text-[0.7rem] leading-relaxed text-stone-500">
         <TerminalSquare size={12} strokeWidth={2} aria-hidden className="shrink-0 text-green-signal/80" />
         <span className="font-semibold text-forest-950">{t.api}</span>
