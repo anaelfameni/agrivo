@@ -4,12 +4,28 @@
 > Il condense la charte de marque, les règles de contenu, les faits produit et l'avancement.
 > En cas de doute, ce fichier prime sur mes souvenirs. Il reflète l'état au dernier prompt traité.
 
-> 🟢 **ÉTAT ACTUEL — v2.6.0, 13 juillet 2026 (CE BLOC FAIT FOI sur toute mention contraire
+> 🟢 **ÉTAT ACTUEL — v2.7.0, 15 juillet 2026 (CE BLOC FAIT FOI sur toute mention contraire
 > plus bas, qui relève de l'historique de construction).**
+> - **TRAÇABILITÉ VAGUE 1 (v2.7, 15/07)** : le **sceau AGRIVO passe à 5 critères** (nouveau
+>   ⑤ « chaîne de possession continue » = journal amont complet + zéro anomalie bloquante de
+>   la sentinelle de volume). **Journal de possession** amont (`PossessionCode` :
+>   achat-bord-champ → transport-connaissement → reception-magasin → pesee ;
+>   `possessionComplete()` ; DISTINCT de `JALONS_ORDRE` aval, inchangé). **Sentinelle de
+>   volume** `lib/sentinelle/volume.ts` (dépassement plafond / écart pesée / connaissement
+>   dupliqué, bloquant) + `connaissementsDupliquesMarche()`. **Frise « Registre de
+>   possession »** (`journal-lot.tsx`) sur la fiche publique + dépliable « Journal du lot »
+>   dans « Mes lots » avec **scan de documents IA** (`scan-document.tsx` + route
+>   `app/api/gemini/scan-document` + module pur `lib/ai/scan-document.ts`, anti-invention).
+>   **Gating unifié `estVendable()`** (gardes dans toggle/réservation/`telechargerLotPdf`,
+>   qui retourne un booléen). **Compteur de coût d'onboarding** (`lib/mesure/onboarding.ts`,
+>   mesure du parcours /app/verifier, panneau `onboarding-stats.tsx` dashboard coop).
+>   Seeds : lots vendables = chaîne complète ; **EXP-2026-0007 = chaîne incomplète**
+>   (démonstration honnête). **169 tests**. Étude de marché v1.1 (Farmerline, réseaux
+>   propriétaires ofi/Cargill/Mondelez, 231 Md FCFA, règlement (UE) 2025/2650).
 > - **AGRIVO MARKET v2.6 (13/07)** : ruban d'activité du bas **opaque** (plus de glass) ; chart
 >   héros = **courbe lissée** (Catmull-Rom, `smoothPath`/`smooth` dans `Sparkline`) + **axes X/Y
 >   en HTML** (`SPARK_TOP`/`SPARK_BAND` partagés, `fmtDate` exporté), chips haut/bas retirés ;
->   **cockpit « Mes lots » refondu** au design system app (`.eyebrow`/`font-display`,
+>   **espace « Mes lots » refondu** au design system app (`.eyebrow`/`font-display`,
 >   `.btn-green`, KPI `.panel-forest` avec `StatNumber` en direct, filtres pilule `layoutId`
 >   Tous/Publiés/Retirés/Réservés, cartes `.card-premium` staggerées + liseré filière, chip
 >   d'état, retrait avec Annuler inline, `estVendable` réutilisé).
@@ -51,7 +67,7 @@
 >   **`/marketplace/lot/[ref]`** (fiche publique : sceau 4 critères, mini-carte Leaflet, dossier de
 >   confiance carte/certificat/DDR, contrôle d'intégrité, **PDF fiche + bon de réservation QR**
 >   `lot-pdf.tsx`, réservation gatée → connexion) · **`/marketplace/vendre`** (landing vendeur).
->   Le module in-app **`/app/exportateur/marketplace` = cockpit « Mes lots »** (publier/retirer/suivre,
+>   Le module in-app **`/app/exportateur/marketplace` = espace « Mes lots »** (publier/retirer/suivre,
 >   lien vers chaque fiche publique) ; la découverte/réservation vit sur la vitrine.
 >   Données : `data/mock-marketplace.ts` (6 lots réels : EXP-2026-0001/0002 + 0004..0007 dérivés du
 >   portefeuille ; `findMarketLot`/`findMarketExpedition`/`parcellesDuLot`/`MARKET_LOT_REFS`).
@@ -428,6 +444,52 @@ variables CSS dans `app/globals.css`.
 ---
 
 ## 📓 Journal de build (le plus récent en haut)
+
+### Session 35 — 2026-07-15 — v2.7.0 : traçabilité Vague 1 (sceau 5 critères, registre de possession, sentinelle de volume, scan IA)
+- 🎯 **Contexte** : suite de l'étude traçabilité exportateurs + audit Gemini de l'étude de
+  marché (vérifié par recherche web indépendante avant intégration). Plan approuvé 7 phases
+  (A corrections doc · B gating · C 5ᵉ critère · D journal possession · E scan IA ·
+  F sentinelle · G compteur onboarding).
+- 🏗️ **Fait (code)** :
+  - `data/mock-expeditions.ts` : modèle amont `PossessionCode`/`JalonPossession`/
+    `POSSESSION_ORDRE`/`POSSESSION_LABEL`/`possessionComplete()` + champ `journalPossession`
+    sur `Expedition`. ⚠️ DÉCISION D'ARCHI : la chaîne amont est une séquence SÉPARÉE de
+    `JALONS_ORDRE` (aval), PAS une extension — les tests exigent que `exp.jalons` soit un
+    préfixe de `JALONS_ORDRE` et que la progression reste 1..5. Seeds exp1/exp2/exp3
+    enrichies d'un journal complet ; placeholders « — » remplacés (charte).
+  - `lib/sentinelle/volume.ts` (pur, calqué sur registre/audit.ts) :
+    `evaluerSentinelleVolume()` → `AnomalieVolume{categorie, detail{fr,en}, bloquant}`
+    (depassement-plafond / ecart-pesee TOLERANCE_PESEE 8 % / connaissement-duplique) +
+    `connaissementsDupliquesMarche()` (Map de comptage croisé).
+  - `data/mock-marketplace.ts` : `CritereCode` + « chaine-possession » (ok = chaîne complète
+    ET zéro anomalie bloquante — distinct du critère ③ intégrité) ; `MarketLot` gagne
+    `journalPossession` + `alertesVolume` ; mkt4/5/6 = chaîne complète (restent scellés),
+    **mkt7 = transport SANS connaissement + pesée absente** (en préparation pour 2 raisons).
+  - **Gating durci** : `estVendable()` = source unique (page Mes lots L260 + garde dans
+    `toggle()` + gardes réservation/PDF dans lot-detail + `telechargerLotPdf()` retourne
+    `Promise<boolean>` et refuse un bon de réservation non vendable — testé).
+  - UI : `components/marketplace/journal-lot.tsx` (frise stagger/spring/reduced-motion,
+    maillons manquants ambre pointillé « À documenter », alertes rouges) ; section
+    « Registre de possession » sur lot-detail ; dépliable « Journal du lot » + badge alertes
+    dans LotCard ; `scan-document.tsx` (type → photo → formulaire pré-rempli éditable →
+    jalon de session ; badges live/démo, illisible = redemande).
+  - Scan IA : `lib/ai/scan-document.ts` (pur : `validerExtraction` stricte, `extractionDemo`
+    déterministe) + route `app/api/gemini/scan-document` (même doctrine que gemini/scan).
+  - Onboarding : `lib/mesure/onboarding.ts` (mesures localStorage, `statsOnboarding` pur,
+    bornes 30 s-4 h) ; enregistrement au step 7 de /app/verifier (useRef, une fois) ;
+    panneau `onboarding-stats.tsx` (invisible si 0 mesure) dans l'aside du dashboard coop.
+  - Fix eslint préexistant : `JSON.stringify(choix)` extrait en `choixKey`
+    (expeditions/page.tsx L875, règle dependency-list).
+- 📄 **Fait (docs)** : purge « cockpit » (code 0 occurrence, CLAUDE.md état, 3 docs livrés) ;
+  étude de marché **v1.1** (encart méthodo v1.1, règlement (UE) 2025/2650 nommé, 231,247 Md
+  FCFA KOACI 08/03/2026, ligne Farmerline/Mergdata + encart « concurrent le plus proche du
+  terrain », réseaux propriétaires nommés ofi/AtSource · Cargill/CocoaWise · Mondelez/Cocoa
+  Life sans chiffre non sourcé, distinction Trase 48 % ≠ CCC ~40 %, modèle de marge par lot
+  ~14 producteurs/25 t, biais « SNT ≠ adoption privée », menace Farmerline). ⚠️ Chiffres non
+  sourcés de l'audit Gemini (SAM/SOM/15 000 FCFA) PAS repris.
+- ✅ **GATES** : `tsc` ✓ · `eslint` 0 erreur (37 warnings assumés) · `next build` ✓ ·
+  **169 tests** (148 + 21 : sentinelle-volume ×6, journal-possession ×5, scan-document ×4,
+  onboarding-mesure ×4, sceau 5 critères + garde PDF). Version 2.7.0. Push/deploy = Anael.
 
 ### Session 34 — 2026-07-13 — v2.6.0 : ruban opaque, chart héros axes + lissage, cockpit « Mes lots »
 - 🎯 **Retours Anael** : enlever le liquid glass « du footer » (= le ruban collant du bas, seul

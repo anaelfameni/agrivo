@@ -850,6 +850,8 @@ function Composer({
   const entrees = Object.entries(choix).map(([parcelleId, tonnes]) => ({ parcelleId, tonnes }));
   const resultat = composerExpedition(entrees);
   const nbChoisies = entrees.length;
+  // Clé stable dérivée du contenu de `choix` (dépendance simple exigée par le linter).
+  const choixKey = JSON.stringify(choix);
 
   // Brouillon du lot : sert au récapitulatif ET au contrôle pré-embarquement AUTOMATIQUE
   // (moteur pur exécuté côté client — mêmes règles que l'API, zéro réseau à cette étape).
@@ -872,7 +874,7 @@ function Composer({
       creeLe: new Date().toISOString().slice(0, 10),
     }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [nom, acheteur, pays, portDepart, portArrivee, navire, conteneur, JSON.stringify(choix), t.nomLotDefaut],
+    [nom, acheteur, pays, portDepart, portArrivee, navire, conteneur, choixKey, t.nomLotDefaut],
   );
   const controleAuto = React.useMemo(
     () => (etape === 3 && nbChoisies > 0 ? controleEmbarquement(brouillon, PARCELLES) : null),

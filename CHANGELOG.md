@@ -3,6 +3,58 @@
 Versioning sémantique (MAJOR.MINOR.PATCH). Chaque release liste ce qui est ajouté, corrigé et
 vérifié, conformément à l'étape 8 du pipeline « Du besoin à la Release ».
 
+## v2.7.0 — 2026-07-15 — Traçabilité Vague 1 : sceau à 5 critères, registre de possession, sentinelle de volume, scan de documents IA
+
+### Ajouté
+- **5ᵉ critère du sceau AGRIVO : « chaîne de possession continue »** (`data/mock-marketplace.ts`,
+  `CritereCode` étendu) : le sceau exige désormais un journal de possession amont complet
+  (achat bord champ → transport sous connaissement → réception magasin → pesée) ET zéro
+  anomalie bloquante de la sentinelle de volume. Rendu automatique dans `sceau-agrivo.tsx`
+  et `lot-pdf.tsx` (déjà génériques au nombre de critères).
+- **Journal de possession du lot** (`data/mock-expeditions.ts`) : nouveau modèle amont
+  `PossessionCode`/`JalonPossession`/`POSSESSION_ORDRE`/`possessionComplete()`, DISTINCT des
+  jalons logistiques aval (`JALONS_ORDRE` inchangé, tests d'ordre canonique préservés).
+  Champ `journalPossession` sur `Expedition` et `MarketLot`. Seeds : expéditions et lots
+  vendables enrichis d'une chaîne complète ; EXP-2026-0007 volontairement incomplet
+  (connaissement manquant + pesée absente) = double démonstration honnête du verrou.
+- **Sentinelle de volume** (`lib/sentinelle/volume.ts`, module pur calqué sur
+  `lib/registre/audit.ts`) : 3 anomalies calculées, bilingues, bloquantes (dépassement du
+  plafond agronomique, écart de pesée > 8 %, connaissement dupliqué) +
+  `connaissementsDupliquesMarche()` (audit croisé entre lots). Alimente le 5ᵉ critère et
+  le champ `alertesVolume` de chaque lot.
+- **Frise « Registre de possession »** (`components/marketplace/journal-lot.tsx`) : rail
+  vertical animé (stagger, spring, reduced-motion), maillons manquants en pointillé ambre
+  « À documenter », alertes sentinelle en rouge. Sur la fiche publique du lot (section
+  dédiée) et dans « Mes lots » (dépliable « Journal du lot » avec badge d'alertes).
+- **Scan universel de documents IA** : route `app/api/gemini/scan-document` (connaissement,
+  bordereau d'achat, ticket de pesée ; Gemini Vision, charte anti-invention, repli démo sans
+  clé) + module pur `lib/ai/scan-document.ts` (validation stricte : date ISO, tonnage borné,
+  jamais de champ inventé) + composant `scan-document.tsx` (photo/upload → formulaire
+  pré-rempli éditable → jalon ajouté au journal de session).
+- **Compteur de coût d'onboarding** (`lib/mesure/onboarding.ts` + panneau
+  `onboarding-stats.tsx` sur le dashboard coop) : durée réelle des parcours de vérification
+  complétés (moyenne/médiane, mesures implausibles écartées), pour remplacer le coût
+  d'enrôlement supposé par une donnée de pilote. Invisible tant qu'aucune mesure.
+
+### Durci
+- **Gating de vente unifié sur `estVendable()`** (source de vérité unique) : la carte de
+  « Mes lots » n'a plus de réimplémentation locale ; gardes explicites dans `toggle()`
+  (publier/retirer), dans la réservation et le PDF de réservation de `lot-detail.tsx`, et
+  DANS `telechargerLotPdf()` (refuse un bon de réservation pour un lot non vendable,
+  retourne un booléen testé).
+
+### Corrigé
+- Terminologie « cockpit » purgée du code (clés COPY → `mesLots`, commentaire JSDoc) et des
+  descriptions d'état de CLAUDE.md ; placeholders « — » des seeds remplacés (« À vendre »,
+  « À confirmer ») ; tiret cadratin retiré du point « alertes-coop » du contrôle
+  pré-embarquement (texte rendu) ; erreur eslint préexistante de dépendance `useMemo`
+  (`JSON.stringify` extrait en `choixKey`, expeditions/page.tsx).
+
+### Vérifié
+- `tsc` ✓ · `eslint` 0 erreur · `next build` ✓ · **169 tests** verts (148 + 21 : sentinelle,
+  journal de possession, scan-document, mesure d'onboarding, 5ᵉ critère, garde PDF) ·
+  smoke SSR.
+
 ## v2.6.0 — 2026-07-13 — AGRIVO Market : ruban opaque, chart héros avec axes + courbe lissée, cockpit « Mes lots » refondu
 
 ### Changé

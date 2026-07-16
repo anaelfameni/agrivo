@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
@@ -12,6 +12,7 @@ import { StepAnalysis } from "@/components/verifier/step-analysis";
 import { StepCertificate } from "@/components/verifier/step-certificate";
 import { StepValorisation } from "@/components/verifier/step-valorisation";
 import { StatusBadge } from "@/components/ui/status-badge";
+import { enregistrerMesure } from "@/lib/mesure/onboarding";
 import { PinMark } from "@/components/ui/pin-mark";
 import { buildCertificat } from "@/lib/certificat-data";
 import {
@@ -81,6 +82,9 @@ export default function VerifierPage() {
   const { lang } = useLanguage();
   const t = TR[lang];
   const [step, setStep] = useState(1); // 1-6 ; 7 = écran de fin
+  // Compteur de coût d'onboarding : horodatage de début du parcours (instrument interne).
+  const debutRef = useRef(Date.now());
+  const mesureFaiteRef = useRef(false);
   const [, setScan] = useState<ScanResult | null>(null);
   const [parcelle, setParcelle] = useState<Parcelle | null>(null);
   const [whisp, setWhisp] = useState<WhispResult | null>(null);
@@ -145,7 +149,18 @@ export default function VerifierPage() {
     setWhisp(null);
     setForced(null);
     setStep(1);
+    debutRef.current = Date.now();
+    mesureFaiteRef.current = false;
   }
+
+  // Écran de fin atteint : la mesure d'onboarding est enregistrée UNE fois (durée + étapes).
+  // Instrument interne : remplace le coût d'enrôlement supposé par une donnée réelle de pilote.
+  useEffect(() => {
+    if (step === 7 && !mesureFaiteRef.current) {
+      mesureFaiteRef.current = true;
+      enregistrerMesure({ debut: debutRef.current, fin: Date.now(), etapes: 6 });
+    }
+  }, [step]);
 
   const stepperCurrent = Math.min(step, 6);
 

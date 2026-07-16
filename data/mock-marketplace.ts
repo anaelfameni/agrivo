@@ -12,7 +12,9 @@
  *   ① Ségrégation : toutes les parcelles du lot sont « Conforme » (pas de bilan de masse) ;
  *   ② Carte producteur : tous les producteurs sont cartés (identité + parcelle vérifiées par l'État) ;
  *   ③ Intégrité : le contrôle pré-embarquement est « Prêt » (volumes réconciliés, vérifs fraîches) ;
- *   ④ Références DDR présentes au dossier.
+ *   ④ Références DDR présentes au dossier ;
+ *   ⑤ Chaîne de possession continue : journal amont complet (achat bord champ → transport sous
+ *      connaissement → réception → pesée) ET aucune anomalie bloquante de la sentinelle de volume.
  * Un lot ne peut être VENDU que si son sceau est « vérifié ». Gate carte SOUPLE : un producteur
  * non carté n'est pas supprimé, il fait juste échouer le critère ② → lot « en préparation ».
  *
@@ -22,9 +24,11 @@
 import {
   controleEmbarquement,
   parcellesExpedition,
+  possessionComplete,
   tonnageExpedition,
   EXPEDITIONS,
   type Expedition,
+  type JalonPossession,
 } from "@/data/mock-expeditions";
 import {
   FILIERE_LABEL,
@@ -32,6 +36,10 @@ import {
   type Filiere,
   type Parcelle,
 } from "@/data/mock-parcelles";
+import {
+  evaluerSentinelleVolume,
+  type AnomalieVolume,
+} from "@/lib/sentinelle/volume";
 
 /* --------------------------------------------------------------------------------------------
  * Ancre anti-fraude : la carte producteur (Conseil Café-Cacao).
@@ -48,7 +56,7 @@ export function estProducteurCarte(numeroCartePro: string): boolean {
 /* --------------------------------------------------------------------------------------------
  * Le SCEAU AGRIVO — évalué, jamais affirmé sans preuve.
  * ------------------------------------------------------------------------------------------ */
-export type CritereCode = "segregation" | "carte-producteur" | "integrite" | "references-ddr";
+export type CritereCode = "segregation" | "carte-producteur" | "integrite" | "references-ddr" | "chaine-possession";
 
 export interface CritereSceau {
   code: CritereCode;
@@ -58,7 +66,7 @@ export interface CritereSceau {
 }
 
 export interface Sceau {
-  /** « verifie » seulement si les 4 critères passent ; sinon « en-preparation ». Jamais de faux sceau. */
+  /** « verifie » seulement si les 5 critères passent ; sinon « en-preparation ». Jamais de faux sceau. */
   statut: "verifie" | "en-preparation";
   criteres: CritereSceau[];
 }
@@ -77,6 +85,11 @@ export function evaluerSceau(exp: Expedition, toutesParcelles: Parcelle[]): Scea
   const nonCartes = parcelles.filter((p) => !estProducteurCarte(p.numeroCartePro));
   const sansDdr = parcelles.filter((p) => !p.referenceDDR);
   const controle = controleEmbarquement(exp, toutesParcelles);
+  // 5ᵉ critère : chaîne de possession CONTINUE (maillons amont présents) ET sentinelle de volume
+  // sans anomalie bloquante. Les deux conditions sont distinctes du contrôle d'intégrité ③.
+  const chaineComplete = possessionComplete(exp.journalPossession ?? []);
+  const sentinelle = evaluerSentinelleVolume(exp, toutesParcelles);
+  const chaineOk = chaineComplete && !sentinelle.bloquant;
 
   const criteres: CritereSceau[] = [
     {
@@ -126,6 +139,20 @@ export function evaluerSceau(exp: Expedition, toutesParcelles: Parcelle[]): Scea
         sansDdr.length === 0
           ? "DDR references complete in the file."
           : `${sansDdr.length} plot(s) without a DDR reference: complete the file.`,
+    },
+    {
+      code: "chaine-possession",
+      ok: chaineOk,
+      fr: chaineOk
+        ? "Chaîne de possession continue : achat bord champ, transport sous connaissement, réception et pesée réconciliés."
+        : !chaineComplete
+          ? "Chaîne de possession incomplète : un maillon amont (achat, connaissement, réception ou pesée) manque au dossier."
+          : "Chaîne de possession : la sentinelle de volume signale un écart à réconcilier avant le sceau.",
+      en: chaineOk
+        ? "Continuous chain of custody: farm-gate purchase, transport under bill of lading, reception and weighing reconciled."
+        : !chaineComplete
+          ? "Incomplete chain of custody: an upstream link (purchase, bill of lading, reception or weighing) is missing."
+          : "Chain of custody: the volume sentinel flags a gap to reconcile before sealing.",
     },
   ];
 
@@ -190,26 +217,34 @@ export interface MarketLot {
   /** Acheteur (seulement pour un lot déjà réservé). */
   acheteur?: string;
   paysAcheteur?: string;
+  /** Journal de possession amont du lot (frise « Registre de possession » de la fiche + espace vendeur). */
+  journalPossession: JalonPossession[];
+  /** Anomalies de volume ouvertes (sentinelle) : désactivent la publication tant qu'elles subsistent. */
+  alertesVolume: AnomalieVolume[];
 }
 
+/** Placeholder d'affichage d'un lot sans acheteur encore (jamais un vrai nom). */
+const SANS_ACHETEUR = "À vendre";
+
 /**
- * Lots MARKETPLACE supplémentaires (EXP-2026-0004..0007) — expéditions composées d'autres
- * parcelles CONFORMES du portefeuille. Tonnages sous les plafonds anti-fraude et vérifications
- * satellites fraîches à la composition, pour que le sceau sorte « vérifié » — SAUF 0007,
- * volontairement « en préparation » (une pesée > 90 % du plafond → réconciliation à finir) :
- * la vitrine montre honnêtement qu'un lot conforme n'est pas scellé tant que le verrou d'intégrité
- * n'est pas levé. Non ajoutées au registre global EXPEDITIONS (les tests d'expédition exigent que
- * TOUT lot du registre soit irréprochable ; ici on veut justement un cas « en préparation »).
+ * Lots MARKETPLACE supplémentaires (EXP-2026-0004..0007) : expéditions composées d'autres parcelles
+ * CONFORMES du portefeuille. Tonnages sous les plafonds anti-fraude, vérifications satellites
+ * fraîches à la composition et chaîne de possession complète, pour que le sceau sorte « vérifié ».
+ * EXCEPTION 0007, volontairement « en préparation » : une pesée à ~96 % du plafond (verrou
+ * d'intégrité ③) ET une chaîne de possession incomplète (transport sans connaissement, pesée
+ * manquante, verrou ⑤). La vitrine montre honnêtement qu'un lot conforme n'est pas scellé tant que
+ * ces verrous ne sont pas levés. Non ajoutées au registre global EXPEDITIONS (les tests d'expédition
+ * exigent que TOUT lot du registre soit irréprochable ; ici on veut justement un cas « en préparation »).
  */
 const LOTS_SUPPLEMENTAIRES: Expedition[] = [
   {
     id: "mkt4",
     ref: "EXP-2026-0004",
     nomLot: "Cacao Nawa · Méagui, récolte principale 2025-26",
-    acheteur: "— (à vendre)",
-    paysAcheteur: "—",
+    acheteur: SANS_ACHETEUR,
+    paysAcheteur: "À confirmer",
     portDepart: "San Pédro",
-    portArrivee: "—",
+    portArrivee: "À confirmer",
     navire: "MSC Lorette",
     numeroConteneur: "MSCU-771208-4",
     codeSH: "1801",
@@ -220,16 +255,22 @@ const LOTS_SUPPLEMENTAIRES: Expedition[] = [
       { code: "compose", date: "2026-07-08" },
       { code: "depart-coop", date: "2026-07-09", note: { fr: "Coopérative de Méagui", en: "Méagui Cooperative" } },
     ],
+    journalPossession: [
+      { code: "achat-bord-champ", date: "2026-07-01", acteur: "Pisteur agréé · Méagui", tonnes: 4.5 },
+      { code: "transport-connaissement", date: "2026-07-03", connaissement: "CNT-MEA-260703-11", tonnes: 4.5 },
+      { code: "reception-magasin", date: "2026-07-05", acteur: "Magasin coopérative de Méagui", tonnes: 4.5 },
+      { code: "pesee", date: "2026-07-06", tonnes: 4.5 },
+    ],
     creeLe: "2026-07-08",
   },
   {
     id: "mkt5",
     ref: "EXP-2026-0005",
     nomLot: "Cacao San-Pédro · lot littoral 2025-26",
-    acheteur: "— (à vendre)",
-    paysAcheteur: "—",
+    acheteur: SANS_ACHETEUR,
+    paysAcheteur: "À confirmer",
     portDepart: "San Pédro",
-    portArrivee: "—",
+    portArrivee: "À confirmer",
     navire: "Maersk Sètte",
     numeroConteneur: "MRKU-559034-2",
     codeSH: "1801",
@@ -240,16 +281,22 @@ const LOTS_SUPPLEMENTAIRES: Expedition[] = [
       { code: "compose", date: "2026-07-03" },
       { code: "depart-coop", date: "2026-07-04", note: { fr: "COOP-SP San Pédro", en: "COOP-SP San Pédro" } },
     ],
+    journalPossession: [
+      { code: "achat-bord-champ", date: "2026-06-25", acteur: "Traitant agréé · San Pédro", tonnes: 6.2 },
+      { code: "transport-connaissement", date: "2026-06-27", connaissement: "CNT-SP-260627-07", tonnes: 6.2 },
+      { code: "reception-magasin", date: "2026-06-29", acteur: "Magasin COOP-SP San Pédro", tonnes: 6.2 },
+      { code: "pesee", date: "2026-07-01", tonnes: 6.2 },
+    ],
     creeLe: "2026-07-03",
   },
   {
     id: "mkt6",
     ref: "EXP-2026-0006",
     nomLot: "Cacao Haut-Sassandra · Daloa 2025-26",
-    acheteur: "— (à vendre)",
-    paysAcheteur: "—",
+    acheteur: SANS_ACHETEUR,
+    paysAcheteur: "À confirmer",
     portDepart: "San Pédro",
-    portArrivee: "—",
+    portArrivee: "À confirmer",
     navire: "CMA CGM Sassandra",
     numeroConteneur: "CMAU-330871-9",
     codeSH: "1801",
@@ -260,23 +307,35 @@ const LOTS_SUPPLEMENTAIRES: Expedition[] = [
       { code: "compose", date: "2026-07-08" },
       { code: "depart-coop", date: "2026-07-09", note: { fr: "COOP Daloa", en: "COOP Daloa" } },
     ],
+    journalPossession: [
+      { code: "achat-bord-champ", date: "2026-07-01", acteur: "Pisteur agréé · Daloa", tonnes: 4.7 },
+      { code: "transport-connaissement", date: "2026-07-03", connaissement: "CNT-DAL-260703-19", tonnes: 4.7 },
+      { code: "reception-magasin", date: "2026-07-05", acteur: "Magasin COOP Daloa", tonnes: 4.7 },
+      { code: "pesee", date: "2026-07-06", tonnes: 4.7 },
+    ],
     creeLe: "2026-07-08",
   },
   {
     id: "mkt7",
     ref: "EXP-2026-0007",
     nomLot: "Cacao Gôh · Gagnoa (réconciliation en cours)",
-    acheteur: "— (à vendre)",
-    paysAcheteur: "—",
+    acheteur: SANS_ACHETEUR,
+    paysAcheteur: "À confirmer",
     portDepart: "San Pédro",
-    portArrivee: "—",
+    portArrivee: "À confirmer",
     codeSH: "1801",
     filiere: "cacao",
     parcelleIds: ["p28", "p30"],
-    // p28 volontairement à ~96 % de son plafond → le contrôle d'intégrité reste « attention »,
-    // donc sceau « en préparation » (démonstration honnête du verrou de réconciliation).
+    // p28 volontairement à ~96 % de son plafond : le contrôle d'intégrité ③ reste « attention »,
+    // ET la chaîne de possession ⑤ est incomplète (transport sans connaissement, pesée absente)
+    // → sceau « en préparation » (double démonstration honnête des verrous).
     tonnages: { p28: 2.25, p30: 1.5 },
     jalons: [{ code: "compose", date: "2026-06-30" }],
+    journalPossession: [
+      { code: "achat-bord-champ", date: "2026-06-24", acteur: "Pisteur · Gagnoa", tonnes: 3.75 },
+      { code: "transport-connaissement", date: "2026-06-26", tonnes: 3.75, note: { fr: "Connaissement non fourni : remise à documenter.", en: "Bill of lading missing: hand-off to document." } },
+      { code: "reception-magasin", date: "2026-06-28", acteur: "Magasin Gôh · Gagnoa", tonnes: 3.75 },
+    ],
     creeLe: "2026-06-30",
   },
 ];
@@ -310,7 +369,7 @@ export function lotDepuisExpedition(
   const regions = [...new Set(parcelles.map((p) => p.region))];
   // La campagne est dérivée de la date de composition (millésime de récolte).
   const annee = new Date(exp.creeLe).getFullYear();
-  const reserve = statutMarche === "reserve" && exp.acheteur && !exp.acheteur.startsWith("—");
+  const reserve = statutMarche === "reserve" && Boolean(exp.acheteur) && exp.acheteur !== SANS_ACHETEUR;
   return {
     ref: exp.ref,
     nomLot: exp.nomLot,
@@ -329,6 +388,8 @@ export function lotDepuisExpedition(
     portDepart: exp.portDepart,
     acheteur: reserve ? exp.acheteur : undefined,
     paysAcheteur: reserve ? exp.paysAcheteur : undefined,
+    journalPossession: exp.journalPossession ?? [],
+    alertesVolume: evaluerSentinelleVolume(exp, toutesParcelles).anomalies,
   };
 }
 

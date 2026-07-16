@@ -11,6 +11,7 @@ import { PinMark } from "@/components/ui/pin-mark";
 import { EmptyState } from "@/components/ui/empty-state";
 import { Magnetic } from "@/components/ui/motion-primitives";
 import { RegistreImport } from "@/components/app/registre-import";
+import { OnboardingStats } from "@/components/app/onboarding-stats";
 import { useLanguage } from "@/components/language-provider";
 import {
   COOP_DEMO,
@@ -518,6 +519,9 @@ export default function DashboardPage() {
               </ul>
             )}
           </div>
+
+          {/* Coût d'onboarding mesuré (interne ; invisible tant qu'aucun parcours complété) */}
+          <OnboardingStats />
         </aside>
       </div>
     </div>

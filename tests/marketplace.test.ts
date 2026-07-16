@@ -29,13 +29,14 @@ describe("carte producteur (ancre anti-fraude)", () => {
 });
 
 describe("sceau AGRIVO (double verrou)", () => {
-  it("évalue les 4 critères et vérifie un lot 100 % conforme + carté + prêt", () => {
+  it("évalue les 5 critères et vérifie un lot 100 % conforme + carté + prêt + tracé", () => {
     const exp = findExpedition("EXP-2026-0001")!;
     const sceau = evaluerSceau(exp, PARCELLES);
-    expect(sceau.criteres).toHaveLength(4);
-    // EXP-2026-0001 = p01..p04, toutes conformes, cartées CCC, DDR présentes, contrôle « Prêt »
+    expect(sceau.criteres).toHaveLength(5);
+    // EXP-2026-0001 = p01..p04, conformes, cartées CCC, DDR présentes, contrôle « Prêt », chaîne complète.
     expect(sceau.statut).toBe("verifie");
     expect(sceau.criteres.every((c) => c.ok)).toBe(true);
+    expect(sceau.criteres.map((c) => c.code)).toContain("chaine-possession");
   });
 
   it("ne délivre jamais un faux sceau : un producteur non carté fait échouer le critère carte", () => {
@@ -47,6 +48,16 @@ describe("sceau AGRIVO (double verrou)", () => {
     const sceau = evaluerSceau(exp, parcellesTruquees);
     const carte = sceau.criteres.find((c) => c.code === "carte-producteur")!;
     expect(carte.ok).toBe(false);
+    expect(sceau.statut).toBe("en-preparation");
+  });
+
+  it("ne délivre jamais un faux sceau : une chaîne de possession incomplète fait échouer le 5ᵉ critère", () => {
+    const exp = findExpedition("EXP-2026-0001")!;
+    // On retire le journal de possession : la chaîne n'est plus prouvée.
+    const sansJournal = { ...exp, journalPossession: [] };
+    const sceau = evaluerSceau(sansJournal, PARCELLES);
+    const chaine = sceau.criteres.find((c) => c.code === "chaine-possession")!;
+    expect(chaine.ok).toBe(false);
     expect(sceau.statut).toBe("en-preparation");
   });
 });
@@ -101,6 +112,16 @@ describe("lots du marché", () => {
     expect(estVendable(reserve)).toBe(false);
     const prep = lots.find((l) => l.sceau.statut === "en-preparation")!;
     expect(estVendable(prep)).toBe(false);
+  });
+});
+
+describe("garde-fou PDF de réservation", () => {
+  it("refuse d'émettre un bon de réservation pour un lot non vendable", async () => {
+    const { telechargerLotPdf } = await import("@/components/marketplace/lot-pdf");
+    const lot = findMarketLot("EXP-2026-0007", PARCELLES)!; // en préparation, jamais vendable
+    const exp = findMarketExpedition("EXP-2026-0007")!;
+    expect(estVendable(lot)).toBe(false);
+    await expect(telechargerLotPdf(exp, lot, "fr", "reservation")).resolves.toBe(false);
   });
 });
 

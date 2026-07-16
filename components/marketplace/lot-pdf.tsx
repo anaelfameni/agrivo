@@ -4,7 +4,7 @@ import { Document, Page, Text, View, StyleSheet, Image, pdf } from "@react-pdf/r
 import QRCode from "qrcode";
 import { parcellesExpedition, type Expedition } from "@/data/mock-expeditions";
 import { FILIERE_LABEL, fmtHa } from "@/data/mock-parcelles";
-import { takeRate, type MarketLot } from "@/data/mock-marketplace";
+import { estVendable, takeRate, type MarketLot } from "@/data/mock-marketplace";
 
 /**
  * Documents AGRIVO MARKET au format PDF :
@@ -200,14 +200,19 @@ function LotDocument({
   );
 }
 
-/** Génère et télécharge le PDF d'un lot (fiche de confiance ou bon de réservation). */
+/**
+ * Génère et télécharge le PDF d'un lot (fiche de confiance ou bon de réservation).
+ * Garde-fou : un BON DE RÉSERVATION ne peut jamais être émis pour un lot non vendable
+ * (sceau en préparation ou lot déjà réservé) — retourne false sans rien produire.
+ */
 export async function telechargerLotPdf(
   exp: Expedition,
   lot: MarketLot,
   lang: "fr" | "en",
   kind: LotPdfKind = "fiche",
   acheteur?: string,
-): Promise<void> {
+): Promise<boolean> {
+  if (kind === "reservation" && !estVendable(lot)) return false;
   let qrDataUrl: string | undefined;
   try {
     qrDataUrl = await QRCode.toDataURL(`https://agrivo-io.vercel.app/marketplace/lot/${lot.ref}`, {
@@ -226,4 +231,5 @@ export async function telechargerLotPdf(
   a.download = `agrivo-market-${kind === "reservation" ? "reservation" : "fiche"}-${lot.ref}.pdf`;
   a.click();
   URL.revokeObjectURL(a.href);
+  return true;
 }

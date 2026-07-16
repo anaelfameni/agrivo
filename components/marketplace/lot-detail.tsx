@@ -16,6 +16,7 @@ import {
   findMarketLot, findMarketExpedition, parcellesDuLot, takeRate, estVendable,
 } from "@/data/mock-marketplace";
 import { SceauAgrivo } from "@/components/marketplace/sceau-agrivo";
+import { JournalLot } from "@/components/marketplace/journal-lot";
 import { VsIceChip, useCocoaSpot } from "@/components/marketplace/cocoa-price";
 import { HeroBg } from "@/components/landing/hero-bg";
 
@@ -34,6 +35,7 @@ const TR = {
     dossierTitle: "Dossier de confiance", dossierSub: "Le double verrou, parcelle par parcelle : carte producteur (État) + polygone hors-déforestation.",
     farmer: "Producteur", card: "Carte producteur", cert: "Certificat", area: "Superficie", status: "Statut",
     controlTitle: "Contrôle d'intégrité (pré-embarquement)", controlSub: "Faits recalculés depuis les données du lot, jamais un score inventé.",
+    journalTitle: "Registre de possession", journalSub: "Qui a détenu ce lot, du bord champ à la composition : achat, transport sous connaissement, réception, pesée.",
     logisticsTitle: "Origine & logistique", coops: "Coopératives", regions: "Régions", sh: "Code SH",
     txTitle: "Transaction", price: "Prix indicatif", tonnage: "Tonnage", value: "Valeur du lot",
     commission: "Commission AGRIVO estimée", commissionNote: "Take-rate 1–3 % selon le lot · estimation à 2 %. La commission porte sur la transaction, jamais sur le producteur.",
@@ -52,6 +54,7 @@ const TR = {
     dossierTitle: "Trust dossier", dossierSub: "The double lock, plot by plot: producer card (State) + deforestation-free polygon.",
     farmer: "Farmer", card: "Producer card", cert: "Certificate", area: "Area", status: "Status",
     controlTitle: "Integrity control (pre-shipment)", controlSub: "Facts recomputed from the lot's data, never an invented score.",
+    journalTitle: "Chain of custody register", journalSub: "Who held this lot, from farm gate to composition: purchase, transport under bill of lading, reception, weighing.",
     logisticsTitle: "Origin & logistics", coops: "Cooperatives", regions: "Regions", sh: "HS code",
     txTitle: "Transaction", price: "Indicative price", tonnage: "Tonnage", value: "Lot value",
     commission: "Estimated AGRIVO commission", commissionNote: "Take-rate 1–3% per lot · estimate at 2%. The commission applies to the transaction, never to the producer.",
@@ -101,8 +104,16 @@ export function LotDetail({ refLot }: { refLot: string }) {
   const buyerName = user?.organisation || user?.nom;
 
   const onPdf = async (kind: "fiche" | "reservation") => {
+    // Garde-fou : jamais de bon de réservation pour un lot non vendable (le module PDF re-vérifie aussi).
+    if (kind === "reservation" && !estVendable(lot)) return;
     const { telechargerLotPdf } = await import("@/components/marketplace/lot-pdf");
     await telechargerLotPdf(exp, lot, l, kind, kind === "reservation" ? buyerName : undefined);
+  };
+
+  const onReserve = () => {
+    if (!estVendable(lot)) return; // garde-fou : le JSX masque déjà ce bouton pour un lot non vendable
+    if (user) setReserved(true);
+    else setShowLogin(true);
   };
 
   const cardCls = "rounded-2xl border border-black/[0.06] bg-white p-6 shadow-sm";
@@ -195,6 +206,17 @@ export function LotDetail({ refLot }: { refLot: string }) {
             <p className="mt-3 text-xs text-forest-950/45">{l === "en" ? STATUT_PHRASE_EN.conforme : STATUT_PHRASE.conforme}</p>
           </section>
 
+          <section className={cardCls}>
+            <div className="flex items-center gap-2 text-green-signal">
+              <Boxes size={18} />
+              <h2 className="font-display text-lg font-semibold text-forest-950">{t.journalTitle}</h2>
+            </div>
+            <p className="mt-1.5 text-sm text-forest-950/55">{t.journalSub}</p>
+            <div className="mt-4">
+              <JournalLot journal={lot.journalPossession} alertes={lot.alertesVolume} lang={l} />
+            </div>
+          </section>
+
           {controle && (
             <section className={cardCls}>
               <div className="flex items-center gap-2 text-green-signal">
@@ -256,7 +278,7 @@ export function LotDetail({ refLot }: { refLot: string }) {
               {isReserved ? (
                 <div className="rounded-xl border border-black/10 bg-black/[0.02] p-4 text-sm">
                   <p className="font-semibold text-forest-950/80">{t.reserved}</p>
-                  {lot.acheteur && <p className="mt-1 text-forest-950/55">{t.reservedBy} {lot.acheteur}{lot.paysAcheteur && lot.paysAcheteur !== "—" ? ` · ${lot.paysAcheteur}` : ""}</p>}
+                  {lot.acheteur && <p className="mt-1 text-forest-950/55">{t.reservedBy} {lot.acheteur}{lot.paysAcheteur && lot.paysAcheteur !== "À confirmer" ? ` · ${lot.paysAcheteur}` : ""}</p>}
                 </div>
               ) : !vendable ? (
                 <p className="rounded-xl border border-amber-cacao/30 bg-amber-cacao/10 p-4 text-xs leading-relaxed text-amber-cacao">{t.prep}</p>
@@ -282,7 +304,7 @@ export function LotDetail({ refLot }: { refLot: string }) {
                   </div>
                 </div>
               ) : (
-                <button onClick={() => (user ? setReserved(true) : setShowLogin(true))}
+                <button onClick={onReserve}
                   className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-green-signal px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-green-signal/20 transition hover:bg-green-signal/90">
                   <Handshake size={16} /> {t.reserve}
                 </button>

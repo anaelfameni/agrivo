@@ -6,7 +6,7 @@ import type { Language } from "@/lib/i18n";
 
 /**
  * Le SCEAU AGRIVO — le moteur de confiance de la marketplace (double verrou anti-fraude).
- * Affiche le verdict global + le détail des 4 critères (calculés, jamais affirmés).
+ * Affiche le verdict global + le détail des 5 critères (calculés, jamais affirmés).
  * Vocabulaire charte : « vérifié » / « en préparation », jamais « garanti ».
  */
 export function SceauAgrivo({

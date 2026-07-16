@@ -40,6 +40,56 @@ export const JALON_LABEL: Record<JalonCode, { fr: string; en: string }> = {
   "arrive-ue": { fr: "Arrivé UE · DDS déposée", en: "Arrived in EU · DDS filed" },
 };
 
+/* --------------------------------------------------------------------------------------------
+ * Journal de POSSESSION du lot (AMONT) — la chaîne de possession continue, du bord champ à la
+ * composition. Distinct des jalons LOGISTIQUES aval (JALONS_ORDRE : compose → arrive-ue) : ici on
+ * retrace QUI a détenu le lot AVANT sa composition (achat bord champ → transport sous connaissement
+ * → réception magasin → pesée), la donnée qu'exige le RDUE pour prouver qu'un lot n'a pas absorbé
+ * de flux indirect non tracé. Réutilise la forme d'un jalon, enrichie d'une provenance (acteur, n°
+ * de connaissement, tonnes) que lit la sentinelle de volume.
+ * ------------------------------------------------------------------------------------------ */
+export type PossessionCode = "achat-bord-champ" | "transport-connaissement" | "reception-magasin" | "pesee";
+
+export interface JalonPossession {
+  code: PossessionCode;
+  date: string; // ISO jour (antérieur à la composition du lot)
+  /** Qui détient / transfère le lot à ce jalon (pisteur, traitant, magasinier). */
+  acteur?: string;
+  /** N° de connaissement / bordereau de transport (preuve documentaire de la remise). */
+  connaissement?: string;
+  /** Volume constaté à ce jalon (t) — lu par la sentinelle de volume. */
+  tonnes?: number;
+  note?: { fr: string; en: string };
+}
+
+/** Ordre canonique de la chaîne de possession amont (tout se passe avant la composition du lot). */
+export const POSSESSION_ORDRE: PossessionCode[] = [
+  "achat-bord-champ",
+  "transport-connaissement",
+  "reception-magasin",
+  "pesee",
+];
+
+export const POSSESSION_LABEL: Record<PossessionCode, { fr: string; en: string }> = {
+  "achat-bord-champ": { fr: "Achat bord champ", en: "Farm-gate purchase" },
+  "transport-connaissement": { fr: "Transport · connaissement", en: "Transport · bill of lading" },
+  "reception-magasin": { fr: "Réception magasin", en: "Warehouse reception" },
+  "pesee": { fr: "Pesée", en: "Weighing" },
+};
+
+/**
+ * La chaîne de possession est-elle CONTINUE : les 4 jalons amont présents, et le jalon de transport
+ * porte bien un numéro de connaissement (la remise est documentée) ? Ne juge pas les volumes (rôle
+ * de la sentinelle de volume) : ici, uniquement la présence des maillons.
+ */
+export function possessionComplete(journal: JalonPossession[]): boolean {
+  const codes = journal.map((j) => j.code);
+  const tousPresents = POSSESSION_ORDRE.every((c) => codes.includes(c));
+  const transport = journal.find((j) => j.code === "transport-connaissement");
+  const connaissementPresent = Boolean(transport?.connaissement && transport.connaissement.trim());
+  return tousPresents && connaissementPresent;
+}
+
 export interface Expedition {
   id: string;
   /** Référence publique du dossier (QR, page de vérification). */
@@ -58,6 +108,9 @@ export interface Expedition {
   /** Tonnage prélevé par parcelle (t) — chaque valeur ≤ plafondTonnes(parcelle). */
   tonnages: Record<string, number>;
   jalons: Jalon[];
+  /** Journal de possession AMONT (bord champ → pesée), antérieur à la composition. Optionnel :
+   *  un lot ancien peut ne pas le porter (son 5ᵉ critère de sceau restera « en préparation »). */
+  journalPossession?: JalonPossession[];
   creeLe: string;
 }
 
@@ -235,8 +288,8 @@ export function controleEmbarquement(exp: Expedition, toutesParcelles: Parcelle[
     points.push({
       niveau: "ok",
       code: "alertes-coop",
-      fr: `Pour information : ${alertes.length} alerte(s) active(s) sur d'autres parcelles des coopératives contributrices — sans effet sur ce lot (ségrégation stricte).`,
-      en: `For information: ${alertes.length} active alert(s) on other plots of the contributing cooperatives — no effect on this lot (strict segregation).`,
+      fr: `Pour information : ${alertes.length} alerte(s) active(s) sur d'autres parcelles des coopératives contributrices, sans effet sur ce lot (ségrégation stricte).`,
+      en: `For information: ${alertes.length} active alert(s) on other plots of the contributing cooperatives, no effect on this lot (strict segregation).`,
     });
   } else {
     points.push({
@@ -316,6 +369,12 @@ export const EXPEDITIONS: Expedition[] = [
       { code: "embarque", date: "2026-06-20", note: { fr: "MSC Amboise · conteneur MSKU-483920-1", en: "MSC Amboise · container MSKU-483920-1" } },
       { code: "arrive-ue", date: "2026-07-04", note: { fr: "Le Havre · référence DDS transmise à l'acheteur", en: "Le Havre · DDS reference sent to the buyer" } },
     ],
+    journalPossession: [
+      { code: "achat-bord-champ", date: "2026-06-05", acteur: "Pisteur agréé · secteur Soubré", tonnes: 5.9 },
+      { code: "transport-connaissement", date: "2026-06-07", connaissement: "CNT-SOU-260607-01", tonnes: 5.9 },
+      { code: "reception-magasin", date: "2026-06-09", acteur: "Magasin coopérative de Soubré", tonnes: 5.9 },
+      { code: "pesee", date: "2026-06-10", tonnes: 5.9, note: { fr: "Pont-bascule : écart nul avec le bordereau d'achat.", en: "Weighbridge: zero gap with the purchase note." } },
+    ],
     creeLe: "2026-06-12",
   },
   {
@@ -339,21 +398,33 @@ export const EXPEDITIONS: Expedition[] = [
       { code: "recu-port", date: "2026-07-04", note: { fr: "Terminal céréalier d'Abidjan", en: "Abidjan terminal" } },
       { code: "embarque", date: "2026-07-08", note: { fr: "CMA CGM Bamako · conteneur CGMU-201184-7", en: "CMA CGM Bamako · container CGMU-201184-7" } },
     ],
+    journalPossession: [
+      { code: "achat-bord-champ", date: "2026-06-20", acteur: "Traitant agréé · Tonkpi", tonnes: 2.4 },
+      { code: "transport-connaissement", date: "2026-06-22", connaissement: "CNT-MAN-260622-04", tonnes: 2.4 },
+      { code: "reception-magasin", date: "2026-06-24", acteur: "Magasin UCACO Man", tonnes: 2.4 },
+      { code: "pesee", date: "2026-06-26", tonnes: 2.4 },
+    ],
     creeLe: "2026-06-28",
   },
   {
     id: "exp3",
     ref: "EXP-2026-0003",
     nomLot: "Cacao Nawa · lot complémentaire",
-    acheteur: "— (en négociation)",
-    paysAcheteur: "—",
+    acheteur: "En négociation",
+    paysAcheteur: "À confirmer",
     portDepart: "San Pédro",
-    portArrivee: "—",
+    portArrivee: "À confirmer",
     codeSH: "1801",
     filiere: "cacao",
     parcelleIds: ["p15", "p16"],
     tonnages: { p15: 1.2, p16: 0.8 },
     jalons: [{ code: "compose", date: "2026-07-09" }],
+    journalPossession: [
+      { code: "achat-bord-champ", date: "2026-07-02", acteur: "Pisteur agréé · secteur Soubré", tonnes: 2.0 },
+      { code: "transport-connaissement", date: "2026-07-04", connaissement: "CNT-SOU-260704-02", tonnes: 2.0 },
+      { code: "reception-magasin", date: "2026-07-06", acteur: "Magasin coopérative de Soubré", tonnes: 2.0 },
+      { code: "pesee", date: "2026-07-08", tonnes: 2.0 },
+    ],
     creeLe: "2026-07-09",
   },
 ];

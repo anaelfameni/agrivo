@@ -4,10 +4,13 @@ import { useMemo, useState } from "react";
 import Link from "next/link";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import {
-  Store, MapPin, Boxes, ArrowRight, Check, ExternalLink, Ship, Undo2, ShieldAlert,
+  Store, MapPin, Boxes, ArrowRight, Check, ExternalLink, Ship, Undo2, ShieldAlert, ChevronDown,
 } from "lucide-react";
 import { useLanguage } from "@/components/language-provider";
 import { SceauAgrivo } from "@/components/marketplace/sceau-agrivo";
+import { JournalLot } from "@/components/marketplace/journal-lot";
+import { ScanDocument } from "@/components/marketplace/scan-document";
+import type { JalonPossession } from "@/data/mock-expeditions";
 import { StatNumber } from "@/components/ui/stat-number";
 import { getFiliere } from "@/config/filieres";
 import { PARCELLES } from "@/data/mock-parcelles";
@@ -21,7 +24,7 @@ import {
 } from "@/data/mock-marketplace";
 
 /**
- * « Mes lots » (v2.6, refonte design system app) — le COCKPIT VENDEUR de l'exportateur
+ * « Mes lots » (v2.6, refonte design system app) : l'espace de gestion des lots de l'exportateur
  * (côté OFFRE uniquement). La découverte et la réservation côté acheteur vivent sur la
  * VITRINE PUBLIQUE AGRIVO Market (/marketplace). Ici, l'exportateur publie / retire / suit
  * ses lots scellés, et bascule vers la fiche publique de chacun. AGRIVO fait le commerce
@@ -66,6 +69,7 @@ const COPY = {
     retireInfo: "Lot retiré de la vitrine.",
     annuler: "Annuler",
     nonVendable: "Sceau en préparation : non publiable tant que le double verrou n'est pas vérifié.",
+    journal: "Journal du lot",
     reserve: "Réservé",
     reserveBy: "Réservé par",
     fiche: "Voir la fiche publique",
@@ -97,6 +101,7 @@ const COPY = {
     retireInfo: "Lot removed from the marketplace.",
     annuler: "Undo",
     nonVendable: "Seal in preparation: cannot be listed until the double lock is verified.",
+    journal: "Lot journal",
     reserve: "Reserved",
     reserveBy: "Reserved by",
     fiche: "View public file",
@@ -117,13 +122,17 @@ export default function MesLotsPage() {
   const [retires, setRetires] = useState<Set<string>>(new Set());
   const [filter, setFilter] = useState<FilterKey>("tous");
 
-  const toggle = (ref: string) =>
+  const toggle = (ref: string) => {
+    // Garde-fou : publier/retirer n'a de sens que pour un lot vendable (sceau vérifié + listé).
+    const lot = lots.find((x) => x.ref === ref);
+    if (!lot || !estVendable(lot)) return;
     setRetires((prev) => {
       const next = new Set(prev);
       if (next.has(ref)) next.delete(ref);
       else next.add(ref);
       return next;
     });
+  };
 
   // KPI dérivés en direct de l'état publier/retirer.
   const kpi = useMemo(() => {
@@ -257,9 +266,13 @@ function LotCard({
   reduce: boolean;
 }) {
   const f = getFiliere(lot.filiere);
-  const vendable = lot.sceau.statut === "verifie";
+  const vendable = estVendable(lot); // source de vérité unique (sceau vérifié + lot listé)
   const isReserved = lot.statutMarche === "reserve";
   const publie = !retire;
+  const [journalOuvert, setJournalOuvert] = useState(false);
+  // Jalons ajoutés PAR SCAN dans la session (les constantes seedées ne sont jamais mutées).
+  const [jalonsSession, setJalonsSession] = useState<JalonPossession[]>([]);
+  const journal = [...lot.journalPossession, ...jalonsSession];
 
   return (
     <article
@@ -320,6 +333,43 @@ function LotCard({
       <p className="mt-1.5 flex items-center gap-1 text-[11px] text-forest-950/45">
         <Boxes size={11} /> {lot.nbParcelles} {t.parcelles}
       </p>
+
+      {/* Journal du lot (registre de possession amont, dépliable) */}
+      <button
+        onClick={() => setJournalOuvert((o) => !o)}
+        aria-expanded={journalOuvert}
+        className="mt-3 inline-flex items-center gap-1.5 text-xs font-semibold text-forest-950/65 transition-colors hover:text-forest-950"
+      >
+        <motion.span
+          animate={{ rotate: journalOuvert ? 180 : 0 }}
+          transition={reduce ? { duration: 0 } : { type: "spring", stiffness: 300, damping: 26 }}
+          className="inline-flex"
+        >
+          <ChevronDown size={14} />
+        </motion.span>
+        {t.journal}
+        {lot.alertesVolume.length > 0 && (
+          <span className="ml-1 inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-red-block px-1 text-[0.6rem] font-bold text-white">
+            {lot.alertesVolume.length}
+          </span>
+        )}
+      </button>
+      <AnimatePresence initial={false}>
+        {journalOuvert && (
+          <motion.div
+            initial={reduce ? { opacity: 0 } : { opacity: 0, height: 0 }}
+            animate={reduce ? { opacity: 1 } : { opacity: 1, height: "auto" }}
+            exit={reduce ? { opacity: 0 } : { opacity: 0, height: 0 }}
+            transition={{ duration: 0.28, ease: EASE }}
+            className="overflow-hidden"
+          >
+            <div className="mt-3 rounded-xl border border-black/[0.06] bg-ivory/60 p-4">
+              <JournalLot journal={journal} alertes={lot.alertesVolume} lang={lang} />
+              <ScanDocument lang={lang} onAjout={(j) => setJalonsSession((prev) => [...prev, j])} />
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Confirmation inline après un retrait */}
       <AnimatePresence>

@@ -16,7 +16,7 @@ const TR = {
   fr: {
     title: "Vendez vos lots conformes,\nscellés, en direct.",
     sub: "Publiez sur AGRIVO Market les lots que vous avez déjà tracés. Touchez des acheteurs premium qui paient la conformité, sans intermédiaire opaque, sans céder votre donnée.",
-    cockpit: "Ouvrir « Mes lots »", browse: "Voir la marketplace",
+    mesLots: "Ouvrir « Mes lots »", browse: "Voir la marketplace",
     whyTitle: "Pourquoi vendre sur AGRIVO Market",
     why: [
       { Icon: TrendingUp, t: "Valorisez la conformité", b: "Le sceau AGRIVO transforme votre travail de traçabilité en argument commercial : un lot scellé se distingue et se négocie mieux." },
@@ -38,7 +38,7 @@ const TR = {
   en: {
     title: "Sell your compliant lots,\nsealed, directly.",
     sub: "List on AGRIVO Market the lots you have already traced. Reach premium buyers who pay for compliance, without opaque middlemen, without giving up your data.",
-    cockpit: "Open “My lots”", browse: "See the marketplace",
+    mesLots: "Open “My lots”", browse: "See the marketplace",
     whyTitle: "Why sell on AGRIVO Market",
     why: [
       { Icon: TrendingUp, t: "Monetise compliance", b: "The AGRIVO seal turns your traceability work into a selling point: a sealed lot stands out and negotiates better." },
@@ -64,7 +64,7 @@ export default function VendrePage() {
   const { user } = useAuth();
   const l = lang === "en" ? "en" : "fr";
   const t = TR[l];
-  const cockpitHref = user ? "/app/exportateur/marketplace" : "/connexion?next=/app/exportateur/marketplace";
+  const mesLotsHref = user ? "/app/exportateur/marketplace" : "/connexion?next=/app/exportateur/marketplace";
 
   return (
     <>
@@ -75,8 +75,8 @@ export default function VendrePage() {
           <h1 className="font-brand-serif max-w-3xl whitespace-pre-line text-4xl leading-[1.06] tracking-[-0.03em] md:text-5xl" style={{ fontWeight: 700 }}>{t.title}</h1>
           <p className="mt-6 max-w-2xl text-base leading-relaxed text-white/70">{t.sub}</p>
           <div className="mt-9 flex flex-wrap items-center gap-3">
-            <Link href={cockpitHref} className="inline-flex items-center gap-2 rounded-full bg-green-signal px-6 py-3 text-sm font-semibold text-white shadow-[0_14px_44px_-12px_rgba(22,163,74,0.85)] transition hover:brightness-110">
-              <Store size={16} /> {t.cockpit}
+            <Link href={mesLotsHref} className="inline-flex items-center gap-2 rounded-full bg-green-signal px-6 py-3 text-sm font-semibold text-white shadow-[0_14px_44px_-12px_rgba(22,163,74,0.85)] transition hover:brightness-110">
+              <Store size={16} /> {t.mesLots}
             </Link>
             <Link href="/marketplace" className="inline-flex items-center gap-2 rounded-full border border-white/20 px-6 py-3 text-sm font-semibold text-white transition hover:border-white/40 hover:bg-white/10">
               {t.browse} <ArrowRight size={16} />
@@ -144,7 +144,7 @@ export default function VendrePage() {
                 <h2 className="mt-3 font-display text-2xl font-semibold text-white md:text-3xl">{t.ctaTitle}</h2>
                 <p className="mt-2 text-sm text-white/60">{t.ctaSub}</p>
               </div>
-              <Link href={cockpitHref} className="inline-flex shrink-0 items-center gap-2 rounded-full bg-white px-6 py-3 text-sm font-semibold text-forest-950 transition hover:scale-105">
+              <Link href={mesLotsHref} className="inline-flex shrink-0 items-center gap-2 rounded-full bg-white px-6 py-3 text-sm font-semibold text-forest-950 transition hover:scale-105">
                 {t.cta} <ArrowRight size={16} />
               </Link>
             </div>

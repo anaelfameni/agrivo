@@ -22,8 +22,8 @@ const NAV = [
 ] as const;
 
 const TR = {
-  fr: { home: "AGRIVO Market · accueil", nav: "Navigation AGRIVO Market", login: "Connexion", cockpit: "Mes lots", site: "agrivo.io", open: "Ouvrir le menu", close: "Fermer le menu" },
-  en: { home: "AGRIVO Market · home", nav: "AGRIVO Market navigation", login: "Log in", cockpit: "My lots", site: "agrivo.io", open: "Open menu", close: "Close menu" },
+  fr: { home: "AGRIVO Market · accueil", nav: "Navigation AGRIVO Market", login: "Connexion", mesLots: "Mes lots", site: "agrivo.io", open: "Ouvrir le menu", close: "Fermer le menu" },
+  en: { home: "AGRIVO Market · home", nav: "AGRIVO Market navigation", login: "Log in", mesLots: "My lots", site: "agrivo.io", open: "Open menu", close: "Close menu" },
 } as const;
 
 /** Lockup de marque « AGRIVO Market » (pin AGRIVO + wordmark), version claire. */
@@ -91,7 +91,7 @@ export function MarketHeader() {
           <LanguageSwitcher tone="dark" />
           {user ? (
             <Link href="/app/exportateur/marketplace" className="hidden items-center gap-2 rounded-full bg-green-signal px-4 py-2 text-sm font-semibold text-white transition hover:bg-green-signal/90 md:inline-flex">
-              <Store size={15} /> {t.cockpit}
+              <Store size={15} /> {t.mesLots}
             </Link>
           ) : (
             <Link href="/connexion" className="hidden items-center gap-2 rounded-full border border-black/10 px-4 py-2 text-sm font-semibold text-forest-950 transition hover:bg-black/[0.04] md:inline-flex">
@@ -136,7 +136,7 @@ export function MarketHeader() {
                 onClick={() => setOpen(false)}
                 className="mt-2 inline-flex items-center justify-center gap-2 rounded-full bg-green-signal px-5 py-3 text-sm font-semibold text-white"
               >
-                {user ? <><Store size={15} /> {t.cockpit}</> : <><ShoppingBag size={15} /> {t.login}</>}
+                {user ? <><Store size={15} /> {t.mesLots}</> : <><ShoppingBag size={15} /> {t.login}</>}
               </Link>
               <Link href="/" onClick={() => setOpen(false)} className="mt-1 inline-flex items-center justify-center gap-1 px-3 py-2 text-xs font-medium text-stone-400">
                 {t.site} <ArrowUpRight size={12} />
