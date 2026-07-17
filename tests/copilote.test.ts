@@ -65,6 +65,17 @@ describe("Assistant AGRIVO — base de connaissances & appariement", () => {
     expect(detecterSmallTalk("Quelles sont les échéances ?", "fr")).toBeNull();
   });
 
+  it("connaît le SNT et la carte du producteur (fait snt-carte, chiffres CCC sourcés)", () => {
+    const snt = repondreDeterministe("Qu'est-ce que le SNT ?", "fr");
+    expect(snt.faitId).toBe("snt-carte");
+    expect(snt.reponse).toContain("1er septembre 2026");
+    expect(snt.reponse).toContain("900 000");
+    const carte = repondreDeterministe("What is the producer card?", "en");
+    expect(carte.faitId).toBe("snt-carte");
+    // Sans régression : la question RDUE générique reste sur son fait.
+    expect(repondreDeterministe("Qu'est-ce que le RDUE ?", "fr").faitId).toBe("definition");
+  });
+
   it("guidage dans le site : guide interactif, import registre, producteurs, paramètres", () => {
     expect(repondreDeterministe("Comment relancer le guide interactif ?", "fr").faitId).toBe("guide-tour");
     expect(repondreDeterministe("Comment importer mon registre de parcelles ?", "fr").faitId).toBe("guide-import");

@@ -14,8 +14,8 @@ const QA: { q: { fr: string; en: string }; a: { fr: string; en: string } }[] = [
   {
     q: { fr: "Suivez-vous physiquement les camions et les sacs ?", en: "Do you physically track trucks and bags?" },
     a: {
-      fr: "Non, et c'est un choix. Agrivo assure la traçabilité DOCUMENTAIRE de la parcelle au conteneur : chaque expédition est composée exclusivement de parcelles évaluées « Conforme », ses volumes sont réconciliés parcelle par parcelle, et son dossier (GeoJSON des parcelles d'origine, prêt pour TRACES NT) est vérifiable par QR code. Les jalons, départ coopérative, port, navire, arrivée UE, sont déclarés à chaque étape par vos équipes. Le suivi physique des sacs relève du Système National de Traçabilité : Agrivo s'y adosse, il ne le remplace pas.",
-      en: "No, by design. Agrivo provides DOCUMENTARY traceability from plot to container: every shipment is composed exclusively of plots assessed \"Compliant\", its volumes are reconciled plot by plot, and its file (GeoJSON of the plots of origin, ready for TRACES NT) is verifiable by QR code. Milestones, cooperative departure, port, vessel, EU arrival, are declared at each step by your teams. Physical bag tracking belongs to the National Traceability System: Agrivo builds on it, it does not replace it.",
+      fr: "Non, et c'est un choix. AGRIVO assure la traçabilité DOCUMENTAIRE de la parcelle au conteneur : chaque expédition est composée exclusivement de parcelles évaluées « Conforme », ses volumes sont réconciliés parcelle par parcelle, et son dossier (GeoJSON des parcelles d'origine, prêt pour TRACES NT) est vérifiable par QR code. Les jalons, départ coopérative, port, navire, arrivée UE, sont déclarés à chaque étape par vos équipes. Le suivi physique des sacs relève du Système National de Traçabilité : AGRIVO s'y adosse, il ne le remplace pas.",
+      en: "No, by design. AGRIVO provides DOCUMENTARY traceability from plot to container: every shipment is composed exclusively of plots assessed \"Compliant\", its volumes are reconciled plot by plot, and its file (GeoJSON of the plots of origin, ready for TRACES NT) is verifiable by QR code. Milestones, cooperative departure, port, vessel, EU arrival, are declared at each step by your teams. Physical bag tracking belongs to the National Traceability System: AGRIVO builds on it, it does not replace it.",
     },
   },
   {
@@ -40,45 +40,45 @@ const QA: { q: { fr: string; en: string }; a: { fr: string; en: string } }[] = [
     },
   },
   {
-    q: { fr: "Agrivo signe-t-il la déclaration de conformité à ma place ?", en: "Does Agrivo sign the compliance declaration for me?" },
+    q: { fr: "AGRIVO signe-t-il la déclaration de conformité à ma place ?", en: "Does AGRIVO sign the compliance declaration for me?" },
     a: {
-      fr: "Non. C'est l'importateur européen qui dépose sa Déclaration de Diligence Raisonnée sur TRACES NT. Agrivo fournit l'évaluation technique et le certificat qui alimentent cette déclaration. Nous parlons d'évaluation, jamais de garantie légale.",
-      en: "No. The European importer files their Due Diligence Statement on TRACES NT. Agrivo provides the technical assessment and the certificate that feed this declaration. We speak of assessment, never of legal guarantee.",
+      fr: "Non. C'est l'importateur européen qui dépose sa Déclaration de Diligence Raisonnée sur TRACES NT. AGRIVO fournit l'évaluation technique et le certificat qui alimentent cette déclaration. Nous parlons d'évaluation, jamais de garantie légale.",
+      en: "No. The European importer files their Due Diligence Statement on TRACES NT. AGRIVO provides the technical assessment and the certificate that feed this declaration. We speak of assessment, never of legal guarantee.",
     },
   },
   {
     q: { fr: "La conformité rapporte-t-elle vraiment à la coopérative ?", en: "Does compliance really pay off for the cooperative?" },
     a: {
-      fr: "Oui, par la valorisation, jamais par du crédit. Le prix bord champ est fixé chaque campagne par le Conseil du Café-Cacao ; une parcelle conforme est l'argument concret pour négocier, au-dessus de ce prix garanti, les primes de durabilité et l'accès aux acheteurs premium qui exigent une preuve RDUE. C'est cette marge additionnelle que la conformité débloque.",
-      en: "Yes, through valorisation, never through credit. The farmgate price is set each season by the Coffee-Cocoa Council; a compliant plot is the concrete argument to negotiate, above that guaranteed price, the sustainability premiums and access to premium buyers who require EUDR proof. That additional margin is what compliance unlocks.",
+      fr: "Oui, par la valorisation, jamais par du crédit. Le prix bord champ est fixé chaque campagne par le Conseil du Café-Cacao ; une parcelle conforme est l'argument concret pour négocier, au-dessus de ce prix garanti, les primes de durabilité et l'accès aux acheteurs premium qui exigent une preuve RDUE. L'ordre de grandeur est connu : sur les contrats à terme, le cacao vérifié zéro déforestation se négocie 80 à 150 $ la tonne au-dessus du standard (presse sectorielle cacao, mai 2026).",
+      en: "Yes, through valorisation, never through credit. The farmgate price is set each season by the Coffee-Cocoa Council; a compliant plot is the concrete argument to negotiate, above that guaranteed price, the sustainability premiums and access to premium buyers who require EUDR proof. The order of magnitude is known: on forward contracts, verified deforestation-free cocoa trades 80 to 150 $ per tonne above standard grade (cocoa trade press, May 2026).",
     },
   },
   {
     q: { fr: "Quelle est la fiabilité de la détection ?", en: "How reliable is the detection?" },
     a: {
-      fr: "La détection repose sur la méthode de référence de la FAO pour le RDUE (analyse satellite), déjà utilisée en production. Sa convergence de preuves croise plusieurs jeux de données satellites indépendants. Quand les données ne permettent pas de conclure, Agrivo affiche « Données insuffisantes » plutôt que de deviner.",
-      en: "Detection relies on the FAO's reference method for the EUDR (satellite analysis), already used in production. Its convergence of evidence crosses several independent satellite datasets. When the data does not allow a conclusion, Agrivo displays \"Insufficient data\" rather than guessing.",
+      fr: "La détection repose sur la méthode de référence de la FAO pour le RDUE (analyse satellite), déjà utilisée en production. Sa convergence de preuves croise plusieurs jeux de données satellites indépendants. Quand les données ne permettent pas de conclure, AGRIVO affiche « Données insuffisantes » plutôt que de deviner.",
+      en: "Detection relies on the FAO's reference method for the EUDR (satellite analysis), already used in production. Its convergence of evidence crosses several independent satellite datasets. When the data does not allow a conclusion, AGRIVO displays \"Insufficient data\" rather than guessing.",
     },
   },
   {
-    q: { fr: "Agrivo couvre-t-il d'autres filières que le cacao ?", en: "Does Agrivo cover commodities other than cocoa?" },
+    q: { fr: "AGRIVO couvre-t-il d'autres filières que le cacao ?", en: "Does AGRIVO cover commodities other than cocoa?" },
     a: {
       fr: "Oui. Le moteur est multi-filières : cacao, café, hévéa et palmier à huile. Le déploiement commence par le cacao, la filière la plus urgente.",
       en: "Yes. The engine is multi-commodity: cocoa, coffee, rubber and oil palm. Deployment starts with cocoa, the most urgent commodity.",
     },
   },
   {
-    q: { fr: "En quoi Agrivo se distingue de Koltiva ou Farmerline ?", en: "How is Agrivo different from Koltiva or Farmerline?" },
+    q: { fr: "En quoi AGRIVO se distingue de Koltiva ou Farmerline ?", en: "How is AGRIVO different from Koltiva or Farmerline?" },
     a: {
-      fr: "Ce sont de vraies plateformes numériques sérieuses. La différence d'Agrivo n'est pas « SaaS contre service » : c'est la combinaison, en un seul outil, de la conformité RDUE, du score de santé des sols et de la valorisation commerciale de la conformité, avec un ancrage local ivoirien.",
-      en: "Those are serious digital platforms. Agrivo's difference is not \"SaaS versus service\": it is the combination, in a single tool, of EUDR compliance, soil health scoring and commercial valorisation of compliance, with local Ivorian roots.",
+      fr: "Ce sont de vraies plateformes numériques sérieuses. La différence d'AGRIVO n'est pas « SaaS contre service » : c'est la combinaison, en un seul outil, de la conformité RDUE, du score de santé des sols et de la valorisation commerciale de la conformité, avec un ancrage local ivoirien.",
+      en: "Those are serious digital platforms. AGRIVO's difference is not \"SaaS versus service\": it is the combination, in a single tool, of EUDR compliance, soil health scoring and commercial valorisation of compliance, with local Ivorian roots.",
     },
   },
   {
     q: { fr: "Mes données restent-elles protégées ?", en: "Is my data protected?" },
     a: {
-      fr: "Agrivo est conçu conforme à la loi ivoirienne n°2013-450 sous le contrôle de l'ARTCI : consentement éclairé du producteur, registre des traitements tenu à jour et chiffrement des échanges. Pendant la phase pilote, l'application est hébergée par Vercel ; un hébergement régional est prévu à la mise en production. Un écran de consentement précède toute vérification.",
-      en: "Agrivo is designed to comply with Ivorian law no. 2013-450 under ARTCI oversight: informed farmer consent, a maintained processing register and encrypted exchanges. During the pilot phase the app is hosted on Vercel; regional hosting is planned for production. A consent screen precedes every verification.",
+      fr: "AGRIVO est conçu conforme à la loi ivoirienne n°2013-450 sous le contrôle de l'ARTCI : consentement éclairé du producteur, registre des traitements tenu à jour et chiffrement des échanges. Pendant la phase pilote, l'application est hébergée par Vercel ; un hébergement régional est prévu à la mise en production. Un écran de consentement précède toute vérification.",
+      en: "AGRIVO is designed to comply with Ivorian law no. 2013-450 under ARTCI oversight: informed farmer consent, a maintained processing register and encrypted exchanges. During the pilot phase the app is hosted on Vercel; regional hosting is planned for production. A consent screen precedes every verification.",
     },
   },
 ];

@@ -50,8 +50,9 @@ describe("Copilote RDUE — garde-fou charte (frontière Nanti)", () => {
   it("aucune réponse déterministe ne promet de garantie ni de financement", () => {
     for (const f of FAITS_RDUE) {
       for (const lang of ["fr", "en"] as const) {
-        const txt = f.reponse[lang].toLowerCase();
-        // « garantie » n'apparaît que sous forme de négation (« jamais une garantie »).
+        // « prix garanti » (bord champ fixé par l'État) est la formulation de charte autorisée :
+        // on l'exclut AVANT de contrôler que « garantie » n'apparaît qu'en négation.
+        const txt = f.reponse[lang].toLowerCase().replace(/prix garanti|guaranteed price/g, "");
         if (txt.includes("garanti")) expect(txt).toMatch(/jamais une garantie|never a .*guarantee/);
         expect(txt).not.toMatch(/\bcrédit\b|\bprêt\b|financement/);
       }

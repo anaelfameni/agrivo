@@ -4,8 +4,20 @@
 > Il condense la charte de marque, les règles de contenu, les faits produit et l'avancement.
 > En cas de doute, ce fichier prime sur mes souvenirs. Il reflète l'état au dernier prompt traité.
 
-> 🟢 **ÉTAT ACTUEL — v2.8.0, 16 juillet 2026 (CE BLOC FAIT FOI sur toute mention contraire
+> 🟢 **ÉTAT ACTUEL — v2.9.0, 17 juillet 2026 (CE BLOC FAIT FOI sur toute mention contraire
 > plus bas, qui relève de l'historique de construction).**
+> - **v2.9 « MARCHÉ JUILLET 2026 » (17/07)** : la valorisation est CHIFFRÉE, **prime 80-150 $/t**
+>   au-dessus du standard pour le cacao vérifié zéro déforestation (source affichée « presse
+>   sectorielle cacao, mai 2026 ») sur landing/FAQ/page SEO/FAQ marketplace/assistant ; récit SNT
+>   à jour de l'annonce CCC du 12/06/2026 (1,1 M enrôlés · ~900 k cartes · ~3 M ha · 160 kt pilote)
+>   sur méthodologie/page SEO/assistant (**nouveau fait `snt-carte`**) ; argument « marché
+>   d'acheteurs » (cours en repli, cargaisons non tracées invendues à quai) sur landing + page SEO ;
+>   fait prix assistant précisé (1 200 = campagne intermédiaire, 2 800 = principale) ; **casse
+>   AGRIVO uniformisée dans la prose publique** (le wordmark/splash/copyright restent « Agrivo ») ;
+>   purge « — » complétée dans rdue-faits.ts. Commit d441761 = passe qualité v2.8.x (slogan
+>   canonique, sentinelle inter-lots câblée, panneau campagne filtrable + « Lots vendables »,
+>   badges démo, contraste AA, marketplace header opaque/toolbar statique/chart héros unifié
+>   avec axes et légendes).
 > - **v2.8 « VERS LE 20/20 » (16/07, déployée agrivo-io)** : **hero repositionné** « Le SNT
 >   identifie. / Agrivo rend [vendable…] votre récolte. » (décision n°1 de l'étude) + section
 >   SNT/Agrivo sur /methodologie ; **/tarifs inversé** (étage ① service « Dossier lot scellé »

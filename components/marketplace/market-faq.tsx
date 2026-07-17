@@ -12,6 +12,7 @@ const TR = {
     title: "Questions fréquentes",
     items: [
       { q: "Le sceau AGRIVO est-il une garantie ?", a: "Non. C'est une évaluation calculée depuis les données du lot (conformité satellite, carte producteur, intégrité de volume, dossier). Elle ne remplace pas la déclaration de diligence raisonnée (DDS) de l'opérateur au sens du règlement UE 2023/1115." },
+      { q: "Pourquoi payer plus cher un lot scellé ?", a: "Parce que le marché le fait déjà : sur les contrats à terme, le cacao vérifié zéro déforestation se négocie 80 à 150 $ la tonne au-dessus du standard (presse sectorielle cacao, mai 2026). Et un lot sans dossier de traçabilité risque de rester à quai : le sceau achète la certitude que le lot passera la diligence raisonnée." },
       { q: "Comment se passe le paiement ?", a: "AGRIVO ne gère ni le paiement ni le financement. La marketplace met en relation acheteur et exportateur ; la transaction se règle en direct entre eux. AGRIVO fait le commerce des fèves, jamais le crédit." },
       { q: "Qui paie la commission ?", a: "La commission (1 à 3 % selon le lot) porte sur la transaction, côté commerce. Le producteur ne paie jamais." },
       { q: "Le cours du cacao affiché est-il en temps réel ?", a: "Il s'agit du cours ICE US (New York, contrat CC=F) réel mais différé d'environ 15 minutes, via une source publique. En cas d'indisponibilité, le dernier cours connu est affiché et clairement libellé." },
@@ -22,6 +23,7 @@ const TR = {
     title: "Frequently asked questions",
     items: [
       { q: "Is the AGRIVO seal a guarantee?", a: "No. It is an assessment computed from the lot's data (satellite compliance, producer card, volume integrity, file). It does not replace the operator's due diligence statement (DDS) under EU Regulation 2023/1115." },
+      { q: "Why pay more for a sealed lot?", a: "Because the market already does: on forward contracts, verified deforestation-free cocoa trades 80 to 150 $ per tonne above standard grade (cocoa trade press, May 2026). And a lot without a traceability file risks staying at the quay: the seal buys the certainty that the lot will pass due diligence." },
       { q: "How does payment work?", a: "AGRIVO handles neither payment nor financing. The marketplace connects buyer and exporter; the transaction is settled directly between them. AGRIVO trades beans, never credit." },
       { q: "Who pays the commission?", a: "The commission (1 to 3% per lot) applies to the transaction, on the trade side. The producer never pays." },
       { q: "Is the displayed cocoa price real-time?", a: "It is the real ICE US price (New York, CC=F contract), delayed by about 15 minutes, from a public source. If unavailable, the last known price is shown and clearly labelled." },

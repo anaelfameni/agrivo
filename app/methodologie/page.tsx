@@ -74,11 +74,11 @@ export default function Methodologie() {
       <main>
         <PageHero
           eyebrow={en ? "Methodology" : "Méthodologie"}
-          title={en ? "How Agrivo assesses a plot, with no black box." : "Comment Agrivo évalue une parcelle, sans boîte noire."}
+          title={en ? "How AGRIVO assesses a plot, with no black box." : "Comment AGRIVO évalue une parcelle, sans boîte noire."}
           sub={
             en
-              ? "Agrivo assesses every plot from recognised satellite references and delivers a clear, explained and verifiable result, aligned directly with the requirements of European Regulation (EU) 2023/1115. Here, simply, is how."
-              : "Agrivo évalue chaque parcelle à partir de références satellites reconnues et livre un résultat clair, expliqué et vérifiable, aligné directement sur les exigences du règlement européen (UE) 2023/1115. Voici, simplement, comment."
+              ? "AGRIVO assesses every plot from recognised satellite references and delivers a clear, explained and verifiable result, aligned directly with the requirements of European Regulation (EU) 2023/1115. Here, simply, is how."
+              : "AGRIVO évalue chaque parcelle à partir de références satellites reconnues et livre un résultat clair, expliqué et vérifiable, aligné directement sur les exigences du règlement européen (UE) 2023/1115. Voici, simplement, comment."
           }
         />
 
@@ -151,8 +151,8 @@ export default function Methodologie() {
               </h2>
               <p className="mt-3 max-w-3xl text-sm leading-relaxed text-stone-600">
                 {en
-                  ? "From 1 September 2026, the producer card and the National Traceability System (Conseil du Café-Cacao) become mandatory. Agrivo is not their competitor: it is the layer on top."
-                  : "Dès le 1er septembre 2026, la carte producteur et le Système national de traçabilité (Conseil du Café-Cacao) deviennent obligatoires. Agrivo n'est pas leur concurrent : c'est la couche au-dessus."}
+                  ? "From 1 September 2026, the producer card and the National Traceability System (Conseil du Café-Cacao) become mandatory: over 1.1 million farmers enrolled, about 900,000 cards produced, about 3 million hectares geolocated, and over 160,000 tonnes already traced field-to-ship during the pilot (CCC, June 2026). AGRIVO is not their competitor: it is the layer on top."
+                  : "Dès le 1er septembre 2026, la carte producteur et le Système national de traçabilité (Conseil du Café-Cacao) deviennent obligatoires : plus de 1,1 million de producteurs enrôlés, environ 900 000 cartes produites, environ 3 millions d'hectares géolocalisés, et plus de 160 000 tonnes déjà tracées du champ au navire pendant le pilote (CCC, juin 2026). AGRIVO n'est pas leur concurrent : c'est la couche au-dessus."}
               </p>
               <div className="mt-8 grid gap-4 md:grid-cols-2">
                 <div className="rounded-xl bg-ivory p-6">
@@ -169,7 +169,7 @@ export default function Methodologie() {
                 <div className="rounded-xl border border-green-signal/25 bg-green-signal/[0.05] p-6">
                   <div className="flex items-center gap-3">
                     <div className="grid h-10 w-10 place-items-center rounded-lg bg-green-signal/12 text-green-signal"><Store size={20} /></div>
-                    <h3 className="font-display text-lg text-forest-950">{en ? "What Agrivo adds" : "Ce qu'Agrivo ajoute"}</h3>
+                    <h3 className="font-display text-lg text-forest-950">{en ? "What AGRIVO adds" : "Ce qu'AGRIVO ajoute"}</h3>
                   </div>
                   <ul className="mt-4 space-y-2 text-sm leading-relaxed text-stone-600">
                     <li>· {en ? "Per-plot deforestation assessment (FAO satellite analysis)" : "L'évaluation de non-déforestation par parcelle (analyse satellite FAO)"}</li>
@@ -222,8 +222,8 @@ export default function Methodologie() {
               </h2>
               <p className="mt-5 leading-relaxed text-white/75">
                 {en
-                  ? "Rather than relying on a single source, Agrivo applies a convergence of evidence: it crosses several independent satellite sources (including Copernicus, the European Earth-observation programme) and compares them against the "
-                  : "Plutôt que de se fier à une seule source, Agrivo applique une convergence de preuves : il croise plusieurs sources satellites indépendantes (dont Copernicus, le programme européen d'observation de la Terre) et les compare à la date pivot du "}
+                  ? "Rather than relying on a single source, AGRIVO applies a convergence of evidence: it crosses several independent satellite sources (including Copernicus, the European Earth-observation programme) and compares them against the "
+                  : "Plutôt que de se fier à une seule source, AGRIVO applique une convergence de preuves : il croise plusieurs sources satellites indépendantes (dont Copernicus, le programme européen d'observation de la Terre) et les compare à la date pivot du "}
                 <span className="num">{en ? "31 December 2020" : "31 décembre 2020"}</span>
                 {en
                   ? " cut-off date. The plot is described in the official geographic format accepted by the European Union, with centimetre-level precision."
@@ -246,8 +246,8 @@ export default function Methodologie() {
             </h2>
             <p className="mt-4 max-w-2xl text-stone-600">
               {en
-                ? "When cloud cover prevents a conclusion, Agrivo tells you clearly rather than guessing. You always know where you stand, and what to do next."
-                : "Quand la couverture nuageuse empêche de conclure, Agrivo vous l'indique clairement plutôt que de deviner. Vous savez toujours où vous en êtes, et quoi faire ensuite."}
+                ? "When cloud cover prevents a conclusion, AGRIVO tells you clearly rather than guessing. You always know where you stand, and what to do next."
+                : "Quand la couverture nuageuse empêche de conclure, AGRIVO vous l'indique clairement plutôt que de deviner. Vous savez toujours où vous en êtes, et quoi faire ensuite."}
             </p>
           </Reveal>
           <div className="mt-10 grid gap-5 md:grid-cols-3">
@@ -277,8 +277,8 @@ export default function Methodologie() {
               </h2>
               <p className="mt-4 max-w-3xl leading-relaxed text-stone-600">
                 {en
-                  ? "For every shipment, Regulation (EU) 2023/1115 requires the due diligence statement (DDS) to carry the geolocation of ALL plots of origin, and mass balance is not allowed. Agrivo therefore composes each lot exclusively from plots assessed \"Compliant\" (strict segregation), reconciles every tonnage against the plot's cap (area × regional yield, the same anti-fraud lock used at verification), and generates the lot's GeoJSON (RFC 7946) ready for TRACES NT. Milestones (departure, port, vessel, EU arrival) are documentary: declared at each step by your teams, Agrivo traces the compliance file, it does not physically track bags."
-                  : "Pour chaque expédition, le règlement (UE) 2023/1115 exige que la déclaration de diligence raisonnée (DDS) porte la géolocalisation de TOUTES les parcelles d'origine, et le bilan de masse n'est pas admis. Agrivo compose donc chaque lot exclusivement à partir de parcelles évaluées « Conforme » (ségrégation stricte), réconcilie chaque tonnage contre le plafond de la parcelle (superficie × rendement régional, le même verrou anti-fraude qu'à la vérification), et génère le GeoJSON du lot (RFC 7946) prêt pour TRACES NT. Les jalons (départ, port, navire, arrivée UE) sont documentaires : déclarés à chaque étape par vos équipes, Agrivo trace le dossier de conformité, il ne suit pas physiquement les sacs."}
+                  ? "For every shipment, Regulation (EU) 2023/1115 requires the due diligence statement (DDS) to carry the geolocation of ALL plots of origin, and mass balance is not allowed. AGRIVO therefore composes each lot exclusively from plots assessed \"Compliant\" (strict segregation), reconciles every tonnage against the plot's cap (area × regional yield, the same anti-fraud lock used at verification), and generates the lot's GeoJSON (RFC 7946) ready for TRACES NT. Milestones (departure, port, vessel, EU arrival) are documentary: declared at each step by your teams, AGRIVO traces the compliance file, it does not physically track bags."
+                  : "Pour chaque expédition, le règlement (UE) 2023/1115 exige que la déclaration de diligence raisonnée (DDS) porte la géolocalisation de TOUTES les parcelles d'origine, et le bilan de masse n'est pas admis. AGRIVO compose donc chaque lot exclusivement à partir de parcelles évaluées « Conforme » (ségrégation stricte), réconcilie chaque tonnage contre le plafond de la parcelle (superficie × rendement régional, le même verrou anti-fraude qu'à la vérification), et génère le GeoJSON du lot (RFC 7946) prêt pour TRACES NT. Les jalons (départ, port, navire, arrivée UE) sont documentaires : déclarés à chaque étape par vos équipes, AGRIVO trace le dossier de conformité, il ne suit pas physiquement les sacs."}
               </p>
             </Reveal>
           </div>

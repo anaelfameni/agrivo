@@ -96,7 +96,7 @@ const ROWS = [
   { label: { fr: "Mode hors connexion", en: "Offline mode" }, vals: ["x", "check", "check", "check"] },
   { label: { fr: "Ancrage local ivoirien", en: "Local Ivorian roots" }, vals: ["partial", "partial", "partial", "check"] },
 ];
-const COLS = ["Excel / WhatsApp", "Koltiva", "Farmerline", "Agrivo"];
+const COLS = ["Excel / WhatsApp", "Koltiva", "Farmerline", "AGRIVO"];
 
 function Cell({ v }: { v: string }) {
   if (v === "check") return <Check size={17} className="mx-auto text-green-signal" />;
@@ -121,8 +121,8 @@ export default function Tarifs() {
           title={en ? "A subscription, not a container stuck at the port." : "Un abonnement, pas un conteneur bloqué au port."}
           sub={
             en
-              ? "Manual certification costs 20 to 40 million FCFA per year. Agrivo replaces that process with a clear subscription."
-              : "La certification manuelle coûte 20 à 40 millions FCFA par an. Agrivo remplace ce processus par un abonnement clair."
+              ? "Manual certification costs 20 to 40 million FCFA per year. AGRIVO replaces that process with a clear subscription."
+              : "La certification manuelle coûte 20 à 40 millions FCFA par an. AGRIVO remplace ce processus par un abonnement clair."
           }
         >
           <div className="mt-8 inline-flex items-center gap-1 rounded-full border border-white/15 bg-white/10 p-1 backdrop-blur-sm">
@@ -290,8 +290,8 @@ export default function Tarifs() {
               <h2 className="font-display text-3xl">{en ? "The real differentiator is not the price." : "Le vrai différenciateur n'est pas le prix."}</h2>
               <p className="mt-3 max-w-2xl text-sm text-stone-500">
                 {en
-                  ? "Other platforms exist and are serious. Agrivo is the only one combining compliance, soil health and commercial valorisation, with local roots."
-                  : "D'autres plateformes existent et sont sérieuses. Agrivo est la seule à combiner conformité, santé des sols et valorisation commerciale, avec un ancrage local."}
+                  ? "Other platforms exist and are serious. AGRIVO is the only one combining compliance, soil health and commercial valorisation, with local roots."
+                  : "D'autres plateformes existent et sont sérieuses. AGRIVO est la seule à combiner conformité, santé des sols et valorisation commerciale, avec un ancrage local."}
               </p>
             </Reveal>
             <Reveal delay={0.1}>
@@ -303,7 +303,7 @@ export default function Tarifs() {
                       {COLS.map((c) => (
                         <th
                           key={c}
-                          className={`p-4 text-center font-semibold ${c === "Agrivo" ? "bg-forest-950 text-white" : "text-stone-600"}`}
+                          className={`p-4 text-center font-semibold ${c === "AGRIVO" ? "bg-forest-950 text-white" : "text-stone-600"}`}
                         >
                           {c}
                         </th>
@@ -315,7 +315,7 @@ export default function Tarifs() {
                       <tr key={r.label.fr} className={ri % 2 ? "bg-ivory-deep/30" : ""}>
                         <td className="p-4 text-left font-medium text-forest-950">{en ? r.label.en : r.label.fr}</td>
                         {r.vals.map((v, ci) => (
-                          <td key={ci} className={`p-4 ${COLS[ci] === "Agrivo" ? "bg-green-signal/[0.06]" : ""}`}>
+                          <td key={ci} className={`p-4 ${COLS[ci] === "AGRIVO" ? "bg-green-signal/[0.06]" : ""}`}>
                             <Cell v={v} />
                           </td>
                         ))}

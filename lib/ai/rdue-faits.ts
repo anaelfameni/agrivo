@@ -24,8 +24,8 @@ export const FAITS_RDUE: FaitRDUE[] = [
     motsCles: ["rdue", "eudr", "reglement", "cest quoi", "definition", "quest", "loi", "2023", "1115", "regulation"],
     question: { fr: "Qu'est-ce que le RDUE ?", en: "What is the EUDR?" },
     reponse: {
-      fr: "Le RDUE — Règlement (UE) 2023/1115 — interdit d'importer dans l'Union des produits issus de terres déforestées après le 31 décembre 2020. Il impose une traçabilité géolocalisée parcelle par parcelle et une déclaration de diligence raisonnée.",
-      en: "The EUDR — Regulation (EU) 2023/1115 — bans importing into the Union products grown on land deforested after 31 December 2020. It requires plot-by-plot geolocated traceability and a due diligence statement.",
+      fr: "Le RDUE, Règlement (UE) 2023/1115, interdit d'importer dans l'Union des produits issus de terres déforestées après le 31 décembre 2020. Il impose une traçabilité géolocalisée parcelle par parcelle et une déclaration de diligence raisonnée.",
+      en: "The EUDR, Regulation (EU) 2023/1115, bans importing into the Union products grown on land deforested after 31 December 2020. It requires plot-by-plot geolocated traceability and a due diligence statement.",
     },
     source: { fr: "Règlement (UE) 2023/1115", en: "Regulation (EU) 2023/1115" },
   },
@@ -64,8 +64,8 @@ export const FAITS_RDUE: FaitRDUE[] = [
     motsCles: ["qui declare", "qui depose", "declare", "declaration", "dds", "diligence", "traces", "depose", "operateur", "importateur", "signe", "responsable", "who", "file", "files", "statement", "operator", "importer"],
     question: { fr: "Qui dépose la déclaration ?", en: "Who files the declaration?" },
     reponse: {
-      fr: "C'est l'opérateur qui met le produit sur le marché de l'Union — l'importateur européen — qui dépose la déclaration de diligence raisonnée sur TRACES NT. Depuis la simplification de 2025, seul le premier opérateur dépose la déclaration complète ; l'aval peut la référencer.",
-      en: "It is the operator placing the product on the Union market — the European importer — who files the due diligence statement on TRACES NT. Since the 2025 simplification, only the first operator files the full statement; downstream operators can reference it.",
+      fr: "C'est l'opérateur qui met le produit sur le marché de l'Union (l'importateur européen) qui dépose la déclaration de diligence raisonnée sur TRACES NT. Depuis la simplification de 2025, seul le premier opérateur dépose la déclaration complète ; l'aval peut la référencer.",
+      en: "It is the operator placing the product on the Union market (the European importer) who files the due diligence statement on TRACES NT. Since the 2025 simplification, only the first operator files the full statement; downstream operators can reference it.",
     },
     source: { fr: "Art. 4 & révision (UE) 2025/2650", en: "Art. 4 & revision (EU) 2025/2650" },
   },
@@ -141,6 +141,16 @@ export const FAITS_RDUE: FaitRDUE[] = [
     },
     source: { fr: "Benchmarking pays, 22 mai 2025", en: "Country benchmarking, 22 May 2025" },
   },
+  {
+    id: "snt-carte",
+    motsCles: ["snt", "le snt", "du snt", "systeme national", "tracabilite nationale", "carte du producteur", "carte producteur", "1er septembre", "septembre 2026", "enrolement", "enroles", "conseil cafe", "conseil du cafe", "ccc", "national traceability", "the nts", "producer card", "farmer card", "september"],
+    question: { fr: "Que change le SNT et la carte du producteur au 1er septembre 2026 ?", en: "What do the NTS and the producer card change on 1 September 2026?" },
+    reponse: {
+      fr: "Dès le 1er septembre 2026, la carte du producteur et le Système national de traçabilité (Conseil du Café-Cacao) sont obligatoires pour toute transaction cacao : plus de 1,1 million de producteurs enrôlés, environ 900 000 cartes produites, environ 3 millions d'hectares géolocalisés, et plus de 160 000 tonnes déjà tracées du champ au navire pendant le pilote. Le SNT crée l'identité et la géolocalisation de base ; AGRIVO est la couche au-dessus : évaluation de non-déforestation par parcelle, sceau du lot, dossier acheteur et mise en marché. Le SNT identifie, AGRIVO rend vendable.",
+      en: "From 1 September 2026, the producer card and the National Traceability System (Conseil du Café-Cacao) are mandatory for every cocoa transaction: over 1.1 million farmers enrolled, about 900,000 cards produced, about 3 million hectares geolocated, and over 160,000 tonnes already traced field-to-ship during the pilot. The NTS creates the base identity and geolocation; AGRIVO is the layer on top: per-plot deforestation assessment, lot seal, buyer file and market access. The NTS identifies, AGRIVO makes it sellable.",
+    },
+    source: { fr: "Conseil du Café-Cacao, annonce officielle du 12 juin 2026", en: "Conseil du Café-Cacao, official announcement, 12 June 2026" },
+  },
 
   /* --------------------------- AGRIVO : produit, prix, parcours, site --------------------------- */
   {
@@ -188,10 +198,10 @@ export const FAITS_RDUE: FaitRDUE[] = [
     motsCles: ["valorisation", "prime", "primes", "acheteur", "acheteurs", "premium", "vendre", "revenu", "gagner", "rentable", "rapporte", "benefice", "premiums", "buyer", "income", "sell", "worth"],
     question: { fr: "En quoi la conformité rapporte-t-elle à la coopérative ?", en: "How does compliance pay off for the cooperative?" },
     reponse: {
-      fr: "Une parcelle conforme ouvre l'accès aux primes de durabilité et aux acheteurs européens exigeants. En Côte d'Ivoire, le prix bord champ est de 1 200 FCFA/kg quand le prix de référence pour un revenu vital atteint 1 758 FCFA/kg, soit 47 % de plus : la conformité prouvée est l'argument pour aller négocier cette différence.",
-      en: "A compliant plot opens access to sustainability premiums and demanding European buyers. In Côte d'Ivoire the farmgate price is 1,200 FCFA/kg while the living-income reference price reaches 1,758 FCFA/kg — 47% more: proven compliance is the argument to negotiate that gap.",
+      fr: "Une parcelle conforme ouvre l'accès aux primes de durabilité et aux acheteurs européens exigeants. Le prix bord champ est fixé chaque campagne par le Conseil du Café-Cacao (2 800 FCFA/kg pour la campagne principale 2025-26, 1 200 FCFA/kg pour la campagne intermédiaire) ; la conformité se valorise au-dessus de ce prix garanti. Ordre de grandeur : sur les contrats à terme, le cacao vérifié zéro déforestation se négocie 80 à 150 dollars la tonne au-dessus du standard.",
+      en: "A compliant plot opens access to sustainability premiums and demanding European buyers. The farmgate price is set each season by the Coffee-Cocoa Council (2,800 FCFA/kg for the 2025-26 main crop, 1,200 FCFA/kg for the mid-crop); compliance is valorised above that guaranteed price. Order of magnitude: on forward contracts, verified deforestation-free cocoa trades 80 to 150 dollars per tonne above standard grade.",
     },
-    source: { fr: "Fairtrade, prix de référence revenu vital cacao 2026", en: "Fairtrade cocoa living income reference price 2026" },
+    source: { fr: "Conseil du Café-Cacao (prix de campagne) · presse sectorielle cacao, mai 2026 (primes)", en: "Coffee-Cocoa Council (season prices) · cocoa trade press, May 2026 (premiums)" },
   },
   {
     id: "agrivo-verdicts",
@@ -220,8 +230,8 @@ export const FAITS_RDUE: FaitRDUE[] = [
     motsCles: ["anomalie", "anomalie detectee", "detectee", "rouge", "perte de couvert", "que faire", "conteste", "contester", "recouvrement", "anomaly", "anomaly detected", "detected", "flagged", "red"],
     question: { fr: "Que faire après une « Anomalie détectée » ?", en: "What to do after an \"Anomaly detected\"?" },
     reponse: {
-      fr: "« Anomalie détectée » signifie qu'une perte de couverture forestière après le 31 décembre 2020, ou un recouvrement d'aire protégée, a été identifiée. Ensuite : vérifiez le tracé de la parcelle (une erreur de saisie se corrige puis se réanalyse), activez le masque « Zones sensibles » sur la carte pour voir le recouvrement, et si l'anomalie se confirme, écartez cette seule parcelle du dossier export — le reste du portefeuille n'est pas pénalisé.",
-      en: "\"Anomaly detected\" means a loss of forest cover after 31 December 2020, or an overlap with a protected area, was identified. Next: check the plot's outline (a data-entry error can be fixed then re-analysed), toggle the \"Sensitive areas\" mask on the map to see the overlap, and if the anomaly is confirmed, set aside this single plot from the export file — the rest of the portfolio is not penalised.",
+      fr: "« Anomalie détectée » signifie qu'une perte de couverture forestière après le 31 décembre 2020, ou un recouvrement d'aire protégée, a été identifiée. Ensuite : vérifiez le tracé de la parcelle (une erreur de saisie se corrige puis se réanalyse), activez le masque « Zones sensibles » sur la carte pour voir le recouvrement, et si l'anomalie se confirme, écartez cette seule parcelle du dossier export : le reste du portefeuille n'est pas pénalisé.",
+      en: "\"Anomaly detected\" means a loss of forest cover after 31 December 2020, or an overlap with a protected area, was identified. Next: check the plot's outline (a data-entry error can be fixed then re-analysed), toggle the \"Sensitive areas\" mask on the map to see the overlap, and if the anomaly is confirmed, set aside this single plot from the export file: the rest of the portfolio is not penalised.",
     },
     source: { fr: "Méthodologie AGRIVO · verdicts", en: "AGRIVO methodology · verdicts" },
   },
@@ -270,8 +280,8 @@ export const FAITS_RDUE: FaitRDUE[] = [
     motsCles: ["compte", "inscription", "inscrire", "creer", "creation", "connexion", "connecter", "demo", "essayer", "account", "sign", "register", "login", "create", "try"],
     question: { fr: "Comment créer un compte ou essayer AGRIVO ?", en: "How do I create an account or try AGRIVO?" },
     reponse: {
-      fr: "Sur la page d'inscription, choisissez votre profil — coopérative ou exportateur — puis renseignez vos informations. Pour essayer sans compte, la page de connexion propose deux démonstrations en un clic : « Démo Coopérative » et « Démo Exportateur ».",
-      en: "On the sign-up page, choose your profile — cooperative or exporter — then fill in your details. To try without an account, the sign-in page offers two one-click demos: \"Cooperative demo\" and \"Exporter demo\".",
+      fr: "Sur la page d'inscription, choisissez votre profil (coopérative ou exportateur) puis renseignez vos informations. Pour essayer sans compte, la page de connexion propose deux démonstrations en un clic : « Démo Coopérative » et « Démo Exportateur ».",
+      en: "On the sign-up page, choose your profile (cooperative or exporter) then fill in your details. To try without an account, the sign-in page offers two one-click demos: \"Cooperative demo\" and \"Exporter demo\".",
     },
     source: { fr: "Inscription AGRIVO", en: "AGRIVO sign-up" },
   },
@@ -300,8 +310,8 @@ export const FAITS_RDUE: FaitRDUE[] = [
     motsCles: ["bonjour", "salut", "hello", "qui es", "presente", "presenter", "ton nom", "tu fais quoi", "who are", "your name", "introduce", "greet"],
     question: { fr: "Qui es-tu ?", en: "Who are you?" },
     reponse: {
-      fr: "Bonjour ! Je suis l'Assistant AGRIVO. Je connais toute la plateforme — prix, parcours de vérification, verdicts, certificats, espaces coopérative et exportateur — et le règlement européen contre la déforestation. Posez-moi votre question, je vous guide pas à pas ; et pour une demande complexe, notre équipe répond à support@agrivo.ci.",
-      en: "Hello! I am the AGRIVO Assistant. I know the whole platform — pricing, verification journey, verdicts, certificates, cooperative and exporter workspaces — and the EU Deforestation Regulation. Ask me your question and I will guide you step by step; for complex requests, our team answers at support@agrivo.ci.",
+      fr: "Bonjour ! Je suis l'Assistant AGRIVO. Je connais toute la plateforme (prix, parcours de vérification, verdicts, certificats, espaces coopérative et exportateur) et le règlement européen contre la déforestation. Posez-moi votre question, je vous guide pas à pas ; et pour une demande complexe, notre équipe répond à support@agrivo.ci.",
+      en: "Hello! I am the AGRIVO Assistant. I know the whole platform (pricing, verification journey, verdicts, certificates, cooperative and exporter workspaces) and the EU Deforestation Regulation. Ask me your question and I will guide you step by step; for complex requests, our team answers at support@agrivo.ci.",
     },
     source: { fr: "Assistant AGRIVO", en: "AGRIVO Assistant" },
   },
@@ -320,8 +330,8 @@ export const FAITS_RDUE: FaitRDUE[] = [
     motsCles: ["methodologie", "methode", "satellite", "satellites", "copernicus", "sentinel", "convergence", "preuve", "preuves", "fiable", "fiabilite", "precision", "boite noire", "fonctionne comment", "analyse comment", "method", "reliable", "accuracy", "evidence"],
     question: { fr: "Sur quoi repose l'analyse d'AGRIVO ?", en: "What is AGRIVO's analysis based on?" },
     reponse: {
-      fr: "L'analyse croise plusieurs sources satellites publiques indépendantes — dont Copernicus, le programme européen d'observation de la Terre — autour de la date pivot du 31 décembre 2020 : c'est la convergence de preuves, la méthode de référence de la FAO. Aucune boîte noire : chaque verdict est expliqué en langage clair, avec ses sources.",
-      en: "The analysis crosses several independent public satellite sources — including Copernicus, the European Earth-observation programme — around the 31 December 2020 cut-off date: convergence of evidence, the FAO reference method. No black box: every verdict is explained in plain language, with its sources.",
+      fr: "L'analyse croise plusieurs sources satellites publiques indépendantes (dont Copernicus, le programme européen d'observation de la Terre) autour de la date pivot du 31 décembre 2020 : c'est la convergence de preuves, la méthode de référence de la FAO. Aucune boîte noire : chaque verdict est expliqué en langage clair, avec ses sources.",
+      en: "The analysis crosses several independent public satellite sources (including Copernicus, the European Earth-observation programme) around the 31 December 2020 cut-off date: convergence of evidence, the FAO reference method. No black box: every verdict is explained in plain language, with its sources.",
     },
     source: { fr: "Méthodologie AGRIVO (page Méthodologie)", en: "AGRIVO methodology (Methodology page)" },
   },
@@ -433,8 +443,8 @@ export const HORS_PERIMETRE_FINANCE = {
 
 /** Réponse de repli quand aucune correspondance nette n'est trouvée (et l'IA n'a rien renvoyé). */
 export const HORS_SUJET = {
-  fr: "Je réponds à vos questions sur AGRIVO (prix, parcours de vérification, verdicts, comptes, valorisation) et sur le règlement européen contre la déforestation (RDUE). Reformulez votre question et j'y réponds précisément — et pour une demande complexe, notre équipe répond à support@agrivo.ci.",
-  en: "I answer your questions about AGRIVO (pricing, verification journey, verdicts, accounts, valorisation) and about the EU Deforestation Regulation (EUDR). Rephrase your question and I will answer precisely — and for complex requests, our team answers at support@agrivo.ci.",
+  fr: "Je réponds à vos questions sur AGRIVO (prix, parcours de vérification, verdicts, comptes, valorisation) et sur le règlement européen contre la déforestation (RDUE). Reformulez votre question et j'y réponds précisément ; pour une demande complexe, notre équipe répond à support@agrivo.ci.",
+  en: "I answer your questions about AGRIVO (pricing, verification journey, verdicts, accounts, valorisation) and about the EU Deforestation Regulation (EUDR). Rephrase your question and I will answer precisely; for complex requests, our team answers at support@agrivo.ci.",
 };
 
 const MOTS_FINANCE = ["credit", "pret", "prete", "financement", "financer", "emprunt", "microcredit", "prefinancement", "dette", "avance", "tresorerie", "plafond", "solvabilite"];
@@ -516,8 +526,8 @@ const SMALL_TALK: { marqueurs: string[]; reponse: { fr: string; en: string } }[]
     // Remerciements / approbations — testés AVANT les saluts (« merci bonne journée »).
     marqueurs: ["merci", "thank", "thanks", "super", "parfait", "genial", "top", "d accord", "daccord", "ok", "compris", "note"],
     reponse: {
-      fr: "Avec plaisir ! N'hésitez pas si vous avez une autre question — prix, vérification d'une parcelle, certificats, RDUE… je suis là pour ça. Et pour une demande complexe : support@agrivo.ci.",
-      en: "You're welcome! Feel free to ask anything else — pricing, plot verification, certificates, EUDR… that's what I'm here for. For complex requests: support@agrivo.ci.",
+      fr: "Avec plaisir ! N'hésitez pas si vous avez une autre question : prix, vérification d'une parcelle, certificats, RDUE… je suis là pour ça. Et pour une demande complexe : support@agrivo.ci.",
+      en: "You're welcome! Feel free to ask anything else: pricing, plot verification, certificates, EUDR… that's what I'm here for. For complex requests: support@agrivo.ci.",
     },
   },
   {
@@ -537,8 +547,8 @@ const SMALL_TALK: { marqueurs: string[]; reponse: { fr: string; en: string } }[]
   {
     marqueurs: ["bonjour", "bonsoir", "salut", "coucou", "hello", "hey", "bjr", "slt", "good morning", "good evening"],
     reponse: {
-      fr: "Bonjour ! Je suis l'Assistant AGRIVO. Je connais toute la plateforme et le règlement européen contre la déforestation. Posez-moi votre question, je vous guide pas à pas — et pour une demande complexe, notre équipe répond à support@agrivo.ci.",
-      en: "Hello! I'm the AGRIVO Assistant. I know the whole platform and the EU Deforestation Regulation. Ask me your question and I'll guide you step by step — for complex requests, our team answers at support@agrivo.ci.",
+      fr: "Bonjour ! Je suis l'Assistant AGRIVO. Je connais toute la plateforme et le règlement européen contre la déforestation. Posez-moi votre question, je vous guide pas à pas ; pour une demande complexe, notre équipe répond à support@agrivo.ci.",
+      en: "Hello! I'm the AGRIVO Assistant. I know the whole platform and the EU Deforestation Regulation. Ask me your question and I'll guide you step by step; for complex requests, our team answers at support@agrivo.ci.",
     },
   },
 ];

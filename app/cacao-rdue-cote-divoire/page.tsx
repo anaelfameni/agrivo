@@ -26,7 +26,11 @@ const FAQ = [
   },
   {
     q: "Que change le Système national de traçabilité (SNT) au 1er septembre 2026 ?",
-    a: "La carte du producteur et le SNT (Conseil du Café-Cacao) deviennent obligatoires : plus d'un million de producteurs enrôlés et environ 3 millions d'hectares géolocalisés. Le SNT crée l'identité et la géolocalisation de base ; il ne produit ni l'analyse de non-déforestation par parcelle, ni le dossier de diligence raisonnée de l'acheteur, ni la mise en marché. C'est exactement la couche qu'ajoute AGRIVO : le SNT identifie, AGRIVO rend vendable.",
+    a: "La carte du producteur et le SNT (Conseil du Café-Cacao) deviennent obligatoires : plus de 1,1 million de producteurs enrôlés, environ 900 000 cartes produites et environ 3 millions d'hectares géolocalisés (annonce officielle du 12 juin 2026). Le pilote a déjà tracé plus de 160 000 tonnes du champ à l'embarquement entre octobre 2025 et mars 2026. Le SNT crée l'identité et la géolocalisation de base ; il ne produit ni l'analyse de non-déforestation par parcelle, ni le dossier de diligence raisonnée de l'acheteur, ni la mise en marché. C'est exactement la couche qu'ajoute AGRIVO : le SNT identifie, AGRIVO rend vendable.",
+  },
+  {
+    q: "Combien vaut un lot de cacao conforme vérifié ?",
+    a: "Le prix bord champ reste fixé chaque campagne par le Conseil du Café-Cacao (2 800 FCFA/kg pour la campagne principale 2025-26, 1 200 FCFA/kg pour la campagne intermédiaire). La valeur de la conformité se joue au-dessus de ce prix garanti : sur les contrats à terme, le cacao vérifié zéro déforestation se négocie 80 à 150 dollars la tonne au-dessus du standard (presse sectorielle cacao, mai 2026). Et dans un marché d'acheteurs où les cours ont fortement reculé depuis décembre 2025, la preuve fait plus que la prime : des cargaisons sans dossier de traçabilité restent invendues dans les ports de la sous-région. Un lot scellé se vend ; un lot sans preuve attend.",
   },
   {
     q: "Qu'est-ce qu'un lot de cacao « scellé » chez AGRIVO ?",
@@ -121,8 +125,9 @@ export default function CacaoRdueCoteDivoire() {
 
         <p className="mt-8 text-xs leading-relaxed text-stone-400">
           Sources : Parlement européen et Conseil de l&apos;UE (décembre 2025), Conseil du Café-Cacao via
-          AIP et KOACI (juin 2026), Trase (2026), Trading Economics (2024). Chiffres réactualisés en
-          juillet 2026 ; AGRIVO publie une évaluation, jamais une garantie.
+          AIP et KOACI (juin 2026), Trase (2026), Trading Economics (2024), presse sectorielle cacao
+          (mai 2026, primes des contrats à terme). Chiffres réactualisés en juillet 2026 ; AGRIVO
+          publie une évaluation, jamais une garantie.
         </p>
       </main>
       <SiteFooter />

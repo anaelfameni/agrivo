@@ -51,7 +51,7 @@ const COPY = {
       eyebrow: "Pourquoi c'est urgent",
       title: "Trois pressions convergent, sur l'exportateur comme sur le producteur.",
       items: [
-        { suffix: " déc. 2026", title: "Le RDUE bloque l'accès au marché", body: "Dès le 30 décembre 2026, un lot sans preuve de zéro déforestation ne peut plus entrer dans l'Union européenne. Amendes jusqu'à 4 % du chiffre d'affaires réalisé en Europe." },
+        { suffix: " déc. 2026", title: "Le RDUE bloque l'accès au marché", body: "Dès le 30 décembre 2026, un lot sans preuve de zéro déforestation ne peut plus entrer dans l'Union européenne. Le tri a déjà commencé : des cargaisons sans dossier de traçabilité restent invendues dans les ports de la sous-région. Amendes jusqu'à 4 % du chiffre d'affaires réalisé en Europe." },
         { prefix: "20 à ", suffix: " M FCFA", title: "La certification manuelle coûte une fortune", body: "Vérifier une coopérative à la main coûte 20 à 40 millions FCFA par an. L'essentiel de ce coût finit par peser sur le revenu réel des producteurs." },
         { suffix: " %", title: "Des données terrain inexploitables", body: "Environ 30 % des données de parcelles collectées sur le terrain ne sont pas assez fiables pour la RDUE : polygones ouverts, doublons, points aberrants. Avoir des fichiers ne suffit pas." },
       ],
@@ -181,7 +181,7 @@ const COPY = {
       eyebrow: "Why it's urgent",
       title: "Three pressures converge, on the exporter and the farmer alike.",
       items: [
-        { suffix: " Dec 2026", title: "The EUDR blocks market access", body: "From 30 December 2026, a lot without proof of zero deforestation can no longer enter the European Union. Fines of up to 4% of turnover generated in Europe." },
+        { suffix: " Dec 2026", title: "The EUDR blocks market access", body: "From 30 December 2026, a lot without proof of zero deforestation can no longer enter the European Union. The sorting has already begun: shipments without a traceability file sit unsold in the sub-region's ports. Fines of up to 4% of turnover generated in Europe." },
         { prefix: "20 to ", suffix: "M FCFA", title: "Manual certification costs a fortune", body: "Verifying a cooperative by hand costs 20 to 40 million FCFA per year. Most of that cost ends up weighing on farmers' real income." },
         { suffix: " %", title: "Field data unfit for use", body: "Around 30% of plot data collected in the field is not reliable enough for the EUDR: open polygons, duplicates, outlier points. Having files is not enough." },
       ],
@@ -683,6 +683,11 @@ function MarketplaceSection() {
             {en
               ? "Once a lot is traced and sealed, the exporter sells it in direct to premium buyers, and the cooperative owns its data instead of being disintermediated."
               : "Une fois le lot tracé et scellé, l'exportateur le vend en direct aux acheteurs premium, et la coopérative possède sa donnée au lieu d'être désintermédiée."}
+          </p>
+          <p className="mt-3 text-sm leading-relaxed text-stone-500">
+            {en
+              ? "On forward contracts, verified deforestation-free cocoa already trades 80 to 150 $ per tonne above standard grade (cocoa trade press, May 2026): the seal has a market price."
+              : "Sur les contrats à terme, le cacao vérifié zéro déforestation se négocie déjà 80 à 150 $ la tonne au-dessus du standard (presse sectorielle cacao, mai 2026) : le sceau a un prix de marché."}
           </p>
         </Reveal>
         <motion.div variants={container} initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.15 }} className="mt-12 grid gap-5 sm:grid-cols-3">

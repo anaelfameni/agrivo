@@ -43,8 +43,8 @@ export default function APropos() {
           }
           sub={
             en
-              ? "The new deforestation regulation is not only a threat. It is also the gateway to provable, better-paid agriculture. The National Traceability System identifies farmers; Agrivo builds on top of it to make each lot provable and sellable: the commerce layer for West African export commodities."
-              : "La nouvelle réglementation sur la déforestation n'est pas seulement une menace. C'est aussi la porte d'entrée vers une agriculture prouvable et mieux rémunérée. Le Système national de traçabilité identifie les producteurs ; Agrivo construit au-dessus pour rendre chaque lot prouvable et vendable : la couche commerce des filières d'exportation d'Afrique de l'Ouest."
+              ? "The new deforestation regulation is not only a threat. It is also the gateway to provable, better-paid agriculture. The National Traceability System identifies farmers; AGRIVO builds on top of it to make each lot provable and sellable: the commerce layer for West African export commodities."
+              : "La nouvelle réglementation sur la déforestation n'est pas seulement une menace. C'est aussi la porte d'entrée vers une agriculture prouvable et mieux rémunérée. Le Système national de traçabilité identifie les producteurs ; AGRIVO construit au-dessus pour rendre chaque lot prouvable et vendable : la couche commerce des filières d'exportation d'Afrique de l'Ouest."
           }
         />
 

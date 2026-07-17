@@ -3,6 +3,32 @@
 Versioning sémantique (MAJOR.MINOR.PATCH). Chaque release liste ce qui est ajouté, corrigé et
 vérifié, conformément à l'étape 8 du pipeline « Du besoin à la Release ».
 
+## v2.9.0 — 2026-07-17 — « Marché juillet 2026 » : prime sourcée 80-150 $/t, SNT officiel du 12/06, marché d'acheteurs, passe qualité pré-démo
+
+### Ajouté
+- **La valorisation est chiffrée et sourcée** : prime des contrats à terme pour le cacao vérifié
+  zéro déforestation, **80 à 150 $/t au-dessus du standard** (presse sectorielle cacao, mai 2026),
+  intégrée sur la landing (MarketplaceSection), la FAQ, la page `/cacao-rdue-cote-divoire`
+  (nouvelle Q/R « Combien vaut un lot conforme ? »), la FAQ marketplace (« Pourquoi payer plus
+  cher un lot scellé ? ») et l'assistant (fait `agrivo-valorisation` réécrit).
+- **Récit SNT à jour de l'annonce officielle du 12 juin 2026** (Conseil du Café-Cacao) : 1,1 M
+  producteurs enrôlés · ~900 000 cartes · ~3 M ha géolocalisés · 160 000 t tracées champ→navire
+  pendant le pilote, sur `/methodologie`, `/cacao-rdue-cote-divoire` et l'assistant (**nouveau
+  fait `snt-carte`**, le slogan a désormais son fait dédié).
+- **Argument « marché d'acheteurs »** : cours en fort repli, cargaisons non tracées invendues à
+  quai, le tri a commencé ; landing (section problème) + page SEO.
+
+### Corrigé
+- Fait prix de l'assistant précisé : 1 200 FCFA/kg = campagne INTERMÉDIAIRE 2025-26, 2 800 =
+  campagne principale ; « au-dessus du prix garanti » conservé partout.
+- Casse de marque **AGRIVO** uniformisée dans la prose des pages publiques (FAQ, méthodologie,
+  à-propos, tarifs) ; la marque graphique (wordmark, splash, copyright) reste « Agrivo ».
+- Purge « — » complétée dans les réponses visibles de l'assistant (`lib/ai/rdue-faits.ts`,
+  oubliées par la purge v2.8).
+
+### Vérifié
+- typecheck · tests Vitest · lint · build · smoke prod post-déploiement.
+
 ## v2.8.0 — 2026-07-16 — « Vers le 20/20 » : repositionnement SNT, offre service, sceau↔DDS, page données, purge charte, campagne, SEO/GEO, hors ligne, instruments business
 
 ### Ajouté
