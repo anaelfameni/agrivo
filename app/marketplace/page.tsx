@@ -4,9 +4,10 @@
  * Accueil AGRIVO Market — v2.4 « signature hybride ».
  *
  * Héros : EXACTEMENT le fond animé de la page d'accueil du site (HeroBg : orbes mesh +
- * grille masquée + grain) + glow curseur + mot rotatif ; à droite, le terminal glass du
- * cours cacao. Le corps alterne sections claires (stats bento, vedettes, catalogue,
- * confiance, timeline, origines, FAQ) et sombres (« Marché en direct », CTA final).
+ * grille masquée + grain) + glow curseur + mot rotatif ; à droite, le MÊME graphique du
+ * cours cacao (CocoaChart) que la section « Marché en direct », pour une lecture cohérente.
+ * Le corps alterne sections claires (stats bento, vedettes, catalogue, confiance, timeline,
+ * origines, FAQ) et sombres (« Marché en direct », CTA final).
  */
 
 import Link from "next/link";
@@ -17,7 +18,7 @@ import { useLanguage } from "@/components/language-provider";
 import { HeroBg } from "@/components/landing/hero-bg";
 import { CursorGlow } from "@/components/ui/motion-primitives";
 import { MarketSearch } from "@/components/marketplace/market-search";
-import { CocoaTerminal } from "@/components/marketplace/cocoa-terminal";
+import { CocoaChart } from "@/components/marketplace/cocoa-price";
 import { MarketStats } from "@/components/marketplace/market-stats";
 import { MarketLive } from "@/components/marketplace/market-live";
 import { MarketCatalog } from "@/components/marketplace/market-catalog";
@@ -140,12 +141,7 @@ export default function MarketHomePage() {
               className="relative w-full"
             >
               <div aria-hidden className="pointer-events-none absolute -inset-6 -z-10 rounded-[2.4rem] bg-green-signal/20 blur-3xl" />
-              <motion.div
-                animate={reduce ? undefined : { y: [0, -8, 0] }}
-                transition={reduce ? undefined : { duration: 6, repeat: Infinity, ease: "easeInOut" }}
-              >
-                <CocoaTerminal />
-              </motion.div>
+              <CocoaChart tone="dark" />
             </motion.div>
           </div>
         </CursorGlow>

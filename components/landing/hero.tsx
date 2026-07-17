@@ -43,7 +43,7 @@ const HERO_TR = {
   fr: {
     line1: "Le SNT identifie.",
     verbs: ["vendable", "prouvable", "négociable", "traçable"],
-    line2pre: "Agrivo rend",
+    line2pre: "AGRIVO rend",
     line2post: "votre récolte.",
     sub: "La carte producteur et le SNT créent l'identité de vos producteurs. AGRIVO ajoute ce que l'État ne fait pas : la preuve de non-déforestation par parcelle, le sceau du lot et la mise en marché. Vos lots conformes, choisis en premier par les acheteurs européens, avant le 30 décembre 2026.",
     cta1: "Commencer la vérification",
@@ -51,7 +51,7 @@ const HERO_TR = {
     meta: ["Les 7 matières premières du RDUE", "Aligné sur le Système national de traçabilité", "Détection satellite (FAO) + IA"],
     badgeReq: "Conformité RDUE requise",
     badgeCountdown: (j: number) => `J-${j} · Conformité RDUE requise`,
-    live: "EN DIRECT",
+    live: "Exemple",
     portfolio: "Portefeuille exportateur",
     kConforme: "Coops à jour",
     kAnomalie: "À traiter",
@@ -63,7 +63,7 @@ const HERO_TR = {
   en: {
     line1: "The SNT identifies.",
     verbs: ["sellable.", "provable.", "tradable.", "traceable."],
-    line2pre: "Agrivo makes your harvest",
+    line2pre: "AGRIVO makes your harvest",
     line2post: "",
     sub: "The producer card and the SNT create your farmers' identity. AGRIVO adds what the State does not: per-plot deforestation-free proof, the lot seal and the route to market. Your compliant lots, picked first by European buyers, before 30 December 2026.",
     cta1: "Start verification",
@@ -71,7 +71,7 @@ const HERO_TR = {
     meta: ["The 7 EUDR raw materials", "Aligned with the National Traceability System", "Satellite detection (FAO) + AI"],
     badgeReq: "EUDR compliance required",
     badgeCountdown: (j: number) => `D-${j} · EUDR compliance required`,
-    live: "LIVE",
+    live: "Sample",
     portfolio: "Exporter portfolio",
     kConforme: "Coops on track",
     kAnomalie: "To handle",
@@ -257,7 +257,7 @@ export function Hero() {
                   </span>
                 ))}
               </div>
-              <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1 text-[11px] text-white/45 lg:justify-start">
+              <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1 text-[11px] text-white/65 lg:justify-start">
                 <span>{tr.meta[0]}</span>
                 <span className="hidden sm:inline">·</span>
                 <span>{tr.meta[1]}</span>
@@ -391,8 +391,8 @@ function HeroMockup({
               Agrivo <span className="text-stone-400">· {tr.portfolio}</span>
             </span>
           </div>
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-green-signal/12 px-2 py-0.5 text-[10px] font-semibold text-green-signal">
-            <span className="glow-pulse h-1.5 w-1.5 rounded-full bg-green-signal" /> {tr.live}
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-stone-100 px-2 py-0.5 text-[10px] font-semibold text-stone-500">
+            <span className="h-1.5 w-1.5 rounded-full bg-stone-400" /> {tr.live}
           </span>
         </div>
 

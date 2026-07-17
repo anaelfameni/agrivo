@@ -12,8 +12,8 @@ import { useCocoaSpot } from "@/components/marketplace/cocoa-price";
 
 /**
  * Catalogue vivant de AGRIVO Market (thème clair) : l'acheteur est le héros. Grille filtrable
- * (filière · région · sceau · recherche) + tri, entrée en cascade (stagger), barre de filtres
- * COLLANTE sous l'en-tête pendant qu'on parcourt la grille. Recherche pilotable depuis le héros
+ * (filière · région · sceau · recherche) + tri, entrée en cascade (stagger), barre de recherche
+ * et de filtres STATIQUE (ne suit pas le défilement). Recherche pilotable depuis le héros
  * via les props contrôlées `query`/`onQueryChange`.
  *
  * Vedettes intégrées (v2.5) : les 3 lots « à la une » (scellés, plus forte valeur) sont
@@ -126,8 +126,8 @@ export function MarketCatalog({
         </span>
       </div>
 
-      {/* Toolbar collante : reste visible pendant le parcours de la grille */}
-      <div className="sticky top-16 z-30 mt-8 flex flex-col gap-4 rounded-2xl border border-black/[0.05] bg-ivory/90 p-3 backdrop-blur-md md:p-4">
+      {/* Toolbar de recherche/filtres : statique (ne suit pas le défilement) */}
+      <div className="mt-8 flex flex-col gap-4 rounded-2xl border border-black/[0.05] bg-ivory p-3 md:p-4">
         <div className="relative">
           <Search size={16} className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-forest-950/35" />
           <input

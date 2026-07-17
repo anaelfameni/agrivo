@@ -61,7 +61,7 @@ export function SiteFooter() {
             </div>
           ))}
         </div>
-        <div className="mt-12 flex flex-col gap-2 border-t border-white/10 pt-6 text-xs text-white/45 sm:flex-row sm:items-center sm:justify-between">
+        <div className="mt-12 flex flex-col gap-2 border-t border-white/10 pt-6 text-xs text-white/60 sm:flex-row sm:items-center sm:justify-between">
           <span>{t.rights}</span>
           <span className="num">{t.reg}</span>
         </div>

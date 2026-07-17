@@ -3,8 +3,8 @@
 import { useMemo } from "react";
 import Link from "next/link";
 import { motion, useReducedMotion } from "framer-motion";
-import { CalendarClock, ShieldCheck, Boxes, AlertTriangle, ArrowRight, Check } from "lucide-react";
-import { PARCELLES } from "@/data/mock-parcelles";
+import { CalendarClock, ShieldCheck, Boxes, AlertTriangle, ArrowRight, Check, Store } from "lucide-react";
+import { PARCELLES, type Parcelle } from "@/data/mock-parcelles";
 import { etatCampagne } from "@/lib/marketplace/campagne";
 import { StatNumber } from "@/components/ui/stat-number";
 
@@ -18,6 +18,7 @@ const TR = {
     eyebrow: "Conformité de ma campagne",
     countdown: (j: number) => `J-${j} avant l'échéance RDUE (30 décembre 2026)`,
     scelles: "Lots scellés",
+    vendables: "Lots vendables",
     tonnage: "Tonnage scellé (t)",
     alertes: "Alertes bloquantes",
     actionsTitle: "Prochaines actions",
@@ -28,6 +29,7 @@ const TR = {
     eyebrow: "My campaign compliance",
     countdown: (j: number) => `D-${j} before the EUDR deadline (30 December 2026)`,
     scelles: "Sealed lots",
+    vendables: "Sellable lots",
     tonnage: "Sealed tonnage (t)",
     alertes: "Blocking alerts",
     actionsTitle: "Next actions",
@@ -36,10 +38,10 @@ const TR = {
   },
 } as const;
 
-export function CampagneConformite({ lang = "fr" }: { lang?: "fr" | "en" }) {
+export function CampagneConformite({ lang = "fr", parcelles = PARCELLES }: { lang?: "fr" | "en"; parcelles?: Parcelle[] }) {
   const reduce = useReducedMotion() ?? false;
   const t = TR[lang];
-  const etat = useMemo(() => etatCampagne(PARCELLES), []);
+  const etat = useMemo(() => etatCampagne(parcelles), [parcelles]);
 
   return (
     <motion.section
@@ -56,10 +58,14 @@ export function CampagneConformite({ lang = "fr" }: { lang?: "fr" | "en" }) {
         </span>
       </div>
 
-      <dl className="mt-5 grid grid-cols-3 gap-4">
+      <dl className="mt-5 grid grid-cols-2 gap-4 sm:grid-cols-4">
         <div>
           <StatNumber value={etat.lotsScelles} format={(n) => `${Math.round(n)}/${etat.totalLots}`} className="num block text-2xl font-bold text-white" />
           <dd className="mt-1 flex items-center gap-1 text-[0.68rem] font-medium uppercase tracking-wide text-white/50"><ShieldCheck size={11} /> {t.scelles}</dd>
+        </div>
+        <div>
+          <StatNumber value={etat.lotsVendables} format={(n) => `${Math.round(n)}`} className="num block text-2xl font-bold text-white" />
+          <dd className="mt-1 flex items-center gap-1 text-[0.68rem] font-medium uppercase tracking-wide text-white/50"><Store size={11} /> {t.vendables}</dd>
         </div>
         <div>
           <StatNumber value={etat.tonnageScelle} format={(n) => n.toLocaleString(lang === "en" ? "en" : "fr-FR", { maximumFractionDigits: 1 })} className="num block text-2xl font-bold text-white" />

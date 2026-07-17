@@ -120,6 +120,12 @@ const W = 720;
 const H = 240;
 const PAD_TOP = 16;
 const PAD_BOTTOM = 22;
+// Gouttière gauche : réservée aux étiquettes de l'axe Y (prix). L'axe préservant son ratio
+// (pas de preserveAspectRatio="none" ici), le texte SVG ne se déforme pas.
+const PAD_LEFT = 52;
+const PAD_RIGHT = 10;
+const PLOT_TOP = PAD_TOP;
+const PLOT_BOTTOM = H - PAD_BOTTOM;
 
 function buildPaths(points: { t: number; c: number }[]) {
   const values = points.map((p) => p.c);
@@ -127,11 +133,11 @@ function buildPaths(points: { t: number; c: number }[]) {
   const max = Math.max(...values);
   const span = max - min || 1;
   const n = points.length;
-  const x = (i: number) => (n <= 1 ? 0 : (i / (n - 1)) * W);
-  const y = (c: number) => PAD_TOP + (1 - (c - min) / span) * (H - PAD_TOP - PAD_BOTTOM);
+  const x = (i: number) => (n <= 1 ? PAD_LEFT : PAD_LEFT + (i / (n - 1)) * (W - PAD_LEFT - PAD_RIGHT));
+  const y = (c: number) => PLOT_TOP + (1 - (c - min) / span) * (PLOT_BOTTOM - PLOT_TOP);
   const coords = points.map((p, i) => ({ x: x(i), y: y(p.c) }));
   const line = coords.map((c, i) => `${i === 0 ? "M" : "L"} ${c.x.toFixed(2)} ${c.y.toFixed(2)}`).join(" ");
-  const area = `${line} L ${W} ${H} L 0 ${H} Z`;
+  const area = `${line} L ${(W - PAD_RIGHT).toFixed(2)} ${H} L ${PAD_LEFT.toFixed(2)} ${H} Z`;
   return { line, area, coords, min, max };
 }
 
@@ -285,8 +291,26 @@ export function fmtDate(t: number, range: RangeCode, lang: "fr" | "en") {
 }
 
 const TR = {
-  fr: { title: "Cacao · ICE US (New York)", sub: "Cours du contrat à terme CC=F, en dollars par tonne.", srcLive: "ICE US · CC=F · différé ~15 min · Yahoo Finance", srcStale: "Dernier cours connu (indicatif) : flux momentanément indisponible.", loading: "Chargement du cours…" },
-  en: { title: "Cocoa · ICE US (New York)", sub: "CC=F futures price, in US dollars per tonne.", srcLive: "ICE US · CC=F · delayed ~15 min · Yahoo Finance", srcStale: "Last known price (indicative): feed momentarily unavailable.", loading: "Loading price…" },
+  fr: {
+    title: "Cacao · ICE US (New York)",
+    sub: "Cours du contrat à terme CC=F, en dollars par tonne.",
+    srcLive: "ICE US · CC=F · différé ~15 min · Yahoo Finance",
+    srcStale: "Dernier cours connu (indicatif) : flux momentanément indisponible.",
+    loading: "Chargement du cours…",
+    yTitle: "Prix (USD / tonne)",
+    xTitle: "Temps sur la plage choisie",
+    legend: "Lecture : l'axe vertical indique le prix en dollars par tonne, l'axe horizontal le temps sur la plage sélectionnée (1J à 1A). Survolez la courbe pour lire le prix à une date précise.",
+  },
+  en: {
+    title: "Cocoa · ICE US (New York)",
+    sub: "CC=F futures price, in US dollars per tonne.",
+    srcLive: "ICE US · CC=F · delayed ~15 min · Yahoo Finance",
+    srcStale: "Last known price (indicative): feed momentarily unavailable.",
+    loading: "Loading price…",
+    yTitle: "Price (USD / tonne)",
+    xTitle: "Time over the selected range",
+    legend: "How to read it: the vertical axis shows the price in US dollars per tonne, the horizontal axis shows time over the selected range (1D to 1Y). Hover the curve to read the price on a given date.",
+  },
 } as const;
 
 /** Graphique du cours cacao ICE : SVG custom animé (tracé qui se dessine + survol).
@@ -315,7 +339,7 @@ export function CocoaChart({ className = "", tone = "light" }: { className?: str
   };
 
   const hoverPoint = hover != null && data ? data.points[hover] : null;
-  const hoverX = hover != null && data && data.points.length > 1 ? (hover / (data.points.length - 1)) * 100 : 0;
+  const hoverX = hover != null && paths ? (paths.coords[hover].x / W) * 100 : 0;
   const hoverY = hover != null && paths ? (paths.coords[hover].y / H) * 100 : 0;
 
   return (
@@ -379,10 +403,26 @@ export function CocoaChart({ className = "", tone = "light" }: { className?: str
                   <stop offset="100%" stopColor={stroke} stopOpacity="0" />
                 </linearGradient>
               </defs>
-              {/* lignes de repère horizontales discrètes */}
-              {[0.25, 0.5, 0.75].map((f) => (
-                <line key={f} x1="0" x2={W} y1={PAD_TOP + f * (H - PAD_TOP - PAD_BOTTOM)} y2={PAD_TOP + f * (H - PAD_TOP - PAD_BOTTOM)} stroke={dark ? "rgba(255,255,255,0.08)" : "var(--color-stone-100)"} strokeWidth="1" />
-              ))}
+              {/* Axe Y : lignes de repère + étiquettes de prix (haut = max, milieu, bas = min) */}
+              {[0, 0.25, 0.5, 0.75, 1].map((f) => {
+                const yLine = PLOT_TOP + f * (PLOT_BOTTOM - PLOT_TOP);
+                const price = paths.max - f * (paths.max - paths.min);
+                const labelled = f === 0 || f === 0.5 || f === 1;
+                return (
+                  <g key={f}>
+                    <line x1={PAD_LEFT} x2={W - PAD_RIGHT} y1={yLine} y2={yLine} stroke={dark ? "rgba(255,255,255,0.08)" : "var(--color-stone-100)"} strokeWidth="1" />
+                    {labelled && (
+                      <text x={PAD_LEFT - 8} y={yLine} textAnchor="end" dominantBaseline="middle" fontSize="12" className="num" fill={dark ? "rgba(255,255,255,0.5)" : "var(--color-stone-400)"}>
+                        {nf(price, l)}
+                      </text>
+                    )}
+                  </g>
+                );
+              })}
+              {/* Titre de l'axe Y (vertical) */}
+              <text transform={`translate(13 ${(PLOT_TOP + PLOT_BOTTOM) / 2}) rotate(-90)`} textAnchor="middle" fontSize="12" fill={dark ? "rgba(255,255,255,0.55)" : "var(--color-forest-950)"} fillOpacity={dark ? 1 : 0.55}>
+                {t.yTitle}
+              </text>
               <motion.path
                 key={`area-${range}-${data!.stale}`}
                 d={paths.area}
@@ -412,11 +452,16 @@ export function CocoaChart({ className = "", tone = "light" }: { className?: str
               )}
             </svg>
 
-            {/* Bornes de date */}
-            <div className={`mt-1 flex justify-between px-0.5 text-[0.68rem] ${dark ? "text-white/40" : "text-forest-950/40"}`}>
+            {/* Axe X : bornes de date (alignées sur la zone tracée) + milieu + titre */}
+            <div
+              className={`mt-1 flex justify-between text-[0.68rem] ${dark ? "text-white/45" : "text-forest-950/45"}`}
+              style={{ paddingLeft: `${(PAD_LEFT / W) * 100}%`, paddingRight: `${(PAD_RIGHT / W) * 100}%` }}
+            >
               <span>{fmtDate(data!.points[0].t, range, l)}</span>
+              <span>{fmtDate(data!.points[Math.floor((data!.points.length - 1) / 2)].t, range, l)}</span>
               <span>{fmtDate(data!.points[data!.points.length - 1].t, range, l)}</span>
             </div>
+            <p className={`mt-0.5 text-center text-[0.68rem] font-medium ${dark ? "text-white/40" : "text-forest-950/40"}`}>{t.xTitle}</p>
 
             {/* Tooltip HTML positionné */}
             {hoverPoint && (
@@ -435,9 +480,13 @@ export function CocoaChart({ className = "", tone = "light" }: { className?: str
         )}
       </div>
 
+      {/* Légende de lecture (axes expliqués) */}
+      <p className={`mt-4 flex items-start gap-1.5 text-[0.72rem] leading-relaxed ${dark ? "text-white/55" : "text-forest-950/55"}`}>
+        <Info size={12} className="mt-0.5 shrink-0" />
+        {t.legend}
+      </p>
       {/* Source / honnêteté */}
-      <p className={`mt-4 flex items-center gap-1.5 text-[0.72rem] leading-relaxed ${dark ? "text-white/45" : "text-forest-950/45"}`}>
-        <Info size={12} className="shrink-0" />
+      <p className={`mt-2 border-t pt-3 text-[0.72rem] leading-relaxed ${dark ? "border-white/10 text-white/45" : "border-black/[0.06] text-forest-950/45"}`}>
         {data?.stale ? t.srcStale : t.srcLive}
       </p>
     </div>

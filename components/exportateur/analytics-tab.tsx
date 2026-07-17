@@ -205,8 +205,9 @@ export function AnalyticsTab({
 
   return (
     <div className="flex flex-col gap-5">
-      {/* Conformité de ma campagne : lots scellés, compte à rebours RDUE, prochaines actions */}
-      <CampagneConformite lang={lang === "en" ? "en" : "fr"} />
+      {/* Conformité de ma campagne : lots scellés, compte à rebours RDUE, prochaines actions.
+          Alimenté par la même liste que le tableau/carte (respecte le filtre ?coop= actif). */}
+      <CampagneConformite lang={lang === "en" ? "en" : "fr"} parcelles={parcelles} />
 
       {/* 4 KPI officiels */}
       <motion.div

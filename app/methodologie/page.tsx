@@ -141,13 +141,13 @@ export default function Methodologie() {
           </Reveal>
         </section>
 
-        {/* Le SNT identifie, AGRIVO rend vendable */}
+        {/* Le SNT identifie. AGRIVO rend vendable. */}
         <section className="mx-auto max-w-6xl px-6 pb-4 pt-10 md:px-8">
           <Reveal>
             <div className="rounded-2xl border border-black/[0.06] bg-white p-8 md:p-10">
               <span className="eyebrow text-green-signal">{en ? "Above the National Traceability System" : "Au-dessus du Système national de traçabilité"}</span>
               <h2 className="mt-3 font-display text-2xl text-forest-950 sm:text-3xl">
-                {en ? "The SNT identifies. Agrivo makes it sellable." : "Le SNT identifie. Agrivo rend vendable."}
+                {en ? "The SNT identifies. AGRIVO makes it sellable." : "Le SNT identifie. AGRIVO rend vendable."}
               </h2>
               <p className="mt-3 max-w-3xl text-sm leading-relaxed text-stone-600">
                 {en
@@ -294,8 +294,8 @@ export default function Methodologie() {
               </h2>
               <p className="mt-3 max-w-2xl text-stone-600">
                 {en
-                  ? "A lot can only be sold on the marketplace if it is sealed. The seal is the anti-laundering guarantee, and it takes two independent locks."
-                  : "Un lot n'est vendable sur la marketplace que s'il est scellé. Le sceau est la garantie anti-blanchiment, et il faut deux verrous indépendants."}
+                  ? "A lot can only be sold on the marketplace if it is sealed. The seal is the anti-laundering safeguard, and it takes two independent locks."
+                  : "Un lot n'est vendable sur la marketplace que s'il est scellé. Le sceau est le verrou anti-blanchiment, et il faut deux contrôles indépendants."}
               </p>
             </Reveal>
             <div className="mt-8 grid gap-5 md:grid-cols-2">

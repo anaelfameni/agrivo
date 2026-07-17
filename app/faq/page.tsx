@@ -49,8 +49,8 @@ const QA: { q: { fr: string; en: string }; a: { fr: string; en: string } }[] = [
   {
     q: { fr: "La conformité rapporte-t-elle vraiment à la coopérative ?", en: "Does compliance really pay off for the cooperative?" },
     a: {
-      fr: "Oui, par la valorisation, jamais par du crédit. En Côte d'Ivoire le prix bord champ est fixé à 1 200 FCFA/kg, quand le prix de référence pour un revenu vital atteint 1 758 FCFA/kg (+47 %). Une parcelle conforme est l'argument pour négocier primes de durabilité et acheteurs premium au-dessus du prix garanti.",
-      en: "Yes, through valorisation, never through credit. In Côte d'Ivoire the farmgate price is set at 1,200 FCFA/kg while the living-income reference price reaches 1,758 FCFA/kg (+47%). A compliant plot is the argument to negotiate sustainability premiums and premium buyers above the guaranteed price.",
+      fr: "Oui, par la valorisation, jamais par du crédit. Le prix bord champ est fixé chaque campagne par le Conseil du Café-Cacao ; une parcelle conforme est l'argument concret pour négocier, au-dessus de ce prix garanti, les primes de durabilité et l'accès aux acheteurs premium qui exigent une preuve RDUE. C'est cette marge additionnelle que la conformité débloque.",
+      en: "Yes, through valorisation, never through credit. The farmgate price is set each season by the Coffee-Cocoa Council; a compliant plot is the concrete argument to negotiate, above that guaranteed price, the sustainability premiums and access to premium buyers who require EUDR proof. That additional margin is what compliance unlocks.",
     },
   },
   {

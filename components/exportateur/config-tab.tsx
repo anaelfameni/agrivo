@@ -17,8 +17,8 @@ const PINGS = {
     { service: "TRACES NT", label: "État de dépôt interrogé", range: [300, 700] as const },
   ],
   en: [
-    { service: "Moteur satellite", label: "Convergence of evidence verified", range: [700, 1200] as const },
-    { service: "IA Agrivo", label: "Verdict explanation generated", range: [400, 900] as const },
+    { service: "Satellite engine", label: "Convergence of evidence verified", range: [700, 1200] as const },
+    { service: "AGRIVO AI", label: "Verdict explanation generated", range: [400, 900] as const },
     { service: "Copernicus", label: "Sentinel-2 tile fetched", range: [900, 1600] as const },
     { service: "TRACES NT", label: "Submission status queried", range: [300, 700] as const },
   ],
@@ -28,7 +28,7 @@ const COPY = {
   fr: {
     seedLog: "Connexion établie",
     networkLog: "Journal réseau",
-    live: "en direct",
+    live: "démo",
     waiting: "En attente de trafic réseau…",
     alertCentre: "Centre d'alertes",
     alertSub: "Parcelles en anomalie, regroupées par coopérative.",
@@ -38,7 +38,7 @@ const COPY = {
   en: {
     seedLog: "Connection established",
     networkLog: "Network log",
-    live: "live",
+    live: "demo",
     waiting: "Waiting for network traffic…",
     alertCentre: "Alert centre",
     alertSub: "Plots with anomalies, grouped by cooperative.",

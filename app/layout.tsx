@@ -90,7 +90,7 @@ export default function RootLayout({
               name: "Agrivo",
               url: "https://agrivo-io.vercel.app",
               description:
-                "La place de marché des lots agricoles conformes vérifiés (RDUE). Le SNT identifie, Agrivo rend vendable : preuve satellite par parcelle, sceau du lot, dossier prêt pour la diligence raisonnée de l'acheteur européen.",
+                "La place de marché des lots agricoles conformes vérifiés (RDUE). Le SNT identifie. AGRIVO rend vendable : preuve satellite par parcelle, sceau du lot, dossier prêt pour la diligence raisonnée de l'acheteur européen.",
               areaServed: "Côte d'Ivoire",
               knowsAbout: ["RDUE", "EUDR", "traçabilité cacao", "Système national de traçabilité", "carte producteur", "TRACES NT"],
               email: "support@agrivo.ci",

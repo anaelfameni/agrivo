@@ -213,12 +213,12 @@ aucun logo fabriqué, formulations Lono/Finafrica).
 - **Palette « Forêt & Données »** : `forest-950 #0a1f14` (fond sombre), `green-signal #16a34a` (Conforme),
   `amber-cacao #c8861d` / `amber-soft #e0a64b` (accents / Données insuffisantes), `red-block #b4231e`
   (Anomalie), `ivory #f7f3ea` (fond clair), `stone-*`.
-- **Polices (Session 9, 2e passe)** : **TITRES = `Space Grotesk`** (`--font-space-grotesk`), corps =
-  `Geist`, chiffres = `Geist Mono`. ⚠️ **Newsreader ET Fraunces retirés** (décision Anael : « je ne veux
-  plus voir cette police, elle ressemble à l'IA »). Les DEUX classes `.font-display` et `.font-premium`
-  pointent sur `--font-display` = Space Grotesk (droit, jamais italique ; l'italique a été retiré de la
-  classe CSS ET des inline hero/splash). Space Grotesk max = **700** (hero passé de 800→700). Swap de
-  police = 1 ligne dans `globals.css` + l'import next/font dans `app/layout.tsx`.
+- **Polices** : **TITRES = `Space Grotesk`** (`--font-space-grotesk`), corps = `Geist`, chiffres =
+  `Geist Mono`. Fraunces retiré. **Newsreader RESTAURÉ** pour la seule signature de marque via la classe
+  `.font-brand-serif` (wordmark, hero, splash, chrome marketplace) : ne PAS la re-purger. Les classes
+  `.font-display` et `.font-premium` pointent sur `--font-display` = Space Grotesk (droit, jamais
+  italique). Space Grotesk max = **700** (hero passé de 800→700). Swap de police = 1 ligne dans
+  `globals.css` + l'import next/font dans `app/layout.tsx`.
 - **Effets/anim** (`globals.css` + `components/ui/motion-primitives.tsx`) : mesh gradients animés, grain,
   grille masquée, `glow-pulse`, `liquid-glass`, `divide-fluid`, `Magnetic` / `CursorGlow` / `Tilt`,
   particules canvas qui fuient le curseur (splash), countdown auto-accéléré, bouton magnétique, rideau de

@@ -181,7 +181,7 @@ body {
 /* Tier clair — chrome sur fond ivoire (header AGRIVO Market). Pas d'overflow:hidden ni de
    ::before bordure : le menu mobile (dropdown) doit pouvoir dépasser. */
 .liquid-glass-light {
-  background: rgba(247, 243, 234, 0.68);
+  background: rgba(247, 243, 234, 0.97);
   backdrop-filter: blur(20px) saturate(1.6);
   -webkit-backdrop-filter: blur(20px) saturate(1.6);
   box-shadow:

@@ -116,7 +116,9 @@ export function evaluerSentinelleVolume(exp: Expedition, toutesParcelles: Parcel
  * l'espace exportateur, et désactive la publication des lots concernés). Calqué sur le comptage
  * par `Map` de `auditerRegistre`.
  */
-export function connaissementsDupliquesMarche(exps: Expedition[]): Set<string> {
+export function connaissementsDupliquesMarche(
+  exps: readonly { ref: string; journalPossession?: { connaissement?: string }[] }[],
+): Set<string> {
   const vus = new Map<string, Set<string>>();
   for (const exp of exps) {
     for (const j of exp.journalPossession ?? []) {

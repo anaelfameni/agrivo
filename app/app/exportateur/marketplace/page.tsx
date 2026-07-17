@@ -22,6 +22,7 @@ import {
   TAUX_COMMISSION_MAX,
   type MarketLot,
 } from "@/data/mock-marketplace";
+import { connaissementsDupliquesMarche } from "@/lib/sentinelle/volume";
 
 /**
  * « Mes lots » (v2.6, refonte design system app) : l'espace de gestion des lots de l'exportateur
@@ -76,6 +77,10 @@ const COPY = {
     campagne: "Campagne",
     empty: "Aucun lot dans cette vue.",
     emptyAction: "Voir tous les lots",
+    conflitTitre: "Contrôle inter-lots · connaissements",
+    conflitOk: "Aucun connaissement partagé entre deux lots. Chaque remise ne sert qu'une fois.",
+    conflitKo: (n: number, refs: string) =>
+      `${n} lot${n > 1 ? "s" : ""} partagent un même connaissement (${refs}) : publication suspendue jusqu'à résolution.`,
   },
   en: {
     eyebrow: "Exporter space · AGRIVO Market",
@@ -108,6 +113,10 @@ const COPY = {
     campagne: "Harvest",
     empty: "No lot in this view.",
     emptyAction: "See all lots",
+    conflitTitre: "Cross-lot check · bills of lading",
+    conflitOk: "No bill of lading shared between two lots. Each hand-off is used only once.",
+    conflitKo: (n: number, refs: string) =>
+      `${n} lot${n > 1 ? "s" : ""} share the same bill of lading (${refs}): listing suspended until resolved.`,
   },
 } as const;
 type Copy = (typeof COPY)[keyof typeof COPY];
@@ -118,14 +127,28 @@ export default function MesLotsPage() {
   const t = COPY[l];
   const reduce = useReducedMotion() ?? false;
   const lots = useMemo(() => lotsMarche(PARCELLES), []);
+  // Sentinelle inter-lots : un même connaissement ne peut couvrir deux lots. Les lots concernés
+  // voient leur publication suspendue (anti « blanchiment » par double comptage d'une remise).
+  const lotsEnConflit = useMemo(() => {
+    const dup = connaissementsDupliquesMarche(lots);
+    const refs = new Set<string>();
+    if (dup.size === 0) return refs;
+    for (const lot of lots) {
+      if (lot.journalPossession?.some((j) => j.connaissement && dup.has(j.connaissement.trim()))) {
+        refs.add(lot.ref);
+      }
+    }
+    return refs;
+  }, [lots]);
   // État de session : lots retirés du marché (les constantes ne sont jamais mutées).
   const [retires, setRetires] = useState<Set<string>>(new Set());
   const [filter, setFilter] = useState<FilterKey>("tous");
 
   const toggle = (ref: string) => {
-    // Garde-fou : publier/retirer n'a de sens que pour un lot vendable (sceau vérifié + listé).
+    // Garde-fou : publier/retirer n'a de sens que pour un lot vendable (sceau vérifié + listé)
+    // et sans conflit de connaissement inter-lots.
     const lot = lots.find((x) => x.ref === ref);
-    if (!lot || !estVendable(lot)) return;
+    if (!lot || !estVendable(lot) || lotsEnConflit.has(ref)) return;
     setRetires((prev) => {
       const next = new Set(prev);
       if (next.has(ref)) next.delete(ref);
@@ -194,8 +217,27 @@ export default function MesLotsPage() {
             </div>
           ))}
         </dl>
-        <p className="mt-4 border-t border-white/10 pt-3 text-[0.7rem] leading-relaxed text-white/45">{t.kpiNote}</p>
+        <p className="mt-4 border-t border-white/10 pt-3 text-[0.7rem] leading-relaxed text-white/55">{t.kpiNote}</p>
       </div>
+
+      {/* Sentinelle inter-lots : rassurance verte si aucun connaissement partagé, alerte rouge sinon */}
+      {lotsEnConflit.size === 0 ? (
+        <div className="mt-4 flex items-start gap-2.5 rounded-xl border border-green-signal/20 bg-green-signal/[0.06] px-4 py-2.5">
+          <Check size={15} className="mt-0.5 shrink-0 text-green-signal" />
+          <p className="text-xs leading-relaxed text-forest-950/70">
+            <span className="font-semibold text-forest-950">{t.conflitTitre} · </span>
+            {t.conflitOk}
+          </p>
+        </div>
+      ) : (
+        <div className="mt-4 flex items-start gap-2.5 rounded-xl border border-red-block/30 bg-red-block/[0.06] px-4 py-2.5" role="alert">
+          <ShieldAlert size={15} className="mt-0.5 shrink-0 text-red-block" />
+          <p className="text-xs leading-relaxed text-forest-950/75">
+            <span className="font-semibold text-red-block">{t.conflitTitre} · </span>
+            {t.conflitKo(lotsEnConflit.size, [...lotsEnConflit].join(", "))}
+          </p>
+        </div>
+      )}
 
       {/* Filtres : segmented control à pilule glissante */}
       <div className="mt-6 inline-flex flex-wrap rounded-full border border-black/[0.07] bg-white p-1 shadow-sm">
@@ -241,7 +283,7 @@ export default function MesLotsPage() {
               key={lot.ref}
               variants={{ hidden: { opacity: 0, y: 18 }, show: { opacity: 1, y: 0, transition: { duration: 0.45, ease: EASE } } }}
             >
-              <LotCard lot={lot} lang={l} t={t} retire={retires.has(lot.ref)} onToggle={() => toggle(lot.ref)} reduce={reduce} />
+              <LotCard lot={lot} lang={l} t={t} retire={retires.has(lot.ref)} conflit={lotsEnConflit.has(lot.ref)} onToggle={() => toggle(lot.ref)} reduce={reduce} />
             </motion.div>
           ))}
         </motion.div>
@@ -255,6 +297,7 @@ function LotCard({
   lang,
   t,
   retire,
+  conflit,
   onToggle,
   reduce,
 }: {
@@ -262,11 +305,12 @@ function LotCard({
   lang: "fr" | "en";
   t: Copy;
   retire: boolean;
+  conflit: boolean;
   onToggle: () => void;
   reduce: boolean;
 }) {
   const f = getFiliere(lot.filiere);
-  const vendable = estVendable(lot); // source de vérité unique (sceau vérifié + lot listé)
+  const vendable = estVendable(lot) && !conflit; // sceau vérifié + listé + sans conflit inter-lots
   const isReserved = lot.statutMarche === "reserve";
   const publie = !retire;
   const [journalOuvert, setJournalOuvert] = useState(false);
