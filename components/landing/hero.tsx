@@ -388,7 +388,7 @@ function HeroMockup({
           <div className="flex items-center gap-2">
             <Logo size={15} showWord={false} />
             <span className="text-xs font-semibold text-forest-950">
-              Agrivo <span className="text-stone-400">· {tr.portfolio}</span>
+              Agrivo <span className="text-stone-500">· {tr.portfolio}</span>
             </span>
           </div>
           <span className="inline-flex items-center gap-1.5 rounded-full bg-stone-100 px-2 py-0.5 text-[10px] font-semibold text-stone-500">
@@ -414,7 +414,7 @@ function HeroMockup({
               <span className="h-2 w-2 shrink-0 rounded-full" style={{ background: r.color }} />
               <div className="min-w-0 flex-1">
                 <div className="truncate text-xs font-semibold text-forest-950">{r.name}</div>
-                <div className="text-[10px] text-stone-400">{r.dep}</div>
+                <div className="text-[10px] text-stone-500">{r.dep}</div>
               </div>
               <span
                 className="hidden rounded-full px-2 py-0.5 text-[10px] font-semibold sm:inline"

@@ -4,8 +4,20 @@
 > Il condense la charte de marque, les règles de contenu, les faits produit et l'avancement.
 > En cas de doute, ce fichier prime sur mes souvenirs. Il reflète l'état au dernier prompt traité.
 
-> 🟢 **ÉTAT ACTUEL — v2.13.0, 18 juillet 2026 (CE BLOC FAIT FOI sur toute mention contraire
+> 🟢 **ÉTAT ACTUEL — v2.14.0, 18 juillet 2026 (CE BLOC FAIT FOI sur toute mention contraire
 > plus bas, qui relève de l'historique de construction).**
+> - **v2.14 « DURCISSEMENT » (18/07 nuit, réponse à l'audit Webisafe 82/100)** : headers de
+>   sécurité sur toutes les routes via `next.config.ts headers()` (CSP calibrée : connect-src
+>   'self' car tous les appels tiers sont côté serveur ; img-src inclut server.arcgisonline.com
+>   pour Leaflet ; worker blob: pour PWA+react-pdf ; NE PAS resserrer script-src sans nonce,
+>   l'hydratation Next et les JSON-LD inline en dépendent), X-Frame-Options, nosniff,
+>   Referrer-Policy, Permissions-Policy (camera/geolocation self), HSTS ;
+>   `/.well-known/security.txt` ; canonique par route (alternates.canonical './') ; title
+>   racine enrichi ; contrastes AA remontés (sources /40→/70, stone-400→500, footer /55→/75) ;
+>   **claim « ± 11 cm » RETIRÉ de la landing** (invérifiable comme précision de mesure ;
+>   gemini.ts dit « résolution d'écriture ~11 cm » = fait mathématique du format 6 décimales).
+>   NON APPLICABLES sur vercel.app (documentés au CHANGELOG) : SPF/DKIM/DMARC, DNSSEC, WAF
+>   dédié, header Server ; à traiter avec le domaine propre agrivo.ci.
 > - **v2.13 « QUALITÉ & CONFORT » (18/07 nuit, passe QA/UX demandée par Anael)** :
 >   ① noms de villes sur les 5 cartes Leaflet via `components/map/labels-layer.tsx` (tuiles
 >   Esri World_Boundaries_and_Places posées APRÈS l'imagerie) + légendes complétées (fiche

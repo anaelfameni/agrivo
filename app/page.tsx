@@ -100,7 +100,7 @@ const COPY = {
       eyebrow: "Cartographie satellite",
       title: "Chaque parcelle, prouvée depuis le ciel.",
       body: "Le contour de la parcelle est comparé aux images satellites depuis la date pivot du 31 décembre 2020. Superficie calculée, verdict rendu, certificat prêt pour TRACES NT.",
-      bullets: ["Fond satellite haute résolution", "Contour de parcelle précis (± 11 cm)", "Verdict satellite (méthode FAO) en quelques secondes"],
+      bullets: ["Fond satellite haute résolution", "Contour saisi sommet par sommet (WGS-84, 6 décimales)", "Verdict satellite (méthode FAO) en quelques secondes"],
       badge: "Conforme",
     },
     enjeu: {
@@ -230,7 +230,7 @@ const COPY = {
       eyebrow: "Satellite mapping",
       title: "Every plot, proven from the sky.",
       body: "The plot outline is compared to satellite imagery from the 31 December 2020 cut-off date. Area computed, verdict issued, certificate ready for TRACES NT.",
-      bullets: ["High-resolution satellite base", "Plot outline accurate to ± 11 cm", "Satellite verdict (FAO method) in seconds"],
+      bullets: ["High-resolution satellite base", "Outline entered vertex by vertex (WGS-84, 6 decimals)", "Satellite verdict (FAO method) in seconds"],
       badge: "Compliant",
     },
     enjeu: {
@@ -742,7 +742,7 @@ function ChiffresSection() {
           ))}
         </div>
         <Reveal delay={0.2}>
-          <p className="num mt-8 text-xs text-white/40">{c.source}</p>
+          <p className="num mt-8 text-xs text-white/70">{c.source}</p>
         </Reveal>
       </div>
     </section>
@@ -771,7 +771,7 @@ function EnjeuSection() {
         </div>
         <Reveal delay={0.2}>
           <p className="mt-10 max-w-2xl text-base leading-relaxed text-forest-950">{e.body}</p>
-          <p className="num mt-3 text-xs text-stone-400">{e.source}</p>
+          <p className="num mt-3 text-xs text-stone-500">{e.source}</p>
         </Reveal>
       </div>
     </section>

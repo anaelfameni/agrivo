@@ -3,6 +3,45 @@
 Versioning sémantique (MAJOR.MINOR.PATCH). Chaque release liste ce qui est ajouté, corrigé et
 vérifié, conformément à l'étape 8 du pipeline « Du besoin à la Release ».
 
+## v2.14.0 — 2026-07-18 — « Durcissement » : réponse à l'audit Webisafe (82/100) : headers de sécurité, canonical, security.txt, contrastes, claim ±11 cm retiré
+
+### Ajouté
+- **En-têtes de sécurité sur toutes les routes** (`next.config.ts headers()`, réponse aux
+  5 constats « manquant » de l'audit) : **Content-Security-Policy** calibrée pour la stack
+  réelle (scripts self + inline/eval requis par Next, images self + tuiles Esri + data:/blob:
+  pour QR et aperçus, connect-src 'self' car TOUS les appels tiers passent par nos routes
+  serveur, worker blob: pour la PWA et react-pdf, frame-ancestors 'self') ; X-Frame-Options
+  SAMEORIGIN ; X-Content-Type-Options nosniff ; Referrer-Policy strict-origin-when-cross-origin ;
+  Permissions-Policy (caméra et géolocalisation restreintes à notre origine, micro/paiement
+  coupés) ; HSTS 2 ans.
+- **`/.well-known/security.txt`** (contact support@agrivo.ci, politique /vos-donnees).
+- **Canonique par route** (`alternates.canonical` sur le layout racine, résolue via
+  metadataBase) : fini le risque d'indexation dupliquée signalé par l'audit.
+
+### Corrigé
+- **Claim « ± 11 cm » RETIRÉ de la landing** (bullet cartographie FR/EN) : précision de
+  MESURE invérifiable ; remplacé par le fait exact « contour saisi sommet par sommet
+  (WGS-84, 6 décimales) » ; le mémo IA parle désormais de « résolution d'écriture ~11 cm »
+  (propriété mathématique du format, pas une promesse de mesure).
+- **Title racine enrichi** (24 caractères → « AGRIVO · Conformité RDUE et cacao prêt à
+  exporter », mots-clés dans le titre Google).
+- **Contrastes WCAG AA remontés** sur les éléments signalés de l'accueil : lignes de sources
+  (text-white/40→/70, stone-400→stone-500), étiquettes du portefeuille du hero, tagline du
+  footer (/55→/75).
+
+### Non applicable / assumé (documenté, pas oublié)
+- SPF/DKIM/DMARC et DNSSEC : impossibles sur un sous-domaine vercel.app (la zone DNS
+  appartient à Vercel) : à traiter à la mise en place du domaine propre (agrivo.ci).
+- WAF dédié et header « Server: Vercel » : gérés par la plateforme Vercel ; un WAF/CDN type
+  Cloudflare viendra avec le domaine propre.
+- « 1 image sans alt » : faux positif (image décorative avec alt="" + aria-hidden,
+  conformément aux WCAG) ; « CORS permissif » : aucune route ne pose d'Access-Control-Allow-
+  Origin (à revérifier au rescan) ; serveur « Atlanta » : Vercel sert depuis un réseau edge
+  mondial, le point mesuré dépend de l'origine du scan.
+
+### Vérifié
+- `tsc` ✓ · 205 tests ✓ · `eslint` ✓ · `next build` ✓ · headers vérifiés en local.
+
 ## v2.13.0 — 2026-07-18 — « Qualité & confort » : cartes labellisées et agrandies, téléchargements fiabilisés, guide complet, mobile vérifié
 
 ### Ajouté

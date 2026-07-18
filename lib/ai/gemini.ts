@@ -299,7 +299,7 @@ export function genererMemoDiligence(p: Parcelle): MemoDiligence {
     },
     {
       titre: "2. Géolocalisation",
-      corps: `Le contour de la parcelle est enregistré au format GeoJSON (RFC 7946), à 6 décimales (précision ± 11 cm), conformément aux exigences de géolocalisation du RDUE. La superficie est calculée à partir du polygone vérifié.`,
+      corps: `Le contour de la parcelle est enregistré au format GeoJSON (RFC 7946), à 6 décimales (résolution d'écriture ~11 cm), conformément aux exigences de géolocalisation du RDUE. La superficie est calculée à partir du polygone vérifié.`,
     },
     {
       titre: "3. Évaluation de déforestation",

@@ -47,10 +47,12 @@ const DESCRIPTION =
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: `${BRAND_NAME} · Prêt à exporter`,
+    default: `${BRAND_NAME} · Conformité RDUE et cacao prêt à exporter`,
     template: `%s · ${BRAND_NAME}`,
   },
   description: DESCRIPTION,
+  // Canonique auto-résolue par route (metadataBase + chemin) : évite l'indexation dupliquée.
+  alternates: { canonical: "./" },
   applicationName: BRAND_NAME,
   keywords: ["RDUE", "EUDR", "conformité", "déforestation", "cacao", "Côte d'Ivoire", "traçabilité", "primes de durabilité"],
   icons: { icon: "/icons/icon.svg" },
