@@ -58,10 +58,11 @@ const LIBELLE: Record<CategorieAnomalie, { fr: string; en: string }> = {
   "geometrie-invalide": { fr: "géométries invalides (polygones ouverts)", en: "invalid geometries (open polygons)" },
   "polygone-manquant": { fr: "polygones manquants (parcelles de 4 ha et plus)", en: "missing polygons (plots of 4 ha and more)" },
   chevauchement: { fr: "chevauchements entre parcelles", en: "overlaps between plots" },
+  "non-carte": { fr: "producteurs non cartés (rapprochement SNT)", en: "farmers without a producer card (NTS reconciliation)" },
 };
 
 /** Ordre de traitement recommandé : corrections rapides au bureau d'abord, terrain ensuite. */
-const ORDRE: CategorieAnomalie[] = ["doublon", "hors-zone", "geometrie-invalide", "polygone-manquant", "chevauchement"];
+const ORDRE: CategorieAnomalie[] = ["doublon", "hors-zone", "non-carte", "geometrie-invalide", "polygone-manquant", "chevauchement"];
 
 /**
  * Plan d'action DÉTERMINISTE (repli sans clé et trame des faits pour Gemini) :

@@ -74,12 +74,15 @@ const COPY = {
     revueLive: "Reformulé par l'IA · en direct",
     revueBase: "Revue déterministe",
     revueHint: "Signaux faibles au-delà de l'audit géométrique (superficies, noms, dispersion). Ce sont des points à vérifier, jamais des verdicts.",
+    avertissementsTitle: "Avertissements (non bloquants pour la géométrie)",
+    avertissementsHint: "Le rapprochement SNT signale les producteurs sans carte : la parcelle reste géolocalisable, mais elle sera exclue du sceau AGRIVO jusqu'à régularisation.",
     cat: {
       "geometrie-invalide": "Géométrie invalide",
       "polygone-manquant": "Polygone manquant (≥ 4 ha)",
       doublon: "Doublon de matricule",
       chevauchement: "Chevauchement",
       "hors-zone": "Hors zone",
+      "non-carte": "Producteur non carté (rapprochement SNT)",
     } as Record<CategorieAnomalie, string>,
   },
   en: {
@@ -117,12 +120,15 @@ const COPY = {
     revueLive: "Reworded by AI · live",
     revueBase: "Deterministic review",
     revueHint: "Weak signals beyond the geometric audit (areas, names, dispersion). These are points to check, never verdicts.",
+    avertissementsTitle: "Warnings (non-blocking for geometry)",
+    avertissementsHint: "The NTS reconciliation flags farmers without a producer card: the plot can still be geolocated, but it will be excluded from the AGRIVO seal until regularised.",
     cat: {
       "geometrie-invalide": "Invalid geometry",
       "polygone-manquant": "Missing polygon (≥ 4 ha)",
       doublon: "Duplicate matricule",
       chevauchement: "Overlap",
       "hors-zone": "Out of zone",
+      "non-carte": "Farmer without a card (NTS reconciliation)",
     } as Record<CategorieAnomalie, string>,
   },
 } as const;
@@ -133,6 +139,7 @@ const CAT_ICONS: Record<CategorieAnomalie, typeof AlertTriangle> = {
   doublon: Copy,
   chevauchement: Copy,
   "hors-zone": X,
+  "non-carte": ShieldCheck,
 };
 
 /**
@@ -466,6 +473,38 @@ export function RegistreImport() {
                     );
                   })}
                 </ul>
+              </div>
+            )}
+
+            {/* Avertissements SNT (non bloquants) : producteurs sans carte */}
+            {audit.avertissements.length > 0 && (
+              <div className="mt-4">
+                <h3 className="text-xs font-semibold uppercase tracking-wide text-stone-400">
+                  {t.avertissementsTitle}
+                </h3>
+                <div className="mt-2 rounded-xl border border-amber-cacao/25 bg-amber-cacao/[0.05] p-3">
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <span className="flex items-center gap-2 text-sm font-medium text-forest-950">
+                      <ShieldCheck size={14} strokeWidth={2} aria-hidden className="text-amber-cacao" />
+                      {t.cat["non-carte"]}
+                      <span className="num rounded-full bg-black/[0.05] px-1.5 py-0.5 text-[0.65rem] text-stone-500">
+                        {audit.avertissements.length}
+                      </span>
+                    </span>
+                  </div>
+                  <p className="mt-1.5 text-xs leading-relaxed text-stone-500">{t.avertissementsHint}</p>
+                  <ul className="mt-2 flex flex-col gap-1">
+                    {audit.avertissements.slice(0, 3).map((a, i) => (
+                      <li key={a.matricule + i} className="text-xs leading-relaxed text-stone-500">
+                        <span className="num font-medium text-forest-950">{a.matricule}</span>
+                        {a.nom ? ` · ${a.nom}` : ""}
+                      </li>
+                    ))}
+                    {audit.avertissements.length > 3 && (
+                      <li className="num text-[0.7rem] text-stone-400">+ {audit.avertissements.length - 3}…</li>
+                    )}
+                  </ul>
+                </div>
               </div>
             )}
 

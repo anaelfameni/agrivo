@@ -4,8 +4,23 @@
 > Il condense la charte de marque, les règles de contenu, les faits produit et l'avancement.
 > En cas de doute, ce fichier prime sur mes souvenirs. Il reflète l'état au dernier prompt traité.
 
-> 🟢 **ÉTAT ACTUEL — v2.11.0, 18 juillet 2026 (CE BLOC FAIT FOI sur toute mention contraire
+> 🟢 **ÉTAT ACTUEL — v2.12.0, 18 juillet 2026 (CE BLOC FAIT FOI sur toute mention contraire
 > plus bas, qui relève de l'historique de construction).**
+> - **v2.12 « L'OUTIL DU QUOTIDIEN » (18/07 soir)** : les 3 briques produit exécutables du plan
+>   100/100. ① **Surveillance continue** : `lib/surveillance/veille.ts` (cadence 90 j,
+>   `a-jour/revue-due/alerte`, l'alerte active prime) + `surveillance-panel.tsx` dans
+>   l'Analytique exportateur ; le module dit QUAND revoir, jamais un verdict. ② **Rapprochement
+>   SNT à l'import** : `RegistreParcelle.carte` lu par les parseurs, `AuditRegistre` gagne
+>   `avertissements` (catégorie `non-carte`, NON bloquante : pretPct inchangé) +
+>   `colonneCartePresente` (zéro bruit si le fichier n'a pas de colonne carte) ; wording
+>   « régularisation auprès du Conseil du Café-Cacao », JAMAIS « contournement ».
+>   ③ **Acceptation opérateur = North Star** : `lib/marketplace/acceptation.ts`
+>   (non-transmis→transmis→accepté|réserves, transitions gatées par `dossier.pret` ;
+>   `tonnesDossiersAcceptes()` recalcule TOUJOURS le dossier avant de compter) ; seeds
+>   EXP-0001 accepté / EXP-0002 transmis ; section « Transmission à l'opérateur » dans
+>   `dossier-dds-panel.tsx` (localStorage `agrivo:acceptation:v1:<ref>`) ; tuile « Tonnes
+>   acceptées par l'opérateur » dans campagne (`tonnesDossiersAcceptes`, grille lg:grid-cols-6).
+>   **205 tests.**
 > - **v2.11 « EXACTITUDE & RÔLES » (18/07, veille RDV investisseuse)** : 3 correctifs de discours
 >   issus de la revérification des faits du 18/07 : ① récit marché de la page SEO réactualisé
 >   (les cours ont REBONDI : plus haut de 8 mois puis ~5 600 $/t mi-juillet ; le message robuste

@@ -3,7 +3,7 @@
 import { useMemo } from "react";
 import Link from "next/link";
 import { motion, useReducedMotion } from "framer-motion";
-import { CalendarClock, ShieldCheck, Boxes, AlertTriangle, ArrowRight, Check, Store, FileCheck2 } from "lucide-react";
+import { CalendarClock, ShieldCheck, Boxes, AlertTriangle, ArrowRight, BadgeCheck, Check, Store, FileCheck2 } from "lucide-react";
 import { PARCELLES, type Parcelle } from "@/data/mock-parcelles";
 import { etatCampagne } from "@/lib/marketplace/campagne";
 import { StatNumber } from "@/components/ui/stat-number";
@@ -20,6 +20,7 @@ const TR = {
     scelles: "Lots scellés",
     vendables: "Lots vendables",
     dds: "Dossiers DDS prêts",
+    acceptes: "Tonnes acceptées par l'opérateur",
     tonnage: "Tonnage scellé (t)",
     alertes: "Alertes bloquantes",
     actionsTitle: "Prochaines actions",
@@ -32,6 +33,7 @@ const TR = {
     scelles: "Sealed lots",
     vendables: "Sellable lots",
     dds: "DDS files ready",
+    acceptes: "Tonnes accepted by the operator",
     tonnage: "Sealed tonnage (t)",
     alertes: "Blocking alerts",
     actionsTitle: "Next actions",
@@ -60,7 +62,7 @@ export function CampagneConformite({ lang = "fr", parcelles = PARCELLES }: { lan
         </span>
       </div>
 
-      <dl className="mt-5 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
+      <dl className="mt-5 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
         <div>
           <StatNumber value={etat.lotsScelles} format={(n) => `${Math.round(n)}/${etat.totalLots}`} className="num block text-2xl font-bold text-white" />
           <dd className="mt-1 flex items-center gap-1 text-[0.68rem] font-medium uppercase tracking-wide text-white/50"><ShieldCheck size={11} /> {t.scelles}</dd>
@@ -72,6 +74,10 @@ export function CampagneConformite({ lang = "fr", parcelles = PARCELLES }: { lan
         <div>
           <StatNumber value={etat.dossiersDdsPrets} format={(n) => `${Math.round(n)}/${etat.totalLots}`} className="num block text-2xl font-bold text-white" />
           <dd className="mt-1 flex items-center gap-1 text-[0.68rem] font-medium uppercase tracking-wide text-white/50"><FileCheck2 size={11} /> {t.dds}</dd>
+        </div>
+        <div>
+          <StatNumber value={etat.tonnesDossiersAcceptes} format={(n) => n.toLocaleString(lang === "en" ? "en" : "fr-FR", { maximumFractionDigits: 1 })} className="num block text-2xl font-bold text-green-signal" />
+          <dd className="mt-1 flex items-center gap-1 text-[0.68rem] font-medium uppercase tracking-wide text-white/50"><BadgeCheck size={11} /> {t.acceptes}</dd>
         </div>
         <div>
           <StatNumber value={etat.tonnageScelle} format={(n) => n.toLocaleString(lang === "en" ? "en" : "fr-FR", { maximumFractionDigits: 1 })} className="num block text-2xl font-bold text-white" />

@@ -84,3 +84,52 @@ describe("parser CSV (livrables exportateurs : points)", () => {
     expect(audit.anomalies.some((a) => a.matricule === "C-2" && a.categorie === "polygone-manquant")).toBe(true);
   });
 });
+
+describe("rapprochement SNT : carte producteur (avertissements non bloquants)", () => {
+  const point = (lon: number): RegistreParcelle["geometrie"] => ({ type: "point", coords: [lon, 5.8] });
+
+  it("sans aucune colonne carte dans le fichier, aucun avertissement (colonne simplement absente)", () => {
+    const audit = auditerRegistre([
+      { matricule: "C-1", geometrie: point(-6.6) },
+      { matricule: "C-2", geometrie: point(-6.61) },
+    ]);
+    expect(audit.colonneCartePresente).toBe(false);
+    expect(audit.avertissements).toEqual([]);
+  });
+
+  it("si la colonne existe, chaque parcelle sans carte est signalée SANS bloquer la géométrie", () => {
+    const audit = auditerRegistre([
+      { matricule: "C-1", carte: "CI-CCC-000111", geometrie: point(-6.6) },
+      { matricule: "C-2", geometrie: point(-6.61) },
+      { matricule: "C-3", carte: "  ", geometrie: point(-6.62) },
+    ]);
+    expect(audit.colonneCartePresente).toBe(true);
+    expect(audit.avertissements.map((a) => a.matricule).sort()).toEqual(["C-2", "C-3"]);
+    expect(audit.avertissements.every((a) => a.categorie === "non-carte")).toBe(true);
+    // Non bloquant : les 3 parcelles restent géométriquement prêtes.
+    expect(audit.valides).toHaveLength(3);
+    expect(audit.pretPct).toBe(100);
+    // Charte : régularisation via le Conseil du Café-Cacao, jamais de contournement.
+    expect(audit.avertissements[0].detail.fr).toContain("Conseil du Café-Cacao");
+    expect(audit.avertissements[0].detail.fr).not.toMatch(/contourn/i);
+  });
+
+  it("les parseurs lisent la carte producteur (GeoJSON et CSV)", () => {
+    const geo = parserGeoJSON(
+      JSON.stringify({
+        type: "FeatureCollection",
+        features: [
+          {
+            type: "Feature",
+            properties: { matricule: "G-1", carte_producteur: "CI-CCC-000222" },
+            geometry: { type: "Point", coordinates: [-6.6, 5.8] },
+          },
+        ],
+      }),
+    );
+    expect(geo[0].carte).toBe("CI-CCC-000222");
+    const csv = parserCSV("matricule,nom,carte,lat,lon\nP-1,Awa,CI-CCC-000333,5.8,-6.6\nP-2,Koffi,,5.81,-6.61");
+    expect(csv[0].carte).toBe("CI-CCC-000333");
+    expect(csv[1].carte).toBeUndefined();
+  });
+});

@@ -3,6 +3,36 @@
 Versioning sémantique (MAJOR.MINOR.PATCH). Chaque release liste ce qui est ajouté, corrigé et
 vérifié, conformément à l'étape 8 du pipeline « Du besoin à la Release ».
 
+## v2.12.0 — 2026-07-18 — « L'outil du quotidien » : surveillance continue, rapprochement SNT à l'import, acceptation opérateur (North Star)
+
+### Ajouté
+- **Surveillance continue du portefeuille** (`lib/surveillance/veille.ts`, module pur +
+  `surveillance-panel.tsx` monté dans l'Analytique exportateur) : la conformité est une
+  obligation CONTINUE, pas un instantané. Cadence de revue 90 jours par parcelle
+  (`prochaineRevue`, `joursRetard`), états `a-jour / revue-due / alerte` (l'alerte active
+  prime), liste « À traiter en priorité » (alertes puis retard décroissant) avec lien vers la
+  fiche parcelle. La re-vérification passe par l'analyse satellite existante : le module dit
+  QUAND revoir, jamais un verdict.
+- **Rapprochement SNT à l'import de registre** (`lib/registre/audit.ts`) : nouveau champ
+  `carte` lu par les parseurs (GeoJSON : carte/carte_producteur/ccc/card ; CSV idem) ;
+  nouveaux `avertissements` NON bloquants (`colonneCartePresente`) : un producteur sans carte
+  reste géolocalisable (pretPct inchangé) mais est signalé « exclu du sceau AGRIVO jusqu'à
+  régularisation auprès du Conseil du Café-Cacao » ; si le fichier n'a aucune colonne carte,
+  zéro bruit. Bloc « Avertissements » dans l'UI d'import (`registre-import.tsx`).
+- **Acceptation opérateur = la North Star** (`lib/marketplace/acceptation.ts`, module pur) :
+  statuts `non-transmis → transmis → accepté | réserves` (transitions gatées : on ne transmet
+  qu'un dossier DDS PRÊT ; les réserves se retransmettent après correction) ;
+  `tonnesDossiersAcceptes()` ne compte une tonne que si le dossier est déclaré accepté ET
+  recalculé complet. Seeds : EXP-2026-0001 accepté · EXP-2026-0002 transmis. Section
+  « Transmission à l'opérateur » dans le panneau Dossier DDS (déclaration localStorage, comme
+  un jalon : n'emporte aucune décision de conformité de l'opérateur) ; tuile « Tonnes
+  acceptées par l'opérateur » dans « Conformité de ma campagne »
+  (`EtatCampagne.tonnesDossiersAcceptes`).
+
+### Vérifié
+- `tsc` ✓ · **205 tests** (191 + 14 : veille 5, acceptation 6, registre SNT 3) ·
+  `eslint` 0 erreur · `next build` ✓ · greps charte propres sur tous les nouveaux fichiers.
+
 ## v2.11.0 — 2026-07-18 — « Exactitude & rôles » : récit marché réactualisé, rôles RDUE exacts (art. 7), cadre CCC, mesures du 13/07/2026, diagnostic 30 jours, registre des claims
 
 ### Corrigé

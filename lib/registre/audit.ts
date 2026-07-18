@@ -13,13 +13,16 @@ export type CategorieAnomalie =
   | "polygone-manquant"
   | "doublon"
   | "chevauchement"
-  | "hors-zone";
+  | "hors-zone"
+  | "non-carte";
 
 export type ActionAnomalie = "terrain" | "bureau";
 
 export interface RegistreParcelle {
   matricule: string;
   nom?: string;
+  /** Numéro de carte du producteur (SNT / Conseil du Café-Cacao), si le fichier le porte. */
+  carte?: string;
   superficieHa?: number;
   /** "point" = [lon, lat] ; "polygone" = anneau extérieur [[lon, lat], …] */
   geometrie:
@@ -40,6 +43,15 @@ export interface AuditRegistre {
   total: number;
   valides: RegistreParcelle[];
   anomalies: AnomalieRegistre[];
+  /**
+   * Avertissements NON bloquants pour la géométrie RDUE mais bloquants pour le sceau AGRIVO
+   * (rapprochement SNT : producteurs sans carte). N'affectent ni `valides` ni `pretPct` :
+   * une parcelle bien géolocalisée reste géométriquement prête, mais son producteur doit
+   * régulariser sa carte pour entrer dans un lot scellé.
+   */
+  avertissements: AnomalieRegistre[];
+  /** true si le fichier importé porte une colonne carte producteur (au moins une valeur). */
+  colonneCartePresente: boolean;
   /** % de parcelles prêtes pour la RDUE (arrondi). */
   pretPct: number;
 }
@@ -198,11 +210,35 @@ export function auditerRegistre(parcelles: RegistreParcelle[]): AuditRegistre {
     }
   }
 
+  // Rapprochement SNT : si le fichier porte une colonne carte producteur (au moins une valeur),
+  // chaque parcelle SANS carte reçoit un avertissement (non bloquant pour la géométrie, mais le
+  // producteur non carté est exclu du sceau AGRIVO jusqu'à régularisation). Si le fichier n'a
+  // aucune colonne carte, on ne signale rien parcelle par parcelle (colonne simplement absente).
+  const colonneCartePresente = parcelles.some((p) => typeof p.carte === "string" && p.carte.trim() !== "");
+  const avertissements: AnomalieRegistre[] = [];
+  if (colonneCartePresente) {
+    for (const p of parcelles) {
+      if (typeof p.carte === "string" && p.carte.trim() !== "") continue;
+      avertissements.push({
+        categorie: "non-carte",
+        matricule: p.matricule,
+        nom: p.nom,
+        detail: {
+          fr: "Producteur non carté : la parcelle reste géolocalisable, mais elle sera exclue du sceau AGRIVO jusqu'à régularisation de la carte auprès du Conseil du Café-Cacao (obligatoire au 1er septembre 2026).",
+          en: "Farmer without a producer card: the plot can still be geolocated, but it will be excluded from the AGRIVO seal until the card is regularised with the Conseil du Café-Cacao (mandatory from 1 September 2026).",
+        },
+        action: "bureau",
+      });
+    }
+  }
+
   const valides = parcelles.filter((p, idx) => !invalides.has(p.matricule + "§" + idx));
   return {
     total: parcelles.length,
     valides,
     anomalies,
+    avertissements,
+    colonneCartePresente,
     pretPct: parcelles.length ? Math.round((valides.length / parcelles.length) * 100) : 0,
   };
 }
@@ -236,6 +272,8 @@ export function parserGeoJSON(texte: string): RegistreParcelle[] {
   return features.map((f, i) => {
     const matricule = String(prop(f.properties, ["matricule", "id", "code"]) ?? `SANS-MATRICULE-${i + 1}`);
     const nom = prop(f.properties, ["nom", "name", "producteur"]) as string | undefined;
+    const carteRaw = prop(f.properties, ["carte", "carte_producteur", "carteproducteur", "ccc", "producer_card", "card"]);
+    const carte = carteRaw != null && String(carteRaw).trim() !== "" ? String(carteRaw).trim() : undefined;
     const supRaw = prop(f.properties, ["superficie_ha", "superficieha", "superficie", "area_ha"]);
     const superficieHa = typeof supRaw === "number" ? supRaw : supRaw != null ? Number(supRaw) : undefined;
     let geometrie: RegistreParcelle["geometrie"] = { type: "aucune" };
@@ -252,6 +290,7 @@ export function parserGeoJSON(texte: string): RegistreParcelle[] {
     return {
       matricule,
       nom,
+      carte,
       superficieHa: Number.isFinite(superficieHa) ? superficieHa : undefined,
       geometrie,
     };
@@ -266,6 +305,7 @@ export function parserCSV(texte: string): RegistreParcelle[] {
   const idx = (names: string[]) => entetes.findIndex((h) => names.includes(h));
   const iMat = idx(["matricule", "id", "code"]);
   const iNom = idx(["nom", "name", "producteur"]);
+  const iCarte = idx(["carte", "carte_producteur", "ccc", "producer_card", "card"]);
   const iSup = idx(["superficie_ha", "superficie", "area_ha"]);
   const iLat = idx(["lat", "latitude"]);
   const iLon = idx(["lon", "lng", "longitude"]);
@@ -277,6 +317,7 @@ export function parserCSV(texte: string): RegistreParcelle[] {
     return {
       matricule: (iMat >= 0 && cols[iMat]) || `SANS-MATRICULE-${n + 1}`,
       nom: iNom >= 0 ? cols[iNom] || undefined : undefined,
+      carte: iCarte >= 0 ? cols[iCarte] || undefined : undefined,
       superficieHa: Number.isFinite(sup) ? sup : undefined,
       geometrie:
         Number.isFinite(lat) && Number.isFinite(lon)

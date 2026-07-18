@@ -9,6 +9,7 @@ import { StatusBadge } from "@/components/ui/status-badge";
 import { EmptyState } from "@/components/ui/empty-state";
 import { useLanguage } from "@/components/language-provider";
 import { CampagneConformite } from "@/components/exportateur/campagne-conformite";
+import { SurveillancePanel } from "@/components/exportateur/surveillance-panel";
 import {
   FILIERE_LABEL,
   fmtHa,
@@ -208,6 +209,9 @@ export function AnalyticsTab({
       {/* Conformité de ma campagne : lots scellés, compte à rebours RDUE, prochaines actions.
           Alimenté par la même liste que le tableau/carte (respecte le filtre ?coop= actif). */}
       <CampagneConformite lang={lang === "en" ? "en" : "fr"} parcelles={parcelles} />
+
+      {/* Surveillance continue : cadence de revue trimestrielle + alertes actives du portefeuille. */}
+      <SurveillancePanel lang={lang === "en" ? "en" : "fr"} parcelles={parcelles} />
 
       {/* 4 KPI officiels */}
       <motion.div

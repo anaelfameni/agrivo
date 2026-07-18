@@ -8,6 +8,7 @@
 import { estVendable, findMarketExpedition, lotsMarche, type MarketLot } from "@/data/mock-marketplace";
 import { possessionComplete } from "@/data/mock-expeditions";
 import { construireDossierDds } from "@/lib/marketplace/dds-dossier";
+import { ACCEPTATIONS_DEMO, tonnesDossiersAcceptes, type AcceptationDds } from "@/lib/marketplace/acceptation";
 import type { Parcelle } from "@/data/mock-parcelles";
 
 export const ECHEANCE_RDUE = "2026-12-30";
@@ -24,6 +25,11 @@ export interface EtatCampagne {
   lotsVendables: number;
   /** Lots dont le dossier DDS est complet (toutes les vérifications du dossier réunies). */
   dossiersDdsPrets: number;
+  /**
+   * North Star : tonnes couvertes par des dossiers DDS acceptés par l'opérateur européen
+   * (déclaré accepté ET dossier recalculé complet).
+   */
+  tonnesDossiersAcceptes: number;
   tonnageScelle: number;
   /** Anomalies bloquantes ouvertes (sentinelle de volume), tous lots confondus. */
   alertesBloquantes: number;
@@ -60,7 +66,11 @@ export function actionsPourLot(lot: MarketLot): ActionCampagne[] {
 }
 
 /** Agrège l'état de campagne depuis le référentiel passé (pur/testable). */
-export function etatCampagne(toutesParcelles: Parcelle[], maintenant: Date = new Date()): EtatCampagne {
+export function etatCampagne(
+  toutesParcelles: Parcelle[],
+  maintenant: Date = new Date(),
+  acceptations: Record<string, AcceptationDds> = ACCEPTATIONS_DEMO,
+): EtatCampagne {
   const lots = lotsMarche(toutesParcelles);
   const scelles = lots.filter((l) => l.sceau.statut === "verifie");
   return {
@@ -71,6 +81,7 @@ export function etatCampagne(toutesParcelles: Parcelle[], maintenant: Date = new
       const exp = findMarketExpedition(l.ref);
       return exp ? construireDossierDds(exp, toutesParcelles).pret : false;
     }).length,
+    tonnesDossiersAcceptes: tonnesDossiersAcceptes(toutesParcelles, acceptations),
     tonnageScelle: Math.round(scelles.reduce((s, l) => s + l.tonnage, 0) * 10) / 10,
     alertesBloquantes: lots.reduce((s, l) => s + l.alertesVolume.filter((a) => a.bloquant).length, 0),
     joursRestants: joursAvant(ECHEANCE_RDUE, maintenant),
