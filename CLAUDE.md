@@ -4,8 +4,23 @@
 > Il condense la charte de marque, les règles de contenu, les faits produit et l'avancement.
 > En cas de doute, ce fichier prime sur mes souvenirs. Il reflète l'état au dernier prompt traité.
 
-> 🟢 **ÉTAT ACTUEL — v2.10.0, 17 juillet 2026 (CE BLOC FAIT FOI sur toute mention contraire
+> 🟢 **ÉTAT ACTUEL — v2.11.0, 18 juillet 2026 (CE BLOC FAIT FOI sur toute mention contraire
 > plus bas, qui relève de l'historique de construction).**
+> - **v2.11 « EXACTITUDE & RÔLES » (18/07, veille RDV investisseuse)** : 3 correctifs de discours
+>   issus de la revérification des faits du 18/07 : ① récit marché de la page SEO réactualisé
+>   (les cours ont REBONDI : plus haut de 8 mois puis ~5 600 $/t mi-juillet ; le message robuste
+>   est « volatilité + tri par la preuve + prime 80-150 $/t », JAMAIS « chute des cours ») ;
+>   ② rôles RDUE exacts art. 2/7 : l'OPÉRATEUR = premier metteur sur le marché UE (l'importateur
+>   en général), l'exportateur FOURNIT la preuve → slogan partout « L'opérateur dépose,
+>   l'exportateur prouve : AGRIVO prépare. » (l'ancien « L'exportateur dépose » est INTERDIT) ;
+>   ③ marketplace cadrée CCC/PVAM : « désintermédiation » et « vendre en direct » non cadré BANNIS,
+>   remplacés par « primes négociées au-dessus du prix garanti, dans le cadre de commercialisation
+>   du Conseil du Café-Cacao ». Ajouts : mesures RDUE du 13/07/2026 (acte délégué produits +
+>   règl. d'exécution (UE) 2026/1565 en vigueur 17/07 : API du système d'information, déclarations
+>   simplifiées micro/petits primaires) sur FAQ/page SEO/fait `simplification` ; offre « Diagnostic
+>   de registre · 30 jours » dès 750 000 FCFA sur /tarifs ; **`REGISTRE_CLAIMS.md`** (racine) =
+>   registre des affirmations chiffrées avec dates de revue (donnée de marché expire à 90 j) : le
+>   consulter avant TOUTE publication de chiffre. **191 tests** (copilote 13/13).
 > - **v2.10 « LE DOSSIER DDS EN 1 CLIC » (17/07 soir)** : moteur pur
 >   `lib/marketplace/dds-dossier.ts` (`construireDossierDds` = GeoJSON TRACES NT + brouillon DDS
 >   [denrée/code SH/masse nette/pays/campagne/réf. DDR] + check-list de 6 vérifications recalculées

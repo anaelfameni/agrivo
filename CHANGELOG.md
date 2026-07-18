@@ -3,6 +3,42 @@
 Versioning sémantique (MAJOR.MINOR.PATCH). Chaque release liste ce qui est ajouté, corrigé et
 vérifié, conformément à l'étape 8 du pipeline « Du besoin à la Release ».
 
+## v2.11.0 — 2026-07-18 — « Exactitude & rôles » : récit marché réactualisé, rôles RDUE exacts (art. 7), cadre CCC, mesures du 13/07/2026, diagnostic 30 jours, registre des claims
+
+### Corrigé
+- **Récit marché réactualisé** (page SEO cacao-RDUE) : « les cours ont fortement reculé depuis
+  décembre 2025 » (vrai en mars, faux en juillet : plus haut de 8 mois puis ~5 600 $/t mi-juillet
+  2026) remplacé par le message robuste au sens du marché : volatilité + tri par la preuve +
+  prime 80-150 $/t (mai 2026, conservée). Pied de sources mis à jour (chiffres au 18/07/2026).
+- **Rôles RDUE exacts (art. 2 et 7 du règlement)** : l'opérateur est le premier metteur sur le
+  marché de l'Union (en général l'importateur européen) ; l'exportateur ivoirien FOURNIT la
+  preuve, sauf entité UE propre. Slogan corrigé partout : « L'opérateur dépose, l'exportateur
+  prouve : AGRIVO prépare. » (landing, méthodologie, fait assistant dds-traces) ; phrase « rôle
+  par transaction » ajoutée à la FAQ et à la page SEO ; description du plan Pro reformulée
+  (« alimentent les DDS de leurs opérateurs »).
+- **Marketplace cadrée CCC/PVAM** : plus aucun « désintermédiation » ni « vendre en direct » non
+  cadré dans le texte visible ; formulations remplacées par « primes négociées au-dessus du prix
+  garanti, dans le cadre de commercialisation du Conseil du Café-Cacao » (landing, page vendre),
+  take-rate décrit sur les primes négociées via la plateforme.
+
+### Ajouté
+- **Mesures RDUE du 13 juillet 2026** intégrées (FAQ, page SEO, fait assistant `simplification`
+  enrichi + mots-clés) : acte délégué sur le périmètre produits + règlement d'exécution (UE)
+  2026/1565 (en vigueur 17/07/2026) : spécifications d'API du système d'information mises à jour,
+  déclarations simplifiées pour les micro et petits opérateurs primaires ; la Commission confirme
+  que le règlement ne sera pas rouvert.
+- **Offre « Diagnostic de registre · 30 jours »** sur /tarifs (dès 750 000 FCFA, tarif de
+  lancement, sans abonnement, montant déduit en cas de poursuite) : l'entrée commerciale la plus
+  légère, avec base ROI mesurée et plan d'action priorisé.
+- **`REGISTRE_CLAIMS.md`** (racine) : registre de toutes les affirmations chiffrées publiées
+  (claim → fichiers → source datée → date de revue ; données de marché expirées à 90 jours) +
+  liste des interdits permanents de la charte. L'outil qui aurait évité le récit marché périmé.
+
+### Vérifié
+- `tsc` ✓ · **191 tests** (copilote 13/13 : assertions rôles ajoutées + 1 nouveau test 2026/1565) ·
+  `eslint` 0 erreur · `next build` ✓ · greps charte propres (« — » visibles : 0, « désintermédi » : 0,
+  « exportateur dépose » : 0).
+
 ## v2.10.0 — 2026-07-17 — « Le dossier DDS en 1 clic » : GeoJSON TRACES NT + brouillon de déclaration + rapport d'évaluation de risque par expédition
 
 ### Ajouté

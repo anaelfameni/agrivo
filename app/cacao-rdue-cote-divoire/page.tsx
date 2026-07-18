@@ -30,7 +30,7 @@ const FAQ = [
   },
   {
     q: "Combien vaut un lot de cacao conforme vérifié ?",
-    a: "Le prix bord champ reste fixé chaque campagne par le Conseil du Café-Cacao (2 800 FCFA/kg pour la campagne principale 2025-26, 1 200 FCFA/kg pour la campagne intermédiaire). La valeur de la conformité se joue au-dessus de ce prix garanti : sur les contrats à terme, le cacao vérifié zéro déforestation se négocie 80 à 150 dollars la tonne au-dessus du standard (presse sectorielle cacao, mai 2026). Et dans un marché d'acheteurs où les cours ont fortement reculé depuis décembre 2025, la preuve fait plus que la prime : des cargaisons sans dossier de traçabilité restent invendues dans les ports de la sous-région. Un lot scellé se vend ; un lot sans preuve attend.",
+    a: "Le prix bord champ reste fixé chaque campagne par le Conseil du Café-Cacao (2 800 FCFA/kg pour la campagne principale 2025-26, 1 200 FCFA/kg pour la campagne intermédiaire). La valeur de la conformité se joue au-dessus de ce prix garanti : sur les contrats à terme, le cacao vérifié zéro déforestation se négocie 80 à 150 dollars la tonne au-dessus du standard (presse sectorielle cacao, mai 2026). Et dans un marché volatil (les cours à terme ont retrouvé mi-juillet 2026 un plus haut de 8 mois avant de se replier autour de 5 600 dollars la tonne, presse spécialisée cacao, juillet 2026), la constante n'est pas le niveau du cours : c'est le tri par la preuve. Des cargaisons sans dossier de traçabilité restent invendues dans les ports de la sous-région, quel que soit le marché. Un lot scellé se vend ; un lot sans preuve attend.",
   },
   {
     q: "Qu'est-ce qu'un lot de cacao « scellé » chez AGRIVO ?",
@@ -38,7 +38,7 @@ const FAQ = [
   },
   {
     q: "Qu'est-ce que la DDS et le numéro de référence TRACES ?",
-    a: "La déclaration de diligence raisonnée (DDS) est le document numérique que l'opérateur dépose dans le système d'information de la Commission européenne (TRACES) avant toute mise sur le marché de l'UE : géolocalisation des parcelles, évaluation de risque documentée, attestation de légalité. Le dépôt renvoie un numéro de référence et un numéro de vérification, exigés en douane et transmis dans la chaîne commerciale : sans eux, la cargaison ne passe pas. AGRIVO prépare ce dossier en un clic pour chaque expédition (GeoJSON au format TRACES NT, brouillon de déclaration, rapport des éléments d'évaluation de risque) ; le dépôt reste l'acte de l'opérateur, seul responsable.",
+    a: "La déclaration de diligence raisonnée (DDS) est le document numérique que l'opérateur dépose dans le système d'information de la Commission européenne (TRACES) avant toute mise sur le marché de l'UE : géolocalisation des parcelles, évaluation de risque documentée, attestation de légalité. Le dépôt renvoie un numéro de référence et un numéro de vérification, exigés en douane et transmis dans la chaîne commerciale : sans eux, la cargaison ne passe pas. AGRIVO prépare ce dossier en un clic pour chaque expédition (GeoJSON au format TRACES NT, brouillon de déclaration, rapport des éléments d'évaluation de risque) ; le dépôt reste l'acte de l'opérateur, seul responsable. À noter : l'opérateur est le premier metteur sur le marché établi dans l'Union, en général l'importateur ; l'exportateur ivoirien fournit la preuve que cet opérateur consomme, sauf s'il dispose lui-même d'une entité dans l'UE. Le système d'information a d'ailleurs été mis à jour le 13 juillet 2026 (règlement d'exécution (UE) 2026/1565, en vigueur depuis le 17 juillet) : spécifications d'API actualisées et déclarations simplifiées pour les micro et petits opérateurs primaires.",
   },
   {
     q: "Comment un acheteur européen utilise-t-il le dossier AGRIVO pour sa DDS ?",
@@ -129,10 +129,11 @@ export default function CacaoRdueCoteDivoire() {
 
         <p className="mt-8 text-xs leading-relaxed text-stone-400">
           Sources : Parlement européen et Conseil de l&apos;UE (décembre 2025), Commission européenne
-          (système d&apos;information TRACES, DDS), Conseil du Café-Cacao via AIP et KOACI (juin 2026),
-          Trase (2026), Trading Economics (2024), presse sectorielle cacao (mai 2026, primes des
-          contrats à terme). Chiffres réactualisés en juillet 2026 ; AGRIVO publie une évaluation,
-          jamais une garantie.
+          (système d&apos;information TRACES, DDS ; mesures du 13 juillet 2026 dont le règlement
+          d&apos;exécution (UE) 2026/1565), Conseil du Café-Cacao via AIP et KOACI (juin 2026),
+          Trase (2026), presse spécialisée cacao (mai 2026 pour les primes des contrats à terme ;
+          juillet 2026 pour les cours). Chiffres réactualisés au 18 juillet 2026 ; AGRIVO publie une
+          évaluation, jamais une garantie.
         </p>
       </main>
       <SiteFooter />

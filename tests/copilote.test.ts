@@ -81,11 +81,26 @@ describe("Assistant AGRIVO — base de connaissances & appariement", () => {
     expect(dds.faitId).toBe("dds-traces");
     expect(dds.reponse).toContain("numéro de référence");
     expect(dds.reponse).toContain("seul responsable");
+    // Rôles exacts (art. 7) : l'opérateur dépose, l'exportateur prouve ; jamais « l'exportateur dépose ».
+    expect(dds.reponse).toContain("l'exportateur prouve");
+    expect(dds.reponse).not.toContain("l'exportateur dépose");
     const ref = repondreDeterministe("What is the DDS reference number?", "en");
     expect(ref.faitId).toBe("dds-traces");
     // Sans régression : RDUE générique et SNT restent sur leurs faits.
     expect(repondreDeterministe("Qu'est-ce que le RDUE ?", "fr").faitId).toBe("definition");
     expect(repondreDeterministe("Qu'est-ce que le SNT ?", "fr").faitId).toBe("snt-carte");
+  });
+
+  it("connaît les mesures du 13 juillet 2026 (fait simplification : règlement d'exécution 2026/1565)", () => {
+    const simp = repondreDeterministe("Qu'a changé la simplification du 13 juillet 2026 ?", "fr");
+    expect(simp.faitId).toBe("simplification");
+    expect(simp.reponse).toContain("2026/1565");
+    expect(simp.reponse).toContain("13 juillet 2026");
+    const en = repondreDeterministe("What is Implementing Regulation 2026/1565?", "en");
+    expect(en.faitId).toBe("simplification");
+    // Sans régression sur les faits voisins.
+    expect(repondreDeterministe("Qu'est-ce que le RDUE ?", "fr").faitId).toBe("definition");
+    expect(repondreDeterministe("Comment déposer ma DDS ?", "fr").faitId).toBe("dds-traces");
   });
 
   it("guidage dans le site : guide interactif, import registre, producteurs, paramètres", () => {

@@ -14,14 +14,14 @@ const pct = (t: number) => `${Math.round(t * 100)} %`;
 
 const TR = {
   fr: {
-    title: "Vendez vos lots conformes,\nscellés, en direct.",
+    title: "Vendez vos lots conformes,\nscellés, prouvés.",
     sub: "Publiez sur AGRIVO Market les lots que vous avez déjà tracés. Touchez des acheteurs premium qui paient la conformité, sans intermédiaire opaque, sans céder votre donnée.",
     mesLots: "Ouvrir « Mes lots »", browse: "Voir la marketplace",
     whyTitle: "Pourquoi vendre sur AGRIVO Market",
     why: [
       { Icon: TrendingUp, t: "Valorisez la conformité", b: "Le sceau AGRIVO transforme votre travail de traçabilité en argument commercial : un lot scellé se distingue et se négocie mieux." },
-      { Icon: Handshake, t: "Vendez en direct", b: "Mise en relation directe avec l'acheteur premium. AGRIVO fait le commerce des fèves, jamais le financement ni le crédit." },
-      { Icon: Database, t: "Gardez votre donnée", b: "Vous restez propriétaire de votre registre vérifié. Pas de désintermédiation par des data-brokers étrangers." },
+      { Icon: Handshake, t: "Négociez vos primes", b: "Mise en relation directe avec l'acheteur premium : les primes se négocient au-dessus du prix garanti, dans le cadre de commercialisation du Conseil du Café-Cacao. AGRIVO outille le commerce des fèves, jamais le financement ni le crédit." },
+      { Icon: Database, t: "Gardez votre donnée", b: "Vous restez propriétaire de votre registre vérifié : il ne part jamais chez des courtiers en données étrangers." },
     ],
     howTitle: "Publier un lot en 3 étapes",
     how: [
@@ -36,14 +36,14 @@ const TR = {
     cta: "Accéder à mon espace",
   },
   en: {
-    title: "Sell your compliant lots,\nsealed, directly.",
+    title: "Sell your compliant lots,\nsealed, proven.",
     sub: "List on AGRIVO Market the lots you have already traced. Reach premium buyers who pay for compliance, without opaque middlemen, without giving up your data.",
     mesLots: "Open “My lots”", browse: "See the marketplace",
     whyTitle: "Why sell on AGRIVO Market",
     why: [
       { Icon: TrendingUp, t: "Monetise compliance", b: "The AGRIVO seal turns your traceability work into a selling point: a sealed lot stands out and negotiates better." },
-      { Icon: Handshake, t: "Sell directly", b: "Direct connection with the premium buyer. AGRIVO trades beans, never financing or credit." },
-      { Icon: Database, t: "Keep your data", b: "You remain the owner of your verified registry. No disintermediation by foreign data-brokers." },
+      { Icon: Handshake, t: "Negotiate your premiums", b: "Direct connection with the premium buyer: premiums are negotiated above the state-set farmgate price, within the Conseil du Café-Cacao marketing framework. AGRIVO equips the bean trade, never financing or credit." },
+      { Icon: Database, t: "Keep your data", b: "You remain the owner of your verified registry: it never ends up with foreign data brokers." },
     ],
     howTitle: "List a lot in 3 steps",
     how: [

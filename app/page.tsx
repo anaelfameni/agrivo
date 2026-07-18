@@ -663,13 +663,13 @@ function MarketplaceSection() {
   const items = en
     ? [
         { Icon: ShieldCheck, t: "The AGRIVO seal", d: "A lot is only sellable if it carries the seal: compliance, producer card, volume integrity." },
-        { Icon: Boxes, t: "Sell in direct", d: "The exporter lists already-traced lots; the premium buyer buys verified-compliant." },
-        { Icon: Percent, t: "Take-rate 1–3%", d: "A commission on the trade, revenue that grows with volume, never a fee to the producer." },
+        { Icon: Boxes, t: "Sell it proven", d: "The licensed exporter lists already-traced lots; the premium buyer reserves verified-compliant." },
+        { Icon: Percent, t: "Take-rate 1–3%", d: "A commission on premiums negotiated through the platform, revenue that grows with volume, never a fee to the producer." },
       ]
     : [
         { Icon: ShieldCheck, t: "Le sceau AGRIVO", d: "Un lot n'est vendable que s'il porte le sceau : conformité, carte producteur, intégrité de volume." },
-        { Icon: Boxes, t: "Vendre en direct", d: "L'exportateur publie ses lots déjà tracés ; l'acheteur premium achète du conforme vérifié." },
-        { Icon: Percent, t: "Take-rate 1–3 %", d: "Une commission sur le négoce, un revenu qui monte avec le volume, jamais de frais au producteur." },
+        { Icon: Boxes, t: "Vendre prouvé", d: "L'exportateur agréé publie ses lots déjà tracés ; l'acheteur premium réserve du conforme vérifié." },
+        { Icon: Percent, t: "Take-rate 1–3 %", d: "Une commission sur les primes négociées via la plateforme, un revenu qui monte avec le volume, jamais de frais au producteur." },
       ];
   return (
     <section className="bg-ivory">
@@ -681,8 +681,8 @@ function MarketplaceSection() {
           </h2>
           <p className="mt-4 text-lg leading-relaxed text-stone-600">
             {en
-              ? "Once a lot is traced and sealed, the exporter sells it in direct to premium buyers, and the cooperative owns its data instead of being disintermediated."
-              : "Une fois le lot tracé et scellé, l'exportateur le vend en direct aux acheteurs premium, et la coopérative possède sa donnée au lieu d'être désintermédiée."}
+              ? "Once a lot is traced and sealed, the licensed exporter negotiates its premiums above the state-set farmgate price, within the Conseil du Café-Cacao marketing framework, and the cooperative keeps ownership of its data."
+              : "Une fois le lot tracé et scellé, l'exportateur agréé négocie ses primes au-dessus du prix garanti, dans le cadre de commercialisation du Conseil du Café-Cacao, et la coopérative reste propriétaire de sa donnée."}
           </p>
           <p className="mt-3 text-sm leading-relaxed text-stone-500">
             {en
@@ -691,8 +691,8 @@ function MarketplaceSection() {
           </p>
           <p className="mt-3 text-sm leading-relaxed text-stone-500">
             {en
-              ? "And every shipment leaves with its due diligence file: TRACES NT GeoJSON, documented risk assessment, chain-of-custody register. The exporter files, AGRIVO prepares."
-              : "Et chaque expédition sort avec son dossier de diligence raisonnée : GeoJSON au format TRACES NT, évaluation de risque documentée, registre de possession. L'exportateur dépose, AGRIVO prépare."}
+              ? "And every shipment leaves with its due diligence file: TRACES NT GeoJSON, documented risk assessment, chain-of-custody register. The operator files, the exporter proves: AGRIVO prepares."
+              : "Et chaque expédition sort avec son dossier de diligence raisonnée : GeoJSON au format TRACES NT, évaluation de risque documentée, registre de possession. L'opérateur dépose, l'exportateur prouve : AGRIVO prépare."}
           </p>
         </Reveal>
         <motion.div variants={container} initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.15 }} className="mt-12 grid gap-5 sm:grid-cols-3">

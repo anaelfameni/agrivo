@@ -67,8 +67,8 @@ const PLANS = [
     from: false,
     unit: { fr: "FCFA / mois", en: "FCFA / month" },
     desc: {
-      fr: "Pour les exportateurs qui déposent des DDS et intègrent AGRIVO à leur système d'information.",
-      en: "For exporters filing due diligence statements and integrating AGRIVO into their IT systems.",
+      fr: "Pour les exportateurs qui alimentent les DDS de leurs opérateurs et intègrent AGRIVO à leur système d'information.",
+      en: "For exporters feeding their operators' due diligence statements and integrating AGRIVO into their IT systems.",
     },
     features: {
       fr: ["Tout Essentiel, plus :", "Dossiers d'expédition illimités · GeoJSON TRACES NT par conteneur", "API REST & export en masse", "Déclarations TRACES NT intégrées", "Assistant IA de portefeuille", "Engagement de disponibilité (SLA) · état des services public"],
@@ -178,6 +178,36 @@ export default function Tarifs() {
                   </div>
                   <Link href="/contact" className="inline-flex items-center gap-2 rounded-full bg-green-signal px-6 py-3 text-sm font-semibold text-white transition hover:brightness-110">
                     {en ? "Request a sealed-lot file" : "Demander un dossier lot scellé"} <ArrowRight size={15} />
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </Reveal>
+
+          {/* Étage 1 bis · Le diagnostic de registre 30 jours (l'entrée la plus légère) */}
+          <Reveal>
+            <div className="mb-8 rounded-2xl border border-amber-cacao/30 bg-white p-8 md:p-10">
+              <div className="flex flex-wrap items-start justify-between gap-6">
+                <div className="max-w-2xl">
+                  <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-cacao/10 px-3 py-1 text-xs font-semibold text-amber-cacao">
+                    {en ? "Or start even lighter · 30-day diagnostic" : "Ou commencez encore plus léger · diagnostic 30 jours"}
+                  </span>
+                  <h2 className="mt-4 font-display text-2xl text-forest-950">
+                    {en ? "The registry diagnostic: know where you stand." : "Le diagnostic de registre : sachez où vous en êtes."}
+                  </h2>
+                  <p className="mt-3 text-sm leading-relaxed text-stone-600">
+                    {en
+                      ? "In 30 days, we audit your existing plot registry: usable plots, missing or unreliable data, farmers without cards, volume inconsistencies. Deliverable: a full audit report, a measured baseline (time, errors, share of export-ready plots) and a prioritised action plan. No subscription required; the diagnostic fee is deducted if you continue."
+                      : "En 30 jours, nous auditons votre registre de parcelles existant : parcelles exploitables, données manquantes ou peu fiables, producteurs non cartés, incohérences de volumes. Livrable : un rapport d'audit complet, une base de référence mesurée (temps, erreurs, part de parcelles prêtes à l'export) et un plan d'action priorisé. Sans abonnement requis ; le montant du diagnostic est déduit si vous poursuivez."}
+                  </p>
+                </div>
+                <div className="flex flex-col items-start gap-3">
+                  <div>
+                    <p className="num text-3xl font-semibold text-amber-cacao">{en ? "From 750,000 FCFA" : "Dès 750 000 FCFA"}</p>
+                    <p className="mt-1 text-xs text-stone-500">{en ? "launch pricing · per registry" : "tarif de lancement · par registre"}</p>
+                  </div>
+                  <Link href="/contact" className="inline-flex items-center gap-2 rounded-full border border-amber-cacao/40 px-6 py-3 text-sm font-semibold text-amber-cacao transition hover:bg-amber-cacao/10">
+                    {en ? "Request a diagnostic" : "Demander un diagnostic"} <ArrowRight size={15} />
                   </Link>
                 </div>
               </div>
