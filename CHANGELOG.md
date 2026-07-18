@@ -3,6 +3,41 @@
 Versioning sémantique (MAJOR.MINOR.PATCH). Chaque release liste ce qui est ajouté, corrigé et
 vérifié, conformément à l'étape 8 du pipeline « Du besoin à la Release ».
 
+## v2.13.0 — 2026-07-18 — « Qualité & confort » : cartes labellisées et agrandies, téléchargements fiabilisés, guide complet, mobile vérifié
+
+### Ajouté
+- **Noms de villes sur TOUTES les cartes** : nouvelle couche `components/map/labels-layer.tsx`
+  (tuiles de référence Esri World_Boundaries_and_Places, même fournisseur que l'imagerie)
+  montée sur les 5 cartes Leaflet (portfolio, sièges, parcelle satellite, cartographie du
+  parcours, analyse). Export `MapLegend` réutilisable.
+- **Légendes complétées** : statut de la parcelle sur la carte satellite de la fiche parcelle ;
+  contour saisi + aire protégée sur la carte de cartographie ; verdict sur la carte d'analyse
+  (les cartes portfolio et sièges avaient déjà les leurs).
+- **Guide interactif : étape « Se déconnecter »** (coop ET exportateur) : ancre
+  `data-tour="deconnexion"` sur le bouton de la topbar, avant-dernière étape des deux visites.
+- **Footer marketplace : bouton « Ouvrir l'application AGRIVO »** (vers /connexion, avec
+  sous-titre espaces coopérative & exportateur) : le pont marketplace → espaces de travail.
+- **Dashboard coopérative : panneau « Surveillance du portefeuille »** (réutilise
+  `surveillance-panel.tsx` sur les parcelles de la coop) : la cadence de revue 90 j et les
+  alertes actives ne sont plus réservées à l'exportateur.
+
+### Corrigé
+- **Téléchargements fiabilisés sur Firefox/Safari/mobile** : 6 fichiers révoquaient l'URL du
+  blob IMMÉDIATEMENT après le clic (annulation possible du téléchargement) → révocation
+  différée de 1,5 s partout (dds-pdf, dossier-dds-panel, expedition-pdf, lot-pdf,
+  dossier-acheteur ×2, expéditions GeoJSON/CSV). Lien APK vérifié (200).
+- **Cartes agrandies site-wide** (fini le format « trop rectangle ») : listes/carte 340→440 px
+  mobile et 600→680 px desktop (analytique, parcelles), sièges 380→440/560→640, expéditions
+  320→420, origines marketplace 380→440/520→560/560→640, cartographie et analyse du parcours
+  44vh→52vh (min 380) et 62vh→68vh, fiche parcelle plus haute sur mobile (aspect 4/3).
+- **Responsive mobile** : tableau des sommets scrollable (`overflow-x-auto`), grilles KPI des
+  pages certificats et producteurs exportateur repliées en 1 colonne sur mobile.
+  **Vérité mesurée** : scan CDP en 375×812 des 13 pages publiques ET 13 pages connectées
+  (coop + exportateur) : zéro débordement horizontal.
+
+### Vérifié
+- `tsc` ✓ · 205 tests ✓ · `eslint` ✓ · `next build` ✓ · scan mobile 26 pages sans overflow.
+
 ## v2.12.0 — 2026-07-18 — « L'outil du quotidien » : surveillance continue, rapprochement SNT à l'import, acceptation opérateur (North Star)
 
 ### Ajouté

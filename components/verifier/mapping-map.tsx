@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
 import { MapContainer, TileLayer, useMap } from "react-leaflet";
+import { LabelsLayer } from "@/components/map/labels-layer";
 import L, { type Map as LeafletMap } from "leaflet";
 import { motion } from "framer-motion";
 import "leaflet/dist/leaflet.css";
@@ -199,6 +200,7 @@ export default function MappingMap({
           attribution="Imagerie © Esri, Maxar, Earthstar Geographics"
           maxZoom={19}
         />
+        <LabelsLayer />
         <MapBridge onReady={onReady} />
         <ZonesSensiblesLayer show={showZones} />
       </MapContainer>
@@ -220,6 +222,20 @@ export default function MappingMap({
         className="pointer-events-none absolute inset-0 z-[450]"
         style={{ boxShadow: "inset 0 0 140px 40px rgba(10,31,20,0.5)" }}
       />
+
+      {/* Légende du tracé (le tableau des sommets reste la source accessible) */}
+      <div className="pointer-events-none absolute bottom-3 left-3 z-[520] flex flex-wrap items-center gap-x-3 gap-y-1 rounded-xl bg-forest-950/75 px-3 py-1.5 backdrop-blur-sm">
+        <span className="flex items-center gap-1.5 text-[0.65rem] font-medium text-white/90">
+          <span className="inline-block h-2.5 w-2.5 rounded-full" style={{ background: GREEN }} aria-hidden />
+          {lang === "en" ? "Plot outline (entered vertices)" : "Contour de la parcelle (sommets saisis)"}
+        </span>
+        {showZones && (
+          <span className="flex items-center gap-1.5 text-[0.65rem] font-medium text-white/90">
+            <span className="inline-block h-2.5 w-2.5 rounded-[3px]" style={{ background: "#b4231e", opacity: 0.7 }} aria-hidden />
+            {lang === "en" ? "Protected area (indicative)" : "Aire protégée (indicatif)"}
+          </span>
+        )}
+      </div>
 
       {geom && mode === "polygon" && (
         <svg

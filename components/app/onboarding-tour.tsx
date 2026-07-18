@@ -31,6 +31,7 @@ import {
   FileUp,
   LayoutDashboard,
   Layers,
+  LogOut,
   Map,
   MapPinned,
   MessageSquareText,
@@ -157,6 +158,17 @@ const ETAPES_COOP: Etape[] = [
     corps: {
       fr: "Cette bulle verte vous suit sur toutes les pages : prix, verdicts, réglementation, où cliquer, elle répond à tout. Pour une demande complexe, notre équipe répond à support@agrivo.ci.",
       en: "This green bubble follows you on every page: pricing, verdicts, regulation, where to click, it answers everything. For complex requests, our team answers at support@agrivo.ci.",
+    },
+  },
+  {
+    target: "deconnexion",
+    pointer: true,
+    Icon: LogOut,
+    accent: "#b4231e",
+    titre: { fr: "Se déconnecter, en un clic", en: "Sign out, in one click" },
+    corps: {
+      fr: "Ce bouton, toujours visible en haut à droite, ferme votre session en toute sécurité et vous ramène à l'accueil. Vos données restent dans votre espace : vous les retrouvez à la prochaine connexion.",
+      en: "This button, always visible at the top right, safely closes your session and returns you to the home page. Your data stays in your workspace: you will find it again at your next sign-in.",
     },
   },
   {
@@ -287,6 +299,17 @@ const ETAPES_EXPORT: Etape[] = [
     corps: {
       fr: "La bulle verte répond à toutes vos questions sur AGRIVO et la RDUE, sur toutes les pages. Pour une demande complexe : support@agrivo.ci.",
       en: "The green bubble answers all your questions about AGRIVO and the EUDR, on every page. For complex requests: support@agrivo.ci.",
+    },
+  },
+  {
+    target: "deconnexion",
+    pointer: true,
+    Icon: LogOut,
+    accent: "#b4231e",
+    titre: { fr: "Se déconnecter, en un clic", en: "Sign out, in one click" },
+    corps: {
+      fr: "Ce bouton, toujours visible en haut à droite, ferme votre session en toute sécurité et vous ramène à l'accueil. Vos données restent dans votre espace : vous les retrouvez à la prochaine connexion.",
+      en: "This button, always visible at the top right, safely closes your session and returns you to the home page. Your data stays in your workspace: you will find it again at your next sign-in.",
     },
   },
   {

@@ -195,5 +195,5 @@ export async function telechargerExpeditionPdf(exp: Expedition, lang: "fr" | "en
   a.href = URL.createObjectURL(blob);
   a.download = `agrivo-dossier-expedition-${exp.ref}.pdf`;
   a.click();
-  URL.revokeObjectURL(a.href);
+  setTimeout(() => URL.revokeObjectURL(a.href), 1500);
 }

@@ -242,5 +242,5 @@ export async function telechargerDdsPdf(
   a.href = URL.createObjectURL(blob);
   a.download = `agrivo-dossier-dds-${dossier.ref}.pdf`;
   a.click();
-  URL.revokeObjectURL(a.href);
+  setTimeout(() => URL.revokeObjectURL(a.href), 1500);
 }

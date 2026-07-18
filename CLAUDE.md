@@ -4,8 +4,22 @@
 > Il condense la charte de marque, les règles de contenu, les faits produit et l'avancement.
 > En cas de doute, ce fichier prime sur mes souvenirs. Il reflète l'état au dernier prompt traité.
 
-> 🟢 **ÉTAT ACTUEL — v2.12.0, 18 juillet 2026 (CE BLOC FAIT FOI sur toute mention contraire
+> 🟢 **ÉTAT ACTUEL — v2.13.0, 18 juillet 2026 (CE BLOC FAIT FOI sur toute mention contraire
 > plus bas, qui relève de l'historique de construction).**
+> - **v2.13 « QUALITÉ & CONFORT » (18/07 nuit, passe QA/UX demandée par Anael)** :
+>   ① noms de villes sur les 5 cartes Leaflet via `components/map/labels-layer.tsx` (tuiles
+>   Esri World_Boundaries_and_Places posées APRÈS l'imagerie) + légendes complétées (fiche
+>   parcelle, cartographie, analyse) ; ② toutes les cartes AGRANDIES (340→440/600→680 etc.,
+>   parcours 52vh/68vh, fiche parcelle aspect 4/3 mobile) ; ③ BUG téléchargements corrigé :
+>   revokeObjectURL immédiat → différé 1,5 s dans 6 fichiers (cassait Firefox/Safari/mobile) ;
+>   ④ guide interactif : étape « Se déconnecter » (data-tour="deconnexion" sur user-menu) dans
+>   les DEUX visites ; ⑤ footer marketplace : bouton « Ouvrir l'application AGRIVO » ;
+>   ⑥ SurveillancePanel aussi sur le dashboard COOP ; ⑦ responsive : tableau sommets
+>   scrollable, KPI 1 col mobile (certificats, producteurs export) ; scan CDP 375px de
+>   26 pages (publiques + connectées via seed localStorage `agrivo:session`) : ZÉRO overflow.
+>   Harnais réutilisable : scratchpad `mobile-overflow.mjs` + `mobile-app-overflow.mjs`
+>   (Edge headless --remote-debugging-port=9367). ⚠️ TOUJOURS arrêter le dev server avant
+>   `npm run build` (conflit .next).
 > - **v2.12 « L'OUTIL DU QUOTIDIEN » (18/07 soir)** : les 3 briques produit exécutables du plan
 >   100/100. ① **Surveillance continue** : `lib/surveillance/veille.ts` (cadence 90 j,
 >   `a-jour/revue-due/alerte`, l'alerte active prime) + `surveillance-panel.tsx` dans

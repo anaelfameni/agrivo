@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useRef } from "react";
 import { CircleMarker, MapContainer, TileLayer, Tooltip, useMap } from "react-leaflet";
+import { LabelsLayer } from "@/components/map/labels-layer";
 import L from "leaflet";
 import { useReducedMotion } from "framer-motion";
 import "leaflet/dist/leaflet.css";
@@ -148,6 +149,7 @@ export default function SiegesMap({
           attribution="Imagerie © Esri, Maxar, Earthstar Geographics"
           maxZoom={19}
         />
+        <LabelsLayer />
         <FitSieges bounds={bounds} />
         <PanToSiege center={selectedCenter} reduce={reduce} />
         {items.map((i) => (

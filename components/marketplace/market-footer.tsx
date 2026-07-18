@@ -19,6 +19,8 @@ const TR = {
     resTitle: "Ressources",
     site: "Site AGRIVO",
     method: "Méthodologie",
+    appCta: "Ouvrir l'application AGRIVO",
+    appHint: "Espaces coopérative & exportateur",
     rights: "Tous droits réservés.",
   },
   en: {
@@ -31,6 +33,8 @@ const TR = {
     resTitle: "Resources",
     site: "AGRIVO site",
     method: "Methodology",
+    appCta: "Open the AGRIVO app",
+    appHint: "Cooperative & exporter workspaces",
     rights: "All rights reserved.",
   },
 } as const;
@@ -51,6 +55,16 @@ export function MarketFooter() {
             <p className="mt-4 inline-flex items-start gap-2 rounded-xl border border-green-signal/20 bg-green-signal/[0.05] p-3 text-xs leading-relaxed text-forest-950/70">
               <ShieldCheck size={15} className="mt-0.5 shrink-0 text-green-signal" /> {t.frontier}
             </p>
+            {/* Bouton vers l'application : le pont marketplace → espaces de travail */}
+            <div className="mt-5">
+              <Link
+                href="/connexion"
+                className="inline-flex items-center gap-2 rounded-full bg-green-signal px-5 py-2.5 text-sm font-semibold text-white transition hover:brightness-110"
+              >
+                {t.appCta} <ArrowUpRight size={14} aria-hidden />
+              </Link>
+              <p className="mt-1.5 text-[0.7rem] text-forest-950/45">{t.appHint}</p>
+            </div>
           </div>
           <nav className="flex flex-col gap-2.5 text-sm">
             <p className="text-xs font-semibold uppercase tracking-wide text-forest-950/45">{t.navTitle}</p>

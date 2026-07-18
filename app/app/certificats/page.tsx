@@ -89,7 +89,7 @@ export default function CertificatsPage() {
         initial="hidden"
         animate="show"
         variants={{ show: { transition: { staggerChildren: reduce ? 0 : 0.06 } } }}
-        className="grid grid-cols-3 gap-3"
+        className="grid grid-cols-1 gap-3 sm:grid-cols-3"
       >
         {kpis.map((k) => (
           <motion.div

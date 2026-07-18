@@ -127,7 +127,7 @@ export function ParcelleLocale({ id }: { id: string }) {
       <div className="grid gap-5 lg:grid-cols-[1.35fr_1fr]">
         <div className="flex flex-col gap-5">
           {pseudo ? (
-            <ParcelleMapSat parcelle={pseudo} className="aspect-[16/10]" />
+            <ParcelleMapSat parcelle={pseudo} className="aspect-[4/3] sm:aspect-[16/10]" />
           ) : (
             <div className="grid aspect-[16/10] place-items-center rounded-2xl border border-dashed border-black/15 bg-ivory-deep/40 p-6 text-center">
               <div>

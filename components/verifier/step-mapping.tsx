@@ -246,7 +246,7 @@ export function StepMapping({
   return (
     <div className="grid gap-5 lg:grid-cols-[1.5fr_1fr]">
       {/* Aperçu satellite de la parcelle */}
-      <div className="relative h-[44vh] min-h-[320px] overflow-hidden rounded-2xl border border-black/[0.08] lg:h-[62vh]">
+      <div className="relative h-[52vh] min-h-[380px] overflow-hidden rounded-2xl border border-black/[0.08] lg:h-[68vh]">
         <MappingMap waypoints={previewCoords} count={previewCoords.length} mode={mapMode} closed active={false} />
       </div>
 
@@ -300,8 +300,8 @@ export function StepMapping({
               )}
 
               {/* Tableau des sommets (format officiel : Sommet / Latitude (Y) / Longitude (X)) */}
-              <div className="overflow-hidden rounded-xl border border-black/[0.08]">
-                <table className="w-full border-collapse text-sm">
+              <div className="overflow-x-auto rounded-xl border border-black/[0.08]">
+                <table className="w-full min-w-[300px] border-collapse text-sm">
                   <thead>
                     <tr className="bg-ivory-deep/60 text-left">
                       <th className="px-3 py-2 text-[0.68rem] font-semibold uppercase tracking-wider text-stone-500">{t.thSommet}</th>

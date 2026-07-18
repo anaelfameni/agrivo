@@ -350,7 +350,7 @@ export default function CooperativesPage() {
 
         {/* Carte des sièges */}
         <div className="xl:col-span-5">
-          <div className="h-[380px] overflow-hidden rounded-2xl border border-black/[0.06] shadow-[0_1px_2px_rgba(10,31,20,0.04)] xl:sticky xl:top-24 xl:h-[560px]" data-tour="carte-sieges" aria-label={t.carte}>
+          <div className="h-[440px] overflow-hidden rounded-2xl border border-black/[0.06] shadow-[0_1px_2px_rgba(10,31,20,0.04)] xl:sticky xl:top-24 xl:h-[640px]" data-tour="carte-sieges" aria-label={t.carte}>
             <SiegesMap items={siegeItems} selectedId={selection} onSelect={(id) => setSelection(id === selection ? null : id)} />
           </div>
         </div>

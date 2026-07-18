@@ -72,7 +72,7 @@ export function OriginsMap({ wrap = "mx-auto w-full max-w-[1760px] px-5 sm:px-8 
       {/* Carte pleine largeur + panneau glass superposé */}
       <Reveal delay={0.08} className="mt-10">
         <div className="relative">
-          <div className="h-[380px] w-full overflow-hidden rounded-3xl border border-black/[0.06] shadow-[0_30px_70px_-40px_rgba(10,31,20,0.5)] md:h-[520px] lg:h-[560px]">
+          <div className="h-[440px] w-full overflow-hidden rounded-3xl border border-black/[0.06] shadow-[0_30px_70px_-40px_rgba(10,31,20,0.5)] md:h-[560px] lg:h-[640px]">
             <Map parcelles={parcelles} selectedId={null} hoveredId={null} onSelect={() => {}} onHover={() => {}} />
           </div>
 

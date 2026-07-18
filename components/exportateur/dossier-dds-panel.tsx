@@ -69,7 +69,7 @@ function telechargerFichier(nom: string, contenu: string, type: string) {
   a.href = URL.createObjectURL(blob);
   a.download = nom;
   a.click();
-  URL.revokeObjectURL(a.href);
+  setTimeout(() => URL.revokeObjectURL(a.href), 1500);
 }
 
 const ACCEPTATION_LS = "agrivo:acceptation:v1:";

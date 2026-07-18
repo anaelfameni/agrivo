@@ -2,13 +2,20 @@
 
 import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
 import { MapContainer, TileLayer, useMap } from "react-leaflet";
+import { LabelsLayer } from "@/components/map/labels-layer";
 import L, { type Map as LeafletMap } from "leaflet";
 import { motion, useReducedMotion } from "framer-motion";
 import "leaflet/dist/leaflet.css";
 import { PinMark } from "@/components/ui/pin-mark";
 import { ZonesSensiblesLayer } from "@/components/map/zones-sensibles-layer";
 import { useLanguage } from "@/components/language-provider";
-import { type Statut } from "@/data/mock-parcelles";
+import { STATUT_LABEL, type Statut } from "@/data/mock-parcelles";
+
+const STATUT_LABEL_EN: Record<Statut, string> = {
+  conforme: "Compliant",
+  anomalie: "Anomaly detected",
+  insuffisant: "Insufficient data",
+};
 
 const LABELS = {
   fr: {
@@ -199,6 +206,7 @@ export default function AnalysisMap({
           attribution="Imagerie © Esri, Maxar, Earthstar Geographics"
           maxZoom={19}
         />
+        <LabelsLayer />
         <MapBridge onReady={onReady} />
         <ZonesSensiblesLayer show={showZones} />
       </MapContainer>
@@ -220,6 +228,16 @@ export default function AnalysisMap({
         className="pointer-events-none absolute inset-0 z-[450]"
         style={{ boxShadow: "inset 0 0 140px 40px rgba(10,31,20,0.5)" }}
       />
+
+      {/* Légende du verdict (visible une fois l'analyse terminée) */}
+      {showVerdict && (
+        <div className="pointer-events-none absolute bottom-3 left-3 z-[520] rounded-xl bg-forest-950/75 px-3 py-1.5 backdrop-blur-sm">
+          <span className="flex items-center gap-1.5 text-[0.65rem] font-medium text-white/90">
+            <span className="inline-block h-2.5 w-2.5 rounded-full" style={{ background: color }} aria-hidden />
+            {(lang === "en" ? STATUT_LABEL_EN : STATUT_LABEL)[statut]}
+          </span>
+        </div>
+      )}
 
       {/* Surcouche d'analyse (projetée par Leaflet, alignée aux tuiles) */}
       {geom && (

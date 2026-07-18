@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { CircleMarker, MapContainer, Polygon, TileLayer, Tooltip, useMap } from "react-leaflet";
+import { LabelsLayer } from "@/components/map/labels-layer";
 import L from "leaflet";
 import { useReducedMotion } from "framer-motion";
 import "leaflet/dist/leaflet.css";
@@ -184,6 +185,7 @@ export default function PortfolioMap({
           attribution="Imagerie © Esri, Maxar, Earthstar Geographics"
           maxZoom={19}
         />
+        <LabelsLayer />
         <FitBounds bounds={bounds} />
         <PanToSelected center={selectedCenter} reduce={reduce} />
         <ZonesSensiblesLayer show={showZones} />

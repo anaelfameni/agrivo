@@ -113,7 +113,7 @@ export function DossierAcheteur() {
     a.href = url;
     a.download = `agrivo-dossier-acheteur-${conformes.length}-parcelles.geojson`;
     a.click();
-    URL.revokeObjectURL(url);
+    setTimeout(() => URL.revokeObjectURL(url), 1500);
   }
 
   /** Rapport consolidé lisible (texte) : en-tête, indicateurs, résumé exécutif s'il existe, liste complète. */
@@ -138,7 +138,7 @@ export function DossierAcheteur() {
     a.href = url;
     a.download = `agrivo-rapport-eudr-${conformes.length}-parcelles.txt`;
     a.click();
-    URL.revokeObjectURL(url);
+    setTimeout(() => URL.revokeObjectURL(url), 1500);
   }
 
   async function copier() {

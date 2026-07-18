@@ -80,7 +80,7 @@ export function ParcelleDetail({
       <div className="grid gap-5 lg:grid-cols-[1.35fr_1fr]">
         {/* Colonne carte + verdict */}
         <div className="flex flex-col gap-5">
-          <ParcelleMapSat parcelle={p} className="aspect-[16/10]" />
+          <ParcelleMapSat parcelle={p} className="aspect-[4/3] sm:aspect-[16/10]" />
 
           {/* Verdict */}
           <div className="card-premium p-5">

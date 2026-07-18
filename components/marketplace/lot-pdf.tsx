@@ -268,6 +268,6 @@ export async function telechargerLotPdf(
   a.href = URL.createObjectURL(blob);
   a.download = `agrivo-market-${kind === "reservation" ? "reservation" : "fiche"}-${lot.ref}.pdf`;
   a.click();
-  URL.revokeObjectURL(a.href);
+  setTimeout(() => URL.revokeObjectURL(a.href), 1500);
   return true;
 }

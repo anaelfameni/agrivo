@@ -38,6 +38,7 @@ export function UserMenu() {
 
       <button
         type="button"
+        data-tour="deconnexion"
         onClick={() => {
           logout();
           router.push("/");

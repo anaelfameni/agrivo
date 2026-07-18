@@ -410,7 +410,7 @@ export function AnalyticsTab({
 
         {/* Carte liée */}
         <div className="xl:col-span-4">
-          <div className="h-[340px] overflow-hidden rounded-2xl border border-black/[0.06] shadow-[0_1px_2px_rgba(10,31,20,0.04)] xl:sticky xl:top-4 xl:h-[600px]">
+          <div className="h-[440px] overflow-hidden rounded-2xl border border-black/[0.06] shadow-[0_1px_2px_rgba(10,31,20,0.04)] xl:sticky xl:top-4 xl:h-[680px]">
             <PortfolioMap
               parcelles={filtered}
               selectedId={selectedId}

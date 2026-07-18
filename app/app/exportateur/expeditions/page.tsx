@@ -430,7 +430,7 @@ function DetailExpedition({
     a.href = URL.createObjectURL(blob);
     a.download = `agrivo-expedition-${exp.ref}-parcelles.csv`;
     a.click();
-    URL.revokeObjectURL(a.href);
+    setTimeout(() => URL.revokeObjectURL(a.href), 1500);
   }, [exp]);
 
   const montrerQr = React.useCallback(async () => {
@@ -448,7 +448,7 @@ function DetailExpedition({
     a.href = URL.createObjectURL(blob);
     a.download = `agrivo-expedition-${exp.ref}.geojson`;
     a.click();
-    URL.revokeObjectURL(a.href);
+    setTimeout(() => URL.revokeObjectURL(a.href), 1500);
   }, [exp]);
 
   const genererResume = React.useCallback(async () => {
@@ -806,7 +806,7 @@ function DetailExpedition({
 
         <div className="min-h-[320px]">
           <h3 className="text-xs font-semibold uppercase tracking-wide text-stone-500">{t.carteTitre}</h3>
-          <div className="mt-2 h-[320px] xl:h-[calc(100%-1.75rem)]">
+          <div className="mt-2 h-[420px] xl:h-[calc(100%-1.75rem)]">
             <PortfolioMap
               parcelles={parcelles}
               selectedId={mapSel}

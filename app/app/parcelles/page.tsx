@@ -191,7 +191,7 @@ export default function ParcellesPage() {
 
         {/* Carte satellite du portefeuille, liée à la liste (survol + clic) */}
         <div className="xl:col-span-5">
-          <div className="h-[340px] overflow-hidden rounded-2xl border border-black/[0.06] shadow-[0_1px_2px_rgba(10,31,20,0.04)] xl:sticky xl:top-24 xl:h-[600px]">
+          <div className="h-[440px] overflow-hidden rounded-2xl border border-black/[0.06] shadow-[0_1px_2px_rgba(10,31,20,0.04)] xl:sticky xl:top-24 xl:h-[680px]">
             <PortfolioMap
               parcelles={filtered}
               selectedId={selectedId}

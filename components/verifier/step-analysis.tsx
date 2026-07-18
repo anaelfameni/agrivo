@@ -271,7 +271,7 @@ export function StepAnalysis({
   return (
     <div className="grid gap-5 lg:grid-cols-[1.5fr_1fr]">
       {/* Carte satellite (dominante) */}
-      <div className="relative h-[44vh] min-h-[320px] overflow-hidden rounded-2xl border border-black/[0.08] lg:h-[62vh]">
+      <div className="relative h-[52vh] min-h-[380px] overflow-hidden rounded-2xl border border-black/[0.08] lg:h-[68vh]">
         <AnalysisMap ring={ring} statut={whisp?.statut ?? parcelle.statut} phase={phase} />
       </div>
 
