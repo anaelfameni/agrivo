@@ -42,8 +42,8 @@ const QA: { q: { fr: string; en: string }; a: { fr: string; en: string } }[] = [
   {
     q: { fr: "AGRIVO signe-t-il la déclaration de conformité à ma place ?", en: "Does AGRIVO sign the compliance declaration for me?" },
     a: {
-      fr: "Non. C'est l'importateur européen qui dépose sa Déclaration de Diligence Raisonnée sur TRACES NT. AGRIVO fournit l'évaluation technique et le certificat qui alimentent cette déclaration. Nous parlons d'évaluation, jamais de garantie légale.",
-      en: "No. The European importer files their Due Diligence Statement on TRACES NT. AGRIVO provides the technical assessment and the certificate that feed this declaration. We speak of assessment, never of legal guarantee.",
+      fr: "Non. C'est l'opérateur qui dépose sa déclaration de diligence raisonnée (DDS) sur TRACES NT et qui en reste seul responsable. AGRIVO prépare le dossier complet à reporter : le GeoJSON des parcelles au format TRACES NT, un brouillon de déclaration avec les champs factuels (denrée, code SH, masse nette, pays de production) et un rapport des éléments réunis pour l'évaluation de risque. L'API TRACES NT est ouverte depuis fin 2024 (Commission européenne) : le dépôt assisté est l'étape suivante de notre feuille de route. Nous parlons d'évaluation, jamais de garantie légale.",
+      en: "No. The operator files their due diligence statement (DDS) on TRACES NT and remains solely responsible for it. AGRIVO prepares the complete file to report: the plot GeoJSON in TRACES NT format, a statement draft with the factual fields (commodity, HS code, net mass, country of production) and a report of the elements gathered for the risk assessment. The TRACES NT API has been open since late 2024 (European Commission): assisted filing is the next step on our roadmap. We speak of assessment, never of legal guarantee.",
     },
   },
   {

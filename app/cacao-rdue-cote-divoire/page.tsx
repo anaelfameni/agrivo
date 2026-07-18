@@ -37,6 +37,10 @@ const FAQ = [
     a: "Un lot porte le sceau AGRIVO quand cinq gages calculés (jamais déclarés) sont réunis : toutes les parcelles évaluées « Conforme » (ségrégation, le bilan de masse est interdit) ; tous les producteurs cartés (carte producteur de l'État) ; volumes réconciliés avec les superficies (contrôle d'intégrité) ; références de diligence raisonnée au dossier ; et chaîne de possession continue du bord champ à la composition (achat, transport sous connaissement, réception, pesée). Un lot non scellé ne peut pas être vendu sur la place de marché.",
   },
   {
+    q: "Qu'est-ce que la DDS et le numéro de référence TRACES ?",
+    a: "La déclaration de diligence raisonnée (DDS) est le document numérique que l'opérateur dépose dans le système d'information de la Commission européenne (TRACES) avant toute mise sur le marché de l'UE : géolocalisation des parcelles, évaluation de risque documentée, attestation de légalité. Le dépôt renvoie un numéro de référence et un numéro de vérification, exigés en douane et transmis dans la chaîne commerciale : sans eux, la cargaison ne passe pas. AGRIVO prépare ce dossier en un clic pour chaque expédition (GeoJSON au format TRACES NT, brouillon de déclaration, rapport des éléments d'évaluation de risque) ; le dépôt reste l'acte de l'opérateur, seul responsable.",
+  },
+  {
     q: "Comment un acheteur européen utilise-t-il le dossier AGRIVO pour sa DDS ?",
     a: "Chaque gage du sceau correspond à une exigence de la due diligence de l'importateur (information fournisseur, géolocalisation, évaluation du risque, traçabilité de la chaîne). Le dossier du lot (PDF + GeoJSON RFC 7946 prêt pour TRACES NT) se lit ligne à ligne face à ces exigences. Le sceau appuie la diligence raisonnée de l'opérateur ; il ne remplace jamais sa déclaration (DDS), dont il reste seul responsable.",
   },
@@ -124,10 +128,11 @@ export default function CacaoRdueCoteDivoire() {
         </div>
 
         <p className="mt-8 text-xs leading-relaxed text-stone-400">
-          Sources : Parlement européen et Conseil de l&apos;UE (décembre 2025), Conseil du Café-Cacao via
-          AIP et KOACI (juin 2026), Trase (2026), Trading Economics (2024), presse sectorielle cacao
-          (mai 2026, primes des contrats à terme). Chiffres réactualisés en juillet 2026 ; AGRIVO
-          publie une évaluation, jamais une garantie.
+          Sources : Parlement européen et Conseil de l&apos;UE (décembre 2025), Commission européenne
+          (système d&apos;information TRACES, DDS), Conseil du Café-Cacao via AIP et KOACI (juin 2026),
+          Trase (2026), Trading Economics (2024), presse sectorielle cacao (mai 2026, primes des
+          contrats à terme). Chiffres réactualisés en juillet 2026 ; AGRIVO publie une évaluation,
+          jamais une garantie.
         </p>
       </main>
       <SiteFooter />

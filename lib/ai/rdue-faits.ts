@@ -151,6 +151,16 @@ export const FAITS_RDUE: FaitRDUE[] = [
     },
     source: { fr: "Conseil du Café-Cacao, annonce officielle du 12 juin 2026", en: "Conseil du Café-Cacao, official announcement, 12 June 2026" },
   },
+  {
+    id: "dds-traces",
+    motsCles: ["dds", "la dds", "ma dds", "une dds", "traces", "traces nt", "diligence raisonnee", "declaration de diligence", "deposer", "depot", "numero de reference", "reference dds", "due diligence statement", "the dds", "reference number", "verification number", "filing", "to file"],
+    question: { fr: "Qu'est-ce que la DDS et comment la déposer sur TRACES ?", en: "What is the DDS and how is it filed on TRACES?" },
+    reponse: {
+      fr: "La DDS est la déclaration de diligence raisonnée que l'opérateur dépose dans TRACES, le système d'information de la Commission européenne, avant toute mise sur le marché de l'UE : géolocalisation des parcelles d'origine, évaluation de risque documentée, attestation de légalité. Le dépôt renvoie un numéro de référence et un numéro de vérification, exigés en douane et transmis dans la chaîne commerciale. AGRIVO prépare ce dossier en un clic pour chaque expédition : le GeoJSON au format TRACES NT, un brouillon de déclaration (denrée, code SH, masse nette, pays de production) et un rapport des éléments réunis pour l'évaluation de risque. Le dépôt reste l'acte de l'opérateur, seul responsable : l'exportateur dépose, AGRIVO prépare.",
+      en: "The DDS is the due diligence statement the operator files in TRACES, the European Commission's information system, before any placing on the EU market: geolocation of the plots of origin, documented risk assessment, legality attestation. Filing returns a reference number and a verification number, required at customs and passed along the commercial chain. AGRIVO prepares this file in one click for every shipment: the TRACES NT GeoJSON, a statement draft (commodity, HS code, net mass, country of production) and a report of the elements gathered for the risk assessment. Filing remains the operator's act, who stays solely responsible: the exporter files, AGRIVO prepares.",
+    },
+    source: { fr: "Commission européenne, système d'information TRACES", en: "European Commission, TRACES information system" },
+  },
 
   /* --------------------------- AGRIVO : produit, prix, parcours, site --------------------------- */
   {

@@ -4,8 +4,23 @@
 > Il condense la charte de marque, les règles de contenu, les faits produit et l'avancement.
 > En cas de doute, ce fichier prime sur mes souvenirs. Il reflète l'état au dernier prompt traité.
 
-> 🟢 **ÉTAT ACTUEL — v2.9.0, 17 juillet 2026 (CE BLOC FAIT FOI sur toute mention contraire
+> 🟢 **ÉTAT ACTUEL — v2.10.0, 17 juillet 2026 (CE BLOC FAIT FOI sur toute mention contraire
 > plus bas, qui relève de l'historique de construction).**
+> - **v2.10 « LE DOSSIER DDS EN 1 CLIC » (17/07 soir)** : moteur pur
+>   `lib/marketplace/dds-dossier.ts` (`construireDossierDds` = GeoJSON TRACES NT + brouillon DDS
+>   [denrée/code SH/masse nette/pays/campagne/réf. DDR] + check-list de 6 vérifications recalculées
+>   [géoloc + règle 4 ha=polygone · ségrégation · carte producteur · réf. DDR · possession+sentinelle
+>   · contrôle pré-embarquement] ; `rapportRisque` = éléments art. 9/10 SANS conclure à la place de
+>   l'opérateur ; `fichiersDossierDds`) ; **panneau « Dossier DDS »** sur chaque expédition
+>   (`dossier-dds-panel.tsx`, jauge + manquants + 3 livrables gatés si `pret`) ; **PDF 2 pages**
+>   `dds-pdf.tsx` (brouillon+check-list / rapport risque, disclaimer verbatim + QR) ; synthèse
+>   « Préparation DDS n/6 » sur la fiche lot marketplace ; compteur « Dossiers DDS prêts » dans
+>   `etatCampagne()` (nouveau champ `dossiersDdsPrets`) ; récit public FAQ/SEO/méthodologie/tarifs/
+>   landing + **fait assistant `dds-traces`** (API TRACES ouverte fin 2024, source Commission).
+>   Seeds : EXP-2026-0001 prêt · EXP-2026-0007 jamais prêt (manquants affichés).
+>   `FILIERE_LABEL_EN` désormais EXPORTÉ de `lib/certificat-data.ts`. **190 tests** (+11).
+>   Positionnement : les concurrents (TraceX/Interu/LiveEO/Koltiva) vendent la préparation DDS au
+>   prix entreprise ; personne de coopérative-first/abordable ne le fait en Afrique de l'Ouest.
 > - **v2.9 « MARCHÉ JUILLET 2026 » (17/07)** : la valorisation est CHIFFRÉE, **prime 80-150 $/t**
 >   au-dessus du standard pour le cacao vérifié zéro déforestation (source affichée « presse
 >   sectorielle cacao, mai 2026 ») sur landing/FAQ/page SEO/FAQ marketplace/assistant ; récit SNT

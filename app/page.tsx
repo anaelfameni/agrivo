@@ -689,6 +689,11 @@ function MarketplaceSection() {
               ? "On forward contracts, verified deforestation-free cocoa already trades 80 to 150 $ per tonne above standard grade (cocoa trade press, May 2026): the seal has a market price."
               : "Sur les contrats à terme, le cacao vérifié zéro déforestation se négocie déjà 80 à 150 $ la tonne au-dessus du standard (presse sectorielle cacao, mai 2026) : le sceau a un prix de marché."}
           </p>
+          <p className="mt-3 text-sm leading-relaxed text-stone-500">
+            {en
+              ? "And every shipment leaves with its due diligence file: TRACES NT GeoJSON, documented risk assessment, chain-of-custody register. The exporter files, AGRIVO prepares."
+              : "Et chaque expédition sort avec son dossier de diligence raisonnée : GeoJSON au format TRACES NT, évaluation de risque documentée, registre de possession. L'exportateur dépose, AGRIVO prépare."}
+          </p>
         </Reveal>
         <motion.div variants={container} initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.15 }} className="mt-12 grid gap-5 sm:grid-cols-3">
           {items.map((f) => (

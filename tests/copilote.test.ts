@@ -76,6 +76,18 @@ describe("Assistant AGRIVO — base de connaissances & appariement", () => {
     expect(repondreDeterministe("Qu'est-ce que le RDUE ?", "fr").faitId).toBe("definition");
   });
 
+  it("connaît la DDS et TRACES (fait dds-traces : numéro de référence, l'opérateur dépose)", () => {
+    const dds = repondreDeterministe("Comment déposer ma DDS ?", "fr");
+    expect(dds.faitId).toBe("dds-traces");
+    expect(dds.reponse).toContain("numéro de référence");
+    expect(dds.reponse).toContain("seul responsable");
+    const ref = repondreDeterministe("What is the DDS reference number?", "en");
+    expect(ref.faitId).toBe("dds-traces");
+    // Sans régression : RDUE générique et SNT restent sur leurs faits.
+    expect(repondreDeterministe("Qu'est-ce que le RDUE ?", "fr").faitId).toBe("definition");
+    expect(repondreDeterministe("Qu'est-ce que le SNT ?", "fr").faitId).toBe("snt-carte");
+  });
+
   it("guidage dans le site : guide interactif, import registre, producteurs, paramètres", () => {
     expect(repondreDeterministe("Comment relancer le guide interactif ?", "fr").faitId).toBe("guide-tour");
     expect(repondreDeterministe("Comment importer mon registre de parcelles ?", "fr").faitId).toBe("guide-import");

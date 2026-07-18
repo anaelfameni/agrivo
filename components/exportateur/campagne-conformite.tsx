@@ -3,7 +3,7 @@
 import { useMemo } from "react";
 import Link from "next/link";
 import { motion, useReducedMotion } from "framer-motion";
-import { CalendarClock, ShieldCheck, Boxes, AlertTriangle, ArrowRight, Check, Store } from "lucide-react";
+import { CalendarClock, ShieldCheck, Boxes, AlertTriangle, ArrowRight, Check, Store, FileCheck2 } from "lucide-react";
 import { PARCELLES, type Parcelle } from "@/data/mock-parcelles";
 import { etatCampagne } from "@/lib/marketplace/campagne";
 import { StatNumber } from "@/components/ui/stat-number";
@@ -19,6 +19,7 @@ const TR = {
     countdown: (j: number) => `J-${j} avant l'échéance RDUE (30 décembre 2026)`,
     scelles: "Lots scellés",
     vendables: "Lots vendables",
+    dds: "Dossiers DDS prêts",
     tonnage: "Tonnage scellé (t)",
     alertes: "Alertes bloquantes",
     actionsTitle: "Prochaines actions",
@@ -30,6 +31,7 @@ const TR = {
     countdown: (j: number) => `D-${j} before the EUDR deadline (30 December 2026)`,
     scelles: "Sealed lots",
     vendables: "Sellable lots",
+    dds: "DDS files ready",
     tonnage: "Sealed tonnage (t)",
     alertes: "Blocking alerts",
     actionsTitle: "Next actions",
@@ -58,7 +60,7 @@ export function CampagneConformite({ lang = "fr", parcelles = PARCELLES }: { lan
         </span>
       </div>
 
-      <dl className="mt-5 grid grid-cols-2 gap-4 sm:grid-cols-4">
+      <dl className="mt-5 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
         <div>
           <StatNumber value={etat.lotsScelles} format={(n) => `${Math.round(n)}/${etat.totalLots}`} className="num block text-2xl font-bold text-white" />
           <dd className="mt-1 flex items-center gap-1 text-[0.68rem] font-medium uppercase tracking-wide text-white/50"><ShieldCheck size={11} /> {t.scelles}</dd>
@@ -66,6 +68,10 @@ export function CampagneConformite({ lang = "fr", parcelles = PARCELLES }: { lan
         <div>
           <StatNumber value={etat.lotsVendables} format={(n) => `${Math.round(n)}`} className="num block text-2xl font-bold text-white" />
           <dd className="mt-1 flex items-center gap-1 text-[0.68rem] font-medium uppercase tracking-wide text-white/50"><Store size={11} /> {t.vendables}</dd>
+        </div>
+        <div>
+          <StatNumber value={etat.dossiersDdsPrets} format={(n) => `${Math.round(n)}/${etat.totalLots}`} className="num block text-2xl font-bold text-white" />
+          <dd className="mt-1 flex items-center gap-1 text-[0.68rem] font-medium uppercase tracking-wide text-white/50"><FileCheck2 size={11} /> {t.dds}</dd>
         </div>
         <div>
           <StatNumber value={etat.tonnageScelle} format={(n) => n.toLocaleString(lang === "en" ? "en" : "fr-FR", { maximumFractionDigits: 1 })} className="num block text-2xl font-bold text-white" />

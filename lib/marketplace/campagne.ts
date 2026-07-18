@@ -5,8 +5,9 @@
  * Module PUR (aucun "use client") : importable côté serveur, client et tests.
  */
 
-import { estVendable, lotsMarche, type MarketLot } from "@/data/mock-marketplace";
+import { estVendable, findMarketExpedition, lotsMarche, type MarketLot } from "@/data/mock-marketplace";
 import { possessionComplete } from "@/data/mock-expeditions";
+import { construireDossierDds } from "@/lib/marketplace/dds-dossier";
 import type { Parcelle } from "@/data/mock-parcelles";
 
 export const ECHEANCE_RDUE = "2026-12-30";
@@ -21,6 +22,8 @@ export interface EtatCampagne {
   totalLots: number;
   lotsScelles: number;
   lotsVendables: number;
+  /** Lots dont le dossier DDS est complet (toutes les vérifications du dossier réunies). */
+  dossiersDdsPrets: number;
   tonnageScelle: number;
   /** Anomalies bloquantes ouvertes (sentinelle de volume), tous lots confondus. */
   alertesBloquantes: number;
@@ -64,6 +67,10 @@ export function etatCampagne(toutesParcelles: Parcelle[], maintenant: Date = new
     totalLots: lots.length,
     lotsScelles: scelles.length,
     lotsVendables: lots.filter(estVendable).length,
+    dossiersDdsPrets: lots.filter((l) => {
+      const exp = findMarketExpedition(l.ref);
+      return exp ? construireDossierDds(exp, toutesParcelles).pret : false;
+    }).length,
     tonnageScelle: Math.round(scelles.reduce((s, l) => s + l.tonnage, 0) * 10) / 10,
     alertesBloquantes: lots.reduce((s, l) => s + l.alertesVolume.filter((a) => a.bloquant).length, 0),
     joursRestants: joursAvant(ECHEANCE_RDUE, maintenant),

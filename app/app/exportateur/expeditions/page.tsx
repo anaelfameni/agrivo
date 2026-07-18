@@ -51,6 +51,7 @@ import {
   type PointControle,
 } from "@/data/mock-expeditions";
 import { PARCELLES, FILIERE_LABEL, fmtHa, formatDate, type Parcelle } from "@/data/mock-parcelles";
+import { DossierDdsPanel } from "@/components/exportateur/dossier-dds-panel";
 
 const PortfolioMap = dynamic(() => import("@/components/exportateur/portfolio-map"), {
   ssr: false,
@@ -798,6 +799,9 @@ function DetailExpedition({
               </ul>
             </div>
           )}
+
+          {/* Dossier DDS : le livrable TRACES NT (GeoJSON + brouillon + rapport), gaté honnêtement */}
+          <DossierDdsPanel exp={exp} lang={lang} />
         </div>
 
         <div className="min-h-[320px]">

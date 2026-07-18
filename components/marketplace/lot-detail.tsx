@@ -18,6 +18,7 @@ import {
 import { SceauAgrivo } from "@/components/marketplace/sceau-agrivo";
 import { JournalLot } from "@/components/marketplace/journal-lot";
 import { DDS_MAPPING, DDS_DISCLAIMER, GAGE_LABEL } from "@/lib/marketplace/dds-mapping";
+import { construireDossierDds } from "@/lib/marketplace/dds-dossier";
 import { VsIceChip, useCocoaSpot } from "@/components/marketplace/cocoa-price";
 import { HeroBg } from "@/components/landing/hero-bg";
 
@@ -83,6 +84,7 @@ export function LotDetail({ refLot }: { refLot: string }) {
   const exp = useMemo(() => findMarketExpedition(refLot), [refLot]);
   const parcelles = useMemo(() => (lot ? parcellesDuLot(lot) : []), [lot]);
   const controle = useMemo(() => (exp ? controleEmbarquement(exp, PARCELLES) : null), [exp]);
+  const dossierDds = useMemo(() => (exp ? construireDossierDds(exp, PARCELLES) : null), [exp]);
 
   const [reserved, setReserved] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
@@ -183,6 +185,14 @@ export function LotDetail({ refLot }: { refLot: string }) {
                   </tbody>
                 </table>
               </div>
+              {dossierDds && (
+                <p className="mt-3 inline-flex items-center gap-1.5 rounded-lg bg-green-signal/[0.08] px-3 py-1.5 text-xs font-medium text-forest-950">
+                  <ClipboardCheck size={13} className="text-green-signal" aria-hidden />
+                  {l === "en"
+                    ? `DDS preparation: ${dossierDds.verifications.filter((v) => v.ok).length} of ${dossierDds.verifications.length} checks gathered for the exporter's due diligence file.`
+                    : `Préparation DDS : ${dossierDds.verifications.filter((v) => v.ok).length} vérifications sur ${dossierDds.verifications.length} réunies pour le dossier de diligence raisonnée de l'exportateur.`}
+                </p>
+              )}
               <p className="mt-3 text-xs leading-relaxed text-forest-950/45">{DDS_DISCLAIMER[l]}</p>
             </div>
           </section>

@@ -159,8 +159,8 @@ export default function Tarifs() {
                   </h2>
                   <p className="mt-3 text-sm leading-relaxed text-white/70">
                     {en
-                      ? "Before any subscription: our team prepares, per lot, the complete file your European buyer expects. Producer cards checked, per-plot satellite assessment, chain of custody, reconciled volumes, TRACES NT GeoJSON and the sealed-lot PDF, mapped line by line onto the buyer's due diligence."
-                      : "Avant tout abonnement : notre équipe prépare, lot par lot, le dossier complet que votre acheteur européen attend. Cartes producteur vérifiées, évaluation satellite par parcelle, chaîne de possession, volumes réconciliés, GeoJSON TRACES NT et PDF du lot scellé, mappé ligne à ligne sur la diligence raisonnée de l'acheteur."}
+                      ? "Before any subscription: our team prepares, per lot, the complete file your European buyer expects. Producer cards checked, per-plot satellite assessment, chain of custody, reconciled volumes, TRACES NT GeoJSON and the sealed-lot PDF, mapped line by line onto the buyer's due diligence. The deliverable includes the DDS file ready to report in TRACES NT: statement draft plus risk assessment report."
+                      : "Avant tout abonnement : notre équipe prépare, lot par lot, le dossier complet que votre acheteur européen attend. Cartes producteur vérifiées, évaluation satellite par parcelle, chaîne de possession, volumes réconciliés, GeoJSON TRACES NT et PDF du lot scellé, mappé ligne à ligne sur la diligence raisonnée de l'acheteur. Le livrable inclut le dossier DDS prêt à reporter dans TRACES NT : brouillon de déclaration plus rapport d'évaluation de risque."}
                   </p>
                   <ul className="mt-4 grid gap-2 text-sm text-white/80 sm:grid-cols-2">
                     {(en

@@ -3,6 +3,36 @@
 Versioning sémantique (MAJOR.MINOR.PATCH). Chaque release liste ce qui est ajouté, corrigé et
 vérifié, conformément à l'étape 8 du pipeline « Du besoin à la Release ».
 
+## v2.10.0 — 2026-07-17 — « Le dossier DDS en 1 clic » : GeoJSON TRACES NT + brouillon de déclaration + rapport d'évaluation de risque par expédition
+
+### Ajouté
+- **Moteur `lib/marketplace/dds-dossier.ts`** (module pur) : `construireDossierDds()` assemble,
+  pour chaque expédition, le dossier que l'opérateur reporte dans TRACES NT : GeoJSON RFC 7946
+  du lot, **brouillon de DDS** (activité, denrée, code SH, masse nette, pays de production,
+  parcelles géolocalisées, période de récolte, références DDR) et **check-list de 6 vérifications
+  recalculées** depuis les moteurs existants (géolocalisation + règle « 4 ha et plus = polygone »,
+  ségrégation, carte producteur, références DDR, chaîne de possession + sentinelle de volume,
+  contrôle pré-embarquement). `rapportRisque()` structure les **éléments réunis pour l'évaluation
+  de risque de l'opérateur** (art. 9 et 10), sans jamais conclure à sa place.
+- **Panneau « Dossier DDS »** sur chaque expédition (`dossier-dds-panel.tsx`) : jauge de
+  préparation, check-list, manquants actionnables, et 3 livrables **gatés honnêtement** (actifs
+  seulement si tout passe) : GeoJSON TRACES NT · brouillon DDS (JSON) · **rapport PDF 2 pages**
+  (`dds-pdf.tsx`, disclaimer DDS verbatim + QR de vérification publique).
+- **Fiche lot marketplace** : ligne de synthèse « Préparation DDS : n/6 vérifications réunies »
+  sous la table sceau↔DDS. **Panneau campagne** : nouveau compteur « Dossiers DDS prêts »
+  (`etatCampagne().dossiersDdsPrets`).
+- **Récit public** : landing (« L'exportateur dépose, AGRIVO prépare »), FAQ enrichie (API
+  TRACES NT ouverte depuis fin 2024, source Commission européenne), page SEO (nouvelle Q/R
+  « Qu'est-ce que la DDS et le numéro de référence TRACES ? » + source), méthodologie (« du
+  conteneur à la DDS »), tarifs (le dossier lot scellé inclut le dossier DDS). **Assistant :
+  nouveau fait `dds-traces`** (numéro de référence, dépôt = acte de l'opérateur).
+- **11 tests nouveaux** (`tests/dds-dossier.test.ts` ×10 : seeds EXP-0001 prêt / EXP-0007
+  jamais prêt, charte « jamais garanti/négligeable », fichiers valides ; `tests/copilote.test.ts`
+  +1 : fait dds-traces sans régression definition/snt-carte).
+
+### Vérifié
+- typecheck · tests Vitest · lint · build · greps charte (« — », garantie, négligeable).
+
 ## v2.9.0 — 2026-07-17 — « Marché juillet 2026 » : prime sourcée 80-150 $/t, SNT officiel du 12/06, marché d'acheteurs, passe qualité pré-démo
 
 ### Ajouté

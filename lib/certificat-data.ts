@@ -36,8 +36,8 @@ function fmtCoord(lon: number, lat: number, lang: "fr" | "en" = "fr"): string {
   return `${Math.abs(lat).toFixed(6)}° ${lat >= 0 ? "N" : "S"} · ${Math.abs(lon).toFixed(6)}° ${lon >= 0 ? "E" : ouest}`;
 }
 
-/** Libellés EN des filières — pour l'APERÇU à l'écran uniquement (le PDF officiel reste FR). */
-const FILIERE_LABEL_EN: Record<Parcelle["filiere"], string> = {
+/** Libellés EN des filières — aperçu à l'écran + brouillon DDS (le PDF officiel reste FR). */
+export const FILIERE_LABEL_EN: Record<Parcelle["filiere"], string> = {
   cacao: "Cocoa",
   cafe: "Coffee",
   hevea: "Rubber",
