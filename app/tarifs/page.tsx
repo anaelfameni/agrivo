@@ -281,6 +281,26 @@ export default function Tarifs() {
               </Link>
             </div>
           </Reveal>
+          <Reveal delay={0.13}>
+            <div className="mt-6 flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-black/[0.06] bg-white p-6">
+              <div>
+                <p className="text-sm font-semibold text-forest-950">
+                  {en ? "Support services, on quote" : "Prestations d'appui, sur devis"}
+                </p>
+                <p className="mt-1 max-w-xl text-sm text-stone-600">
+                  {en
+                    ? "Complementary field mapping (plot boundaries surveyed vertex by vertex), training of cooperative agents in data collection, and assistance during your buyers' audits. Billed per assignment, with or without a subscription."
+                    : "Cartographie terrain complémentaire (contours de parcelles relevés sommet par sommet), formation des agents de coopérative à la collecte, et assistance pendant les audits de vos acheteurs. Facturées à la mission, avec ou sans abonnement."}
+                </p>
+              </div>
+              <Link
+                href="/contact"
+                className="inline-flex items-center gap-2 rounded-full border border-forest-950/20 px-5 py-2.5 text-sm font-semibold text-forest-950 transition-colors hover:border-green-signal hover:text-green-signal"
+              >
+                {en ? "Request a quote" : "Demander un devis"} <ArrowRight size={15} />
+              </Link>
+            </div>
+          </Reveal>
           <Reveal delay={0.14}>
             <div className="mt-6 flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-green-signal/25 bg-green-signal/[0.06] p-6">
               <div>
