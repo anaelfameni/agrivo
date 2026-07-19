@@ -30,6 +30,13 @@ Créé le 18/07/2026 (v2.11.0). Owner par défaut : Anael.
 | ~1 200 FCFA par producteur vérifié et par an (plan coop) | tarifs, assistant | Calcul interne (100 000 × 12 / 1 000) | suit le pricing |
 | Whisp = outil FAO sur Google Earth Engine, 11 indicateurs, carte cacao BNETD | méthodologie, produit | Intégration réelle vérifiée · 11/07/2026 | à chaque évolution Whisp |
 | 190+ tests automatisés, version courante | README, CLAUDE.md | Suite Vitest du repo | chaque release |
+| 109 licences d'exportation cacao 2025/26 (106 en 2024/25 dont 62 entreprises + 44 coopératives) | docs investisseurs (Business_Model_Reunion, Pack_Execution_90J) | Reuters via Boursorama · 24/09/2025 ; Agence Ecofin | ouverture campagne 2026-27 (~oct. 2026) |
+| 65 acheteurs autorisés campagne 2025-26 | docs investisseurs | Décision CCC n° 027-25 · 29/09/2025 | ouverture campagne 2026-27 |
+| 210 coopératives/acheteurs codifiés CCC dont 113 équipés SNT | docs investisseurs, Note_Positionnement_SNT | CCC via AIP · 01/10/2025 | 01/09/2026 |
+| ~30 % des données parcellaires terrain non fiables (étude Cavally) | docs investisseurs, Note_Positionnement_SNT | Meridia (étude publiée) | stable |
+| Récolte 2026/27 attendue en baisse de plus de 10 % | Business_Model_Reunion | Presse spécialisée cacao · juil. 2026 | **16/10/2026** |
+| Création SAS : 42 000 FCFA de frais officiels, RCCM ~7 j ouvrés, 13 pièces | Pack_Execution_90J | Guides CEPICI 2025-2026 (acf-ci, finself, eRegulations) | à reconfirmer au guichet au dépôt |
+| FCIAD : porteur établi en CI, 24 mois max, dépôt 10 exemplaires | Pack_Execution_90J | firca.ci/fciad | à l'ouverture du prochain appel à projets |
 
 ## Interdits permanents (charte, ne jamais publier)
 - « garanti / garantie » (sauf « prix garanti » = prix bord champ fixé par l'État).
