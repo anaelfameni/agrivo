@@ -1,14 +1,20 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import { motion, useReducedMotion } from "framer-motion";
-import { Search, SlidersHorizontal, ShieldCheck, X, ArrowDownWideNarrow, Sparkles } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
+import { Search, SlidersHorizontal, ShieldCheck, X, ArrowDownWideNarrow, Sparkles, Heart, BellPlus, BellRing } from "lucide-react";
 import { useLanguage } from "@/components/language-provider";
 import { getFiliere } from "@/config/filieres";
 import { PARCELLES } from "@/data/mock-parcelles";
 import { lotsMarche, lotsVedette, type MarketLot } from "@/data/mock-marketplace";
 import { LotCard } from "@/components/marketplace/lot-card";
+import { CompareBar } from "@/components/marketplace/compare-bar";
 import { useCocoaSpot } from "@/components/marketplace/cocoa-price";
+import {
+  basculerFavori, lireFavoris, ecrireFavoris,
+  construireAlerte, alerteExiste, lotsCorrespondants, lireAlertes, ecrireAlertes,
+  type AlerteMarche,
+} from "@/lib/marketplace/interet";
 
 /**
  * Catalogue vivant de AGRIVO Market (thème clair) : l'acheteur est le héros. Grille filtrable
@@ -32,6 +38,13 @@ const TR = {
     results: (n: number) => `${n} lot${n > 1 ? "s" : ""}`,
     empty: "Aucun lot ne correspond à ces filtres.", reset: "Réinitialiser", filters: "Filtres", sort: "Trier",
     sortOpts: { pertinence: "Pertinence", "prix-asc": "Prix ↑", "prix-desc": "Prix ↓", tonnage: "Tonnage" } as Record<SortKey, string>,
+    favoris: "Mes favoris",
+    alertBtn: "M'alerter sur ces critères", alertSaved: "Alerte enregistrée",
+    alertsTitle: "Vos alertes de marché",
+    alertsNote: "Les correspondances sont recalculées à chaque visite du catalogue. L'envoi par email arrivera avec le backend.",
+    alertAll: "Tous lots", alertSealed: "Scellés seulement",
+    matches: (n: number) => `${n} lot${n > 1 ? "s" : ""} correspondant${n > 1 ? "s" : ""}`,
+    removeAlert: "Supprimer l'alerte",
   },
   en: {
     title: "Available lots",
@@ -42,6 +55,13 @@ const TR = {
     results: (n: number) => `${n} lot${n > 1 ? "s" : ""}`,
     empty: "No lot matches these filters.", reset: "Reset", filters: "Filters", sort: "Sort",
     sortOpts: { pertinence: "Relevance", "prix-asc": "Price ↑", "prix-desc": "Price ↓", tonnage: "Tonnage" } as Record<SortKey, string>,
+    favoris: "My favourites",
+    alertBtn: "Alert me on these criteria", alertSaved: "Alert saved",
+    alertsTitle: "Your market alerts",
+    alertsNote: "Matches are recomputed on every catalog visit. Email delivery will come with the backend.",
+    alertAll: "All lots", alertSealed: "Sealed only",
+    matches: (n: number) => `${n} matching lot${n > 1 ? "s" : ""}`,
+    removeAlert: "Delete alert",
   },
 } as const;
 
@@ -79,13 +99,57 @@ export function MarketCatalog({
   const q = query !== undefined ? query : innerQ;
   const setQ = (v: string) => (onQueryChange ? onQueryChange(v) : setInnerQ(v));
 
-  const active = Boolean(filiere || region || sealedOnly || q);
+  // Favoris + alertes + comparateur : hydratés APRÈS montage (localStorage, anti-mismatch SSR).
+  const [favoris, setFavoris] = useState<string[]>([]);
+  const [favOnly, setFavOnly] = useState(false);
+  const [alertes, setAlertes] = useState<AlerteMarche[]>([]);
+  const [alerteConfirmee, setAlerteConfirmee] = useState(false);
+  const [compareRefs, setCompareRefs] = useState<string[]>([]);
+  useEffect(() => {
+    setFavoris(lireFavoris());
+    setAlertes(lireAlertes());
+  }, []);
+
+  const toggleFavori = (ref: string) => {
+    setFavoris((prev) => {
+      const next = basculerFavori(prev, ref);
+      ecrireFavoris(next);
+      return next;
+    });
+  };
+  const toggleCompare = (ref: string) => {
+    setCompareRefs((prev) =>
+      prev.includes(ref) ? prev.filter((r) => r !== ref) : prev.length >= 3 ? prev : [...prev, ref],
+    );
+  };
+  const criteresActifs = Boolean(filiere || region || sealedOnly);
+  const enregistrerAlerte = () => {
+    const criteres = { filiere, region, scellesSeul: sealedOnly };
+    setAlertes((prev) => {
+      if (alerteExiste(prev, criteres)) return prev;
+      const next = [...prev, construireAlerte(criteres)];
+      ecrireAlertes(next);
+      return next;
+    });
+    setAlerteConfirmee(true);
+    window.setTimeout(() => setAlerteConfirmee(false), 2500);
+  };
+  const supprimerAlerte = (id: string) => {
+    setAlertes((prev) => {
+      const next = prev.filter((a) => a.id !== id);
+      ecrireAlertes(next);
+      return next;
+    });
+  };
+
+  const active = Boolean(filiere || region || sealedOnly || q || favOnly);
   // Vue neutre (pertinence, aucun filtre) : les vedettes ouvrent la grille.
   const pinFeatured = sort === "pertinence" && !active;
 
   const lots = useMemo(() => {
     const needle = q.trim().toLowerCase();
     const filtered = all.filter((x) => {
+      if (favOnly && !favoris.includes(x.ref)) return false;
       if (filiere && x.filiere !== filiere) return false;
       if (region && !x.regions.includes(region)) return false;
       if (sealedOnly && x.sceau.statut !== "verifie") return false;
@@ -105,7 +169,12 @@ export function MarketCatalog({
       tonnage: (a, b) => b.tonnage - a.tonnage,
     };
     return [...filtered].sort(by[sort]);
-  }, [all, filiere, region, sealedOnly, q, sort, pinFeatured, vedetteRefs]);
+  }, [all, filiere, region, sealedOnly, q, sort, pinFeatured, vedetteRefs, favOnly, favoris]);
+
+  const lotsCompares = useMemo(
+    () => compareRefs.map((ref) => all.find((x) => x.ref === ref)).filter((x): x is MarketLot => Boolean(x)),
+    [compareRefs, all],
+  );
 
   return (
     <section id="catalogue" className={`${wrap} scroll-mt-20 py-16 md:py-20`}>
@@ -170,6 +239,18 @@ export function MarketCatalog({
             <ShieldCheck size={13} /> {t.sealedOnly}
           </button>
 
+          <button onClick={() => setFavOnly((v) => !v)} aria-pressed={favOnly}
+            className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold transition ${favOnly ? "border border-red-block/30 bg-red-block/[0.06] text-red-block" : "border border-black/10 text-forest-950/70 hover:border-forest-950/30"}`}>
+            <Heart size={13} fill={favOnly ? "currentColor" : "none"} /> {t.favoris}{favoris.length > 0 ? ` (${favoris.length})` : ""}
+          </button>
+
+          {criteresActifs && (
+            <button onClick={enregistrerAlerte}
+              className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold transition ${alerteConfirmee ? "border border-green-signal/40 bg-green-signal/10 text-green-signal" : "border border-amber-cacao/30 bg-amber-cacao/[0.06] text-amber-cacao hover:border-amber-cacao/50"}`}>
+              {alerteConfirmee ? <BellRing size={13} /> : <BellPlus size={13} />} {alerteConfirmee ? t.alertSaved : t.alertBtn}
+            </button>
+          )}
+
           <span className="ml-auto inline-flex items-center gap-1.5">
             <ArrowDownWideNarrow size={13} className="text-forest-950/45" />
             <select value={sort} onChange={(e) => setSort(e.target.value as SortKey)} aria-label={t.sort}
@@ -179,7 +260,7 @@ export function MarketCatalog({
           </span>
 
           {active && (
-            <button onClick={() => { setFiliere(""); setRegion(""); setSealedOnly(false); setQ(""); }}
+            <button onClick={() => { setFiliere(""); setRegion(""); setSealedOnly(false); setQ(""); setFavOnly(false); }}
               className="inline-flex items-center gap-1 rounded-full px-3 py-1.5 text-xs font-medium text-forest-950/50 transition hover:text-forest-950">
               <X size={13} /> {t.reset}
             </button>
@@ -187,11 +268,51 @@ export function MarketCatalog({
         </div>
       </div>
 
+      {/* Alertes de marché enregistrées : correspondances recalculées à chaque visite */}
+      <AnimatePresence initial={false}>
+        {alertes.length > 0 && (
+          <motion.div
+            initial={reduce ? false : { opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            className="overflow-hidden"
+          >
+            <div className="mt-4 rounded-2xl border border-amber-cacao/20 bg-amber-cacao/[0.05] p-4">
+              <p className="flex items-center gap-1.5 text-xs font-semibold text-forest-950">
+                <BellRing size={13} className="text-amber-cacao" /> {t.alertsTitle}
+              </p>
+              <ul className="mt-2.5 flex flex-wrap gap-2">
+                {alertes.map((a) => {
+                  const n = lotsCorrespondants(a, all).length;
+                  const label = [
+                    // AlerteMarche stocke la filière en string ; les critères viennent des ids du catalogue
+                    a.filiere ? getFiliere(a.filiere as MarketLot["filiere"]).label : t.all,
+                    a.region || t.allRegions,
+                    a.scellesSeul ? t.alertSealed : t.alertAll,
+                  ].join(" · ");
+                  return (
+                    <li key={a.id} className="inline-flex items-center gap-2 rounded-full border border-black/[0.07] bg-white px-3 py-1.5 text-xs">
+                      <span className="font-medium text-forest-950/75">{label}</span>
+                      <span className={`num font-semibold ${n > 0 ? "text-green-signal" : "text-forest-950/40"}`}>{t.matches(n)}</span>
+                      <button onClick={() => supprimerAlerte(a.id)} aria-label={t.removeAlert} title={t.removeAlert}
+                        className="text-forest-950/35 transition hover:text-red-block">
+                        <X size={12} />
+                      </button>
+                    </li>
+                  );
+                })}
+              </ul>
+              <p className="mt-2.5 text-[0.7rem] leading-relaxed text-forest-950/45">{t.alertsNote}</p>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {lots.length === 0 ? (
         <p className="mt-12 rounded-2xl border border-black/[0.06] bg-white p-10 text-center text-sm text-forest-950/55">{t.empty}</p>
       ) : (
         <motion.div
-          key={`${filiere}-${region}-${sealedOnly}-${sort}-${q}`}
+          key={`${filiere}-${region}-${sealedOnly}-${sort}-${q}-${favOnly}`}
           className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
           initial={reduce ? false : "hidden"}
           animate="show"
@@ -199,11 +320,27 @@ export function MarketCatalog({
         >
           {lots.map((lot) => (
             <motion.div key={lot.ref} variants={{ hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0, transition: { duration: 0.4, ease: [0.16, 1, 0.3, 1] } } }}>
-              <LotCard lot={lot} lang={l} iceUsdT={iceUsdT} vedette={vedetteRefs.has(lot.ref)} />
+              <LotCard
+                lot={lot}
+                lang={l}
+                iceUsdT={iceUsdT}
+                vedette={vedetteRefs.has(lot.ref)}
+                favori={favoris.includes(lot.ref)}
+                onToggleFavori={toggleFavori}
+                compare={compareRefs.includes(lot.ref)}
+                onToggleCompare={toggleCompare}
+              />
             </motion.div>
           ))}
         </motion.div>
       )}
+
+      <CompareBar
+        lots={lotsCompares}
+        lang={l}
+        onRemove={(ref) => setCompareRefs((prev) => prev.filter((r) => r !== ref))}
+        onClear={() => setCompareRefs([])}
+      />
     </section>
   );
 }

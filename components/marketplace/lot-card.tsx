@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowUpRight, MapPin, ShieldCheck, ShieldAlert, Boxes, Building2, Sparkles } from "lucide-react";
+import { ArrowUpRight, MapPin, ShieldCheck, ShieldAlert, Boxes, Building2, Sparkles, Heart, Scale } from "lucide-react";
 import { getFiliere } from "@/config/filieres";
 import { type MarketLot } from "@/data/mock-marketplace";
 import { VsIceChip } from "@/components/marketplace/cocoa-price";
@@ -20,7 +20,26 @@ const fcfa = (n: number, lang: "fr" | "en") => n.toLocaleString(lang === "en" ? 
  * sceau), régions lisibles sur le voile sombre, puis les données en clair dessous.
  * Le sceau reste l'élément dominant (Match → Trust → Transact).
  */
-export function LotCard({ lot, lang, iceUsdT = null, vedette = false }: { lot: MarketLot; lang: "fr" | "en"; iceUsdT?: number | null; vedette?: boolean }) {
+export function LotCard({
+  lot,
+  lang,
+  iceUsdT = null,
+  vedette = false,
+  favori,
+  onToggleFavori,
+  compare,
+  onToggleCompare,
+}: {
+  lot: MarketLot;
+  lang: "fr" | "en";
+  iceUsdT?: number | null;
+  vedette?: boolean;
+  /** Favoris/comparateur : boutons rendus seulement si le handler correspondant est fourni. */
+  favori?: boolean;
+  onToggleFavori?: (ref: string) => void;
+  compare?: boolean;
+  onToggleCompare?: (ref: string) => void;
+}) {
   const en = lang === "en";
   const f = getFiliere(lot.filiere);
   const verifie = lot.sceau.statut === "verifie";
@@ -66,9 +85,37 @@ export function LotCard({ lot, lang, iceUsdT = null, vedette = false }: { lot: M
           )}
         </div>
 
-        <p className="absolute inset-x-4 bottom-3 flex items-center gap-1 text-xs font-medium text-white/90">
+        <p className={`absolute inset-x-4 bottom-3 flex items-center gap-1 text-xs font-medium text-white/90 ${onToggleFavori || onToggleCompare ? "pr-20" : ""}`}>
           <MapPin size={12} className="shrink-0" /> {lot.regions.join(", ")}
         </p>
+
+        {/* Actions acheteur (favori · comparer) : dans le Link, donc preventDefault */}
+        {(onToggleFavori || onToggleCompare) && (
+          <span className="absolute bottom-3 right-4 flex items-center gap-1.5">
+            {onToggleFavori && (
+              <button
+                onClick={(e) => { e.preventDefault(); e.stopPropagation(); onToggleFavori(lot.ref); }}
+                aria-pressed={favori}
+                aria-label={favori ? (en ? "Remove from favourites" : "Retirer des favoris") : (en ? "Add to favourites" : "Ajouter aux favoris")}
+                title={favori ? (en ? "Remove from favourites" : "Retirer des favoris") : (en ? "Add to favourites" : "Ajouter aux favoris")}
+                className={`rounded-full border p-1.5 backdrop-blur-md transition ${favori ? "border-red-block/40 bg-white text-red-block" : "border-white/25 bg-white/15 text-white hover:bg-white/30"}`}
+              >
+                <Heart size={13} fill={favori ? "currentColor" : "none"} />
+              </button>
+            )}
+            {onToggleCompare && (
+              <button
+                onClick={(e) => { e.preventDefault(); e.stopPropagation(); onToggleCompare(lot.ref); }}
+                aria-pressed={compare}
+                aria-label={compare ? (en ? "Remove from comparison" : "Retirer de la comparaison") : (en ? "Add to comparison" : "Ajouter à la comparaison")}
+                title={compare ? (en ? "Remove from comparison" : "Retirer de la comparaison") : (en ? "Compare" : "Comparer")}
+                className={`rounded-full border p-1.5 backdrop-blur-md transition ${compare ? "border-green-signal/50 bg-green-signal text-white" : "border-white/25 bg-white/15 text-white hover:bg-white/30"}`}
+              >
+                <Scale size={13} />
+              </button>
+            )}
+          </span>
+        )}
       </div>
 
       <div className="flex flex-1 flex-col p-5">

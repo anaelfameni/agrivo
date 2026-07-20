@@ -11,6 +11,7 @@ import { PinMark } from "@/components/ui/pin-mark";
 import { EmptyState } from "@/components/ui/empty-state";
 import { Magnetic } from "@/components/ui/motion-primitives";
 import { RegistreImport } from "@/components/app/registre-import";
+import { RegularisationPanel } from "@/components/app/regularisation-panel";
 import { SurveillancePanel } from "@/components/exportateur/surveillance-panel";
 import { OnboardingStats } from "@/components/app/onboarding-stats";
 import { useLanguage } from "@/components/language-provider";
@@ -346,6 +347,9 @@ export default function DashboardPage() {
 
           {/* Surveillance continue : cadence de revue 90 j + alertes, sur les parcelles de la coop */}
           <SurveillancePanel lang={lang === "en" ? "en" : "fr"} parcelles={parcelles} />
+
+          {/* File de régularisation : gages administratifs manquants (carte producteur, réf. DDR) */}
+          <RegularisationPanel lang={lang === "en" ? "en" : "fr"} parcelles={parcelles} />
 
           {/* Traçabilité aval (lecture seule) : où vont les parcelles de la coopérative */}
           <ParcellesEnExpedition lang={lang} />

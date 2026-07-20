@@ -23,6 +23,7 @@ import {
   type MarketLot,
 } from "@/data/mock-marketplace";
 import { connaissementsDupliquesMarche } from "@/lib/sentinelle/volume";
+import { RfqInbox } from "@/components/exportateur/rfq-inbox";
 
 /**
  * « Mes lots » (v2.6, refonte design system app) : l'espace de gestion des lots de l'exportateur
@@ -238,6 +239,9 @@ export default function MesLotsPage() {
           </p>
         </div>
       )}
+
+      {/* Boîte de réception des demandes de cotation (vitrine publique → exportateur) */}
+      <RfqInbox lang={l} />
 
       {/* Filtres : segmented control à pilule glissante */}
       <div className="mt-6 inline-flex flex-wrap rounded-full border border-black/[0.07] bg-white p-1 shadow-sm">

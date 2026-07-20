@@ -3,6 +3,36 @@
 Versioning sémantique (MAJOR.MINOR.PATCH). Chaque release liste ce qui est ajouté, corrigé et
 vérifié, conformément à l'étape 8 du pipeline « Du besoin à la Release ».
 
+## v2.15.0 — 2026-07-19 — « Marketplace premium » : demandes de cotation (RFQ), favoris, comparateur, alertes de marché, file de régularisation coop
+
+### Ajouté
+- **Demandes de cotation (RFQ)** : `lib/marketplace/rfq.ts` (module pur : `validerDemande`
+  bornée au tonnage du lot, `contactValide` email/téléphone, `construireDemande`,
+  `resumeDemandes`, `marquerRepondue` immuable ; persistance localStorage `agrivo:rfq:v1`).
+  Côté vitrine : `rfq-panel.tsx` sur la fiche publique (lot vendable non réservé uniquement,
+  incoterms en liste fermée, wording « AGRIVO met en relation, aucun paiement sur la
+  plateforme »). Côté exportateur : `rfq-inbox.tsx` dans « Mes lots » (compteurs, contact
+  direct mailto/tel, marquer répondue, limite démo localStorage affichée honnêtement).
+- **Favoris acheteur** : `lib/marketplace/interet.ts` (`basculerFavori` pur, clé
+  `agrivo:favoris:v1`). Bouton cœur sur chaque carte du catalogue + fiche lot, filtre
+  « Mes favoris » dans la toolbar.
+- **Alertes de marché** : mêmes critères que les filtres (filière · région · scellés),
+  bouton « M'alerter sur ces critères » quand des filtres sont actifs, panneau des alertes
+  enregistrées avec correspondances RECALCULÉES à chaque visite (`lotsCorrespondants`),
+  note honnête : l'envoi email viendra avec le backend. Clé `agrivo:alertes:v1`.
+- **Comparateur de lots** : sélection jusqu'à 3 lots depuis les cartes, barre collante
+  en bas + tableau côte à côte (`compare-bar.tsx` : sceau recalculé, prix, tonnage, valeur,
+  parcelles, coops, régions, campagne).
+- **File de régularisation coopérative** : `lib/registre/regularisation.ts`
+  (`fileRegularisation` pur : cartes producteur invalides via `estProducteurCarte` +
+  références DDR manquantes, wording « régularisation auprès du Conseil du Café-Cacao »)
+  + `regularisation-panel.tsx` sur le dashboard coop (invisible si registre complet ;
+  complète « À re-vérifier » et « Alertes » sans les dupliquer).
+
+### Vérifié
+- `tsc` ✓ · **216 tests Vitest** (205 + 11 `tests/rfq-interet.test.ts`) · `next build` ✓.
+- Frontière Nanti tenue : aucun paiement, aucun crédit ; RFQ = mise en relation seulement.
+
 ## v2.14.0 — 2026-07-18 — « Durcissement » : réponse à l'audit Webisafe (82/100) : headers de sécurité, canonical, security.txt, contrastes, claim ±11 cm retiré
 
 ### Ajouté

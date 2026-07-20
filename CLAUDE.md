@@ -4,8 +4,21 @@
 > Il condense la charte de marque, les règles de contenu, les faits produit et l'avancement.
 > En cas de doute, ce fichier prime sur mes souvenirs. Il reflète l'état au dernier prompt traité.
 
-> 🟢 **ÉTAT ACTUEL — v2.14.0, 18 juillet 2026 (CE BLOC FAIT FOI sur toute mention contraire
+> 🟢 **ÉTAT ACTUEL — v2.15.0, 19 juillet 2026 (CE BLOC FAIT FOI sur toute mention contraire
 > plus bas, qui relève de l'historique de construction).**
+> - **v2.15 « MARKETPLACE PREMIUM » (19/07, avant deploy prod)** : les briques roadmap RFQ/
+>   alertes/favoris livrées. ① **RFQ** : `lib/marketplace/rfq.ts` (pur, volume borné au
+>   tonnage, localStorage `agrivo:rfq:v1`) + `rfq-panel.tsx` sur la fiche publique (lot
+>   vendable non réservé) + `rfq-inbox.tsx` dans « Mes lots » (mailto/tel direct, marquer
+>   répondue) ; mise en relation SEULEMENT, jamais de paiement/crédit. ② **Favoris**
+>   (`agrivo:favoris:v1`, cœur sur cartes + fiche, filtre « Mes favoris ») + **alertes de
+>   marché** (`agrivo:alertes:v1`, critères = filtres actifs, correspondances recalculées à
+>   chaque visite, email = backend plus tard, dit honnêtement) via `lib/marketplace/interet.ts`.
+>   ③ **Comparateur** jusqu'à 3 lots (`compare-bar.tsx`, barre collante + tableau).
+>   ④ **File de régularisation coop** : `lib/registre/regularisation.ts` +
+>   `regularisation-panel.tsx` sur le dashboard (cartes invalides + DDR manquantes, wording
+>   « régularisation auprès du Conseil du Café-Cacao », invisible si registre complet).
+>   **216 tests.** Commit local ; push + `vercel --prod` + réalias agrivo-io = étape suivante.
 > - **v2.14 « DURCISSEMENT » (18/07 nuit, réponse à l'audit Webisafe 82/100)** : headers de
 >   sécurité sur toutes les routes via `next.config.ts headers()` (CSP calibrée : connect-src
 >   'self' car tous les appels tiers sont côté serveur ; img-src inclut server.arcgisonline.com

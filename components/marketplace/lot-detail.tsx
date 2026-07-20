@@ -1,11 +1,11 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import {
   ArrowLeft, ShieldCheck, MapPin, Boxes, FileDown, Handshake, Lock, Check, ExternalLink,
-  Ship, CalendarDays, ClipboardCheck, AlertTriangle, Building2, Anchor, ArrowRight, ScanLine,
+  Ship, CalendarDays, ClipboardCheck, AlertTriangle, Building2, Anchor, ArrowRight, ScanLine, Heart,
 } from "lucide-react";
 import { useLanguage } from "@/components/language-provider";
 import { useAuth } from "@/components/auth-provider";
@@ -16,6 +16,8 @@ import {
   findMarketLot, findMarketExpedition, parcellesDuLot, takeRate, estVendable,
 } from "@/data/mock-marketplace";
 import { SceauAgrivo } from "@/components/marketplace/sceau-agrivo";
+import { RfqPanel } from "@/components/marketplace/rfq-panel";
+import { basculerFavori, lireFavoris, ecrireFavoris } from "@/lib/marketplace/interet";
 import { JournalLot } from "@/components/marketplace/journal-lot";
 import { DDS_MAPPING, DDS_DISCLAIMER, GAGE_LABEL } from "@/lib/marketplace/dds-mapping";
 import { construireDossierDds } from "@/lib/marketplace/dds-dossier";
@@ -49,6 +51,7 @@ const TR = {
     pdfFiche: "Télécharger le dossier lot (PDF)", pdfReserve: "Bon de réservation (PDF)",
     verify: "Vérifier la référence", notFound: "Lot introuvable", notFoundBody: "Ce lot n'existe pas ou n'est plus au catalogue.",
     producerNeverPays: "Le producteur ne paie jamais.",
+    fav: "Ajouter aux favoris", favOn: "Dans vos favoris",
   },
   en: {
     back: "Back to catalog", campagne: "Harvest", port: "Departure port", vessel: "Vessel · container",
@@ -68,6 +71,7 @@ const TR = {
     pdfFiche: "Download lot file (PDF)", pdfReserve: "Reservation voucher (PDF)",
     verify: "Verify the reference", notFound: "Lot not found", notFoundBody: "This lot does not exist or is no longer in the catalog.",
     producerNeverPays: "The producer never pays.",
+    fav: "Add to favourites", favOn: "In your favourites",
   },
 } as const;
 
@@ -88,6 +92,17 @@ export function LotDetail({ refLot }: { refLot: string }) {
 
   const [reserved, setReserved] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
+
+  // Favori acheteur (localStorage) : hydraté après montage pour éviter tout mismatch SSR.
+  const [favori, setFavori] = useState(false);
+  useEffect(() => {
+    setFavori(lireFavoris().includes(refLot));
+  }, [refLot]);
+  const toggleFavori = () => {
+    const suivants = basculerFavori(lireFavoris(), refLot);
+    ecrireFavoris(suivants);
+    setFavori(suivants.includes(refLot));
+  };
 
   if (!lot || !exp) {
     return (
@@ -294,7 +309,17 @@ export function LotDetail({ refLot }: { refLot: string }) {
 
         <aside className="lg:sticky lg:top-24 lg:self-start">
           <div className="rounded-2xl border border-black/[0.07] bg-white p-6 shadow-sm">
-            <span className="eyebrow text-forest-950/45">{t.txTitle}</span>
+            <div className="flex items-center justify-between gap-2">
+              <span className="eyebrow text-forest-950/45">{t.txTitle}</span>
+              <button
+                onClick={toggleFavori}
+                aria-pressed={favori}
+                title={favori ? t.favOn : t.fav}
+                className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-semibold transition ${favori ? "border-red-block/30 bg-red-block/[0.06] text-red-block" : "border-black/10 text-forest-950/60 hover:border-forest-950/30"}`}
+              >
+                <Heart size={13} fill={favori ? "currentColor" : "none"} /> {favori ? t.favOn : t.fav}
+              </button>
+            </div>
 
             <div className="mt-4 space-y-3">
               <div className="flex items-center justify-between text-sm">
@@ -364,6 +389,11 @@ export function LotDetail({ refLot }: { refLot: string }) {
               </Link>
             </div>
           </div>
+
+          {/* Demande de cotation : uniquement pour un lot vendable, non réservé */}
+          {vendable && !isReserved && (
+            <RfqPanel refLot={lot.ref} nomLot={lot.nomLot} tonnage={lot.tonnage} lang={l} />
+          )}
         </aside>
         </div>
       </div>
