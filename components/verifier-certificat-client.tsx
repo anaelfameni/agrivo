@@ -1,0 +1,208 @@
+"use client";
+
+import { useMemo, useState } from "react";
+import { useSearchParams } from "next/navigation";
+import { motion } from "framer-motion";
+import Link from "next/link";
+import { Search, ShieldCheck, ShieldAlert, ShieldQuestion, FileSearch, ArrowRight } from "lucide-react";
+import { SiteHeader } from "@/components/site-header";
+import { SiteFooter } from "@/components/site-footer";
+import { StatusBadge } from "@/components/ui/status-badge";
+import { useLanguage } from "@/components/language-provider";
+import {
+  findCertificat,
+  STATUT_PHRASE,
+  STATUT_PHRASE_EN,
+  FILIERE_LABEL,
+  fmtHa,
+  formatDate,
+  type Parcelle,
+} from "@/data/mock-parcelles";
+
+/**
+ * Vérification PUBLIQUE d'un certificat Agrivo : un acheteur (ou le jury) saisit ou scanne
+ * (QR du PDF) un numéro AGV-… et obtient le statut réel de la parcelle. Aucune donnée
+ * personnelle au-delà de ce que le certificat porte déjà. Préremplissage via ?ref=.
+ */
+export function VerifierCertificatClient() {
+  const { lang } = useLanguage();
+  const en = lang === "en";
+  const params = useSearchParams();
+  const initial = (params.get("ref") ?? "").toUpperCase();
+  const [query, setQuery] = useState(initial);
+  const [searched, setSearched] = useState(initial);
+
+  // Portefeuille + scénarios de démo : tout certificat que le site peut émettre en PDF résout ici.
+  const result: Parcelle | undefined = useMemo(() => findCertificat(searched), [searched]);
+
+  const notFound = Boolean(searched.trim()) && !result;
+
+  return (
+    <div className="flex min-h-dvh flex-col bg-ivory">
+      <SiteHeader variant="solid" />
+      <main className="mx-auto w-full max-w-3xl flex-1 px-6 py-14 sm:py-20">
+        <p className="text-[11px] uppercase tracking-widest text-stone-500">
+          {en ? "Public verification" : "Vérification publique"}
+        </p>
+        <h1 className="font-display mt-2 text-3xl font-semibold text-forest-950 sm:text-4xl">
+          {en ? "Verify an Agrivo certificate" : "Vérifier un certificat Agrivo"}
+        </h1>
+        <p className="mt-3 max-w-xl text-sm leading-relaxed text-stone-600">
+          {en
+            ? "Enter the number printed on the certificate (or scan its QR code) to confirm its authenticity and the plot's status at the time of issuance."
+            : "Saisissez le numéro imprimé sur le certificat (ou scannez son QR code) pour confirmer son authenticité et le statut de la parcelle au moment de l'émission."}
+        </p>
+
+        <form
+          className="mt-8 flex flex-col gap-3 sm:flex-row"
+          onSubmit={(e) => {
+            e.preventDefault();
+            setSearched(query);
+          }}
+        >
+          <label className="sr-only" htmlFor="cert-ref">
+            {en ? "Certificate number" : "Numéro de certificat"}
+          </label>
+          <input
+            id="cert-ref"
+            value={query}
+            onChange={(e) => setQuery(e.target.value.toUpperCase())}
+            placeholder="AGV-2026-0417"
+            autoComplete="off"
+            spellCheck={false}
+            className="w-full flex-1 rounded-xl border border-black/10 bg-white px-4 py-3 font-mono text-sm text-forest-950 outline-none transition focus:border-green-signal focus:ring-2 focus:ring-green-signal/25"
+          />
+          <button
+            type="submit"
+            className="btn-green inline-flex items-center justify-center gap-2 rounded-xl px-5 py-3 text-sm font-semibold"
+          >
+            <Search className="h-4 w-4" strokeWidth={1.75} aria-hidden />
+            {en ? "Verify" : "Vérifier"}
+          </button>
+        </form>
+
+        <div aria-live="polite" className="mt-8">
+          {result && (
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="rounded-2xl border border-black/[0.08] bg-white p-6 shadow-sm"
+            >
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <div className="flex items-center gap-2.5">
+                  {result.statut === "conforme" ? (
+                    <ShieldCheck className="h-6 w-6 text-green-signal" strokeWidth={1.75} aria-hidden />
+                  ) : result.statut === "anomalie" ? (
+                    <ShieldAlert className="h-6 w-6 text-red-block" strokeWidth={1.75} aria-hidden />
+                  ) : (
+                    <ShieldQuestion className="h-6 w-6 text-amber-cacao" strokeWidth={1.75} aria-hidden />
+                  )}
+                  <p className="font-mono text-sm text-forest-950">{result.numeroCertificat}</p>
+                </div>
+                <StatusBadge statut={result.statut} lang={lang} />
+              </div>
+              <p className="mt-4 text-sm leading-relaxed text-stone-600">
+                {en ? STATUT_PHRASE_EN[result.statut] : STATUT_PHRASE[result.statut]}
+              </p>
+              <dl className="mt-5 grid grid-cols-2 gap-4 border-t border-black/[0.06] pt-5 text-sm sm:grid-cols-3">
+                <div>
+                  <dt className="text-[11px] uppercase tracking-wide text-stone-500">{en ? "Farmer" : "Producteur"}</dt>
+                  <dd className="mt-0.5 font-medium text-forest-950">{result.producteurNom}</dd>
+                </div>
+                <div>
+                  <dt className="text-[11px] uppercase tracking-wide text-stone-500">{en ? "Cooperative" : "Coopérative"}</dt>
+                  <dd className="mt-0.5 text-forest-950">{result.cooperative}</dd>
+                </div>
+                <div>
+                  <dt className="text-[11px] uppercase tracking-wide text-stone-500">{en ? "Commodity" : "Filière"}</dt>
+                  <dd className="mt-0.5 text-forest-950">{FILIERE_LABEL[result.filiere]}</dd>
+                </div>
+                <div>
+                  <dt className="text-[11px] uppercase tracking-wide text-stone-500">{en ? "Area" : "Superficie"}</dt>
+                  <dd className="mt-0.5 font-mono text-forest-950">{fmtHa(result.superficieHa)}</dd>
+                </div>
+                <div>
+                  <dt className="text-[11px] uppercase tracking-wide text-stone-500">{en ? "Verified on" : "Vérifiée le"}</dt>
+                  <dd className="mt-0.5 font-mono text-forest-950">{formatDate(result.dateVerification, lang)}</dd>
+                </div>
+                <div>
+                  <dt className="text-[11px] uppercase tracking-wide text-stone-500">{en ? "Cut-off date" : "Date pivot"}</dt>
+                  <dd className="mt-0.5 font-mono text-forest-950">{formatDate(result.datePivotAnalyse, lang)}</dd>
+                </div>
+              </dl>
+              <p className="mt-5 rounded-lg bg-ivory px-3.5 py-2.5 text-xs leading-relaxed text-stone-500">
+                {en
+                  ? "This result reflects the assessment carried out by Agrivo when the certificate was issued. It is not a guarantee and does not replace the exporter's due diligence statement (DDS): the operator remains solely responsible for compliance under Regulation (EU) 2023/1115."
+                  : "Ce résultat reflète l'évaluation réalisée par Agrivo au moment de l'émission du certificat. Il ne constitue pas une garantie et ne remplace pas la déclaration de diligence raisonnée (DDS) de l'exportateur, seul responsable de la conformité au sens du règlement (UE) 2023/1115."}
+              </p>
+            </motion.div>
+          )}
+
+          {notFound && (
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="flex items-start gap-3 rounded-2xl border border-red-block/25 bg-red-block/[0.06] p-5"
+            >
+              <FileSearch className="mt-0.5 h-5 w-5 shrink-0 text-red-block" strokeWidth={1.75} aria-hidden />
+              <div>
+                <p className="text-sm font-semibold text-forest-950">
+                  {en ? "Certificate not found" : "Certificat introuvable"}
+                </p>
+                <p className="mt-1 text-sm leading-relaxed text-stone-600">
+                  {en
+                    ? `No certificate matches the number "${searched.trim()}". Check the input (format AGV-YYYY-NNNN) or contact the issuing cooperative.`
+                    : `Aucun certificat ne correspond au numéro « ${searched.trim()} ». Vérifiez la saisie (format AGV-AAAA-NNNN) ou contactez la coopérative émettrice.`}
+                </p>
+              </div>
+            </motion.div>
+          )}
+        </div>
+
+        {/* Rappel des trois statuts possibles + méthode : l'écran reste complet même sans résultat. */}
+        <section className="mt-12 border-t border-black/[0.06] pt-8">
+          <h2 className="text-[11px] uppercase tracking-widest text-stone-500">
+            {en ? "The three possible statuses" : "Les trois statuts possibles"}
+          </h2>
+          <div className="mt-4 grid gap-3 sm:grid-cols-3">
+            <div className="rounded-xl border border-black/[0.06] bg-white p-4">
+              <div className="flex items-center gap-2">
+                <ShieldCheck className="h-4 w-4 text-green-signal" strokeWidth={2} aria-hidden />
+                <p className="text-sm font-semibold text-forest-950">{en ? "Compliant" : "Conforme"}</p>
+              </div>
+              <p className="mt-1.5 text-xs leading-relaxed text-stone-500">
+                {en ? STATUT_PHRASE_EN.conforme : STATUT_PHRASE.conforme}
+              </p>
+            </div>
+            <div className="rounded-xl border border-black/[0.06] bg-white p-4">
+              <div className="flex items-center gap-2">
+                <ShieldAlert className="h-4 w-4 text-red-block" strokeWidth={2} aria-hidden />
+                <p className="text-sm font-semibold text-forest-950">{en ? "Anomaly detected" : "Anomalie détectée"}</p>
+              </div>
+              <p className="mt-1.5 text-xs leading-relaxed text-stone-500">
+                {en ? STATUT_PHRASE_EN.anomalie : STATUT_PHRASE.anomalie}
+              </p>
+            </div>
+            <div className="rounded-xl border border-black/[0.06] bg-white p-4">
+              <div className="flex items-center gap-2">
+                <ShieldQuestion className="h-4 w-4 text-amber-cacao" strokeWidth={2} aria-hidden />
+                <p className="text-sm font-semibold text-forest-950">{en ? "Insufficient data" : "Données insuffisantes"}</p>
+              </div>
+              <p className="mt-1.5 text-xs leading-relaxed text-stone-500">
+                {en ? STATUT_PHRASE_EN.insuffisant : STATUT_PHRASE.insuffisant}
+              </p>
+            </div>
+          </div>
+          <Link
+            href="/methodologie"
+            className="mt-5 inline-flex items-center gap-1.5 text-sm font-medium text-green-signal outline-none transition-colors hover:text-forest-950 focus-visible:ring-2 focus-visible:ring-green-signal"
+          >
+            {en ? "How these verdicts are produced (methodology)" : "Comment ces verdicts sont produits (méthodologie)"}
+            <ArrowRight size={14} strokeWidth={2.25} aria-hidden />
+          </Link>
+        </section>
+      </main>
+      <SiteFooter />
+    </div>
+  );
+}

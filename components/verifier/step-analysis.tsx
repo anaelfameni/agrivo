@@ -1,0 +1,612 @@
+"use client";
+
+import { useEffect, useRef, useState } from "react";
+import dynamic from "next/dynamic";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { ArrowRight, ChevronDown, Leaf, RotateCcw, Satellite, Sparkles, Volume2, VolumeX, X } from "lucide-react";
+import { StatusBadge } from "@/components/ui/status-badge";
+import { PinMark } from "@/components/ui/pin-mark";
+import { PhotoTerrain } from "@/components/verifier/photo-terrain";
+import { VerdictExplication } from "@/components/verdict-explication";
+import { useLanguage } from "@/components/language-provider";
+import type { AnalysisPhase } from "@/components/verifier/analysis-map";
+import type { WhispResult } from "@/lib/ai/whisp";
+import type { ScoreSols } from "@/lib/ai/gemini";
+import { STATUT_COLOR, type Filiere, type Parcelle, type Statut } from "@/data/mock-parcelles";
+import type { ForcedVerdict } from "@/components/verifier/step-mapping";
+
+const EASE = [0.16, 1, 0.3, 1] as const;
+const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
+const COPY = {
+  fr: {
+    eyebrow: "Analyse satellite · FAO",
+    intro:
+      "L'analyse combine plusieurs sources satellites publiques (convergence de preuves, méthode FAO) autour de la date pivot du 31 décembre 2020.",
+    drawing: "Cartographie de la parcelle…",
+    scanning: "Analyse satellite en cours…",
+    stopListen: "Arrêter la lecture",
+    listenAria: "Écouter l'explication du verdict",
+    stop: "Arrêter",
+    listen: "Écouter",
+    soilScore: "Score de résilience des sols",
+    soilDialog: "Explication du score de résilience des sols",
+    score: "Score",
+    generating: "Explication en cours de génération…",
+    scoreError: "Explication momentanément indisponible. Le score reste calculé sur les données de la parcelle.",
+    methodology: "Méthodologie inspirée de standards reconnus type Kubeko.",
+    close: "Fermer",
+    launch: "Lancer l'analyse",
+    analyzing: "Analyse en cours…",
+    next: "Continuer",
+    replay: "Revoir l'analyse",
+    back: "Retour",
+    scanningLive: "Analyse satellite en direct (Google Earth Engine)… jusqu'à ~30 s",
+    officialTitle: "Analyse Whisp officielle · v3 · Google Earth Engine",
+    officialParams: "Paramètres du site officiel FAO : unités ha · données nationales CI · WGS-84",
+    indicatorsTitle: "Indicateurs officiels",
+    indicatorsShow: "Voir les 11 indicateurs officiels",
+    indicatorsHide: "Réduire les indicateurs",
+    risksTitle: "Catégories de risque officielles",
+    riskUsed: "verdict AGRIVO dérivé de cette catégorie",
+    pcrop: "Cultures pérennes (cacao, café, hévéa, palmier)",
+    acrop: "Cultures annuelles (soja)",
+    timber: "Bois",
+    coverageTitle: "Couvertures détectées (% de la parcelle)",
+    yes: "Oui",
+    no: "Non",
+    analysed: "analysés",
+    token: "jeton d'analyse",
+  },
+  en: {
+    eyebrow: "Satellite analysis · FAO",
+    intro:
+      "The analysis combines several public satellite sources (convergence of evidence, FAO method) around the cut-off date of 31 December 2020.",
+    drawing: "Mapping the plot…",
+    scanning: "Satellite analysis in progress…",
+    stopListen: "Stop reading",
+    listenAria: "Listen to the verdict explanation",
+    stop: "Stop",
+    listen: "Listen",
+    soilScore: "Soil resilience score",
+    soilDialog: "Soil resilience score explanation",
+    score: "Score",
+    generating: "Explanation being generated…",
+    scoreError: "Explanation temporarily unavailable. The score is still computed from the plot's data.",
+    methodology: "Methodology inspired by recognised standards such as Kubeko.",
+    close: "Close",
+    launch: "Run the analysis",
+    analyzing: "Analysis in progress…",
+    next: "Continue",
+    replay: "Replay the analysis",
+    back: "Back",
+    scanningLive: "Live satellite analysis (Google Earth Engine)… up to ~30 s",
+    officialTitle: "Official Whisp analysis · v3 · Google Earth Engine",
+    officialParams: "Official FAO site parameters: ha units · CI national data · WGS-84",
+    indicatorsTitle: "Official indicators",
+    indicatorsShow: "Show all 11 official indicators",
+    indicatorsHide: "Collapse indicators",
+    risksTitle: "Official risk categories",
+    riskUsed: "AGRIVO verdict derived from this category",
+    pcrop: "Perennial crops (cocoa, coffee, rubber, oil palm)",
+    acrop: "Annual crops (soy)",
+    timber: "Timber",
+    coverageTitle: "Detected coverage (% of the plot)",
+    yes: "Yes",
+    no: "No",
+    analysed: "analysed",
+    token: "analysis token",
+  },
+} as const;
+
+const AnalysisMap = dynamic(() => import("@/components/verifier/analysis-map"), {
+  ssr: false,
+  loading: () => (
+    <div className="grid h-full place-items-center bg-forest-950">
+      <PinMark size={40} color="#eafff2" leafColor="rgba(224,166,75,0.9)" pulse />
+    </div>
+  ),
+});
+
+/** Faisceau de preuves du croisement géométrique (saisie manuelle : parcelle × aires protégées). */
+const CONV_FORCE: Record<"fr" | "en", Record<Statut, string[]>> = {
+  fr: {
+    conforme: ["Croisement avec les aires protégées : aucun recouvrement.", "Superficie et géométrie de la parcelle valides (≥ 4 sommets)."],
+    anomalie: ["Croisement géométrique : recouvrement d'une aire protégée détecté.", "Zone exclue au sens du règlement (UE) 2023/1115."],
+    insuffisant: ["Polygone incomplet ou superficie non calculable.", "Coordonnées à compléter pour statuer."],
+  },
+  en: {
+    conforme: ["Cross-check with protected areas: no overlap.", "Valid plot area and geometry (≥ 4 vertices)."],
+    anomalie: ["Geometric cross-check: overlap with a protected area detected.", "Zone excluded under Regulation (EU) 2023/1115."],
+    insuffisant: ["Incomplete polygon or non-computable area.", "Coordinates to be completed to decide."],
+  },
+};
+
+/** Construit le WhispResult à partir d'un verdict imposé (saisie manuelle), sans appel réseau. */
+function forcedWhisp(forced: ForcedVerdict): WhispResult {
+  return {
+    statut: forced.statut,
+    phrase: forced.phrase,
+    phraseEn: forced.phraseEn,
+    datePivot: "2020-12-31",
+    sources: ["Copernicus Sentinel-2", "Aires protégées · WDPA / Ministère des Eaux et Forêts", "JRC Global Forest Cover"],
+    convergence: CONV_FORCE.fr[forced.statut],
+    convergenceEn: CONV_FORCE.en[forced.statut],
+    analyseMs: 0,
+    demo: true,
+  };
+}
+
+/**
+ * Étape 3 — cartographie & analyse : LE moment signature. La séquence (contour dessiné →
+ * balayage satellite → remplissage du verdict) concentre le budget créatif. Explicabilité
+ * (score de sols) + lecture vocale native (Web Speech) : crédibilité algorithmique + inclusion.
+ * `forced` (saisie manuelle) impose le verdict issu du croisement géométrique, sans appel serveur.
+ */
+export function StepAnalysis({
+  parcelle,
+  forced,
+  onVerdict,
+  onNext,
+  onBack,
+}: {
+  parcelle: Parcelle;
+  forced?: ForcedVerdict | null;
+  onVerdict: (w: WhispResult) => void;
+  onNext: () => void;
+  onBack: () => void;
+}) {
+  const reduce = useReducedMotion();
+  const { lang } = useLanguage();
+  const t = COPY[lang];
+  const [phase, setPhase] = useState<AnalysisPhase>("idle");
+  const [whisp, setWhisp] = useState<WhispResult | null>(null);
+  const [scoreOpen, setScoreOpen] = useState(false);
+  const [score, setScore] = useState<ScoreSols | null>(null);
+  const [scoreErr, setScoreErr] = useState(false);
+  const [speaking, setSpeaking] = useState(false);
+  const [canSpeak, setCanSpeak] = useState(false);
+  const [longScan, setLongScan] = useState(false);
+  const runningRef = useRef(false);
+
+  const ring = parcelle.geojson.type === "Polygon" ? parcelle.geojson.coordinates[0] : [parcelle.geojson.coordinates];
+  const done = phase === "verdict" && whisp;
+
+  // Attente honnête : au-delà de 4 s de balayage, on annonce l'analyse en direct (GEE ~8-30 s).
+  useEffect(() => {
+    if (phase !== "scanning") {
+      setLongScan(false);
+      return;
+    }
+    const timer = setTimeout(() => setLongScan(true), 4_000);
+    return () => clearTimeout(timer);
+  }, [phase]);
+
+  useEffect(() => {
+    setCanSpeak(typeof window !== "undefined" && "speechSynthesis" in window);
+    return () => {
+      try {
+        window.speechSynthesis?.cancel();
+      } catch {
+        /* ignore */
+      }
+    };
+  }, []);
+
+  async function lancer(replay = false) {
+    if (runningRef.current) return;
+    runningRef.current = true;
+    setScoreOpen(false);
+    stopParler();
+    setPhase("drawing");
+    const fetchP: Promise<WhispResult> =
+      replay && whisp
+        ? Promise.resolve(whisp)
+        : forced
+          ? Promise.resolve(forcedWhisp(forced))
+          : fetch("/api/whisp/verify", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ parcelleId: parcelle.id }),
+            }).then((r) => r.json());
+    await sleep(reduce ? 0 : 620);
+    setPhase("scanning");
+    const [result] = await Promise.all([fetchP, sleep(reduce ? 0 : 840)]);
+    setWhisp(result);
+    onVerdict(result);
+    setPhase("verdict");
+    runningRef.current = false;
+  }
+
+  async function ouvrirScore() {
+    if (scoreOpen) {
+      setScoreOpen(false);
+      return;
+    }
+    setScoreOpen(true);
+    if (!score) {
+      setScoreErr(false);
+      try {
+        const r = await fetch("/api/gemini/explain", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ kind: "sols", producteurNom: parcelle.producteurNom }),
+        });
+        if (!r.ok) throw new Error(String(r.status));
+        setScore(await r.json());
+      } catch {
+        // Jamais un « génération… » éternel : on l'annonce honnêtement.
+        setScoreErr(true);
+      }
+    }
+  }
+
+
+  function parler() {
+    if (!canSpeak || !whisp) return;
+    try {
+      window.speechSynthesis.cancel();
+      const u = new SpeechSynthesisUtterance(lang === "en" ? (whisp.phraseEn ?? whisp.phrase) : whisp.phrase);
+      u.lang = lang === "en" ? "en-GB" : "fr-FR";
+      u.rate = 0.98;
+      u.onend = () => setSpeaking(false);
+      u.onerror = () => setSpeaking(false);
+      setSpeaking(true);
+      window.speechSynthesis.speak(u);
+    } catch {
+      setSpeaking(false);
+    }
+  }
+  function stopParler() {
+    try {
+      window.speechSynthesis?.cancel();
+    } catch {
+      /* ignore */
+    }
+    setSpeaking(false);
+  }
+
+  const color = whisp ? STATUT_COLOR[whisp.statut] : "var(--color-green-signal)";
+
+  return (
+    <div className="grid gap-5 lg:grid-cols-[1.5fr_1fr]">
+      {/* Carte satellite (dominante) */}
+      <div className="relative h-[52vh] min-h-[380px] overflow-hidden rounded-2xl border border-black/[0.08] lg:h-[68vh]">
+        <AnalysisMap ring={ring} statut={whisp?.statut ?? parcelle.statut} phase={phase} />
+      </div>
+
+      {/* Panneau d'analyse */}
+      <div className="flex flex-col rounded-2xl border border-black/[0.05] bg-white p-5 shadow-[0_1px_2px_rgba(10,31,20,0.04)]">
+        <div className="flex items-center gap-2">
+          <Sparkles size={16} strokeWidth={2} className="text-green-signal" aria-hidden />
+          <p className="eyebrow text-green-signal">{t.eyebrow}</p>
+        </div>
+        <h2 className="mt-2 font-display text-2xl leading-tight text-forest-950">
+          {parcelle.producteurNom}
+        </h2>
+        <p className="num text-sm text-stone-500">
+          {parcelle.numeroCartePro} · {parcelle.region}
+        </p>
+
+        <div className="mt-5 flex-1">
+          {!done ? (
+            <div className="flex h-full flex-col">
+              <p className="text-sm leading-relaxed text-stone-500">{t.intro}</p>
+              {phase !== "idle" && (
+                <div className="mt-5 flex items-center gap-3 rounded-xl bg-ivory-deep/50 px-4 py-3">
+                  <PinMark size={22} color="var(--color-green-signal)" pulse />
+                  <span className="text-sm font-medium text-forest-950">
+                    {phase === "drawing" ? t.drawing : longScan ? t.scanningLive : t.scanning}
+                  </span>
+                </div>
+              )}
+            </div>
+          ) : (
+            <motion.div
+              initial={reduce ? { opacity: 1 } : { opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, ease: EASE }}
+              className="flex flex-col gap-4"
+            >
+              <div className="flex flex-wrap items-center gap-2">
+                <StatusBadge statut={whisp.statut} lang={lang} />
+                {whisp.live && (
+                  <span className="inline-flex items-center gap-1.5 rounded-full border border-green-signal/30 bg-green-signal/[0.08] px-2.5 py-1 text-[0.65rem] font-semibold uppercase tracking-wide text-green-signal">
+                    <span className="glow-pulse h-1.5 w-1.5 rounded-full bg-green-signal" aria-hidden />
+                    {lang === "en" ? "FAO satellite detection · live" : "Détection satellite FAO · en direct"}
+                  </span>
+                )}
+                {canSpeak && (
+                  <button
+                    type="button"
+                    onClick={speaking ? stopParler : parler}
+                    aria-label={speaking ? t.stopListen : t.listenAria}
+                    className="inline-flex items-center gap-1.5 rounded-full border border-black/10 px-3 py-1.5 text-xs font-medium text-forest-950 outline-none transition-colors hover:border-green-signal/40 focus-visible:ring-2 focus-visible:ring-green-signal"
+                  >
+                    {speaking ? <VolumeX size={14} strokeWidth={2} /> : <Volume2 size={14} strokeWidth={2} />}
+                    {speaking ? t.stop : t.listen}
+                  </button>
+                )}
+              </div>
+
+              <p className="max-w-prose text-[0.95rem] font-medium leading-relaxed text-forest-950">
+                {lang === "en" ? (whisp.phraseEn ?? whisp.phrase) : whisp.phrase}
+              </p>
+
+              {/* Faisceau de preuves (qualitatif) */}
+              <ul className="flex flex-col gap-1.5">
+                {(lang === "en" ? (whisp.convergenceEn ?? whisp.convergence) : whisp.convergence).map((c) => (
+                  <li key={c} className="flex gap-2 text-xs leading-relaxed text-stone-500">
+                    <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full" style={{ background: color }} aria-hidden />
+                    {c}
+                  </li>
+                ))}
+              </ul>
+
+              {/* Détail officiel Whisp v3, UNIQUEMENT pour les analyses en direct (jamais simulé) */}
+              {whisp.live && whisp.detail && (
+                <WhispDetailPanel detail={whisp.detail} filiere={parcelle.filiere} lang={lang} />
+              )}
+
+              {/* Pourquoi ce verdict ?, causes réelles + prochaines étapes (jamais générique) */}
+              <VerdictExplication statut={whisp.statut} lang={lang} defaultOpen={whisp.statut === "insuffisant"} />
+
+              {/* Score de résilience des sols (XAI) */}
+              <div className="relative">
+                <button
+                  type="button"
+                  onClick={ouvrirScore}
+                  aria-expanded={scoreOpen}
+                  className="inline-flex items-center gap-2 rounded-full border border-amber-cacao/25 bg-amber-cacao/[0.06] px-3.5 py-2 text-xs font-medium text-amber-cacao outline-none transition-colors hover:bg-amber-cacao/[0.12] focus-visible:ring-2 focus-visible:ring-amber-cacao/40"
+                >
+                  <Leaf size={14} strokeWidth={2} aria-hidden />
+                  {t.soilScore}
+                </button>
+                <AnimatePresence>
+                  {scoreOpen && (
+                    <motion.div
+                      role="dialog"
+                      aria-label={t.soilDialog}
+                      initial={reduce ? { opacity: 0 } : { opacity: 0, y: -6, scale: 0.98 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={reduce ? { opacity: 0 } : { opacity: 0, y: -6, scale: 0.98 }}
+                      transition={{ duration: 0.18, ease: EASE }}
+                      className="absolute left-0 top-full z-20 mt-2 w-full max-w-sm rounded-2xl border border-black/[0.08] bg-white p-4 shadow-[0_20px_50px_-20px_rgba(10,31,20,0.4)]"
+                    >
+                      <div className="flex items-start justify-between gap-2">
+                        <span className="text-sm font-semibold text-forest-950">
+                          {t.score} {score ? `· ${score.niveau}` : "…"}
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => setScoreOpen(false)}
+                          aria-label={t.close}
+                          className="grid h-6 w-6 place-items-center rounded-full text-stone-400 transition-colors hover:bg-black/5 hover:text-forest-950"
+                        >
+                          <X size={14} strokeWidth={2} />
+                        </button>
+                      </div>
+                      <p className="mt-1.5 text-xs leading-relaxed text-stone-500">
+                        {score ? score.explication : scoreErr ? t.scoreError : t.generating}
+                      </p>
+                      <p className="mt-2 border-t border-black/[0.05] pt-2 text-[0.68rem] text-stone-400">
+                        {t.methodology}
+                      </p>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+
+              {/* Diagnostic visuel de la parcelle (IA), additif, n'affecte pas le verdict satellite. */}
+              <PhotoTerrain />
+            </motion.div>
+          )}
+        </div>
+
+        {/* Actions */}
+        <div className="mt-6 flex flex-col gap-3 border-t border-black/[0.05] pt-5">
+          {!done ? (
+            <button
+              type="button"
+              disabled={phase !== "idle"}
+              onClick={() => lancer(false)}
+              className="inline-flex items-center justify-center gap-2 rounded-full bg-green-signal px-6 py-3.5 text-sm font-semibold text-white shadow-[0_14px_34px_-12px_rgba(22,163,74,0.75)] outline-none transition-[filter,transform,opacity] hover:brightness-105 active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-green-signal focus-visible:ring-offset-2 focus-visible:ring-offset-white disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              {phase === "idle" ? t.launch : t.analyzing}
+            </button>
+          ) : (
+            <div className="flex flex-col gap-2 sm:flex-row">
+              <button
+                type="button"
+                onClick={onNext}
+                className="group inline-flex flex-1 items-center justify-center gap-2 rounded-full bg-green-signal px-6 py-3.5 text-sm font-semibold text-white shadow-[0_14px_34px_-12px_rgba(22,163,74,0.75)] outline-none transition-[filter,transform] hover:brightness-105 active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-green-signal focus-visible:ring-offset-2 focus-visible:ring-offset-white"
+              >
+                {t.next}
+                <ArrowRight size={16} strokeWidth={2.25} aria-hidden className="transition-transform group-hover:translate-x-0.5" />
+              </button>
+              <button
+                type="button"
+                onClick={() => lancer(true)}
+                className="inline-flex items-center justify-center gap-2 rounded-full border border-black/10 px-4 py-3.5 text-sm font-medium text-stone-600 outline-none transition-colors hover:border-green-signal/40 hover:text-forest-950 focus-visible:ring-2 focus-visible:ring-green-signal"
+              >
+                <RotateCcw size={15} strokeWidth={2} aria-hidden />
+                {t.replay}
+              </button>
+            </div>
+          )}
+          <button
+            type="button"
+            onClick={onBack}
+            className="rounded-full px-3 py-1 text-center text-sm text-stone-400 outline-none transition-colors hover:text-forest-950 focus-visible:ring-2 focus-visible:ring-green-signal focus-visible:ring-offset-2 focus-visible:ring-offset-white"
+          >
+            {t.back}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/** Niveau visuel d'une catégorie de risque officielle (low/high/autre), accents neutralisés. */
+function nivRisque(v: string | null): "low" | "high" | "autre" {
+  if (!v) return "autre";
+  const r = v.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
+  if (/\b(low|faible|no[_\s-]?risk)\b/.test(r)) return "low";
+  if (/\b(high|eleve)\b/.test(r)) return "high";
+  return "autre";
+}
+
+const RISQUE_CLASSES: Record<"low" | "high" | "autre", string> = {
+  low: "border-green-signal/30 bg-green-signal/[0.08] text-green-signal",
+  high: "border-red-block/30 bg-red-block/[0.08] text-red-block",
+  autre: "border-amber-cacao/30 bg-amber-cacao/[0.08] text-amber-cacao",
+};
+
+/**
+ * Détail officiel d'une analyse Whisp en direct : mêmes paramètres et mêmes sorties que
+ * whisp.openforis.org (11 indicateurs, 3 catégories de risque, couvertures, jeton). Rendu
+ * UNIQUEMENT quand `whisp.live` — jamais pour le moteur de repli (zéro pourcentage inventé).
+ */
+function WhispDetailPanel({
+  detail,
+  filiere,
+  lang,
+}: {
+  detail: NonNullable<WhispResult["detail"]>;
+  filiere: Filiere;
+  lang: "fr" | "en";
+}) {
+  const t = COPY[lang];
+  const [open, setOpen] = useState(true);
+  const [tousIndics, setTousIndics] = useState(false);
+
+  const groupeFiliere: "pcrop" | "acrop" | "timber" | null =
+    filiere === "soja" ? "acrop" : filiere === "bois" ? "timber" : filiere === "bovins" ? null : "pcrop";
+
+  const risques: Array<{ key: "pcrop" | "acrop" | "timber"; label: string; valeur: string | null }> = [
+    { key: "pcrop", label: t.pcrop, valeur: detail.risques.pcrop },
+    { key: "acrop", label: t.acrop, valeur: detail.risques.acrop },
+    { key: "timber", label: t.timber, valeur: detail.risques.timber },
+  ];
+
+  const indicateurs = tousIndics ? detail.indicateurs : detail.indicateurs.slice(0, 4);
+  const surface =
+    detail.surfaceHa !== null
+      ? `${detail.surfaceHa.toLocaleString(lang === "en" ? "en-GB" : "fr-FR", { maximumFractionDigits: 2 })} ha ${t.analysed}`
+      : null;
+  const lieu = [detail.region, detail.pays === "CIV" ? "Côte d'Ivoire" : detail.pays].filter(Boolean).join(", ");
+
+  return (
+    <div className="rounded-xl border border-black/[0.08] bg-ivory-deep/40">
+      <button
+        type="button"
+        onClick={() => setOpen(!open)}
+        aria-expanded={open}
+        className="flex w-full items-center justify-between gap-2 px-4 py-3 text-left outline-none focus-visible:ring-2 focus-visible:ring-green-signal"
+      >
+        <span className="flex items-center gap-2 text-xs font-semibold text-forest-950">
+          <Satellite size={14} strokeWidth={2} className="text-green-signal" aria-hidden />
+          {t.officialTitle}
+        </span>
+        <ChevronDown
+          size={15}
+          strokeWidth={2}
+          aria-hidden
+          className={`shrink-0 text-stone-400 transition-transform ${open ? "rotate-180" : ""}`}
+        />
+      </button>
+
+      {open && (
+        <div className="flex flex-col gap-3 border-t border-black/[0.05] px-4 pb-4 pt-3">
+          <p className="text-[0.7rem] leading-relaxed text-stone-500">
+            {t.officialParams}
+            {(lieu || surface) && (
+              <>
+                {" · "}
+                <span className="font-medium text-forest-950">{[lieu, surface].filter(Boolean).join(" · ")}</span>
+              </>
+            )}
+          </p>
+
+          {/* Les 3 catégories de risque officielles */}
+          <div className="flex flex-col gap-1.5">
+            <p className="text-[0.65rem] font-semibold uppercase tracking-wide text-stone-400">{t.risksTitle}</p>
+            {risques.map((r) => (
+              <div key={r.key} className="flex flex-wrap items-center justify-between gap-2 text-xs">
+                <span className={groupeFiliere === r.key ? "font-semibold text-forest-950" : "text-stone-500"}>
+                  {r.label}
+                  {groupeFiliere === r.key && (
+                    <span className="ml-1.5 text-[0.62rem] font-normal text-stone-400">· {t.riskUsed}</span>
+                  )}
+                </span>
+                <span
+                  className={`num inline-flex rounded-full border px-2 py-0.5 text-[0.65rem] font-semibold ${RISQUE_CLASSES[nivRisque(r.valeur)]}`}
+                >
+                  {r.valeur ?? "·"}
+                </span>
+              </div>
+            ))}
+          </div>
+
+          {/* Les 11 indicateurs officiels (4 cœur + repli) */}
+          {detail.indicateurs.length > 0 && (
+            <div className="flex flex-col gap-1.5">
+              <p className="text-[0.65rem] font-semibold uppercase tracking-wide text-stone-400">{t.indicatorsTitle}</p>
+              <ul className="flex flex-col gap-1">
+                {indicateurs.map((ind) => (
+                  <li key={ind.code} className="flex items-center justify-between gap-2 text-xs text-stone-600">
+                    <span>{lang === "en" ? ind.en : ind.fr}</span>
+                    <span
+                      className={`inline-flex rounded-full border px-2 py-0.5 text-[0.62rem] font-semibold ${
+                        ind.valeur === "yes"
+                          ? "border-forest-950/20 bg-forest-950/[0.06] text-forest-950"
+                          : "border-black/10 text-stone-400"
+                      }`}
+                    >
+                      {ind.valeur === "yes" ? t.yes : t.no}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+              {detail.indicateurs.length > 4 && (
+                <button
+                  type="button"
+                  onClick={() => setTousIndics(!tousIndics)}
+                  className="self-start text-[0.68rem] font-medium text-green-signal outline-none transition-colors hover:text-forest-950 focus-visible:ring-2 focus-visible:ring-green-signal"
+                >
+                  {tousIndics ? t.indicatorsHide : t.indicatorsShow}
+                </button>
+              )}
+            </div>
+          )}
+
+          {/* Couvertures détectées (% réels retournés par l'API) */}
+          {detail.couvertures.length > 0 && (
+            <div className="flex flex-col gap-1.5">
+              <p className="text-[0.65rem] font-semibold uppercase tracking-wide text-stone-400">{t.coverageTitle}</p>
+              <ul className="flex flex-col gap-1">
+                {detail.couvertures.map((c) => (
+                  <li key={c.code} className="flex items-center justify-between gap-2 text-xs text-stone-600">
+                    <span>{lang === "en" ? c.en : c.fr}</span>
+                    <span className="num font-semibold text-forest-950">{c.pct} %</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          {/* Traçabilité de l'exécution */}
+          <p className="num border-t border-black/[0.05] pt-2 text-[0.62rem] text-stone-400">
+            {[
+              detail.version ? `Whisp v${detail.version}` : null,
+              detail.horodatage ? `${detail.horodatage}` : null,
+              detail.token ? `${t.token} ${detail.token.slice(0, 8)}…` : null,
+            ]
+              .filter(Boolean)
+              .join(" · ")}
+          </p>
+        </div>
+      )}
+    </div>
+  );
+}
